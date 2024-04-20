@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data
+      - ./db-init.sql:/docker-entrypoint-initdb.d/data.sql
+
+  node:
+    image: "node:20"
+    restart: always
+    user: "node"
+    working_dir: /home/node/app
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8081"
+    ports:
+      - "8001:8081"
+    command: "npm run dev"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data_volume:
