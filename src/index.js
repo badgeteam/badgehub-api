@@ -19,12 +19,7 @@ const pool = new pg.Pool({
 });
 
 router.get('/test', async (req, res) => {
-    const result = await pool.query(`select name from test`);
-    // When making sequential queries:
-    // const client = await pool.connect()
-    // await client.query('SELECT NOW()')
-    // await client.query('SELECT NOW()')
-    // client.release()
+    const result = await pool.query(`select name from badges`);
     console.info('result', result.rows);
     const welcome = result.rows.map((row) => row.name).join(' ');
 

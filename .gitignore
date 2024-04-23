@@ -1,3 +1,6 @@
+# BadHub database
+pg_badgehub_no_users.sql
+
 # Logs
 logs
 *.log

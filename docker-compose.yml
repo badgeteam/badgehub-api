@@ -5,8 +5,8 @@ services:
     env_file:
       - .env
     volumes:
-      - postgres_data_volume:/var/lib/postgresql/data
-      - ./db-init.sql:/docker-entrypoint-initdb.d/data.sql
+      - postgres_data:/var/lib/postgresql/data
+      - ./pg_badgehub_no_users.sql:/docker-entrypoint-initdb.d/data.sql
 
   node:
     image: "node:20"
@@ -23,5 +23,24 @@ services:
     depends_on:
       - db
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8002:8082"
+    env_file:
+      - .env
+    environment:
+      - PGADMIN_LISTEN_PORT=8082
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+      - PGADMIN_DEFAULT_EMAIL=dev@badgehub.team
+      - PGADMIN_DEFAULT_PASSWORD=badgehub
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json
+
 volumes:
-  postgres_data_volume:
+  postgres_data:
+  pgadmin_data:
