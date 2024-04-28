@@ -17,9 +17,9 @@ npm install
 
 ## Install database
 
-Download `pg_badgehub_no_users.sql` from the BadgeHub NextCloud and save it to the project root.
+If not done before, you might want to populate the database with random dummy data.
 
-After startup, the PostgreSQL volume will be created with this database.
+[/api/v1/populate](http://localhost:8001/api/v1/populate)
 
 ## Run
 
@@ -42,3 +42,8 @@ To stop BadgeHub
 docker-compose down
 ```
 
+To stop BadgeHub and delete all volumes (to start fresh)
+
+```bash
+docker-compose down -v
+```

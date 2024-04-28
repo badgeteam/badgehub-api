@@ -6,7 +6,7 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./pg_badgehub_no_users.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./dummy-data.sql:/docker-entrypoint-initdb.d/data.sql
 
   node:
     image: "node:20"

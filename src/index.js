@@ -1,5 +1,6 @@
 import express, {Router} from 'express';
 import pg from 'pg';
+import populate from "./populate.js";
 
 const app = express();
 const port = 8081;
@@ -8,7 +9,7 @@ const router = Router();
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/api-v1', router);
+app.use('/api/v1', router);
 
 const pool = new pg.Pool({
     host: 'db',
@@ -24,6 +25,11 @@ router.get('/test', async (req, res) => {
     const welcome = result.rows.map((row) => row.name).join(' ');
 
     return res.status(200).send(welcome);
+});
+
+router.get('/populate', async (req, res) => {
+    populate(pool);
+    return res.status(200).send('Population done.');
 });
 
 app.listen(port, () => {
