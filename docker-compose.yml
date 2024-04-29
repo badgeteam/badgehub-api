@@ -9,7 +9,7 @@ services:
       - ./dummy-data.sql:/docker-entrypoint-initdb.d/data.sql
 
   node:
-    image: "node:20"
+    image: "node:22"
     restart: always
     user: "node"
     working_dir: /home/node/app
