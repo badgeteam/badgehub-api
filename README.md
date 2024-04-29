@@ -47,3 +47,9 @@ To stop BadgeHub and delete all volumes (to start fresh)
 ```bash
 docker-compose down -v
 ```
+
+## Database schema
+
+At the moment, this is the database schema:
+
+[BadgeHub Schema](https://drawsql.app/teams/badge-team/diagrams/badgehub)
