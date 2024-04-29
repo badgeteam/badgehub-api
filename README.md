@@ -19,7 +19,7 @@ npm install
 
 If not done before, you might want to populate the database with random dummy data.
 
-[/api/v1/populate](http://localhost:8001/api/v1/populate)
+[/api/v1/populate](http://localhost:8001/api/v3/populate)
 
 ## Run
 

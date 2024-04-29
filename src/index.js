@@ -9,7 +9,7 @@ const router = Router();
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/api/v1', router);
+app.use('/api/v3', router);
 
 const pool = new pg.Pool({
     host: 'db',
