@@ -1,7 +1,9 @@
+import pg from 'pg';
+
 const CATEGORIES_COUNT = 15;
 
-export default async function populate(pool) {
-    const client = await pool.connect()
+export default async function populate(pool: pg.Pool) {
+    const client = await pool.connect();
     await client.query('DELETE FROM badgehub.badge_project');
     await client.query('DELETE FROM badgehub.dependencies');
     await client.query('DELETE FROM badgehub.files');
@@ -16,17 +18,17 @@ export default async function populate(pool) {
     client.release();
 }
 
-function random(n) {
+function random(n: number) {
     return Math.floor(Math.random() * n);
 }
 
-function date(days) {
+function date(days: number) {
     const now = new Date();
     const d = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
     return d.toISOString();
 }
 
-function getSlug(appName) {
+function getSlug(appName: string) {
     switch(random(4)) {
         case 0:
             return `Use ${appName} for some cool graphical effects.`;
@@ -39,7 +41,7 @@ function getSlug(appName) {
     }
 }
 
-async function insertUsers(client) {
+async function insertUsers(client: pg.PoolClient) {
     const users = [
         "TechTinkerer",
         "CodeCrafter",
@@ -125,8 +127,8 @@ async function insertUsers(client) {
 
     for (const id in users) {
         const isAdmin = random(10) == 0;
-        const name = users[id];
-        const email = `${users[id].toLowerCase()}@${domains[random(domains.length)]}`;
+        const name = users[id]!;
+        const email = `${name.toLowerCase()}@${domains[random(domains.length)]}`;
         const password = "****";
         const isPublic = random(10) != 0;
         const showProjects = random(10) != 0;
@@ -144,7 +146,7 @@ async function insertUsers(client) {
     return users.length;
 }
 
-async function insertProjects(client, userCount) {
+async function insertProjects(client: pg.PoolClient, userCount: number) {
     const apps = [
         "CodeCraft",
         "PixelPulse",
@@ -236,8 +238,8 @@ async function insertProjects(client, userCount) {
     ];
 
     for (const id in apps) {
-        const name = apps[id];
-        const slug = getSlug(apps[id]);
+        const name = apps[id]!;
+        const slug = getSlug(name);
         const userId = random(userCount);
         const categoryId = random(CATEGORIES_COUNT) + 1;
         const createDate = -random(600);
@@ -254,7 +256,7 @@ async function insertProjects(client, userCount) {
     return apps.length;
 }
 
-async function userProjectsCrossTable(client, userCount, projectCount) {
+async function userProjectsCrossTable(client: pg.PoolClient, userCount: number, projectCount: number) {
     for (let index=0; index < 300; index++) {
 
         const userId = random(userCount);
