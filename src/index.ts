@@ -33,5 +33,5 @@ router.get('/populate', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.info(`Node.js server started on port ${port}`);
+    console.info(`Node.js server started.`);
 });
