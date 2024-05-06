@@ -5,7 +5,8 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "docker-compose up --detach",
+    "stop": "docker-compose down",
     "build": "tsc",
     "dev": "concurrently 'tsc --watch' 'node --watch --env-file=.env dist/index.js'",
     "test": "echo \"Error: no test specified\" && exit 1"

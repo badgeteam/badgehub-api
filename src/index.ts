@@ -1,6 +1,7 @@
 import express, {Router} from 'express';
 import pg from 'pg';
 import populate from "./populate.js";
+import publicRest from "./public-rest.js";
 
 const app = express();
 const port = 8081;
@@ -19,19 +20,8 @@ const pool = new pg.Pool({
     port: 5432,
 });
 
-router.get('/test', async (req, res) => {
-    const result = await pool.query(`select name from badges`);
-    console.info('result', result.rows);
-    const welcome = result.rows.map((row) => row.name).join(' ');
-
-    return res.status(200).send(welcome);
-});
-
-router.get('/populate', async (req, res) => {
-    populate(pool);
-    return res.status(200).send('Population done.');
-});
-
 app.listen(port, () => {
     console.info(`Node.js server started.`);
 });
+
+publicRest(router, pool);

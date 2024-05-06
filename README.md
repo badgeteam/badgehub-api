@@ -15,18 +15,12 @@ In the project directory, type
 npm install
 ```
 
-## Install database
-
-If not done before, you might want to populate the database with random dummy data.
-
-[/api/v1/populate](http://localhost:8001/api/v3/populate)
-
 ## Run
 
 Then start the Docker containers by typing
 
 ```bash
-docker-compose up --detach
+npm start
 ```
 
 Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub homepage.
@@ -34,12 +28,19 @@ Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub hom
 Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
 Use password `badgehub` to connect to the BadgeHub database server.
 
+## REST API
+
+The following REST API endpoints are available:
+
+- [devices](http://localhost:8001/api/v3/devices)
+- [categories](http://localhost:8001/api/v3/categories)
+
 ## Stop
 
 To stop BadgeHub
 
 ```bash
-docker-compose down
+npm run stop
 ```
 
 To stop BadgeHub and delete all volumes (to start fresh)
