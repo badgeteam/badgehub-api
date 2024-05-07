@@ -20,7 +20,7 @@ npm install
 Then start the Docker containers by typing
 
 ```bash
-npm start
+docker-compose up --detach
 ```
 
 Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub homepage.
@@ -28,22 +28,17 @@ Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub hom
 Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
 Use password `badgehub` to connect to the BadgeHub database server.
 
-## REST API
-
-The following REST API endpoints are available:
-
-- [devices](http://localhost:8001/api/v3/devices)
-- [categories](http://localhost:8001/api/v3/categories)
+Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST API.
 
 ## Stop
 
 To stop BadgeHub
 
 ```bash
-npm run stop
+docker-compose down
 ```
 
-To stop BadgeHub and delete all volumes (to start fresh)
+Or, to stop BadgeHub and delete all volumes (to start fresh)
 
 ```bash
 docker-compose down -v
