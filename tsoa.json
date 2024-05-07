@@ -1,0 +1,13 @@
+{
+  "entryFile": "src/public-rest.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "spec": {
+    "outputDirectory": "public",
+    "version": "3",
+    "specVersion": 3
+  },
+  "routes": {
+    "routesDir": "src/generated",
+    "esm": true
+  }
+}
