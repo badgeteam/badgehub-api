@@ -1,20 +1,43 @@
 import pg from 'pg';
+import express, {Express, Router} from "express";
 
 const CATEGORIES_COUNT = 15;
 
-export default async function populate(pool: pg.Pool) {
+export default async function populate(app: Express) {
+    const router = Router();
+
+    app.use(express.json());
+    app.use(express.static('public'));
+    app.use('/', router);
+
+    const pool = new pg.Pool({
+        host: 'db',
+        database: process.env.POSTGRES_DB,
+        user: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        port: 5432,
+    });
+
+    router.get('/populate', async (req, res) => {
+        await deleteDatabases(pool);
+        await populateDatabases(pool);
+        return res.status(200).send('Population done.');
+    });
+}
+
+async function deleteDatabases(pool: pg.Pool) {
     const client = await pool.connect();
     await client.query('DELETE FROM badgehub.badge_project');
     await client.query('DELETE FROM badgehub.dependencies');
-    await client.query('DELETE FROM badgehub.files');
-    await client.query('DELETE FROM badgehub.migrations');
-    await client.query('DELETE FROM badgehub.password_resets');
-    await client.query('DELETE FROM badgehub.project_user');
     await client.query('DELETE FROM badgehub.users');
     await client.query('DELETE FROM badgehub.projects');
+    client.release();
+}
+
+async function populateDatabases(pool: pg.Pool) {
+    const client = await pool.connect();
     const userCount = await insertUsers(client);
-    const projectCount = await insertProjects(client, userCount);
-    await userProjectsCrossTable(client, userCount, projectCount);
+    await insertProjects(client, userCount);
     client.release();
 }
 
@@ -28,7 +51,7 @@ function date(days: number) {
     return d.toISOString();
 }
 
-function getSlug(appName: string) {
+function getDescription(appName: string) {
     switch(random(4)) {
         case 0:
             return `Use ${appName} for some cool graphical effects.`;
@@ -120,9 +143,9 @@ async function insertUsers(client: pg.PoolClient) {
         'bitlair.nl',
         'hackalot.nl',
         'techinc.nl',
+        'hack42.nl',
         'gmail.com',
         'hotmail.com',
-        'ziggo.com'
     ]
 
     for (const id in users) {
@@ -135,6 +158,8 @@ async function insertUsers(client: pg.PoolClient) {
         const createDate = -random(600);
         const createdAt = date(createDate);
         const updatedAt = date(createDate + random(100));
+
+        console.log(`insert into users ${name}`);
 
         await client.query(`INSERT INTO badgehub.users
         (id, admin, name, email, password, public, show_projects, created_at, updated_at) VALUES 
@@ -239,23 +264,27 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
 
     for (const id in apps) {
         const name = apps[id]!;
-        const slug = getSlug(name);
+        const slug = name.toLowerCase();
+        const description = getDescription(name);
         const userId = random(userCount);
         const categoryId = random(CATEGORIES_COUNT) + 1;
         const createDate = -random(600);
         const createdAt = date(createDate);
         const updatedAt = date(createDate + random(100));
 
+        console.log(`insert into projects ${name} (${description})`);
+
         await client.query(`INSERT INTO badgehub.projects
-        (id, name, slug, user_id, category_id, created_at, updated_at) VALUES
-        ($1, $2, $3, $4, $5, $6, $7)`,
-            [id, name, slug, userId, categoryId, createdAt, updatedAt]
+        (id, name, slug, description, user_id, category_id, created_at, updated_at) VALUES
+        ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [id, name, slug, description, userId, categoryId, createdAt, updatedAt]
         );
     }
 
     return apps.length;
 }
 
+// Not in use right now
 async function userProjectsCrossTable(client: pg.PoolClient, userCount: number, projectCount: number) {
     for (let index=0; index < 300; index++) {
 

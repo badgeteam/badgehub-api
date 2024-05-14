@@ -1,4 +1,4 @@
-import express, {Express} from 'express';
+import express from 'express';
 import {RegisterRoutes} from "./generated/routes.js";
 import openapi from "./openapi.js";
 
