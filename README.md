@@ -41,7 +41,7 @@ docker-compose down
 Or, to stop BadgeHub and delete all volumes (to start fresh)
 
 ```bash
-docker-compose down -v
+docker-compose down --volumes
 ```
 
 ## Database schema
