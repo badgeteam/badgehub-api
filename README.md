@@ -48,4 +48,4 @@ docker-compose down --volumes
 
 At the moment, this is the database schema:
 
-[BadgeHub Schema](https://drawsql.app/teams/badge-team/diagrams/badgehub)
+[BadgeHub Schema](https://drawsql.app/teams/badge-team/diagrams/simplified-database)
