@@ -7,6 +7,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./dummy-data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./backup:/var/backup
 
   node:
     image: "node:22"

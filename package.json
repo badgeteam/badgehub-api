@@ -9,6 +9,7 @@
     "build": "tsc",
     "openapi": "tsoa spec-and-routes",
     "dev": "concurrently 'tsc --watch' 'node --watch --env-file=.env dist/index.js'",
+    "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup.sql",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "MIT",
