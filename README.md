@@ -20,7 +20,7 @@ npm install
 Then start the Docker containers by typing
 
 ```bash
-docker-compose up --detach
+docker compose up --detach
 ```
 
 Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub homepage.
@@ -35,13 +35,13 @@ Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST AP
 To stop BadgeHub
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 Or, to stop BadgeHub and delete all volumes (to start fresh)
 
 ```bash
-docker-compose down --volumes
+docker compose down --volumes
 ```
 
 ## Database schema
