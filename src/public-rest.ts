@@ -6,6 +6,7 @@ import type {TsoaResponse} from "tsoa";
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
  *
  * https://tsoa-community.github.io/docs/introduction.html
+ * https://node-postgres.com/
  * https://www.postgresql.org/docs/16/index.html
  *
  * After changing this file, don't forget to generate the OpenPI spec en the routes:
@@ -68,40 +69,52 @@ export class RestController {
         return result.rows;
     }
 
-
     /**
      * Get list of apps, optionally limited by page start/length and/or filtered by category
      */
     @Get("/apps")
-    public async getApps(@Query() pageStart?: number, @Query() pageLength?: number, @Query() category?: string): Promise<App[]> {
-        const hasPaging = pageStart != undefined && pageLength != undefined;
-        const mainQuery = `select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
-                             from projects p inner join categories c on p.category_id=c.id
-                             inner join users u on p.user_id=u.id`;
+    public async getApps(@Query() pageStart?: number, @Query() pageLength?: number, @Query() category?: string, @Query() device?: string): Promise<App[]> {
+        const mainQuery = `
+            select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
+            from projects p
+            inner join categories c on p.category_id = c.id
+            inner join users u on p.user_id = u.id`;
+
+        const badgeQuery = `
+            inner join badge_project bp on bp.project_id = p.id 
+            inner join badges b on b.id = bp.badge_id`;
 
         let result: pg.QueryResult<App>;
-        if (category && !hasPaging) {
+        if (category && !device) {
             result = await pool.query<App>(
                 `${mainQuery}
-                where c.slug = $1`,
-                [category]
+                where c.slug = $3
+                limit $1 offset $2
+                `,
+                [pageLength ?? null, pageStart ?? 0, category]
             );
-        } else if (!category && hasPaging) {
+        } else if (!category && device) {
             result = await pool.query<App>(
-                `${mainQuery}
-                limit $1 offset $2`,
-                [pageLength, pageStart]
+                `${mainQuery} ${badgeQuery}
+                where b.slug=$3
+                limit $1 offset $2
+                `,
+                [pageLength ?? null, pageStart ?? 0, device]
             );
-        } else if (category && hasPaging) {
+        } else if (category && device) {
             result = await pool.query<App>(
-                `${mainQuery}
-                where c.slug = $1
-                limit $2 offset $3`,
-                [category, pageLength, pageStart]
+                `${mainQuery} ${badgeQuery}
+                where c.slug = $3 and b.slug=$4
+                limit $1 offset $2
+                `,
+                [pageLength ?? null, pageStart ?? 0, category, device]
             );
         } else {
             result = await pool.query<App>(
-                mainQuery
+                `${mainQuery}
+                limit $1 offset $2
+                `,
+                [pageLength ?? null, pageStart ?? 0]
             );
         }
         return result.rows;
@@ -115,8 +128,8 @@ export class RestController {
         const result = await pool.query<AppDetails & { id: number }>(
             `select p.id, p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
                              from projects p
-                             inner join categories c on p.category_id=c.id
-                             inner join users u on p.user_id=u.id
+                             inner join categories c on p.category_id = c.id
+                             inner join users u on p.user_id = u.id
                              where p.slug = $1`
             , [slug]);
         if (result.rows[0]) {

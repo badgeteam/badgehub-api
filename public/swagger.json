@@ -207,6 +207,14 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"in": "query",
+						"name": "device",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
 					}
 				]
 			}
