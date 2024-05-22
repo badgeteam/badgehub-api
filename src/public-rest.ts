@@ -1,10 +1,12 @@
 import pg from 'pg';
-import {Get, Path, Query, Route} from "tsoa";
+import {Get, Path, Query, Res, Route} from "tsoa";
+import type {TsoaResponse} from "tsoa";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
  *
  * https://tsoa-community.github.io/docs/introduction.html
+ * https://www.postgresql.org/docs/16/index.html
  *
  * After changing this file, don't forget to generate the OpenPI spec en the routes:
  *
@@ -67,11 +69,10 @@ export class RestController {
 
 
     /**
-     * Get list of apps
+     * Get list of apps, optionally limited by page start/length and/or filtered by category
      */
     @Get("/apps")
     public async getApps(@Query() pageStart?: number, @Query() pageLength?: number, @Query() category?: string): Promise<App[]> {
-        console.log('pageStart', pageStart, pageLength, category);
         const hasPaging = pageStart != undefined && pageLength != undefined;
         const mainQuery = `select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
                              from projects p inner join categories c on p.category_id=c.id
@@ -87,14 +88,14 @@ export class RestController {
         } else if (!category && hasPaging) {
             result = await pool.query<App>(
                 `${mainQuery}
-            limit $1 offset $2`,
+                limit $1 offset $2`,
                 [pageLength, pageStart]
             );
         } else if (category && hasPaging) {
             result = await pool.query<App>(
                 `${mainQuery}
-            where c.slug = $1
-            limit $2 offset $3`,
+                where c.slug = $1
+                limit $2 offset $3`,
                 [category, pageLength, pageStart]
             );
         } else {
@@ -109,18 +110,19 @@ export class RestController {
      * Get app details
      */
     @Get("/apps/{slug}")
-    public async getAppDetails(@Path() slug: string): Promise<AppDetails | undefined> {
-        const result = await pool.query<AppDetails>(
-            `select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
+    public async getAppDetails(@Path() slug: string, @Res() notFoundResponse: TsoaResponse<404, { reason: string }>): Promise<AppDetails | undefined> {
+        const result = await pool.query<AppDetails & { id: number }>(
+            `select p.id, p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
                              from projects p
                              inner join categories c on p.category_id=c.id
                              inner join users u on p.user_id=u.id
                              where p.slug = $1`
             , [slug]);
         if (result.rows[0]) {
+            console.log('id', result.rows[0].id);
             return result.rows[0];
         } else {
-            // TODO handle not found...
+            return notFoundResponse(404, { reason: `No app with slug '${slug}' found`});
         }
     }
 }

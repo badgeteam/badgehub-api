@@ -172,7 +172,7 @@
 						}
 					}
 				},
-				"description": "Get list of apps",
+				"description": "Get list of apps, optionally limited by page start/length and/or filtered by category",
 				"security": [],
 				"parameters": [
 					{
@@ -214,6 +214,24 @@
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/AppDetails"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"reason": {
+											"type": "string"
+										}
+									},
+									"required": [
+										"reason"
+									],
+									"type": "object"
 								}
 							}
 						}
