@@ -34,8 +34,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "name": {"dataType":"string","required":true},
             "slug": {"dataType":"string","required":true},
-            "categrory_id": {"dataType":"string","required":true},
-            "user_id": {"dataType":"string","required":true},
+            "description": {"dataType":"string","required":true},
+            "categrory_slug": {"dataType":"string","required":true},
+            "user_name": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -45,10 +46,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "name": {"dataType":"string","required":true},
             "slug": {"dataType":"string","required":true},
-            "categrory": {"dataType":"string","required":true},
             "description": {"dataType":"string","required":true},
-            "status": {"dataType":"string","required":true},
-            "author": {"dataType":"string","required":true},
+            "categrory_slug": {"dataType":"string","required":true},
+            "user_name": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -150,13 +150,13 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v3/apps/:name',
+        app.get('/api/v3/apps/:slug',
             ...(fetchMiddlewares<RequestHandler>(RestController)),
             ...(fetchMiddlewares<RequestHandler>(RestController.prototype.getAppDetails)),
 
             async function RestController_getAppDetails(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    name: {"in":"path","name":"name","required":true,"dataType":"string"},
+                    slug: {"in":"path","name":"slug","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
