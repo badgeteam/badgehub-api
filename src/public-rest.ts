@@ -1,5 +1,5 @@
 import pg from 'pg';
-import {Get, Path, Route} from "tsoa";
+import {Get, Path, Query, Route} from "tsoa";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -70,8 +70,38 @@ export class RestController {
      * Get list of apps
      */
     @Get("/apps")
-    public async getApps(): Promise<App[]> {
-        const result = await pool.query<App>(`select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name from projects p inner join categories c on p.category_id=c.id inner join users u on p.user_id=u.id`);
+    public async getApps(@Query() pageStart?: number, @Query() pageLength?: number, @Query() category?: string): Promise<App[]> {
+        console.log('pageStart', pageStart, pageLength, category);
+        const hasPaging = pageStart != undefined && pageLength != undefined;
+        const mainQuery = `select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
+                             from projects p inner join categories c on p.category_id=c.id
+                             inner join users u on p.user_id=u.id`;
+
+        let result: pg.QueryResult<App>;
+        if (category && !hasPaging) {
+            result = await pool.query<App>(
+                `${mainQuery}
+                where c.slug = $1`,
+                [category]
+            );
+        } else if (!category && hasPaging) {
+            result = await pool.query<App>(
+                `${mainQuery}
+            limit $1 offset $2`,
+                [pageLength, pageStart]
+            );
+        } else if (category && hasPaging) {
+            result = await pool.query<App>(
+                `${mainQuery}
+            where c.slug = $1
+            limit $2 offset $3`,
+                [category, pageLength, pageStart]
+            );
+        } else {
+            result = await pool.query<App>(
+                mainQuery
+            );
+        }
         return result.rows;
     }
 
@@ -80,7 +110,13 @@ export class RestController {
      */
     @Get("/apps/{slug}")
     public async getAppDetails(@Path() slug: string): Promise<AppDetails | undefined> {
-        const result = await pool.query<AppDetails>(`select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name from projects p inner join categories c on p.category_id=c.id inner join users u on p.user_id=u.id where p.slug = $1`, [slug]);
+        const result = await pool.query<AppDetails>(
+            `select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
+                             from projects p
+                             inner join categories c on p.category_id=c.id
+                             inner join users u on p.user_id=u.id
+                             where p.slug = $1`
+            , [slug]);
         if (result.rows[0]) {
             return result.rows[0];
         } else {
