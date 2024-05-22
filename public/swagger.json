@@ -47,18 +47,22 @@
 					"slug": {
 						"type": "string"
 					},
-					"categrory_id": {
+					"description": {
 						"type": "string"
 					},
-					"user_id": {
+					"categrory_slug": {
+						"type": "string"
+					},
+					"user_name": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"name",
 					"slug",
-					"categrory_id",
-					"user_id"
+					"description",
+					"categrory_slug",
+					"user_name"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -71,26 +75,22 @@
 					"slug": {
 						"type": "string"
 					},
-					"categrory": {
-						"type": "string"
-					},
 					"description": {
 						"type": "string"
 					},
-					"status": {
+					"categrory_slug": {
 						"type": "string"
 					},
-					"author": {
+					"user_name": {
 						"type": "string"
 					}
 				},
 				"required": [
 					"name",
 					"slug",
-					"categrory",
 					"description",
-					"status",
-					"author"
+					"categrory_slug",
+					"user_name"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -177,7 +177,7 @@
 				"parameters": []
 			}
 		},
-		"/api/v3/apps/{name}": {
+		"/api/v3/apps/{slug}": {
 			"get": {
 				"operationId": "GetAppDetails",
 				"responses": {
@@ -197,7 +197,7 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "name",
+						"name": "slug",
 						"required": true,
 						"schema": {
 							"type": "string"

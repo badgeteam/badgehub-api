@@ -33,17 +33,16 @@ interface App {
     name: string;
     slug: string;
     description: string;
-    categrory_id: string;
-    user_id: string;
+    categrory_slug: string;
+    user_name: string;
 }
 
 interface AppDetails {
     name: string;
     slug: string;
     description: string;
-    categrory: string;
-    status: string;
-    author: string;
+    categrory_slug: string;
+    user_name: string;
 }
 
 @Route("/api/v3")
@@ -72,7 +71,7 @@ export class RestController {
      */
     @Get("/apps")
     public async getApps(): Promise<App[]> {
-        const result = await pool.query<App>(`select name, slug, description, category_id, user_id from projects`);
+        const result = await pool.query<App>(`select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name from projects p inner join categories c on p.category_id=c.id inner join users u on p.user_id=u.id`);
         return result.rows;
     }
 
@@ -81,7 +80,7 @@ export class RestController {
      */
     @Get("/apps/{slug}")
     public async getAppDetails(@Path() slug: string): Promise<AppDetails | undefined> {
-        const result = await pool.query<AppDetails>(`select name, slug, description, category_id, user_id from projects where slug = $1`, [slug]);
+        const result = await pool.query<AppDetails>(`select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name from projects p inner join categories c on p.category_id=c.id inner join users u on p.user_id=u.id where p.slug = $1`, [slug]);
         if (result.rows[0]) {
             return result.rows[0];
         } else {
