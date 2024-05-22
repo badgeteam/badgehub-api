@@ -83,6 +83,12 @@
 					},
 					"user_name": {
 						"type": "string"
+					},
+					"devices": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -90,7 +96,8 @@
 					"slug",
 					"description",
 					"categrory_slug",
-					"user_name"
+					"user_name",
+					"devices"
 				],
 				"type": "object",
 				"additionalProperties": false

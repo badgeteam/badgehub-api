@@ -45,6 +45,7 @@ interface AppDetails {
     description: string;
     categrory_slug: string;
     user_name: string;
+    devices: string[]
 }
 
 @Route("/api/v3")
@@ -119,8 +120,13 @@ export class RestController {
                              where p.slug = $1`
             , [slug]);
         if (result.rows[0]) {
-            console.log('id', result.rows[0].id);
-            return result.rows[0];
+            const projectId = result.rows[0].id;
+            const badgeResult = await pool.query<AppDetails & { id: number }>(
+                `select b.slug from badge_project bp inner join badges b on bp.badge_id=b.id where project_id=$1`
+                , [projectId]);
+            const devices = badgeResult.rows.map((badge)=> badge.slug);
+            const {id, ...resultWithoutId} = result.rows[0];
+            return {...resultWithoutId, devices};
         } else {
             return notFoundResponse(404, { reason: `No app with slug '${slug}' found`});
         }
