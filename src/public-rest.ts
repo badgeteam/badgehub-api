@@ -32,6 +32,7 @@ interface Category {
 interface App {
     name: string;
     slug: string;
+    description: string;
     categrory_id: string;
     user_id: string;
 }
@@ -39,8 +40,8 @@ interface App {
 interface AppDetails {
     name: string;
     slug: string;
-    categrory: string;
     description: string;
+    categrory: string;
     status: string;
     author: string;
 }
@@ -71,16 +72,16 @@ export class RestController {
      */
     @Get("/apps")
     public async getApps(): Promise<App[]> {
-        const result = await pool.query<App>(`select name, slug, category_id, user_id from projects`);
+        const result = await pool.query<App>(`select name, slug, description, category_id, user_id from projects`);
         return result.rows;
     }
 
     /**
      * Get app details
      */
-    @Get("/apps/{name}")
-    public async getAppDetails(@Path() name: string): Promise<AppDetails | undefined> {
-        const result = await pool.query<AppDetails>(`select name, slug, category_id, user_id from projects where name = $1`, [name]);
+    @Get("/apps/{slug}")
+    public async getAppDetails(@Path() slug: string): Promise<AppDetails | undefined> {
+        const result = await pool.query<AppDetails>(`select name, slug, description, category_id, user_id from projects where slug = $1`, [slug]);
         if (result.rows[0]) {
             return result.rows[0];
         } else {
