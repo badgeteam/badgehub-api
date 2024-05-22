@@ -127,6 +127,9 @@ export function RegisterRoutes(app: Router) {
 
             async function RestController_getApps(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    pageStart: {"in":"query","name":"pageStart","dataType":"double"},
+                    pageLength: {"in":"query","name":"pageLength","dataType":"double"},
+                    category: {"in":"query","name":"category","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
