@@ -49,6 +49,7 @@ const models: TsoaRoute.Models = {
             "description": {"dataType":"string","required":true},
             "categrory_slug": {"dataType":"string","required":true},
             "user_name": {"dataType":"string","required":true},
+            "devices": {"dataType":"array","array":{"dataType":"string"},"required":true},
         },
         "additionalProperties": false,
     },

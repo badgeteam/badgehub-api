@@ -37,7 +37,8 @@ async function deleteDatabases(pool: pg.Pool) {
 async function populateDatabases(pool: pg.Pool) {
     const client = await pool.connect();
     const userCount = await insertUsers(client);
-    await insertProjects(client, userCount);
+    const projectCount = await insertProjects(client, userCount);
+    await badgeProjectCrossTable(client, projectCount);
     client.release();
 }
 
@@ -162,9 +163,9 @@ async function insertUsers(client: pg.PoolClient) {
         console.log(`insert into users ${name}`);
 
         await client.query(`INSERT INTO badgehub.users
-        (id, admin, name, email, password, public, show_projects, created_at, updated_at) VALUES 
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-            [id, isAdmin, name, email, password, isPublic, showProjects, createdAt, updatedAt]
+            (id, admin, name, email, password, public, show_projects, created_at, updated_at) VALUES 
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                [id, isAdmin, name, email, password, isPublic, showProjects, createdAt, updatedAt]
         );
     }
 
@@ -275,13 +276,35 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
         console.log(`insert into projects ${name} (${description})`);
 
         await client.query(`INSERT INTO badgehub.projects
-        (id, name, slug, description, user_id, category_id, created_at, updated_at) VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8)`,
-            [id, name, slug, description, userId, categoryId, createdAt, updatedAt]
+            (id, name, slug, description, user_id, category_id, created_at, updated_at) VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                [id, name, slug, description, userId, categoryId, createdAt, updatedAt]
         );
     }
 
     return apps.length;
+}
+
+async function badgeProjectCrossTable(client: pg.PoolClient, projectCount: number) {
+    const badgeIds = [1, 2, 5]; // Hardcoded! Update by hand
+    for (let index=0; index < projectCount; index++) {
+        const badgeId = badgeIds[random(3)];
+        await client.query(`INSERT INTO badgehub.badge_project
+            (badge_id, project_id) VALUES
+            ($1, $2)`,
+                [badgeId, index]
+        );
+
+        // Some project support two badges
+        const badgeId2 = badgeIds[random(3)];
+        if (badgeId2 != badgeId && random(3) == 1) {
+            await client.query(`INSERT INTO badgehub.badge_project
+                (badge_id, project_id) VALUES
+                ($1, $2)`,
+                    [badgeId2, index]
+            );
+        }
+    }
 }
 
 // Not in use right now
