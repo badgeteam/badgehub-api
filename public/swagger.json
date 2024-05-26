@@ -47,9 +47,6 @@
 					"slug": {
 						"type": "string"
 					},
-					"description": {
-						"type": "string"
-					},
 					"categrory_slug": {
 						"type": "string"
 					},
@@ -60,7 +57,6 @@
 				"required": [
 					"name",
 					"slug",
-					"description",
 					"categrory_slug",
 					"user_name"
 				],

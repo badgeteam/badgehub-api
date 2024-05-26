@@ -34,7 +34,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "name": {"dataType":"string","required":true},
             "slug": {"dataType":"string","required":true},
-            "description": {"dataType":"string","required":true},
             "categrory_slug": {"dataType":"string","required":true},
             "user_name": {"dataType":"string","required":true},
         },

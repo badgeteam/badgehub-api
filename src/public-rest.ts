@@ -35,7 +35,6 @@ interface Category {
 interface App {
     name: string;
     slug: string;
-    description: string;
     categrory_slug: string;
     user_name: string;
 }
@@ -75,7 +74,7 @@ export class RestController {
     @Get("/apps")
     public async getApps(@Query() pageStart?: number, @Query() pageLength?: number, @Query() category?: string, @Query() device?: string): Promise<App[]> {
         const mainQuery = `
-            select p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
+            select p.name, p.slug, c.slug as category_slug, u.name as user_name
             from projects p
             inner join categories c on p.category_id = c.id
             inner join users u on p.user_id = u.id`;
