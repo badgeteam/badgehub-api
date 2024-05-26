@@ -12,7 +12,7 @@ Make sure [Docker](https://www.docker.com/get-started/) is installed and running
 In the project directory, type
 
 ```bash
-npm install
+npm run install:container
 ```
 
 ## Run

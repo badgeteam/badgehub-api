@@ -5,6 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "install:container": "docker exec -it badgehub-api-node-1 npm install",
     "start": "node --env-file=.env dist/index.js'",
     "build": "tsc",
     "openapi": "tsoa spec-and-routes",
