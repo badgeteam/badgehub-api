@@ -11,7 +11,8 @@
     "openapi": "tsoa spec-and-routes",
     "dev": "concurrently 'tsc --watch' 'node --watch --env-file=.env dist/index.js'",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "license": "MIT",
   "dependencies": {
@@ -24,6 +25,9 @@
     "@types/pg": "^8.11.5",
     "@types/swagger-ui-express": "^4.1.6",
     "concurrently": "^8.2.2",
+    "husky": "^9.0.11",
+    "prettier": "^3.2.5",
+    "pretty-quick": "^4.0.0",
     "swagger-ui-express": "^5.0.0",
     "tsoa": "^6.2.1",
     "typescript": "^5.4.5"
