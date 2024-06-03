@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "install:container": "docker exec -it badgehub-api-node-1 npm install",
-    "start": "node --env-file=.env dist/index.js'",
+    "start": "node --env-file=.env dist/index.js",
     "build": "tsc",
     "openapi": "tsoa spec-and-routes",
     "dev": "concurrently 'tsc --watch' 'node --watch --env-file=.env dist/index.js'",
@@ -17,7 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.19.2",
-    "pg": "^8.11.5"
+    "pg": "^8.11.5",
+    "pm2": "^5.4.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

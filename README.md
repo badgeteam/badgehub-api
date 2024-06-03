@@ -12,7 +12,7 @@ Make sure [Docker](https://www.docker.com/get-started/) is installed and running
 In the project directory, type
 
 ```bash
-npm run install:container
+npm install
 ```
 
 ## Run
@@ -49,3 +49,21 @@ docker compose down --volumes
 At the moment, this is the database schema:
 
 [BadgeHub Schema](https://drawsql.app/teams/badge-team/diagrams/simplified-database)
+
+## Production container
+
+In production, use the production docker compose file.
+The `NODE_ENV` environment file is set to `production`, there's no watcher and
+PM2 is used to run Node.js multithreaded.
+
+To start:
+
+```bash
+docker compose --file docker-compose-production.yml up --detach
+```
+
+To wind down:
+
+```bash
+docker compose --file docker-compose-production.yml down
+```
