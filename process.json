@@ -1,0 +1,6 @@
+{
+  "script": "dist/index.js",
+  "name": "badgehub",
+  "exec_mode": "cluster",
+  "instances": 4
+}
