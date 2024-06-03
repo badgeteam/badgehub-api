@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "openapi": "tsoa spec-and-routes",
-    "dev": "concurrently 'tsc --watch' 'node --watch dist/index.js'",
+    "dev": "tsx watch src/index.ts",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
@@ -31,6 +31,7 @@
     "pretty-quick": "^4.0.0",
     "swagger-ui-express": "^5.0.0",
     "tsoa": "^6.2.1",
+    "tsx": "^4.11.2",
     "typescript": "^5.4.5"
   }
 }
