@@ -6,10 +6,10 @@
   "main": "dist/index.js",
   "scripts": {
     "install:container": "docker exec -it badgehub-api-node-1 npm install",
-    "start": "node --env-file=.env dist/index.js",
+    "start": "node dist/index.js",
     "build": "tsc",
     "openapi": "tsoa spec-and-routes",
-    "dev": "concurrently 'tsc --watch' 'node --watch --env-file=.env dist/index.js'",
+    "dev": "concurrently 'tsc --watch' 'node --watch dist/index.js'",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
