@@ -20,6 +20,8 @@ services:
       - "8081"
     ports:
       - "8001:8081"
+    env_file:
+      - .env
     command: "npm run dev"
     depends_on:
       - db
