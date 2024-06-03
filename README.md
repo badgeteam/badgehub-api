@@ -23,7 +23,7 @@ Then start the Docker containers by typing
 docker compose up --detach
 ```
 
-Then visit [http://localhost:8001/](http://localhost:8001/) for the BadgeHub homepage.
+Then visit [http://localhost:8001/](http://localhost:8001/) for the development BadgeHub homepage.
 
 Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
 Use password `badgehub` to connect to the BadgeHub database server.
@@ -61,6 +61,8 @@ To start:
 ```bash
 docker compose --file docker-compose-production.yml up --detach
 ```
+
+Then visit [http://localhost:8003/](http://localhost:8003/) for the production BadgeHub homepage.
 
 To wind down:
 
