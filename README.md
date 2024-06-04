@@ -62,7 +62,7 @@ To start:
 docker compose --file docker-compose-production.yml up --detach
 ```
 
-Then visit [http://localhost:8003/](http://localhost:8003/) for the production BadgeHub homepage.
+Then visit [http://localhost:9002/](http://localhost:9002/) for the production BadgeHub homepage.
 
 To wind down:
 
