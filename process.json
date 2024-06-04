@@ -2,5 +2,7 @@
   "script": "dist/index.js",
   "name": "badgehub",
   "exec_mode": "cluster",
-  "instances": 4
+  "instances": 4,
+  "error_file": "./logs/error.log",
+  "out_file": "./logs/access.log"
 }
