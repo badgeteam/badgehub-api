@@ -17,6 +17,14 @@ npm install
 
 ## Run
 
+Before running, copy the `.env.example` into `.env`
+
+```bash
+cp .env.example .env
+```
+
+and fill out the details.
+
 Then start the Docker containers by typing
 
 ```bash
