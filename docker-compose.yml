@@ -22,6 +22,8 @@ services:
       - "8001:8081"
     env_file:
       - .env
+    environment:
+      - NODE_ENV=development
     command: "npm run dev"
     depends_on:
       - db
