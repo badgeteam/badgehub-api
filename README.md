@@ -64,13 +64,19 @@ In production, use the production docker compose file.
 The `NODE_ENV` environment file is set to `production`, there's no watcher and
 PM2 is used to run Node.js multithreaded.
 
+The first time, a Docker container is created. Make sure the `dist` directory
+contains the latest build to be copied to the container.
+Also the `public` directory and `package.json` and `package-lock.json` will
+be copied.
+
 To start:
 
 ```bash
 docker compose --file docker-compose-production.yml up --detach
 ```
 
-Then visit [http://localhost:9002/](http://localhost:9002/) for the production BadgeHub homepage.
+Then visit [http://localhost:9001/](http://localhost:9001/) for the production BadgeHub homepage
+and [http://localhost:9002/](http://localhost:9002/) for PG_Admin, the UI for the database.
 
 To wind down:
 
