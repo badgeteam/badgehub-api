@@ -30,9 +30,6 @@ services:
       - PGADMIN_LISTEN_PORT=8082
       - PGADMIN_CONFIG_SERVER_MODE=False
       - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
-      - PGADMIN_DEFAULT_EMAIL=dev@badgehub.team
-      - PGADMIN_DEFAULT_PASSWORD=badgehub
     volumes:
       - /data/pgadmin:/var/lib/pgadmin
       - ./servers.json:/pgadmin4/servers.json
-
