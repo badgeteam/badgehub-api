@@ -5,9 +5,9 @@ services:
     env_file:
       - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - /data/postgres:/var/lib/postgresql/data
       - ./mockup-data.sql:/docker-entrypoint-initdb.d/data.sql
-      - ./backup:/var/backup
+      - /postgres_backup:/var/backup
 
   node:
     build: .
@@ -33,9 +33,6 @@ services:
       - PGADMIN_DEFAULT_EMAIL=dev@badgehub.team
       - PGADMIN_DEFAULT_PASSWORD=badgehub
     volumes:
-      - pgadmin_data:/var/lib/pgadmin
+      - /data/pgadmin:/var/lib/pgadmin
       - ./servers.json:/pgadmin4/servers.json
 
-volumes:
-  postgres_data:
-  pgadmin_data:
