@@ -1,9 +1,8 @@
 # BadgeHub API
 
-> Node project for the BadgeHub API
+> Node.js REST service for the BadgeHub
 
-> [!NOTE]  
-> Currently, this is for development only.
+## - Development -
 
 ## Install
 
@@ -12,7 +11,7 @@ Make sure [Docker](https://www.docker.com/get-started/) is installed and running
 In the project directory, type
 
 ```bash
-npm install
+npm run install:container
 ```
 
 ## Run
@@ -58,9 +57,9 @@ At the moment, this is the database schema:
 
 [BadgeHub Schema](https://drawsql.app/teams/badge-team/diagrams/simplified-database)
 
-## Production container
+## - Production -
 
-In production, use the production docker compose file.
+In production, use the production docker compose file `docker-compose-production.yml`.
 The `NODE_ENV` environment file is set to `production`, there's no watcher and
 PM2 is used to run Node.js multithreaded.
 
