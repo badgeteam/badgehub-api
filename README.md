@@ -11,7 +11,7 @@ Make sure [Docker](https://www.docker.com/get-started/) is installed and running
 In the project directory, type
 
 ```bash
-npm run install:container
+docker exec -it badgehub-api-node-1 npm install
 ```
 
 ## Run
