@@ -6,13 +6,15 @@
 
 ## Install
 
-Make sure [Docker](https://www.docker.com/get-started/) is installed and running.
+Make sure [Docker](https://www.docker.com/get-started/) is installed and running and Node.js and npm are installed.
 
 In the project directory, type
 
 ```bash
-docker exec -it badgehub-api-node-1 npm install
+npm install
 ```
+
+This will install `node_modules`.
 
 ## Run
 
@@ -30,6 +32,33 @@ Then start the Docker containers by typing
 docker compose up --detach
 ```
 
+The first time Node.js might not start.
+
+```bash
+docker logs badgehub-api-node-1
+```
+
+If the logs say something like
+
+```text
+node:internal/modules/run_main:115
+    triggerUncaughtException(
+    ^
+Error [TransformError]:
+```
+
+Then node_modules have to be install from inside the container. type:
+
+```bash
+docker exec -it badgehub-api-node-1 npm install
+```
+
+and restart the service:
+
+```bash
+docker compose restart
+```
+
 Then visit [http://localhost:8001/](http://localhost:8001/) for the development BadgeHub homepage.
 
 Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
@@ -37,9 +66,15 @@ Use password `badgehub` to connect to the BadgeHub database server.
 
 Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST API.
 
-## Stop
+## Development
 
-To stop BadgeHub
+After setting up the development container, you can start it with
+
+```bash
+docker compose up --detach
+```
+
+And to stop BadgeHub
 
 ```bash
 docker compose down
