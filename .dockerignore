@@ -1,0 +1,19 @@
+# Private keys can be in there
+**/.env
+**/personal-service-account.json
+
+# Dependencies
+**/node_modules
+
+# Useless and heavy folders
+**/build
+**/dist
+[...]
+**/.next
+**/.vercel
+**/.react-email
+
+# Other useless files in the image
+.git/
+.github/
+[...]
