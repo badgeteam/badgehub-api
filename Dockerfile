@@ -15,13 +15,15 @@ WORKDIR /home/node/app
 ENV NODE_ENV=production
 
 # Copy only needed files
-COPY --from=build /home/node/app/dist ./dist
-COPY --from=build /home/node/app/public ./public
-COPY --from=build /home/node/app/package*.json ./
+COPY  --chown=node:node --from=build /home/node/app/dist ./dist
+COPY  --chown=node:node --from=build /home/node/app/public ./public
+COPY  --chown=node:node --from=build /home/node/app/package*.json ./
 
 RUN npm ci --only=production --ignore-scripts
 
 COPY process.json .
+RUN mkdir -p /home/node/.pm2 /home/node/app/logs /home/node/app/pids && chown -R node:node /home/node/.pm2 /home/node/app/logs
+
 USER node
 EXPOSE 8081
 CMD ["./node_modules/pm2/bin/pm2-runtime", "process.json"]
