@@ -119,6 +119,7 @@
           }
         },
         "description": "Get list of devices (badges)",
+        "tags": ["public"],
         "security": [],
         "parameters": []
       }
@@ -142,6 +143,7 @@
           }
         },
         "description": "Get list of categories",
+        "tags": ["public"],
         "security": [],
         "parameters": []
       }
@@ -165,6 +167,7 @@
           }
         },
         "description": "Get list of apps, optionally limited by page start/length and/or filtered by category",
+        "tags": ["public"],
         "security": [],
         "parameters": [
           {
@@ -236,6 +239,7 @@
           }
         },
         "description": "Get app details",
+        "tags": ["public"],
         "security": [],
         "parameters": [
           {

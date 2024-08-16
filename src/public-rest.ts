@@ -1,5 +1,5 @@
 import pg from "pg";
-import { Get, Path, Query, Res, Route } from "tsoa";
+import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
 
 /**
@@ -49,6 +49,7 @@ interface AppDetails {
 }
 
 @Route("/api/v3")
+@Tags("public")
 export class RestController {
   /**
    * Get list of devices (badges)
