@@ -1,271 +1,258 @@
 {
-	"openapi": "3.0.0",
-	"components": {
-		"examples": {},
-		"headers": {},
-		"parameters": {},
-		"requestBodies": {},
-		"responses": {},
-		"schemas": {
-			"Device": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"slug": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"name",
-					"slug"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"Category": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"slug": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"name",
-					"slug"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"App": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"slug": {
-						"type": "string"
-					},
-					"categrory_slug": {
-						"type": "string"
-					},
-					"user_name": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"name",
-					"slug",
-					"categrory_slug",
-					"user_name"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AppDetails": {
-				"properties": {
-					"name": {
-						"type": "string"
-					},
-					"slug": {
-						"type": "string"
-					},
-					"description": {
-						"type": "string"
-					},
-					"categrory_slug": {
-						"type": "string"
-					},
-					"user_name": {
-						"type": "string"
-					},
-					"devices": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"name",
-					"slug",
-					"description",
-					"categrory_slug",
-					"user_name",
-					"devices"
-				],
-				"type": "object",
-				"additionalProperties": false
-			}
-		},
-		"securitySchemes": {}
-	},
-	"info": {
-		"title": "badgehub-api",
-		"version": "3",
-		"description": "Node project for the BadgeHub API",
-		"license": {
-			"name": "MIT"
-		},
-		"contact": {}
-	},
-	"paths": {
-		"/api/v3/devices": {
-			"get": {
-				"operationId": "GetDevices",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Device"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Get list of devices (badges)",
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/api/v3/categories": {
-			"get": {
-				"operationId": "GetCategories",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Category"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Get list of categories",
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/api/v3/apps": {
-			"get": {
-				"operationId": "GetApps",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/App"
-									},
-									"type": "array"
-								}
-							}
-						}
-					}
-				},
-				"description": "Get list of apps, optionally limited by page start/length and/or filtered by category",
-				"security": [],
-				"parameters": [
-					{
-						"in": "query",
-						"name": "pageStart",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "pageLength",
-						"required": false,
-						"schema": {
-							"format": "double",
-							"type": "number"
-						}
-					},
-					{
-						"in": "query",
-						"name": "category",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"in": "query",
-						"name": "device",
-						"required": false,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/api/v3/apps/{slug}": {
-			"get": {
-				"operationId": "GetAppDetails",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/AppDetails"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "",
-						"content": {
-							"application/json": {
-								"schema": {
-									"properties": {
-										"reason": {
-											"type": "string"
-										}
-									},
-									"required": [
-										"reason"
-									],
-									"type": "object"
-								}
-							}
-						}
-					}
-				},
-				"description": "Get app details",
-				"security": [],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "slug",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		}
-	},
-	"servers": [
-		{
-			"url": "/"
-		}
-	]
+  "openapi": "3.0.0",
+  "components": {
+    "examples": {},
+    "headers": {},
+    "parameters": {},
+    "requestBodies": {},
+    "responses": {},
+    "schemas": {
+      "Device": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "slug"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Category": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "slug"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "App": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "category_slug": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "slug", "category_slug", "user_name"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "AppDetails": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category_slug": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "devices": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "description",
+          "category_slug",
+          "user_name",
+          "devices"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {}
+  },
+  "info": {
+    "title": "badgehub-api",
+    "version": "3",
+    "description": "Node project for the BadgeHub API",
+    "license": {
+      "name": "MIT"
+    },
+    "contact": {}
+  },
+  "paths": {
+    "/api/v3/devices": {
+      "get": {
+        "operationId": "GetDevices",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Device"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get list of devices (badges)",
+        "security": [],
+        "parameters": []
+      }
+    },
+    "/api/v3/categories": {
+      "get": {
+        "operationId": "GetCategories",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get list of categories",
+        "security": [],
+        "parameters": []
+      }
+    },
+    "/api/v3/apps": {
+      "get": {
+        "operationId": "GetApps",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/App"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get list of apps, optionally limited by page start/length and/or filtered by category",
+        "security": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pageStart",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageLength",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "device",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v3/apps/{slug}": {
+      "get": {
+        "operationId": "GetAppDetails",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get app details",
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
 }
