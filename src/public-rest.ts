@@ -11,7 +11,7 @@ import type { TsoaResponse } from "tsoa";
  *
  * After changing this file, don't forget to generate the OpenPI spec en the routes:
  *
- * npm run openapi
+ * npm run swagger
  */
 
 const pool = new pg.Pool({
@@ -35,7 +35,7 @@ interface Category {
 interface App {
   name: string;
   slug: string;
-  categrory_slug: string;
+  category_slug: string;
   user_name: string;
 }
 
@@ -43,7 +43,7 @@ interface AppDetails {
   name: string;
   slug: string;
   description: string;
-  categrory_slug: string;
+  category_slug: string;
   user_name: string;
   devices: string[];
 }
