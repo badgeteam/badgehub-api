@@ -17,6 +17,8 @@ services:
       - .env.prod
     depends_on:
       - db
+    networks:
+      - badgehub_network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -37,3 +39,8 @@ services:
 volumes:
   postgres_data:
   pgadmin_data:
+
+networks:
+  badgehub_network:
+    name: badgehub_network
+    external: true
