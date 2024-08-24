@@ -9,7 +9,7 @@ services:
       - ./mockup-data.sql:/docker-entrypoint-initdb.d/data.sql
       - ./backup:/var/backup
 
-  node:
+  badgehub-backend:
     build: .
     ports:
       - "9001:8081"
