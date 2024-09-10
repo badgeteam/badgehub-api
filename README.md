@@ -39,6 +39,8 @@ After setting up the development container, you can start it with
 docker compose up --detach
 ```
 
+The API should now be accessible through `localhost:8001`.
+
 And to stop BadgeHub
 
 ```bash
