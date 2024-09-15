@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:16
+    env_file:
+      - .env.test
+    ports:
+      - 5432:5432
+    volumes:
+      - ./mockup-data.sql:/docker-entrypoint-initdb.d/data.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      retries: 30
