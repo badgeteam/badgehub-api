@@ -29,3 +29,6 @@ jobs:
       - name: Run test
         run: |
           npm run test
+      - name: Report Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
