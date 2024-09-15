@@ -8,6 +8,7 @@
     "install:container": "docker exec -it badgehub-api-node-1 npm install",
     "start": "node dist/index.js",
     "monitor": "docker exec -it badgehub-api-node-1 npx pm2 monit",
+    "lint": "pretty-quick --check",
     "build": "tsc",
     "swagger": "tsoa spec-and-routes",
     "dev": "node --import tsx --watch src/index.ts",
