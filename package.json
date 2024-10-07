@@ -14,7 +14,7 @@
     "dev": "node --import tsx --watch src/index.ts",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
     "test": "vitest --coverage.enabled true",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "license": "MIT",
   "dependencies": {
