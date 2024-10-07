@@ -8,14 +8,6 @@
 
 Make sure [Docker](https://www.docker.com/get-started/) is installed and running and Node.js and npm are installed.
 
-In the project directory, type
-
-```bash
-npm install
-```
-
-This will install `node_modules`.
-
 ## Run
 
 Before running, copy the `.env.example` into `.env`
@@ -30,33 +22,6 @@ Then start the Docker containers by typing
 
 ```bash
 docker compose up --detach
-```
-
-The first time Node.js might not start.
-
-```bash
-docker logs badgehub-api-node-1
-```
-
-If the logs say something like
-
-```text
-node:internal/modules/run_main:115
-    triggerUncaughtException(
-    ^
-Error [TransformError]:
-```
-
-Then node_modules have to be install from inside the container. type:
-
-```bash
-docker exec -it badgehub-api-node-1 npm install
-```
-
-and restart the service:
-
-```bash
-docker compose restart
 ```
 
 Then visit [http://localhost:8001/](http://localhost:8001/) for the development BadgeHub homepage.
