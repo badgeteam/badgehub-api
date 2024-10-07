@@ -24,7 +24,7 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-    command: "npm run dev"
+    command: "bash ./startDevForDockerCompose.sh"
     depends_on:
       - db
 
