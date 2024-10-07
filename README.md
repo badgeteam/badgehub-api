@@ -6,7 +6,7 @@
 
 ## Install
 
-Make sure [Docker](https://www.docker.com/get-started/) is installed and running and Node.js and npm are installed.
+Make sure [Docker](https://www.docker.com/get-started/) is installed and running.
 
 ## Run
 
@@ -99,4 +99,3 @@ docker compose --file docker-compose-production.yml down
 - [tsoa](https://tsoa-community.github.io/docs/) for generating a swagger file from code
 - [tsx](https://tsx.is/) for watching TypeScript files in Node.js
 - [PM2](https://pm2.keymetrics.io/) for managing Node.js processes
--
