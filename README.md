@@ -51,6 +51,16 @@ Or, to stop BadgeHub and delete all volumes (to start fresh)
 docker compose down --volumes
 ```
 
+### Applying commands to only 1 container from the compose file
+
+Container commands like `stop`, `start`, `restart` and `logs` can also be sent to one of the containers from the compose file. For example
+
+```bash
+docker compose restart node
+```
+
+will restart the node container only.
+
 ## Database schema
 
 At the moment, this is the database schema:
