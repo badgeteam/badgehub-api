@@ -8,8 +8,6 @@
 
 Make sure [Docker](https://www.docker.com/get-started/) is installed and running.
 
-## Run
-
 Before running, copy the `.env.example` into `.env`
 
 ```bash
@@ -17,6 +15,8 @@ cp .env.example .env
 ```
 
 and fill out the details.
+
+## Run
 
 Then start the Docker containers by typing
 
