@@ -88,7 +88,17 @@
         "additionalProperties": false
       }
     },
-    "securitySchemes": {}
+    "securitySchemes": {
+      "jwt": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "ttps://lemur-11.cloud-iam.com/auth/realms/badgehub",
+            "scopes": {}
+          }
+        }
+      }
+    }
   },
   "info": {
     "title": "badgehub-api",
@@ -120,7 +130,11 @@
         },
         "description": "Get list of devices (badges)",
         "tags": ["public"],
-        "security": [],
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
         "parameters": []
       }
     },
@@ -251,6 +265,34 @@
             }
           }
         ]
+      }
+    },
+    "/api-private/v3/devices": {
+      "get": {
+        "operationId": "GetDevices",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Device"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get list of devices (badges)",
+        "tags": ["private"],
+        "security": [
+          {
+            "jwt": []
+          }
+        ],
+        "parameters": []
       }
     }
   },

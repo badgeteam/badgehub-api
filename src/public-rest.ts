@@ -1,6 +1,16 @@
 import pg from "pg";
-import { Get, Path, Query, Res, Route, Tags } from "tsoa";
+import {
+  Get,
+  Middlewares,
+  Path,
+  Query,
+  Res,
+  Route,
+  Security,
+  Tags,
+} from "tsoa";
 import type { TsoaResponse } from "tsoa";
+import { Request, Response, NextFunction } from "express";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -55,6 +65,7 @@ export class RestController {
    * Get list of devices (badges)
    */
   @Get("/devices")
+  @Security("jwt")
   public async getDevices(): Promise<Device[]> {
     const result = await pool.query<Device>(`select name, slug from badges`);
     return result.rows;
@@ -157,5 +168,19 @@ export class RestController {
         reason: `No app with slug '${slug}' found`,
       });
     }
+  }
+}
+
+@Route("/api-private/v3")
+@Tags("private")
+export class PrivateRestController {
+  /**
+   * Get list of devices (badges)
+   */
+  @Get("/devices")
+  @Security("jwt")
+  public async getDevices(): Promise<Device[]> {
+    const result = await pool.query<Device>(`select name, slug from badges`);
+    return result.rows;
   }
 }

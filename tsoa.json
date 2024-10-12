@@ -4,10 +4,18 @@
   "spec": {
     "outputDirectory": "public",
     "version": "3",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "jwt": {
+        "type": "oauth2",
+        "authorizationUrl": "ttps://lemur-11.cloud-iam.com/auth/realms/badgehub",
+        "flow": "implicit"
+      }
+    }
   },
   "routes": {
     "routesDir": "src/generated",
-    "esm": true
+    "esm": true,
+    "authenticationModule": "./src/authentication.ts"
   }
 }
