@@ -18,7 +18,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
+    "express": "^4.21.1",
     "pg": "^8.11.5",
     "pino-http": "^10.1.0",
     "pm2": "^5.4.0",
