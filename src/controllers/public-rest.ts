@@ -1,6 +1,8 @@
-import pg from "pg";
+import pg, { Pool } from "pg";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
+import { getPool } from "../db/connectionPool";
+import { App, AppDetails, Category, Device } from "../db/models";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -14,49 +16,22 @@ import type { TsoaResponse } from "tsoa";
  * npm run swagger
  */
 
-const pool = new pg.Pool({
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432,
-});
-
-interface Device {
-  name: string;
-  slug: string;
-}
-
-interface Category {
-  name: string;
-  slug: string;
-}
-
-interface App {
-  name: string;
-  slug: string;
-  category_slug: string;
-  user_name: string;
-}
-
-interface AppDetails {
-  name: string;
-  slug: string;
-  description: string;
-  category_slug: string;
-  user_name: string;
-  devices: string[];
-}
-
 @Route("/api/v3")
 @Tags("public")
-export class RestController {
+export class PublicRestController {
+  private pool: Pool;
+  public constructor() {
+    this.pool = getPool();
+  }
+
   /**
    * Get list of devices (badges)
    */
   @Get("/devices")
   public async getDevices(): Promise<Device[]> {
-    const result = await pool.query<Device>(`select name, slug from badges`);
+    const result = await this.pool.query<Device>(
+      `select name, slug from badges`
+    );
     return result.rows;
   }
 
@@ -65,7 +40,7 @@ export class RestController {
    */
   @Get("/categories")
   public async getCategories(): Promise<Category[]> {
-    const result = await pool.query<Category>(
+    const result = await this.pool.query<Category>(
       `select name, slug from categories`
     );
     return result.rows;
@@ -93,7 +68,7 @@ export class RestController {
 
     let result: pg.QueryResult<App>;
     if (category && !device) {
-      result = await pool.query<App>(
+      result = await this.pool.query<App>(
         `${mainQuery}
                 where c.slug = $3
                 limit $1 offset $2
@@ -101,7 +76,7 @@ export class RestController {
         [pageLength ?? null, pageStart ?? 0, category]
       );
     } else if (!category && device) {
-      result = await pool.query<App>(
+      result = await this.pool.query<App>(
         `${mainQuery} ${badgeQuery}
                 where b.slug=$3
                 limit $1 offset $2
@@ -109,7 +84,7 @@ export class RestController {
         [pageLength ?? null, pageStart ?? 0, device]
       );
     } else if (category && device) {
-      result = await pool.query<App>(
+      result = await this.pool.query<App>(
         `${mainQuery} ${badgeQuery}
                 where c.slug = $3 and b.slug=$4
                 limit $1 offset $2
@@ -117,7 +92,7 @@ export class RestController {
         [pageLength ?? null, pageStart ?? 0, category, device]
       );
     } else {
-      result = await pool.query<App>(
+      result = await this.pool.query<App>(
         `${mainQuery}
                 limit $1 offset $2
                 `,
@@ -135,7 +110,7 @@ export class RestController {
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<AppDetails | undefined> {
-    const result = await pool.query<AppDetails & { id: number }>(
+    const result = await this.pool.query<AppDetails & { id: number }>(
       `select p.id, p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
                              from projects p
                              inner join categories c on p.category_id = c.id
@@ -145,7 +120,7 @@ export class RestController {
     );
     if (result.rows[0]) {
       const projectId = result.rows[0].id;
-      const badgeResult = await pool.query<AppDetails & { id: number }>(
+      const badgeResult = await this.pool.query<AppDetails & { id: number }>(
         `select b.slug from badge_project bp inner join badges b on bp.badge_id=b.id where project_id=$1`,
         [projectId]
       );
