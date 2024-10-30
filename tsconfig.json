@@ -13,19 +13,12 @@
     "noImplicitOverride": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    // Transpile our TypeScript code to JavaScript
-    "module": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
     "lib": ["es2022"]
   },
-  // Include the necessary files for your project
-  "files": [
-    "src/index.ts",
-    "src/openapi.ts",
-    "src/public-rest.ts",
-    "src/generated/routes.ts"
-  ],
-  "include": ["src/index.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
