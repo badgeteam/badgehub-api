@@ -1,5 +1,5 @@
 {
-  "entryFile": "src/public-rest.ts",
+  "entryFile": "src/index.ts",
   "noImplicitAdditionalProperties": "throw-on-extras",
   "spec": {
     "outputDirectory": "public",
