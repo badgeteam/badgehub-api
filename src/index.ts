@@ -1,4 +1,7 @@
-import app from "./app.js";
+import { config } from "dotenv";
+import app from "./app";
+
+config();
 
 const port = 8081;
 
