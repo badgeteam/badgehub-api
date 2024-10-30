@@ -149,7 +149,7 @@ export class RestController {
         `select b.slug from badge_project bp inner join badges b on bp.badge_id=b.id where project_id=$1`,
         [projectId]
       );
-      const devices = badgeResult.rows.map((badge) => badge.slug);
+      const devices = badgeResult.rows.map((badge: Device) => badge.slug);
       const { id, ...resultWithoutId } = result.rows[0];
       return { ...resultWithoutId, devices };
     } else {
