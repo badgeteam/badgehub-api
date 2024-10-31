@@ -1,6 +1,6 @@
 import express from "express";
-import { RegisterRoutes } from "./generated/routes.js";
-import openapi from "./openapi.js";
+import { RegisterRoutes } from "./generated/routes";
+import openapi from "./openapi";
 import { pinoHttp } from "pino-http";
 
 const app = express();
