@@ -7,7 +7,9 @@ import {
   ExpressTemplateService,
 } from "@tsoa/runtime";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { RestController } from "./../public-rest.js";
+import { PublicRestController } from "./../controllers/public-rest.js";
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { PrivateRestController } from "./../controllers/private-rest.js";
 import type {
   Request as ExRequest,
   Response as ExResponse,
@@ -79,10 +81,12 @@ export function RegisterRoutes(app: Router) {
   // ###########################################################################################################
   app.get(
     "/api/v3/devices",
-    ...fetchMiddlewares<RequestHandler>(RestController),
-    ...fetchMiddlewares<RequestHandler>(RestController.prototype.getDevices),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getDevices
+    ),
 
-    async function RestController_getDevices(
+    async function PublicRestController_getDevices(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -99,7 +103,7 @@ export function RegisterRoutes(app: Router) {
           response,
         });
 
-        const controller = new RestController();
+        const controller = new PublicRestController();
 
         await templateService.apiHandler({
           methodName: "getDevices",
@@ -117,10 +121,12 @@ export function RegisterRoutes(app: Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/categories",
-    ...fetchMiddlewares<RequestHandler>(RestController),
-    ...fetchMiddlewares<RequestHandler>(RestController.prototype.getCategories),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getCategories
+    ),
 
-    async function RestController_getCategories(
+    async function PublicRestController_getCategories(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -137,7 +143,7 @@ export function RegisterRoutes(app: Router) {
           response,
         });
 
-        const controller = new RestController();
+        const controller = new PublicRestController();
 
         await templateService.apiHandler({
           methodName: "getCategories",
@@ -155,10 +161,10 @@ export function RegisterRoutes(app: Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/apps",
-    ...fetchMiddlewares<RequestHandler>(RestController),
-    ...fetchMiddlewares<RequestHandler>(RestController.prototype.getApps),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApps),
 
-    async function RestController_getApps(
+    async function PublicRestController_getApps(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -180,7 +186,7 @@ export function RegisterRoutes(app: Router) {
           response,
         });
 
-        const controller = new RestController();
+        const controller = new PublicRestController();
 
         await templateService.apiHandler({
           methodName: "getApps",
@@ -198,10 +204,12 @@ export function RegisterRoutes(app: Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/apps/:slug",
-    ...fetchMiddlewares<RequestHandler>(RestController),
-    ...fetchMiddlewares<RequestHandler>(RestController.prototype.getAppDetails),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getAppDetails
+    ),
 
-    async function RestController_getAppDetails(
+    async function PublicRestController_getAppDetails(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -227,10 +235,52 @@ export function RegisterRoutes(app: Router) {
           response,
         });
 
-        const controller = new RestController();
+        const controller = new PublicRestController();
 
         await templateService.apiHandler({
           methodName: "getAppDetails",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.post(
+    "/api/v3/apps/:slug/version",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.createVersion
+    ),
+
+    async function PrivateRestController_createVersion(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "createVersion",
           controller,
           response,
           next,

@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import request from "supertest";
-import app from "./app";
+import app from "../app";
 
 describe("API Routes", () => {
   test("GET /vitest", async () => {
