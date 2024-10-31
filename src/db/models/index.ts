@@ -15,11 +15,16 @@ export interface App {
   user_name: string;
 }
 
-export interface AppDetails {
-  name: string;
-  slug: string;
+export interface AppDetails extends App {
   description: string;
-  category_slug: string;
-  user_name: string;
   devices: string[];
 }
+
+const exampleApp: AppDetails = {
+  name: "example",
+  slug: "example",
+  category_slug: "example",
+  user_name: "example",
+  description: "example",
+  devices: ["example"],
+};

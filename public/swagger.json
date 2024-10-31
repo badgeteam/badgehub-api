@@ -60,13 +60,13 @@
           "slug": {
             "type": "string"
           },
-          "description": {
-            "type": "string"
-          },
           "category_slug": {
             "type": "string"
           },
           "user_name": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "devices": {
@@ -79,9 +79,9 @@
         "required": [
           "name",
           "slug",
-          "description",
           "category_slug",
           "user_name",
+          "description",
           "devices"
         ],
         "type": "object",
@@ -205,6 +205,18 @@
             }
           }
         ]
+      },
+      "put": {
+        "operationId": "ChangeApp",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["public"],
+        "security": [],
+        "parameters": []
       }
     },
     "/api/v3/apps/{slug}": {
@@ -253,37 +265,28 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/version": {
+    "/api/v3/apps}": {
       "post": {
-        "operationId": "CreateVersion",
+        "operationId": "CreateApp",
         "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Device"
-                  },
-                  "type": "array"
-                }
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["public"],
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppDetails"
               }
             }
           }
-        },
-        "description": "Get list of devices (badges)",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
+        }
       }
     }
   },

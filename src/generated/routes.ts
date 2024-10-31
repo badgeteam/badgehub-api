@@ -54,9 +54,9 @@ const models: TsoaRoute.Models = {
     properties: {
       name: { dataType: "string", required: true },
       slug: { dataType: "string", required: true },
-      description: { dataType: "string", required: true },
       category_slug: { dataType: "string", required: true },
       user_name: { dataType: "string", required: true },
+      description: { dataType: "string", required: true },
       devices: {
         dataType: "array",
         array: { dataType: "string" },
@@ -252,19 +252,19 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/version",
+    "/api/v3/apps}",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.createVersion
+      PrivateRestController.prototype.createApp
     ),
 
-    async function PrivateRestController_createVersion(
+    async function PrivateRestController_createApp(
       request: ExRequest,
       response: ExResponse,
       next: any
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
-        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        app: { in: "body", name: "app", required: true, ref: "AppDetails" },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -280,7 +280,47 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "createVersion",
+          methodName: "createApp",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.put(
+    "/api/v3/apps",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.changeApp
+    ),
+
+    async function PrivateRestController_changeApp(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {};
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "changeApp",
           controller,
           response,
           next,
