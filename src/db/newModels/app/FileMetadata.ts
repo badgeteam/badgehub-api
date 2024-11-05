@@ -4,7 +4,6 @@ import { DatedData } from "./DatedData";
 
 export interface FileMetadata extends VersionRelation, UserRelation, DatedData {
   id: number;
-  name: string;
   content?: string | Uint8Array;
   editable: boolean;
   lintable: boolean;

@@ -3,6 +3,8 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
+import { BadgeSlug } from "../Badge";
+
 export interface AppMetadata {
   name: string;
   description?: string;
@@ -14,10 +16,10 @@ export interface AppMetadata {
   semantic_version?: string; // Changed! [Semantic version](https://semver.org/) of the app, the semantic versioning is mostly relevant if the app is a library. Authors who don't use this semantic versioning will get a 0.x version with x just an number like we previously had the revision number.
   interpreter?: string; // Changed! For example 'python' or the app slug of a 3rd party dependency of this app.
   main_executable?: string; // Relative path of the executable file from this package that is the main executable file of this app.
-  main_executable_overrides?: Record<string, string>; // Optional field to allow overriding the main_executable for a certain badge.
+  main_executable_overrides?: Record<BadgeSlug, string>; // Optional field to allow overriding the main_executable for a certain badge.
   file_mappings?: Array<{ source: string; destination: string }>; // Changed! Mapping to tell the badge where some files in this app should be placed on the filesystem. Source is a relative path. Desitination can either be relative or absolute.
   file_mappings_overrides?: Record<
-    string,
+    BadgeSlug,
     Array<{ source: string; destination: string }>
   >; // Changed! optional field to allow overriding or adding a file mapping for a device name slug (key).
 }

@@ -1,6 +1,6 @@
 import { DatedData } from "./DatedData";
-import { Project, ProjectRelation } from "./Project";
-export type UserId = string;
+
+export type UserId = number;
 export interface UserRelation {
   user_id: UserId;
 }
@@ -22,22 +22,4 @@ export interface User extends DatedData {
   google2fa_enabled: boolean;
   google2fa_secret?: string;
   email_verified_at?: Date;
-
-  // Relations
-  webauthn_keys_count?: number;
-  collaborations: Array<Project>;
-  collaborations_count?: number;
-}
-
-type VoteId = string;
-
-export interface Vote extends UserRelation, ProjectRelation, DatedData {
-  id: VoteId;
-  type: "up" | "down" | "pig";
-  comment?: string;
-}
-
-export interface Warning extends UserRelation, ProjectRelation, DatedData {
-  id: number;
-  description: string;
 }
