@@ -8,6 +8,7 @@ import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
 import { ProjectStatusName as DBProjectStatusName } from "@db/newModels/ProjectStatusOnBadge";
 export type ProjectStatusName = DBProjectStatusName;
+
 export interface Project
   extends DatedData,
     VersionRelation, // Latest Version
@@ -37,7 +38,6 @@ export interface Project
   readonly badges: Array<Badge>;
   readonly dependencies: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
   readonly states: Array<ProjectStatusOnBadge>;
-  readonly dependants: Array<Project>;
   readonly versions: Array<Version>;
   readonly votes: Array<VoteFromUser>;
   readonly warnings: Array<WarningFromUser>;
@@ -45,7 +45,7 @@ export interface Project
 }
 
 interface Dependency {
-  project: Project;
+  project_slug: Project["slug"];
   // Changed! semantic_version_range added
   semantic_version_range: string; // Semantic version range specification that allows tilde, caret, wildcard specification of the version of a project that should be used. Following what is described here: https://python-poetry.org/docs/dependency-specification/
 }
