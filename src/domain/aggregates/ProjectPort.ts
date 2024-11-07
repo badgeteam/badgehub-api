@@ -9,11 +9,16 @@ import {
 import { ProjectSlug } from "@domain/models/app/Project";
 import { Badge } from "@domain/models/Badge";
 
-interface ProjectPort {
+export interface ProjectPort {
   createProject(projectSlug: ProjectSlug): Promise<void>;
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
   publishUpdatedMetadata(changes: MetadataFileContents): Promise<void>;
-  updateFile(filePath: string, contents: string): Promise<void>;
+
+  writeFile(
+    projectSlug: ProjectSlug,
+    filePath: string,
+    contents: string | Uint8Array
+  ): Promise<void>;
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
   getProject(projectSlug: ProjectSlug): Promise<Project>;
   getVersion(projectSlug: ProjectSlug): Promise<Version>;

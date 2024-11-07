@@ -1,40 +1,39 @@
-import { Body, Post, Put, Route, Tags } from "tsoa";
-import { type AppDetails, type Category } from "../db/models";
+import { Body, Path, Post, Put, Route, Tags } from "tsoa";
 import { Pool } from "pg";
 import { getPool } from "../db/connectionPool";
+import type { ProjectPort } from "@domain/aggregates/ProjectPort";
 
 @Route("/api/v3")
-@Tags("public")
+@Tags("private")
 export class PrivateRestController {
   private pool: Pool;
 
-  public constructor() {
+  public constructor(private projectAdapter: ProjectPort) {
     this.pool = getPool();
   }
 
   /**
    * Create a new app
    */
-  @Post("/apps}") // TODO Fix this is not working yet, we get a 404
-  public async createApp(@Body() app: AppDetails): Promise<void> {
-    await this.pool.query<Category>(
-      `insert into apps (name, slug, category_slug, user_name, description, devices) values ($1, $2, $3, $4, $5, $6)`,
-      [
-        app.name,
-        app.slug,
-        app.category_slug,
-        app.user_name,
-        app.description,
-        app.devices,
-      ]
-    );
+  @Post("/apps/{slug}") // TODO Fix this is not working yet, we get a 404
+  public async createProject(@Path() slug: string): Promise<void> {
+    await this.projectAdapter.createProject(slug);
   }
 
   /**
    * Create a new app
    */
-  @Put("/apps")
-  public async changeApp(): Promise<void> {
-    throw new Error("Not implemented");
+  @Put("/apps/{slug}/file/{filePath}")
+  public async writeFile(
+    @Path() slug: string,
+    @Path() filePath: string,
+    @Body() fileContent: string | Uint8Array
+  ): Promise<void> {
+    await this.projectAdapter.writeFile(slug, filePath, fileContent);
+  }
+
+  @Post("/apps/{slug}/version")
+  public async publishVersion(@Path() slug: string) {
+    await this.projectAdapter.publishVersion(slug);
   }
 }
