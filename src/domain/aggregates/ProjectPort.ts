@@ -1,6 +1,6 @@
-import { Project } from "../models/app/badgehub/Project";
 import { MetadataFileContents } from "../models/app/MetadataFileContents";
-import { Version } from "../models/app/badgehub/Version";
+import { Project } from "@domain/models/app/Project";
+import { Version } from "@domain/models/app/Version";
 type AppSlug = string;
 
 interface ProjectPort {

@@ -1,6 +1,6 @@
-import { DatedData } from "./app/badgehub/DatedData";
 import { Badge } from "./Badge";
-import { ProjectRelation, ProjectStatus } from "./app/badgehub/Project";
+import { ProjectRelation, ProjectStatus } from "@domain/models/app/Project";
+import { DatedData } from "@domain/models/app/DatedData";
 
 export interface BadgeProject extends ProjectRelation, DatedData {
   id: number;
