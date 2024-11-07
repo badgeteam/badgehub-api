@@ -10,11 +10,13 @@ import { ProjectSlug } from "@domain/models/app/Project";
 import { Badge } from "@domain/models/Badge";
 
 interface ProjectPort {
+  createProject(projectSlug: ProjectSlug): Promise<void>;
+  deleteProject(projectSlug: ProjectSlug): Promise<void>;
   publishUpdatedMetadata(changes: MetadataFileContents): Promise<void>;
   updateFile(filePath: string, contents: string): Promise<void>;
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
-  getAppProject(projectSlug: ProjectSlug): Promise<Project>;
-  getAppVersion(projectSlug: ProjectSlug): Promise<Version>;
+  getProject(projectSlug: ProjectSlug): Promise<Project>;
+  getVersion(projectSlug: ProjectSlug): Promise<Version>;
   getUser(userId: User["id"]): Promise<User>;
   updateUser(updatedUser: User): Promise<void>;
   getFileDownloadLink(fileId: FileMetadata["id"]): Promise<string>;
