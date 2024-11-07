@@ -8,7 +8,7 @@ import { BadgeSlug } from "../Badge";
 export interface MetadataFileContents {
   name: string;
   description?: string;
-  category: AppCategory;
+  category: AppCategoryName;
   author?: string; // The name of the author
   icon?: string; // The relative icon path
   license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
@@ -25,7 +25,7 @@ export interface MetadataFileContents {
   >; // Changed! optional field to allow overriding or adding a file mapping for a device name slug (key).
 }
 
-export type AppCategory =
+export type AppCategoryName =
   | "Uncategorised"
   | "Event related"
   | "Games"
