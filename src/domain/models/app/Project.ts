@@ -44,8 +44,10 @@ export interface Project
   readonly collaborators: Array<User>;
 }
 
+export type ProjectSlug = Project["slug"];
+
 interface Dependency {
-  project_slug: Project["slug"];
+  project_slug: ProjectSlug;
   // Changed! semantic_version_range added
   semantic_version_range: string; // Semantic version range specification that allows tilde, caret, wildcard specification of the version of a project that should be used. Following what is described here: https://python-poetry.org/docs/dependency-specification/
 }
