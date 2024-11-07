@@ -14,6 +14,10 @@ export interface Project
   allow_team_fixes: boolean;
 }
 
+export interface ProjectSlugRelation {
+  project_slug: Project["slug"];
+}
+
 export interface ProjectRelation {
   project_id: Project["id"];
 }

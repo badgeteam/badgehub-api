@@ -1,4 +1,4 @@
-import { ProjectRelation } from "./Project";
+import { ProjectSlugRelation } from "./Project";
 import { SemanticVersionRangeRelation } from "./SemanticVersionRange";
 
 type VersionedDependencyId = number;
@@ -8,7 +8,7 @@ export interface VersionedDependencyRelation {
 }
 
 export interface VersionedDependency
-  extends ProjectRelation,
+  extends ProjectSlugRelation,
     SemanticVersionRangeRelation {
   id: VersionedDependencyId;
 }
