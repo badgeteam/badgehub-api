@@ -18,21 +18,4 @@ export interface User extends DatedData {
   google2fa_enabled: boolean;
   google2fa_secret?: string;
   email_verified_at?: Date;
-
-  // Relations
-  projects: Array<Project>;
-  votes: Array<Vote>;
-  warnings: Array<Warning>;
-  collaborations: Array<Project>;
-}
-
-export interface Vote extends UserRelation, ProjectRelation, DatedData {
-  id: number;
-  type: "up" | "down" | "pig";
-  comment?: string;
-}
-
-export interface Warning extends UserRelation, ProjectRelation, DatedData {
-  id: number;
-  description: string;
 }

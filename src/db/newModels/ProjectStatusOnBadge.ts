@@ -1,11 +1,9 @@
-import { ProjectRelation } from "./app/Project";
 import { DatedData } from "./app/DatedData";
-import { BadgeRelation, BadgeSlug } from "./Badge";
-
-export interface BadgeWithProjectWithStatus
-  extends ProjectRelation,
-    DatedData,
-    BadgeRelation {
+import { BadgeRelation } from "./Badge";
+export interface ProjectStatusOnBadgeRelation {
+  project_status_on_badge_id: ProjectStatusOnBadge["id"];
+}
+export interface ProjectStatusOnBadge extends DatedData, BadgeRelation {
   id: number;
   status: ProjectStatusName; // Status for this project for this particular badge
 }

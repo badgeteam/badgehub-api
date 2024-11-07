@@ -1,10 +1,13 @@
 import { Version, VersionRelation } from "./Version";
-import { User, UserRelation, Vote, Warning } from "./User";
+import { User, UserRelation } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
-import { BadgeProject } from "../BadgeProject";
+import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { AppCategory, MetadataFileContents } from "./MetadataFileContents";
-
+import { VoteFromUser } from "./VoteFromUser";
+import { WarningFromUser } from "./WarningFromUser";
+import { ProjectStatusName as DBProjectStatusName } from "@db/newModels/ProjectStatusOnBadge";
+export type ProjectStatusName = DBProjectStatusName;
 export interface Project
   extends DatedData,
     VersionRelation, // Latest Version
@@ -26,30 +29,27 @@ export interface Project
   category: AppCategory;
   readonly description?: string; // description in metadata of latest version of the app
   readonly revision: string; // latest revsion number of the app
-  readonly latest_semantic_version?: string; // Changed! The latest version of the app
-  readonly status: ProjectStatus; // Status of newest version with a non-empty status
+  readonly status: ProjectStatusName; // Status of newest version with a non-empty status
   readonly author: string; // user->name
   readonly interpreter: MetadataFileContents["interpreter"]; // Interpreter for latest version of app
 
   // Relations
   readonly badges: Array<Badge>;
-  readonly dependants: Array<Project>;
   readonly dependencies: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
-  readonly states: Array<BadgeProject>;
+  readonly states: Array<ProjectStatusOnBadge>;
+  readonly dependants: Array<Project>;
   readonly versions: Array<Version>;
-  readonly votes: Array<Vote>;
-  readonly warnings: Array<Warning>;
+  readonly votes: Array<VoteFromUser>;
+  readonly warnings: Array<WarningFromUser>;
   readonly collaborators: Array<User>;
 }
 
 interface Dependency {
-  // Changed! Added
   project: Project;
+  // Changed! semantic_version_range added
   semantic_version_range: string; // Semantic version range specification that allows tilde, caret, wildcard specification of the version of a project that should be used. Following what is described here: https://python-poetry.org/docs/dependency-specification/
 }
 
 export interface ProjectRelation {
   project: Project;
 }
-
-export type ProjectStatus = "working" | "in_progress" | "broken" | "unknown";
