@@ -6,7 +6,7 @@ import { User } from "@domain/models/app/User";
 import { Version } from "@domain/models/app/Version";
 import { AppCategoryName } from "./newModels/app/MetadataFileContents";
 
-class ProjectPostgresAdapter implements ProjectPort {
+export class ProjectPostgresAdapter implements ProjectPort {
   createProject(projectSlug: ProjectSlug): Promise<void> {
     throw new Error("Method not implemented.");
   }

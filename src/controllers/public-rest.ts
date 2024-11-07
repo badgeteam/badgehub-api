@@ -2,9 +2,10 @@ import pg, { Pool } from "pg";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
 import { getPool } from "@db/connectionPool";
-import { App, AppDetails, Category, Device } from "@db/models";
+import type { App, Category, Device } from "@db/models";
 import type { ProjectPort } from "@domain/aggregates/ProjectPort";
 import { Project } from "@domain/models/app/Project";
+import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -23,7 +24,9 @@ import { Project } from "@domain/models/app/Project";
 export class PublicRestController {
   private pool: Pool;
 
-  public constructor(private projectAdapter: ProjectPort) {
+  public constructor(
+    private projectAdapter: ProjectPort = new ProjectPostgresAdapter()
+  ) {
     this.pool = getPool();
   }
 

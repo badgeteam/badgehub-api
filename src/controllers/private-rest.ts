@@ -2,15 +2,14 @@ import { Body, Path, Post, Put, Route, Tags } from "tsoa";
 import { Pool } from "pg";
 import { getPool } from "../db/connectionPool";
 import type { ProjectPort } from "@domain/aggregates/ProjectPort";
+import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
 
 @Route("/api/v3")
 @Tags("private")
 export class PrivateRestController {
-  private pool: Pool;
-
-  public constructor(private projectAdapter: ProjectPort) {
-    this.pool = getPool();
-  }
+  public constructor(
+    private projectAdapter: ProjectPort = new ProjectPostgresAdapter()
+  ) {}
 
   /**
    * Create a new app

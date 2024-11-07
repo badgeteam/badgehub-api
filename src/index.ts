@@ -1,7 +1,9 @@
 import { config } from "dotenv";
 import app from "./app";
+import { RegisterRoutes } from "./generated/routes";
 
 config();
+RegisterRoutes(app);
 
 const port = 8081;
 
