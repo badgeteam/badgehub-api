@@ -1,7 +1,7 @@
 import { ProjectRelation } from "../Project";
 import { VersionedDependencyRelation } from "../VersionedDependency";
 
-export interface ProjectWithVersionedDependency
+export interface ProjectHasVersionedDependencies
   extends ProjectRelation,
     VersionedDependencyRelation {
   id: number;

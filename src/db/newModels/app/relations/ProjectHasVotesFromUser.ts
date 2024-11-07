@@ -5,7 +5,7 @@ import { WarningRelation } from "../Warning";
 import { VoteRelation } from "../Vote";
 import { VoteFromUserRelation } from "../VoteFromUser";
 
-export interface ProjectWithVoteFromUser
+export interface ProjectHasVotesFromUser
   extends VoteFromUserRelation,
     ProjectRelation {
   id: number;

@@ -1,7 +1,7 @@
 import { UserRelation } from "../User";
 import { ProjectRelation } from "../Project";
 
-export interface ProjectWithUserAsCollaborator
+export interface ProjectHasUsersAsCollaborator
   extends ProjectRelation,
     UserRelation {
   id: number;

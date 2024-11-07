@@ -4,7 +4,7 @@ import { UserRelation } from "../User";
 import { WarningRelation } from "../Warning";
 import { WarningFromUserRelation } from "../WarningFromUser";
 
-export interface ProjectWithWarningFromUser
+export interface ProjectHasWarningsFromUser
   extends WarningFromUserRelation,
     ProjectRelation,
     WarningRelation {
