@@ -4,7 +4,7 @@ import { SemanticVersionRangeRelation } from "./SemanticVersionRange";
 type VersionedDependencyId = number;
 
 export interface VersionedDependencyRelation {
-  versioned_dependency_id: VersionedDependencyId;
+  versioned_dependency_id: VersionedDependency["id"];
 }
 
 export interface VersionedDependency

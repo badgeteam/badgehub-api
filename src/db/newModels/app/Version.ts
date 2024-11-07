@@ -1,10 +1,9 @@
 import { MetadataFileContents } from "./MetadataFileContents";
 import { DatedData } from "./DatedData";
 import { UserRelation } from "./User";
-import { FileMetadata } from "./FileMetadata";
 
 export interface VersionRelation {
-  version_id: number;
+  version_id: Version["id"];
 }
 
 export interface Version extends UserRelation, DatedData {

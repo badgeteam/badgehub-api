@@ -21,13 +21,9 @@ export interface User extends DatedData {
 
   // Relations
   projects: Array<Project>;
-  projects_count?: number;
   votes: Array<Vote>;
-  votes_count?: number;
   warnings: Array<Warning>;
-  warnings_count?: number;
   collaborations: Array<Project>;
-  collaborations_count?: number;
 }
 
 export interface Vote extends UserRelation, ProjectRelation, DatedData {

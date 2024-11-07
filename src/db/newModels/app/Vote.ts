@@ -4,7 +4,7 @@ import { DatedData } from "./DatedData";
 
 type VoteId = number;
 export interface VoteRelation {
-  vote_id: VoteId;
+  vote_id: Vote["id"];
 }
 
 export interface Vote {

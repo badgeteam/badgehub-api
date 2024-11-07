@@ -1,12 +1,11 @@
 import { DatedData } from "./DatedData";
 
-export type UserId = number;
 export interface UserRelation {
-  user_id: UserId;
+  user_id: User["id"];
 }
 
 export interface User extends DatedData {
-  id: UserId;
+  id: number;
   admin: boolean;
   name: string;
   email: string;

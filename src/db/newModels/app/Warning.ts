@@ -1,5 +1,5 @@
 export interface WarningRelation {
-  warning_id: number;
+  warning_id: Warning["id"];
 }
 
 export interface Warning {

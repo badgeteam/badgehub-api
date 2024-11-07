@@ -1,6 +1,5 @@
 import { MetadataFileContents } from "./MetadataFileContents";
 import { DatedData } from "./DatedData";
-import { ProjectRelation } from "./Project";
 import { UserRelation } from "./User";
 import { FileMetadata } from "./FileMetadata";
 
@@ -8,7 +7,7 @@ export interface VersionRelation {
   version: Version;
 }
 
-export interface Version extends UserRelation, ProjectRelation, DatedData {
+export interface Version extends UserRelation, DatedData {
   id: number;
   revision: number;
   semantic_version?: string; // Changed! Semantic version

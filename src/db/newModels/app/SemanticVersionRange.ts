@@ -1,5 +1,5 @@
 export interface SemanticVersionRangeRelation {
-  semantic_version_range_id: number;
+  semantic_version_range_id: SemanticVersionRange["id"];
 }
 
 export interface SemanticVersionRange {
