@@ -1,11 +1,10 @@
-import { AppMetadata } from "./MetadataFileContents";
+import { MetadataFileContents } from "./MetadataFileContents";
 import { DatedData } from "./DatedData";
 import { ProjectRelation } from "./Project";
 import { UserRelation } from "./User";
 import { FileMetadata } from "./FileMetadata";
 
 export interface VersionRelation {
-  version_id: number;
   version: Version;
 }
 
@@ -18,6 +17,6 @@ export interface Version extends UserRelation, ProjectRelation, DatedData {
   git_commit_id?: string;
   files: Array<FileMetadata>;
   files_count?: number;
-  app_metadata: AppMetadata; // Changed! New property that has the content of the metadata.json file that is installed on the app.
+  app_metadata: MetadataFileContents; // Changed! New property that has the content of the metadata.json file that is installed on the app.
   published: boolean;
 }

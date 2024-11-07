@@ -5,12 +5,13 @@
 
 import { BadgeSlug } from "../Badge";
 
-export interface AppMetadata {
+export interface MetadataFileContents {
   name: string;
   description?: string;
   category: AppCategory;
   author?: string; // The name of the author
   icon?: string; // The relative icon path
+  license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
   is_library?: boolean; // Whether this app can be used as a library by other apps
   is_hidden?: boolean; // Whether this app should be shown in the launcher or not. Only useful for libraries.
   semantic_version?: string; // Changed! [Semantic version](https://semver.org/) of the app, the semantic versioning is mostly relevant if the app is a library. Authors who don't use this semantic versioning will get a 0.x version with x just an number like we previously had the revision number.

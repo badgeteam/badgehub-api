@@ -5,10 +5,6 @@ export interface UserRelation {
   user_id: UserId;
 }
 
-export interface WebauthnKey {
-  // TODO
-}
-
 export interface User extends DatedData {
   id: UserId;
   admin: boolean;

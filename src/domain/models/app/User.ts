@@ -1,9 +1,7 @@
 import { DatedData } from "./DatedData";
 import { Project, ProjectRelation } from "./Project";
-type WebauthnKey = unknown; // TODO
 
 export interface UserRelation {
-  user_id: number;
   user: User;
 }
 
@@ -28,8 +26,6 @@ export interface User extends DatedData {
   votes_count?: number;
   warnings: Array<Warning>;
   warnings_count?: number;
-  webauthnKeys: Array<WebauthnKey>;
-  webauthn_keys_count?: number;
   collaborations: Array<Project>;
   collaborations_count?: number;
 }

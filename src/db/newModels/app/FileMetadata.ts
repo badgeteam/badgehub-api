@@ -4,15 +4,12 @@ import { DatedData } from "./DatedData";
 
 export interface FileMetadata extends VersionRelation, UserRelation, DatedData {
   id: number;
-  content?: string | Uint8Array;
-  editable: boolean;
-  lintable: boolean;
-  processable: boolean;
+  lintable?: boolean; // Some files in a project can be auto-lintable, others not
   extension: string;
   baseName: string;
-  mime: string;
+  editabe?: boolean;
+  programming_language?: string;
+  mime?: string;
   size_of_content: number;
-  size_formatted: string;
-  viewable?: string;
   crc32: string;
 }

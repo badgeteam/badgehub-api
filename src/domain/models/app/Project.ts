@@ -58,7 +58,6 @@ interface Dependency {
 }
 
 export interface ProjectRelation {
-  project_id: number;
   project: Project;
 }
 
