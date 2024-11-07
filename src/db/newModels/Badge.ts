@@ -8,13 +8,4 @@ export interface BadgeRelation {
 export interface Badge extends DatedData {
   slug: BadgeSlug;
   name: string;
-  constraints?: string;
-  commands?: string;
-
-  // Relations
-  projects: Array<Project>;
-  projects_count?: number;
-  states: Array<BadgeWithProjectWithStatus>;
-  states_count?: number;
-  types: Array<{ slug: string; name: string }>;
 }
