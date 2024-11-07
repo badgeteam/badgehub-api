@@ -1,8 +1,10 @@
 import pg, { Pool } from "pg";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
-import { getPool } from "../db/connectionPool";
-import { App, AppDetails, Category, Device } from "../db/models";
+import { getPool } from "@db/connectionPool";
+import { App, AppDetails, Category, Device } from "@db/models";
+import type { ProjectPort } from "@domain/aggregates/ProjectPort";
+import { Project } from "@domain/models/app/Project";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -20,7 +22,8 @@ import { App, AppDetails, Category, Device } from "../db/models";
 @Tags("public")
 export class PublicRestController {
   private pool: Pool;
-  public constructor() {
+
+  public constructor(private projectAdapter: ProjectPort) {
     this.pool = getPool();
   }
 
@@ -106,31 +109,16 @@ export class PublicRestController {
    * Get app details
    */
   @Get("/apps/{slug}")
-  public async getAppDetails(
+  public async getProject(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
-  ): Promise<AppDetails | undefined> {
-    const result = await this.pool.query<AppDetails & { id: number }>(
-      `select p.id, p.name, p.slug, p.description, c.slug as category_slug, u.name as user_name
-                             from projects p
-                             inner join categories c on p.category_id = c.id
-                             inner join users u on p.user_id = u.id
-                             where p.slug = $1`,
-      [slug]
-    );
-    if (result.rows[0]) {
-      const projectId = result.rows[0].id;
-      const badgeResult = await this.pool.query<AppDetails & { id: number }>(
-        `select b.slug from badge_project bp inner join badges b on bp.badge_id=b.id where project_id=$1`,
-        [projectId]
-      );
-      const devices = badgeResult.rows.map((badge: Device) => badge.slug);
-      const { id, ...resultWithoutId } = result.rows[0];
-      return { ...resultWithoutId, devices };
-    } else {
+  ): Promise<Project | undefined> {
+    const details = await this.projectAdapter.getProject(slug);
+    if (!details) {
       return notFoundResponse(404, {
         reason: `No app with slug '${slug}' found`,
       });
     }
+    return details;
   }
 }
