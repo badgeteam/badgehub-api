@@ -15,7 +15,7 @@ export interface Version extends UserRelation, DatedData {
   size_of_zip?: number;
   git_commit_id?: string;
   files: Array<FileMetadata>;
-  files_count?: number;
   app_metadata: MetadataFileContents; // Changed! New property that has the content of the metadata.json file that is installed on the app.
   published: boolean;
+  download_count: number;
 }
