@@ -7,6 +7,8 @@ import type { ProjectPort } from "@domain/aggregates/ProjectPort";
 import { Project } from "@domain/models/app/Project";
 import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
 
+import { AppCategoryName } from "@domain/models/app/Category";
+
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
  *
@@ -45,11 +47,8 @@ export class PublicRestController {
    * Get list of categories
    */
   @Get("/categories")
-  public async getCategories(): Promise<Category[]> {
-    const result = await this.pool.query<Category>(
-      `select name, slug from categories`
-    );
-    return result.rows;
+  public async getCategories(): Promise<AppCategoryName[]> {
+    return await this.projectAdapter.getCategories();
   }
 
   /**

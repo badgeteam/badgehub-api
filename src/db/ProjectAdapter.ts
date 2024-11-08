@@ -7,6 +7,9 @@ import { Version } from "@domain/models/app/Version";
 import { AppCategoryName } from "./newModels/app/MetadataFileContents";
 
 export class ProjectPostgresAdapter implements ProjectPort {
+  getCategories(): Promise<AppCategoryName[]> {
+    throw new Error("Method not implemented.");
+  }
   createProject(projectSlug: ProjectSlug): Promise<void> {
     throw new Error("Method not implemented.");
   }

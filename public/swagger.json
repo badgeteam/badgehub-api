@@ -20,39 +20,7 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Category": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "slug"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "App": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          },
-          "category_slug": {
-            "type": "string"
-          },
-          "user_name": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "slug", "category_slug", "user_name"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "DBAppCategory": {
+      "AppCategoryName": {
         "type": "string",
         "enum": [
           "Uncategorised",
@@ -69,11 +37,8 @@
           "Unusable",
           "Adult",
           "Virus",
-          "Intepreter"
+          "Interpreter"
         ]
-      },
-      "AppCategory": {
-        "$ref": "#/components/schemas/DBAppCategory"
       },
       "DBProjectStatusName": {
         "type": "string",
@@ -363,26 +328,6 @@
         "type": "object",
         "additionalProperties": false
       },
-      "AppCategoryName": {
-        "type": "string",
-        "enum": [
-          "Uncategorised",
-          "Event related",
-          "Games",
-          "Graphics",
-          "Hardware",
-          "Utility",
-          "Wearable",
-          "Data",
-          "Silly",
-          "Hacking",
-          "Troll",
-          "Unusable",
-          "Adult",
-          "Virus",
-          "Intepreter"
-        ]
-      },
       "Record_BadgeSlug.string_": {
         "properties": {},
         "additionalProperties": {
@@ -413,14 +358,14 @@
       },
       "MetadataFileContents": {
         "properties": {
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
           "name": {
             "type": "string"
           },
           "description": {
             "type": "string"
-          },
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
           },
           "author": {
             "type": "string"
@@ -468,7 +413,7 @@
             "$ref": "#/components/schemas/Record_BadgeSlug.Array__source-string--destination-string___"
           }
         },
-        "required": ["name", "category"],
+        "required": ["category", "name"],
         "type": "object",
         "additionalProperties": false
       },
@@ -629,7 +574,7 @@
             "format": "double"
           },
           "category": {
-            "$ref": "#/components/schemas/AppCategory"
+            "$ref": "#/components/schemas/AppCategoryName"
           },
           "description": {
             "type": "string"
@@ -768,7 +713,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Category"
+                    "$ref": "#/components/schemas/AppCategoryName"
                   },
                   "type": "array"
                 }
@@ -784,7 +729,7 @@
     },
     "/api/v3/apps": {
       "get": {
-        "operationId": "GetApps",
+        "operationId": "GetProjects",
         "responses": {
           "200": {
             "description": "Ok",
@@ -792,7 +737,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/App"
+                    "$ref": "#/components/schemas/Project"
                   },
                   "type": "array"
                 }

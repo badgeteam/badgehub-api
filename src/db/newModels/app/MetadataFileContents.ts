@@ -4,11 +4,11 @@
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
 import { BadgeSlug } from "../Badge";
+import { CategoryNameRelation } from "@db/newModels/app/Category";
 
-export interface MetadataFileContents {
+export interface MetadataFileContents extends CategoryNameRelation {
   name: string;
   description?: string;
-  category: AppCategoryName;
   author?: string; // The name of the author
   icon?: string; // The relative icon path
   license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
@@ -24,20 +24,3 @@ export interface MetadataFileContents {
     Array<{ source: string; destination: string }>
   >; // Changed! optional field to allow overriding or adding a file mapping for a device name slug (key).
 }
-
-export type AppCategoryName =
-  | "Uncategorised"
-  | "Event related"
-  | "Games"
-  | "Graphics"
-  | "Hardware"
-  | "Utility"
-  | "Wearable"
-  | "Data"
-  | "Silly"
-  | "Hacking"
-  | "Troll"
-  | "Unusable"
-  | "Adult"
-  | "Virus"
-  | "Intepreter"; // Changed! the interpreter category was added here for the case of libraries.

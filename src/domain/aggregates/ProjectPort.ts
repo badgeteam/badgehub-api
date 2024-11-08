@@ -2,12 +2,10 @@ import { Project } from "@domain/models/app/Project";
 import { Version } from "@domain/models/app/Version";
 import { User } from "@domain/models/app/User";
 import { FileMetadata } from "@domain/models/app/FileMetadata";
-import {
-  AppCategoryName,
-  MetadataFileContents,
-} from "@domain/models/app/MetadataFileContents";
+import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { ProjectSlug } from "@domain/models/app/Project";
 import { Badge } from "@domain/models/Badge";
+import { AppCategoryName } from "@domain/models/app/Category";
 
 export interface ProjectPort {
   createProject(projectSlug: ProjectSlug): Promise<void>;
@@ -27,7 +25,7 @@ export interface ProjectPort {
   getFileDownloadLink(fileId: FileMetadata["id"]): Promise<string>;
   getVersionDownloadLink(versionId: Version["id"]): Promise<string>;
   getBadges(): Promise<Badge>;
-  getCategories(): Promise<AppCategoryName>;
+  getCategories(): Promise<AppCategoryName[]>;
   getProjects(filter?: {
     pageStart?: number;
     pageLength?: number;

@@ -29,27 +29,7 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Category: {
-    dataType: "refObject",
-    properties: {
-      name: { dataType: "string", required: true },
-      slug: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  App: {
-    dataType: "refObject",
-    properties: {
-      name: { dataType: "string", required: true },
-      slug: { dataType: "string", required: true },
-      category_slug: { dataType: "string", required: true },
-      user_name: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  DBAppCategory: {
+  AppCategoryName: {
     dataType: "refAlias",
     type: {
       dataType: "union",
@@ -68,15 +48,10 @@ const models: TsoaRoute.Models = {
         { dataType: "enum", enums: ["Unusable"] },
         { dataType: "enum", enums: ["Adult"] },
         { dataType: "enum", enums: ["Virus"] },
-        { dataType: "enum", enums: ["Intepreter"] },
+        { dataType: "enum", enums: ["Interpreter"] },
       ],
       validators: {},
     },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  AppCategory: {
-    dataType: "refAlias",
-    type: { ref: "DBAppCategory", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   DBProjectStatusName: {
@@ -207,31 +182,6 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  AppCategoryName: {
-    dataType: "refAlias",
-    type: {
-      dataType: "union",
-      subSchemas: [
-        { dataType: "enum", enums: ["Uncategorised"] },
-        { dataType: "enum", enums: ["Event related"] },
-        { dataType: "enum", enums: ["Games"] },
-        { dataType: "enum", enums: ["Graphics"] },
-        { dataType: "enum", enums: ["Hardware"] },
-        { dataType: "enum", enums: ["Utility"] },
-        { dataType: "enum", enums: ["Wearable"] },
-        { dataType: "enum", enums: ["Data"] },
-        { dataType: "enum", enums: ["Silly"] },
-        { dataType: "enum", enums: ["Hacking"] },
-        { dataType: "enum", enums: ["Troll"] },
-        { dataType: "enum", enums: ["Unusable"] },
-        { dataType: "enum", enums: ["Adult"] },
-        { dataType: "enum", enums: ["Virus"] },
-        { dataType: "enum", enums: ["Intepreter"] },
-      ],
-      validators: {},
-    },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Record_BadgeSlug.string_": {
     dataType: "refAlias",
     type: {
@@ -264,9 +214,9 @@ const models: TsoaRoute.Models = {
   MetadataFileContents: {
     dataType: "refObject",
     properties: {
+      category: { ref: "AppCategoryName", required: true },
       name: { dataType: "string", required: true },
       description: { dataType: "string" },
-      category: { ref: "AppCategoryName", required: true },
       author: { dataType: "string" },
       icon: { dataType: "string" },
       license_file: { dataType: "string" },
@@ -375,7 +325,7 @@ const models: TsoaRoute.Models = {
       license: { dataType: "string", required: true },
       size_of_zip: { dataType: "double" },
       size_of_content: { dataType: "double" },
-      category: { ref: "AppCategory", required: true },
+      category: { ref: "AppCategoryName", required: true },
       description: { dataType: "string" },
       revision: { dataType: "string", required: true },
       status: { ref: "ProjectStatusName", required: true },
@@ -526,7 +476,7 @@ export function RegisterRoutes(app: Router) {
       PublicRestController.prototype.getProjects
     ),
 
-    async function PublicRestController_getApps(
+    async function PublicRestController_getProjects(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -551,7 +501,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getApps",
+          methodName: "getProjects",
           controller,
           response,
           next,
