@@ -4,7 +4,7 @@ import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { Project, ProjectSlug } from "@domain/models/app/Project";
 import { User } from "@domain/models/app/User";
 import { Version } from "@domain/models/app/Version";
-import { AppCategoryName } from "./newModels/app/MetadataFileContents";
+import { AppCategoryName } from "@domain/models/app/Category";
 
 export class ProjectPostgresAdapter implements ProjectPort {
   getCategories(): Promise<AppCategoryName[]> {
@@ -48,7 +48,7 @@ export class ProjectPostgresAdapter implements ProjectPort {
   getVersionDownloadLink(versionId: number): Promise<string> {
     throw new Error("Method not implemented.");
   }
-  getBadges(): Promise<Badge> {
+  getBadges(): Promise<Badge[]> {
     throw new Error("Method not implemented.");
   }
   getProjects(filter?: {

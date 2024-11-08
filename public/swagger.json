@@ -7,8 +7,24 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
-      "Device": {
+      "Badge": {
         "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "number",
+            "format": "double"
+          },
           "name": {
             "type": "string"
           },
@@ -16,7 +32,7 @@
             "type": "string"
           }
         },
-        "required": ["name", "slug"],
+        "required": ["created_at", "updated_at", "id", "name", "slug"],
         "type": "object",
         "additionalProperties": false
       },
@@ -46,35 +62,6 @@
       },
       "ProjectStatusName": {
         "$ref": "#/components/schemas/DBProjectStatusName"
-      },
-      "Badge": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          }
-        },
-        "required": ["created_at", "updated_at", "id", "name", "slug"],
-        "type": "object",
-        "additionalProperties": false
       },
       "ProjectSlug": {
         "type": "string"
@@ -681,7 +668,7 @@
   "paths": {
     "/api/v3/devices": {
       "get": {
-        "operationId": "GetDevices",
+        "operationId": "GetBadges",
         "responses": {
           "200": {
             "description": "Ok",
@@ -689,7 +676,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Device"
+                    "$ref": "#/components/schemas/Badge"
                   },
                   "type": "array"
                 }

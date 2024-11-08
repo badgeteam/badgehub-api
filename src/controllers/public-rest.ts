@@ -1,13 +1,11 @@
-import pg, { Pool } from "pg";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
-import { getPool } from "@db/connectionPool";
-import type { App, Category, Device } from "@db/models";
 import type { ProjectPort } from "@domain/aggregates/ProjectPort";
 import { Project } from "@domain/models/app/Project";
 import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
 
 import { AppCategoryName } from "@domain/models/app/Category";
+import { Badge } from "@domain/models/Badge";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -24,23 +22,16 @@ import { AppCategoryName } from "@domain/models/app/Category";
 @Route("/api/v3")
 @Tags("public")
 export class PublicRestController {
-  private pool: Pool;
-
   public constructor(
     private projectAdapter: ProjectPort = new ProjectPostgresAdapter()
-  ) {
-    this.pool = getPool();
-  }
+  ) {}
 
   /**
    * Get list of devices (badges)
    */
   @Get("/devices")
-  public async getDevices(): Promise<Device[]> {
-    const result = await this.pool.query<Device>(
-      `select name, slug from badges`
-    );
-    return result.rows;
+  public async getBadges(): Promise<Badge[]> {
+    return await this.projectAdapter.getBadges();
   }
 
   /**

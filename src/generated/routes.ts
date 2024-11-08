@@ -20,9 +20,13 @@ import type {
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-  Device: {
+  Badge: {
     dataType: "refObject",
     properties: {
+      created_at: { dataType: "datetime", required: true },
+      updated_at: { dataType: "datetime", required: true },
+      deleted_at: { dataType: "datetime" },
+      id: { dataType: "double", required: true },
       name: { dataType: "string", required: true },
       slug: { dataType: "string", required: true },
     },
@@ -71,19 +75,6 @@ const models: TsoaRoute.Models = {
   ProjectStatusName: {
     dataType: "refAlias",
     type: { ref: "DBProjectStatusName", validators: {} },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Badge: {
-    dataType: "refObject",
-    properties: {
-      created_at: { dataType: "datetime", required: true },
-      updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
-      name: { dataType: "string", required: true },
-      slug: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   ProjectSlug: {
@@ -393,10 +384,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getDevices
+      PublicRestController.prototype.getBadges
     ),
 
-    async function PublicRestController_getDevices(
+    async function PublicRestController_getBadges(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -416,7 +407,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getDevices",
+          methodName: "getBadges",
           controller,
           response,
           next,

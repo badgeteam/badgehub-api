@@ -24,7 +24,7 @@ export interface ProjectPort {
   updateUser(updatedUser: User): Promise<void>;
   getFileDownloadLink(fileId: FileMetadata["id"]): Promise<string>;
   getVersionDownloadLink(versionId: Version["id"]): Promise<string>;
-  getBadges(): Promise<Badge>;
+  getBadges(): Promise<Badge[]>;
   getCategories(): Promise<AppCategoryName[]>;
   getProjects(filter?: {
     pageStart?: number;
