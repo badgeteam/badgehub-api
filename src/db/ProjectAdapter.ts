@@ -48,14 +48,12 @@ export class ProjectPostgresAdapter implements ProjectPort {
   getBadges(): Promise<Badge> {
     throw new Error("Method not implemented.");
   }
-  getProjects(
-    filter?:
-      | {
-          badgeSlug?: string | undefined;
-          appCategory?: AppCategoryName | undefined;
-        }
-      | undefined
-  ): Promise<Project[]> {
+  getProjects(filter?: {
+    pageStart?: number;
+    pageLength?: number;
+    badgeSlug?: string;
+    appCategory?: AppCategoryName;
+  }): Promise<Project[]> {
     throw new Error("Method not implemented.");
   }
 }

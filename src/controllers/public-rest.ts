@@ -56,56 +56,18 @@ export class PublicRestController {
    * Get list of apps, optionally limited by page start/length and/or filtered by category
    */
   @Get("/apps")
-  public async getApps(
+  public async getProjects(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
     @Query() category?: string,
     @Query() device?: string
-  ): Promise<App[]> {
-    const mainQuery = `
-            select p.name, p.slug, c.slug as category_slug, u.name as user_name
-            from projects p
-            inner join categories c on p.category_id = c.id
-            inner join users u on p.user_id = u.id`;
-
-    const badgeQuery = `
-            inner join badge_project bp on bp.project_id = p.id 
-            inner join badges b on b.id = bp.badge_id`;
-
-    let result: pg.QueryResult<App>;
-    if (category && !device) {
-      result = await this.pool.query<App>(
-        `${mainQuery}
-                where c.slug = $3
-                limit $1 offset $2
-                `,
-        [pageLength ?? null, pageStart ?? 0, category]
-      );
-    } else if (!category && device) {
-      result = await this.pool.query<App>(
-        `${mainQuery} ${badgeQuery}
-                where b.slug=$3
-                limit $1 offset $2
-                `,
-        [pageLength ?? null, pageStart ?? 0, device]
-      );
-    } else if (category && device) {
-      result = await this.pool.query<App>(
-        `${mainQuery} ${badgeQuery}
-                where c.slug = $3 and b.slug=$4
-                limit $1 offset $2
-                `,
-        [pageLength ?? null, pageStart ?? 0, category, device]
-      );
-    } else {
-      result = await this.pool.query<App>(
-        `${mainQuery}
-                limit $1 offset $2
-                `,
-        [pageLength ?? null, pageStart ?? 0]
-      );
-    }
-    return result.rows;
+  ): Promise<Project[]> {
+    return await this.projectAdapter.getProjects({
+      pageStart,
+      pageLength,
+      badgeSlug: device,
+      appCategory: category as AppCategoryName,
+    });
   }
 
   /**

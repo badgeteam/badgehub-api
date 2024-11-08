@@ -28,6 +28,8 @@ export interface ProjectPort {
   getVersionDownloadLink(versionId: Version["id"]): Promise<string>;
   getBadges(): Promise<Badge>;
   getProjects(filter?: {
+    pageStart?: number;
+    pageLength?: number;
     badgeSlug?: Badge["slug"];
     appCategory?: AppCategory;
   }): Promise<Project[]>;

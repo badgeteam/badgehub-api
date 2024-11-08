@@ -522,7 +522,9 @@ export function RegisterRoutes(app: Router) {
   app.get(
     "/api/v3/apps",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApps),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getProjects
+    ),
 
     async function PublicRestController_getApps(
       request: ExRequest,
