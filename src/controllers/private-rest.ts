@@ -1,14 +1,14 @@
 import { Body, Path, Post, Put, Route, Tags } from "tsoa";
 import { Pool } from "pg";
 import { getPool } from "../db/connectionPool";
-import type { ProjectPort } from "@domain/aggregates/ProjectPort";
-import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
+import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
+import { BadgeHubDataPostgresAdapter } from "@db/ProjectAdapter";
 
 @Route("/api/v3")
 @Tags("private")
 export class PrivateRestController {
   public constructor(
-    private projectAdapter: ProjectPort = new ProjectPostgresAdapter()
+    private badgeHubData: BadgeHubDataPort = new BadgeHubDataPostgresAdapter()
   ) {}
 
   /**
@@ -16,7 +16,7 @@ export class PrivateRestController {
    */
   @Post("/apps/{slug}") // TODO Fix this is not working yet, we get a 404
   public async createProject(@Path() slug: string): Promise<void> {
-    await this.projectAdapter.createProject(slug);
+    await this.badgeHubData.createProject(slug);
   }
 
   /**
@@ -28,11 +28,11 @@ export class PrivateRestController {
     @Path() filePath: string,
     @Body() fileContent: string | Uint8Array
   ): Promise<void> {
-    await this.projectAdapter.writeFile(slug, filePath, fileContent);
+    await this.badgeHubData.writeFile(slug, filePath, fileContent);
   }
 
   @Post("/apps/{slug}/version")
   public async publishVersion(@Path() slug: string) {
-    await this.projectAdapter.publishVersion(slug);
+    await this.badgeHubData.publishVersion(slug);
   }
 }

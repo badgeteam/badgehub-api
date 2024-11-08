@@ -1,4 +1,4 @@
-import { ProjectPort } from "@domain/aggregates/ProjectPort";
+import { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { Badge } from "@domain/models/Badge";
 import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { Project, ProjectSlug } from "@domain/models/app/Project";
@@ -6,7 +6,7 @@ import { User } from "@domain/models/app/User";
 import { Version } from "@domain/models/app/Version";
 import { AppCategoryName } from "@domain/models/app/Category";
 
-export class ProjectPostgresAdapter implements ProjectPort {
+export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   getCategories(): Promise<AppCategoryName[]> {
     throw new Error("Method not implemented.");
   }

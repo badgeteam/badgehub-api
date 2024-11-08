@@ -7,7 +7,7 @@ import { ProjectSlug } from "@domain/models/app/Project";
 import { Badge } from "@domain/models/Badge";
 import { AppCategoryName } from "@domain/models/app/Category";
 
-export interface ProjectPort {
+export interface BadgeHubDataPort {
   createProject(projectSlug: ProjectSlug): Promise<void>;
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
   publishUpdatedMetadata(changes: MetadataFileContents): Promise<void>;

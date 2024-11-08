@@ -1,8 +1,8 @@
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { TsoaResponse } from "tsoa";
-import type { ProjectPort } from "@domain/aggregates/ProjectPort";
+import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { Project } from "@domain/models/app/Project";
-import { ProjectPostgresAdapter } from "@db/ProjectAdapter";
+import { BadgeHubDataPostgresAdapter } from "@db/ProjectAdapter";
 
 import { AppCategoryName } from "@domain/models/app/Category";
 import { Badge } from "@domain/models/Badge";
@@ -23,7 +23,7 @@ import { Badge } from "@domain/models/Badge";
 @Tags("public")
 export class PublicRestController {
   public constructor(
-    private projectAdapter: ProjectPort = new ProjectPostgresAdapter()
+    private badgeHubData: BadgeHubDataPort = new BadgeHubDataPostgresAdapter()
   ) {}
 
   /**
@@ -31,7 +31,7 @@ export class PublicRestController {
    */
   @Get("/devices")
   public async getBadges(): Promise<Badge[]> {
-    return await this.projectAdapter.getBadges();
+    return await this.badgeHubData.getBadges();
   }
 
   /**
@@ -39,7 +39,7 @@ export class PublicRestController {
    */
   @Get("/categories")
   public async getCategories(): Promise<AppCategoryName[]> {
-    return await this.projectAdapter.getCategories();
+    return await this.badgeHubData.getCategories();
   }
 
   /**
@@ -52,7 +52,7 @@ export class PublicRestController {
     @Query() category?: string,
     @Query() device?: string
   ): Promise<Project[]> {
-    return await this.projectAdapter.getProjects({
+    return await this.badgeHubData.getProjects({
       pageStart,
       pageLength,
       badgeSlug: device,
@@ -68,7 +68,7 @@ export class PublicRestController {
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.projectAdapter.getProject(slug);
+    const details = await this.badgeHubData.getProject(slug);
     if (!details) {
       return notFoundResponse(404, {
         reason: `No app with slug '${slug}' found`,
