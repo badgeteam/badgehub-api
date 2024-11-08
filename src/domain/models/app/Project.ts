@@ -3,7 +3,7 @@ import { User, UserRelation } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
 import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
-import { AppCategory, MetadataFileContents } from "./MetadataFileContents";
+import { AppCategoryName, MetadataFileContents } from "./MetadataFileContents";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
 import { ProjectStatusName as DBProjectStatusName } from "@db/newModels/ProjectStatusOnBadge";
@@ -27,7 +27,7 @@ export interface Project
   license: string; // Eg. MIT
   size_of_zip?: number;
   size_of_content?: number;
-  category: AppCategory;
+  category: AppCategoryName;
   readonly description?: string; // description in metadata of latest version of the app
   readonly revision: string; // latest revsion number of the app
   readonly status: ProjectStatusName; // Status of newest version with a non-empty status

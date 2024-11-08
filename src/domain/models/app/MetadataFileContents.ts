@@ -4,8 +4,8 @@
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 import {
   MetadataFileContents as DBMetadataFileContents,
-  AppCategoryName as DBAppCategory,
+  AppCategoryName as DBAppCategoryName,
 } from "@db/newModels/app/MetadataFileContents";
 
 export interface MetadataFileContents extends DBMetadataFileContents {}
-export type AppCategory = DBAppCategory;
+export type AppCategoryName = DBAppCategoryName;
