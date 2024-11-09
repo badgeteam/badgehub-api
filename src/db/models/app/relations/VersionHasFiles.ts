@@ -1,5 +1,5 @@
 import { VersionRelation } from "../Version";
-import { FileMetadataRelation } from "@db/newModels/app/FileMetadata";
+import { FileMetadataRelation } from "@db/models/app/FileMetadata";
 
 export interface VersionHasFiles extends VersionRelation, FileMetadataRelation {
   id: number;

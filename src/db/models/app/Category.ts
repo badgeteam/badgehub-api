@@ -1,4 +1,4 @@
-import { DatedData } from "@db/newModels/app/DatedData";
+import { DatedData } from "@db/models/app/DatedData";
 import { AppCategoryName } from "@domain/models/app/Category";
 
 export interface CategoryRelation {

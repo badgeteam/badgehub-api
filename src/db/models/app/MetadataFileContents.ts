@@ -4,7 +4,7 @@
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
 import { BadgeSlug } from "../Badge";
-import { CategoryNameRelation } from "@db/newModels/app/Category";
+import { CategoryNameRelation } from "@db/models/app/Category";
 
 export interface MetadataFileContents extends CategoryNameRelation {
   name: string;

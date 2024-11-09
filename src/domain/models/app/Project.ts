@@ -6,7 +6,7 @@ import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { MetadataFileContents } from "./MetadataFileContents";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
-import { ProjectStatusName as DBProjectStatusName } from "@db/newModels/ProjectStatusOnBadge";
+import { ProjectStatusName as DBProjectStatusName } from "@db/models/ProjectStatusOnBadge";
 import { AppCategoryName } from "@domain/models/app/Category";
 export type ProjectStatusName = DBProjectStatusName;
 
