@@ -20,9 +20,9 @@ export class PrivateRestController {
   }
 
   /**
-   * Create a new app
+   * Upload a file to the latest draft version of the project.
    */
-  @Put("/apps/{slug}/file/{filePath}")
+  @Post("/apps/{slug}/file/{filePath}")
   public async writeFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -31,6 +31,18 @@ export class PrivateRestController {
     await this.badgeHubData.writeFile(slug, filePath, fileContent);
   }
 
+  /**
+   * Upload a file to the latest draft version of the project.
+   */
+  @Post("/apps/{slug}/zip")
+  public async writeZip(
+    @Path() slug: string,
+    @Body() zipContent: Uint8Array
+  ): Promise<void> {
+    throw new Error("Not implemented");
+  }
+
+  // Publish the latest draft version
   @Post("/apps/{slug}/version")
   public async publishVersion(@Path() slug: string) {
     await this.badgeHubData.publishVersion(slug);
