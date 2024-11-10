@@ -1,5 +1,6 @@
 import { DatedData } from "./app/DatedData";
 import { BadgeRelation } from "./Badge";
+
 export interface ProjectStatusOnBadgeRelation {
   project_status_on_badge_id: ProjectStatusOnBadge["id"];
 }

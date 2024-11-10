@@ -1,4 +1,5 @@
 import pg from "pg";
+
 let pool: pg.Pool;
 export const getPool = () => {
   if (!pool) {

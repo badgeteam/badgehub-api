@@ -1,6 +1,4 @@
-import { Body, Path, Post, Put, Route, Tags } from "tsoa";
-import { Pool } from "pg";
-import { getPool } from "../db/connectionPool";
+import { Body, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/ProjectAdapter";
 

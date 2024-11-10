@@ -8,6 +8,7 @@ import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
 import { ProjectStatusName as DBProjectStatusName } from "@db/models/ProjectStatusOnBadge";
 import { AppCategoryName } from "@domain/models/app/Category";
+
 export type ProjectStatusName = DBProjectStatusName;
 
 export interface Project

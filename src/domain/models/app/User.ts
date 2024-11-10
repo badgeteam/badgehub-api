@@ -1,5 +1,4 @@
 import { DatedData } from "./DatedData";
-import { Project, ProjectRelation } from "./Project";
 
 export interface UserRelation {
   user: User;

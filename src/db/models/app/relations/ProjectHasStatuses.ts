@@ -1,4 +1,3 @@
-import { UserRelation } from "../User";
 import { ProjectRelation } from "../Project";
 import { ProjectStatusOnBadgeRelation } from "@db/models/ProjectStatusOnBadge";
 
