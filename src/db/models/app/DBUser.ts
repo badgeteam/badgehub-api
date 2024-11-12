@@ -3,7 +3,7 @@ import { DBDatedData } from "./DBDatedData";
 export interface UserRelation {
   user_id: DBUser["id"];
 }
-
+// table name: users
 export interface DBUser extends DBDatedData {
   id: number;
   admin: boolean;

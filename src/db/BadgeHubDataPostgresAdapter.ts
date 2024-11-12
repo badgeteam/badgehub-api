@@ -11,6 +11,7 @@ import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
 import sql from "sql-template-tag";
 import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
 import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
+import { DBUser } from "@db/models/app/DBUser";
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
@@ -70,15 +71,88 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   getVersionDownloadLink(versionId: number): Promise<string> {
     throw new Error("Method not implemented.");
   }
-  getBadges(): Promise<Badge[]> {
-    throw new Error("Method not implemented.");
+
+  async getBadges(): Promise<Badge[]> {
+    return await this.pool
+      .query(
+        sql`SELECT name, slug
+            from badges`
+      )
+      .then((res) => res.rows);
   }
-  getProjects(filter?: {
+
+  async getProjects(filter?: {
     pageStart?: number;
     pageLength?: number;
     badgeSlug?: string;
     appCategory?: AppCategoryName;
   }): Promise<Project[]> {
-    throw new Error("Method not implemented.");
+    let query = sql`SELECT slug,
+                           git,
+                           allow_team_fixes,
+                           p.created_at,
+                           p.updated_at,
+                           p.deleted_at,
+                           v.semantic_version,
+                           v.status,
+                           v.git_commit_id,
+                           v.revision,
+                           v.size_of_zip,
+                           m.description,
+                           m.interpreter,
+                           m.licence_file,
+                           m.name, 
+                           u.name as author_name
+                    FROM projects p
+                             LEFT JOIN users u on p.user_id = user.id
+                             LEFT JOIN versions v ON p.version_id = v.id
+                             LEFT JOIN metadata_file_contents m ON v.metadata_file_contents_id = m.id`;
+    if (filter?.pageLength) {
+      query = sql`${query}
+      OFFSET
+      ${filter.pageLength}`;
+      if (filter.pageStart) {
+        query = sql`${query}
+        OFFSET
+        ${filter.pageStart}`;
+      }
+    }
+    const projects: (DBProject &
+      DBVersion &
+      DBMetadataFileContents & {
+        author_name: DBUser["name"];
+      })[] = await this.pool.query(query).then((res) => res.rows);
+    return projects.map((dbProject): Project => {
+      return {
+        version: undefined, // TODO
+        allow_team_fixes: false,
+        author: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
+        badges: [], // TODO
+        category: dbProject.category || "uncategorized",
+        collaborators: [], // TODO
+        created_at: dbProject.created_at,
+        updated_at: dbProject.updated_at,
+        deleted_at: dbProject.deleted_at,
+        dependencies: [], // TODO
+        description: dbProject.description,
+        download_counter: 0,
+        git: dbProject.git,
+        git_commit_id: dbProject.git_commit_id,
+        interpreter: dbProject.interpreter,
+        license: dbProject.license_file, // TODO check what we should do with the license, possibly we could say that this is either a path or 'MIT'|..., but then still we should read out the licens somewhere if it is a file.
+        name: dbProject.name,
+        published_at: undefined,
+        revision: dbProject.revision,
+        size_of_content: 0, // TODO
+        size_of_zip: dbProject.size_of_zip,
+        slug: dbProject.slug,
+        states: [],
+        status: "unknown", // TODO
+        user: undefined, // TODO
+        versions: [], // TODO
+        votes: [], // TODO
+        warnings: [], // TODO
+      };
+    });
   }
 }
