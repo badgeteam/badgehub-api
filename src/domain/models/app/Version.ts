@@ -8,7 +8,6 @@ export interface VersionRelation {
 }
 
 export interface Version extends UserRelation, DatedData {
-  id: number;
   revision: number;
   semantic_version?: string; // Changed! Semantic version
   zip?: string;

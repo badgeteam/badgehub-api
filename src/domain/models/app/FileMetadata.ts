@@ -3,7 +3,6 @@ import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
 
 export interface FileMetadata extends VersionRelation, UserRelation, DatedData {
-  id: number;
   editable?: boolean;
   lintable?: boolean;
   extension: string;

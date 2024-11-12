@@ -2,7 +2,7 @@ import type { TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { Project } from "@domain/models/app/Project";
-import { BadgeHubDataPostgresAdapter } from "@db/ProjectAdapter";
+import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 
 import { AppCategoryName } from "@domain/models/app/Category";
 import { Badge } from "@domain/models/Badge";
