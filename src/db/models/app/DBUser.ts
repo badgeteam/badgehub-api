@@ -1,10 +1,10 @@
-import { DatedData } from "./DatedData";
+import { DBDatedData } from "./DBDatedData";
 
 export interface UserRelation {
-  user_id: User["id"];
+  user_id: DBUser["id"];
 }
 
-export interface User extends DatedData {
+export interface DBUser extends DBDatedData {
   id: number;
   admin: boolean;
   name: string;

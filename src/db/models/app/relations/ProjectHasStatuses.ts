@@ -1,5 +1,5 @@
-import { ProjectRelation } from "../Project";
-import { ProjectStatusOnBadgeRelation } from "@db/models/ProjectStatusOnBadge";
+import { ProjectRelation } from "../DBProject";
+import { ProjectStatusOnBadgeRelation } from "@db/models/DBProjectStatusOnBadge";
 
 export interface ProjectHasStatuses
   extends ProjectRelation,

@@ -1,21 +1,36 @@
 import { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { Badge } from "@domain/models/Badge";
-import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { Project, ProjectSlug } from "@domain/models/app/Project";
 import { User } from "@domain/models/app/User";
 import { Version } from "@domain/models/app/Version";
 import { AppCategoryName } from "@domain/models/app/Category";
+import { Pool } from "pg";
+import { getPool } from "@db/connectionPool";
+import { DBProject as DBProject } from "@db/models/app/DBProject";
+import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
+import sql from "sql-template-tag";
+import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
+import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
+  private readonly pool: Pool;
+
+  constructor() {
+    this.pool = getPool();
+  }
+
   getCategories(): Promise<AppCategoryName[]> {
     throw new Error("Method not implemented.");
   }
+
   createProject(projectSlug: ProjectSlug): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
   deleteProject(projectSlug: ProjectSlug): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
   publishUpdatedMetadata(changes: MetadataFileContents): Promise<void> {
     throw new Error("Method not implemented.");
   }
@@ -27,24 +42,31 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   ): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
   publishVersion(projectSlug: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
   getProject(projectSlug: string): Promise<Project> {
     throw new Error("Method not implemented.");
   }
+
   getVersion(projectSlug: string): Promise<Version> {
     throw new Error("Method not implemented.");
   }
+
   getUser(userId: number): Promise<User> {
     throw new Error("Method not implemented.");
   }
+
   updateUser(updatedUser: User): Promise<void> {
     throw new Error("Method not implemented.");
   }
+
   getFileDownloadLink(fileId: number): Promise<string> {
     throw new Error("Method not implemented.");
   }
+
   getVersionDownloadLink(versionId: number): Promise<string> {
     throw new Error("Method not implemented.");
   }

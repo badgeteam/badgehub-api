@@ -1,12 +1,15 @@
-import { VersionRelation } from "./Version";
-import { UserRelation } from "./User";
-import { DatedData } from "./DatedData";
+import { VersionRelation } from "./DBVersion";
+import { UserRelation } from "./DBUser";
+import { DBDatedData } from "./DBDatedData";
 
 export interface FileMetadataRelation {
-  file_metadata_id: FileMetadata["id"];
+  file_metadata_id: DBFileMetadata["id"];
 }
 
-export interface FileMetadata extends VersionRelation, UserRelation, DatedData {
+export interface DBFileMetadata
+  extends VersionRelation,
+    UserRelation,
+    DBDatedData {
   id: number;
   lintable?: boolean; // Some files in a project can be auto-lintable, others not
   extension: string;

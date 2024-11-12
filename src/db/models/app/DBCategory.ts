@@ -1,15 +1,15 @@
-import { DatedData } from "@db/models/app/DatedData";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 import { AppCategoryName } from "@domain/models/app/Category";
 
 export interface CategoryRelation {
-  category_id: Category["id"];
+  category_id: DBCategory["id"];
 }
 
 export interface CategoryNameRelation {
-  category: Category["name"];
+  category: DBCategory["name"];
 }
 
-export interface Category extends DatedData {
+export interface DBCategory extends DBDatedData {
   id: number;
   name: AppCategoryName;
 }

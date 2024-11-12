@@ -21,10 +21,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
           "name": {
             "type": "string"
           },
@@ -32,7 +28,7 @@
             "type": "string"
           }
         },
-        "required": ["created_at", "updated_at", "id", "name", "slug"],
+        "required": ["created_at", "updated_at", "name", "slug"],
         "type": "object",
         "additionalProperties": false
       },
@@ -56,12 +52,9 @@
           "Interpreter"
         ]
       },
-      "DBProjectStatusName": {
+      "ProjectStatusName": {
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
-      },
-      "ProjectStatusName": {
-        "$ref": "#/components/schemas/DBProjectStatusName"
       },
       "ProjectSlug": {
         "type": "string"
@@ -96,15 +89,11 @@
             "type": "string",
             "format": "date-time"
           },
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
           "status": {
             "$ref": "#/components/schemas/ProjectStatusName"
           }
         },
-        "required": ["badge", "created_at", "updated_at", "id", "status"],
+        "required": ["badge", "created_at", "updated_at", "status"],
         "type": "object",
         "additionalProperties": false
       },
@@ -124,10 +113,6 @@
           "deleted_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
           },
           "revision": {
             "type": "number",
@@ -167,7 +152,6 @@
           "user",
           "created_at",
           "updated_at",
-          "id",
           "revision",
           "files",
           "app_metadata",
@@ -190,10 +174,6 @@
           "deleted_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
           },
           "admin": {
             "type": "boolean"
@@ -233,7 +213,6 @@
         "required": [
           "created_at",
           "updated_at",
-          "id",
           "admin",
           "name",
           "email",
@@ -265,10 +244,6 @@
           "deleted_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
           },
           "editable": {
             "type": "boolean"
@@ -304,7 +279,6 @@
           "user",
           "created_at",
           "updated_at",
-          "id",
           "extension",
           "baseName",
           "size_of_content",
@@ -404,30 +378,8 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Vote": {
-        "properties": {
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["up", "down", "pig"]
-          },
-          "comment": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "type"],
-        "type": "object",
-        "additionalProperties": false
-      },
       "VoteFromUser": {
         "properties": {
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
           "type": {
             "type": "string",
             "enum": ["up", "down", "pig"]
@@ -451,30 +403,12 @@
             "format": "date-time"
           }
         },
-        "required": ["id", "type", "user", "created_at", "updated_at"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Warning": {
-        "properties": {
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "description"],
+        "required": ["type", "user", "created_at", "updated_at"],
         "type": "object",
         "additionalProperties": false
       },
       "WarningFromUser": {
         "properties": {
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
           "description": {
             "type": "string"
           },
@@ -494,7 +428,7 @@
             "format": "date-time"
           }
         },
-        "required": ["id", "description", "user", "created_at", "updated_at"],
+        "required": ["description", "user", "created_at", "updated_at"],
         "type": "object",
         "additionalProperties": false
       },
@@ -841,14 +775,14 @@
       }
     },
     "/api/v3/apps/{slug}/file/{filePath}": {
-      "put": {
+      "post": {
         "operationId": "WriteFile",
         "responses": {
           "204": {
             "description": "No content"
           }
         },
-        "description": "Create a new app",
+        "description": "Upload a file to the latest draft version of the project.",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -882,6 +816,39 @@
                     "$ref": "#/components/schemas/Uint8Array"
                   }
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/apps/{slug}/zip": {
+      "post": {
+        "operationId": "WriteZip",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Upload a file to the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Uint8Array"
               }
             }
           }

@@ -15,6 +15,9 @@ export type AppCategoryName =
   | "Virus"
   | "Interpreter"; // Changed! the interpreter category was added here for the case of libraries.
 
+export interface HasCategory {
+  category: AppCategoryName;
+}
 export interface Category {
   name: AppCategoryName;
 }

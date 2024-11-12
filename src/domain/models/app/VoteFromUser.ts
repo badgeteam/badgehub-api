@@ -1,8 +1,9 @@
 import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
-import { Vote } from "@db/models/app/Vote";
 
-export interface VoteFromUser
-  extends Exclude<Vote, "id">,
-    UserRelation,
-    DatedData {}
+export interface Vote {
+  type: "up" | "down" | "pig";
+  comment?: string;
+}
+
+export interface VoteFromUser extends Vote, UserRelation, DatedData {}

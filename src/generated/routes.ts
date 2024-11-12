@@ -26,7 +26,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
       name: { dataType: "string", required: true },
       slug: { dataType: "string", required: true },
     },
@@ -58,7 +57,7 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  DBProjectStatusName: {
+  ProjectStatusName: {
     dataType: "refAlias",
     type: {
       dataType: "union",
@@ -70,11 +69,6 @@ const models: TsoaRoute.Models = {
       ],
       validators: {},
     },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectStatusName: {
-    dataType: "refAlias",
-    type: { ref: "DBProjectStatusName", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   ProjectSlug: {
@@ -98,7 +92,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
       status: { ref: "ProjectStatusName", required: true },
     },
     additionalProperties: false,
@@ -111,7 +104,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
       revision: { dataType: "double", required: true },
       semantic_version: { dataType: "string" },
       zip: { dataType: "string" },
@@ -135,7 +127,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
       admin: { dataType: "boolean", required: true },
       name: { dataType: "string", required: true },
       email: { dataType: "string", required: true },
@@ -159,7 +150,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "double", required: true },
       editable: { dataType: "boolean" },
       lintable: { dataType: "boolean" },
       extension: { dataType: "string", required: true },
@@ -234,28 +224,9 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Vote: {
-    dataType: "refObject",
-    properties: {
-      id: { dataType: "double", required: true },
-      type: {
-        dataType: "union",
-        subSchemas: [
-          { dataType: "enum", enums: ["up"] },
-          { dataType: "enum", enums: ["down"] },
-          { dataType: "enum", enums: ["pig"] },
-        ],
-        required: true,
-      },
-      comment: { dataType: "string" },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   VoteFromUser: {
     dataType: "refObject",
     properties: {
-      id: { dataType: "double", required: true },
       type: {
         dataType: "union",
         subSchemas: [
@@ -274,19 +245,9 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Warning: {
-    dataType: "refObject",
-    properties: {
-      id: { dataType: "double", required: true },
-      description: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   WarningFromUser: {
     dataType: "refObject",
     properties: {
-      id: { dataType: "double", required: true },
       description: { dataType: "string", required: true },
       user: { ref: "User", required: true },
       created_at: { dataType: "datetime", required: true },
@@ -596,7 +557,7 @@ export function RegisterRoutes(app: Router) {
     }
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.put(
+  app.post(
     "/api/v3/apps/:slug/file/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
@@ -639,6 +600,54 @@ export function RegisterRoutes(app: Router) {
 
         await templateService.apiHandler({
           methodName: "writeFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.post(
+    "/api/v3/apps/:slug/zip",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.writeZip
+    ),
+
+    async function PrivateRestController_writeZip(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        zipContent: {
+          in: "body",
+          name: "zipContent",
+          required: true,
+          ref: "Uint8Array",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "writeZip",
           controller,
           response,
           next,

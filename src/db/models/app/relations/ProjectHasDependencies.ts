@@ -1,5 +1,5 @@
-import { ProjectRelation } from "../Project";
-import { VersionedDependencyRelation } from "../VersionedDependency";
+import { ProjectRelation } from "../DBProject";
+import { VersionedDependencyRelation } from "../DBVersionedDependency";
 
 export interface ProjectHasDependencies
   extends ProjectRelation,

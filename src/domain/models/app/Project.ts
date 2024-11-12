@@ -6,14 +6,17 @@ import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { MetadataFileContents } from "./MetadataFileContents";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
-import { ProjectStatusName as DBProjectStatusName } from "@db/models/ProjectStatusOnBadge";
 import { AppCategoryName } from "@domain/models/app/Category";
 
-export type ProjectStatusName = DBProjectStatusName;
+export type ProjectStatusName =
+  | "working"
+  | "in_progress"
+  | "broken"
+  | "unknown";
 
 export interface Project
   extends DatedData,
-    VersionRelation, // Latest Version
+    VersionRelation, // Latest DBVersion
     UserRelation {
   slug: string; // The directory name of this app
   git?: string; // repository url

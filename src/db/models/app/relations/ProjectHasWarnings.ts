@@ -1,6 +1,6 @@
-import { ProjectRelation } from "../Project";
-import { WarningRelation } from "../Warning";
-import { WarningFromUserRelation } from "../WarningFromUser";
+import { ProjectRelation } from "../DBProject";
+import { WarningRelation } from "../DBWarning";
+import { WarningFromUserRelation } from "../DBWarningFromUser";
 
 export interface ProjectHasWarnings
   extends WarningFromUserRelation,

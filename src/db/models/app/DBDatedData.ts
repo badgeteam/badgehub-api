@@ -1,4 +1,4 @@
-export interface DatedData {
+export interface DBDatedData {
   created_at: Date; // Creation date
   updated_at: Date; // Last update date
   deleted_at?: Date; // Optional Deletion date

@@ -1,8 +1,7 @@
 import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
-import { Warning } from "@db/models/app/Warning";
+export interface Warning {
+  description: string;
+}
 
-export interface WarningFromUser
-  extends Exclude<Warning, "id">,
-    UserRelation,
-    DatedData {}
+export interface WarningFromUser extends Warning, UserRelation, DatedData {}
