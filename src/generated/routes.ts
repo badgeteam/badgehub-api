@@ -71,27 +71,6 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  User: {
-    dataType: "refObject",
-    properties: {
-      created_at: { dataType: "datetime", required: true },
-      updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
-      admin: { dataType: "boolean", required: true },
-      name: { dataType: "string", required: true },
-      email: { dataType: "string", required: true },
-      password: { dataType: "string", required: true },
-      remember_token: { dataType: "string" },
-      editor: { dataType: "string", required: true },
-      public: { dataType: "boolean", required: true },
-      show_projects: { dataType: "boolean", required: true },
-      google2fa_enabled: { dataType: "boolean", required: true },
-      google2fa_secret: { dataType: "string" },
-      email_verified_at: { dataType: "datetime" },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Version: {
     dataType: "refObject",
     properties: {
@@ -110,8 +89,29 @@ const models: TsoaRoute.Models = {
         required: true,
       },
       app_metadata: { ref: "MetadataFileContents", required: true },
-      published: { dataType: "boolean", required: true },
+      published_at: { dataType: "datetime", required: true },
       download_count: { dataType: "double", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  User: {
+    dataType: "refObject",
+    properties: {
+      created_at: { dataType: "datetime", required: true },
+      updated_at: { dataType: "datetime", required: true },
+      deleted_at: { dataType: "datetime" },
+      admin: { dataType: "boolean", required: true },
+      name: { dataType: "string", required: true },
+      email: { dataType: "string", required: true },
+      password: { dataType: "string", required: true },
+      remember_token: { dataType: "string" },
+      editor: { dataType: "string", required: true },
+      public: { dataType: "boolean", required: true },
+      show_projects: { dataType: "boolean", required: true },
+      google2fa_enabled: { dataType: "boolean", required: true },
+      google2fa_secret: { dataType: "string" },
+      email_verified_at: { dataType: "datetime" },
     },
     additionalProperties: false,
   },
@@ -260,66 +260,78 @@ const models: TsoaRoute.Models = {
   Project: {
     dataType: "refObject",
     properties: {
+      slug: { dataType: "string", required: true },
+      user_email: { dataType: "string", required: true },
+      git: { dataType: "string" },
+      allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      slug: { dataType: "string", required: true },
-      git: { dataType: "string" },
-      allow_team_fixes: { dataType: "boolean", required: true },
-      name: { dataType: "string", required: true },
+      name: { dataType: "string" },
       min_firmware: { dataType: "double" },
       max_firmware: { dataType: "double" },
       git_commit_id: { dataType: "string" },
       published_at: { dataType: "datetime" },
-      download_counter: { dataType: "double", required: true },
+      download_counter: { dataType: "double" },
       license: { dataType: "string" },
       size_of_zip: { dataType: "double" },
       size_of_content: { dataType: "double" },
-      category: { ref: "AppCategoryName", required: true },
+      category: { ref: "AppCategoryName" },
       description: { dataType: "string" },
       revision: { dataType: "double" },
-      status: { ref: "ProjectStatusName", required: true },
-      author: { dataType: "string", required: true },
-      interpreter: { dataType: "string", required: true },
-      user: { ref: "User" },
+      status: { ref: "ProjectStatusName" },
+      author: { dataType: "string" },
+      interpreter: { dataType: "string" },
       version: { ref: "Version" },
       badges: {
         dataType: "array",
         array: { dataType: "refObject", ref: "Badge" },
-        required: true,
       },
       dependencies: {
         dataType: "array",
         array: { dataType: "refObject", ref: "Dependency" },
-        required: true,
       },
       states: {
         dataType: "array",
         array: { dataType: "refObject", ref: "ProjectStatusOnBadge" },
-        required: true,
       },
       versions: {
         dataType: "array",
         array: { dataType: "refObject", ref: "Version" },
-        required: true,
       },
       votes: {
         dataType: "array",
         array: { dataType: "refObject", ref: "VoteFromUser" },
-        required: true,
       },
       warnings: {
         dataType: "array",
         array: { dataType: "refObject", ref: "WarningFromUser" },
-        required: true,
       },
       collaborators: {
         dataType: "array",
         array: { dataType: "refObject", ref: "User" },
-        required: true,
       },
     },
     additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Partial_ProjectCore_: {
+    dataType: "refAlias",
+    type: {
+      dataType: "nestedObjectLiteral",
+      nestedProperties: {
+        slug: { dataType: "string" },
+        user_email: { dataType: "string" },
+        git: { dataType: "string" },
+        allow_team_fixes: { dataType: "boolean" },
+      },
+      validators: {},
+    },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Exclude_Partial_ProjectCore_.slug_": {
+    dataType: "refAlias",
+    type: { ref: "Partial_ProjectCore_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Uint8Array: {
@@ -519,16 +531,22 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.createProject
+      PrivateRestController.prototype.upsertProject
     ),
 
-    async function PrivateRestController_createProject(
+    async function PrivateRestController_upsertProject(
       request: ExRequest,
       response: ExResponse,
       next: any
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        props: {
+          in: "body",
+          name: "props",
+          required: true,
+          ref: "Exclude_Partial_ProjectCore_.slug_",
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -544,7 +562,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "createProject",
+          methodName: "upsertProject",
           controller,
           response,
           next,

@@ -14,12 +14,14 @@ export type ProjectStatusName =
   | "broken"
   | "unknown";
 
-export interface Project extends DatedData {
-  // Latest DBVersion
-  slug: string; // The directory name of this app
-  git?: string; // repository url
-  allow_team_fixes: boolean;
+export interface ProjectCore {
+  slug: string;
+  user_email: User["email"];
+  git?: string;
+  allow_team_fixes?: boolean;
+}
 
+export interface Project extends ProjectCore, DatedData {
   // Computed
   name?: string;
   min_firmware?: number; // Smallest revision number that exists
@@ -38,7 +40,6 @@ export interface Project extends DatedData {
   readonly interpreter?: MetadataFileContents["interpreter"]; // Interpreter for latest version of app
 
   // Relations
-  readonly user?: User;
   readonly version?: Version;
   readonly badges?: Array<Badge>;
   readonly dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.

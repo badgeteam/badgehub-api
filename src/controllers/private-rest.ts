@@ -1,6 +1,7 @@
 import { Body, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
+import { ProjectCore } from "@domain/models/app/Project";
 
 @Route("/api/v3")
 @Tags("private")
@@ -13,8 +14,11 @@ export class PrivateRestController {
    * Create a new app
    */
   @Post("/apps/{slug}") // TODO Fix this is not working yet, we get a 404
-  public async createProject(@Path() slug: string): Promise<void> {
-    await this.badgeHubData.createProject(slug);
+  public async upsertProject(
+    @Path() slug: string,
+    @Body() props: Exclude<Partial<ProjectCore>, "slug">
+  ): Promise<void> {
+    await this.badgeHubData.upsertProject(slug, props);
   }
 
   /**

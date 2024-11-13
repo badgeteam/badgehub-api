@@ -1,6 +1,6 @@
 import { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { Badge } from "@domain/models/Badge";
-import { Project, ProjectSlug } from "@domain/models/app/Project";
+import { Project, ProjectCore, ProjectSlug } from "@domain/models/app/Project";
 import { User } from "@domain/models/app/User";
 import { Version } from "@domain/models/app/Version";
 import { AppCategoryName } from "@domain/models/app/Category";
@@ -10,7 +10,6 @@ import { DBProject as DBProject } from "@db/models/app/DBProject";
 import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
 import sql from "sql-template-tag";
 import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
-import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
 
@@ -25,15 +24,17 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  createProject(projectSlug: ProjectSlug): Promise<void> {
-    throw new Error("Method not implemented.");
+  async upsertProject(
+    projectSlug: ProjectCore["slug"],
+    project: Exclude<Partial<ProjectCore>, "slug">
+  ): Promise<void> {
+    await this.pool.query(
+      sql`insert into projects (slug)
+          values (${projectSlug})`
+    );
   }
 
   deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-
-  publishUpdatedMetadata(changes: MetadataFileContents): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -72,6 +73,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   ): Promise<string> {
     throw new Error("Method not implemented.");
   }
+
   getVersionDownloadLink(
     projectSlug: string,
     versionRevision: number
@@ -109,21 +111,25 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                            m.description,
                            m.interpreter,
                            m.licence_file,
-                           m.name, 
+                           m.name,
                            u.name as author_name
                     from projects p
                              left join users u on p.user_id = user.id
                              left join versions v on p.version_id = v.id
-                             left join metadata_file_contents m on v.metadata_file_contents_id = m.id`;
+                             left join metadata_file_contents m on v.metadata_file_contents_id = m.id
+                    where p.deleted_at is null
+                      and u.deleted_at is null
+                      and v.deleted_at is null
+    `;
+
+    query = sql`${query}
+    `;
     if (filter?.pageLength) {
       query = sql`${query}
-      OFFSET
-      ${filter.pageLength}`;
-      if (filter.pageStart) {
-        query = sql`${query}
-        OFFSET
-        ${filter.pageStart}`;
-      }
+      limit
+      ${filter.pageLength}
+      offset
+      ${filter?.pageStart ?? 0}`;
     }
     const projects: (DBProject &
       DBVersion &

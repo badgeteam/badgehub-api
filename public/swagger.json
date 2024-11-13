@@ -56,6 +56,71 @@
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
       },
+      "Version": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "size_of_zip": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/FileMetadata"
+            },
+            "type": "array"
+          },
+          "app_metadata": {
+            "$ref": "#/components/schemas/MetadataFileContents"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "download_count": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "user",
+          "created_at",
+          "updated_at",
+          "revision",
+          "files",
+          "app_metadata",
+          "published_at",
+          "download_count"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
       "User": {
         "properties": {
           "created_at": {
@@ -116,70 +181,6 @@
           "public",
           "show_projects",
           "google2fa_enabled"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Version": {
-        "properties": {
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "semantic_version": {
-            "type": "string"
-          },
-          "zip": {
-            "type": "string"
-          },
-          "size_of_zip": {
-            "type": "number",
-            "format": "double"
-          },
-          "git_commit_id": {
-            "type": "string"
-          },
-          "files": {
-            "items": {
-              "$ref": "#/components/schemas/FileMetadata"
-            },
-            "type": "array"
-          },
-          "app_metadata": {
-            "$ref": "#/components/schemas/MetadataFileContents"
-          },
-          "published": {
-            "type": "boolean"
-          },
-          "download_count": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": [
-          "user",
-          "created_at",
-          "updated_at",
-          "revision",
-          "files",
-          "app_metadata",
-          "published",
-          "download_count"
         ],
         "type": "object",
         "additionalProperties": false
@@ -434,6 +435,18 @@
       },
       "Project": {
         "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -445,15 +458,6 @@
           "deleted_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "slug": {
-            "type": "string"
-          },
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
           },
           "name": {
             "type": "string"
@@ -507,9 +511,6 @@
           "interpreter": {
             "type": "string"
           },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
           "version": {
             "$ref": "#/components/schemas/Version"
           },
@@ -556,27 +557,31 @@
             "type": "array"
           }
         },
-        "required": [
-          "created_at",
-          "updated_at",
-          "slug",
-          "allow_team_fixes",
-          "name",
-          "download_counter",
-          "category",
-          "status",
-          "author",
-          "interpreter",
-          "badges",
-          "dependencies",
-          "states",
-          "versions",
-          "votes",
-          "warnings",
-          "collaborators"
-        ],
+        "required": ["slug", "user_email", "created_at", "updated_at"],
         "type": "object",
         "additionalProperties": false
+      },
+      "Partial_ProjectCore_": {
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          }
+        },
+        "type": "object",
+        "description": "Make all properties in T optional"
+      },
+      "Exclude_Partial_ProjectCore_.slug_": {
+        "$ref": "#/components/schemas/Partial_ProjectCore_",
+        "description": "Exclude from T those types that are assignable to U"
       },
       "Uint8Array": {
         "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
@@ -750,7 +755,7 @@
         ]
       },
       "post": {
-        "operationId": "CreateProject",
+        "operationId": "UpsertProject",
         "responses": {
           "204": {
             "description": "No content"
@@ -768,7 +773,17 @@
               "type": "string"
             }
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Exclude_Partial_ProjectCore_.slug_"
+              }
+            }
+          }
+        }
       }
     },
     "/api/v3/apps/{slug}/file/{filePath}": {
