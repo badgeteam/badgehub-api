@@ -1,6 +1,6 @@
 import { MetadataFileContentsRelation } from "./DBMetadataFileContents";
 import { DBDatedData } from "./DBDatedData";
-import { UserRelation } from "./DBUser";
+import { UserEmailRelation } from "./DBUser";
 import { TimestampTZ } from "@db/DBTypes";
 
 export interface VersionRelation {
@@ -8,7 +8,7 @@ export interface VersionRelation {
 }
 
 export interface DBVersion
-  extends UserRelation,
+  extends UserEmailRelation,
     DBDatedData,
     MetadataFileContentsRelation {
   id: number;

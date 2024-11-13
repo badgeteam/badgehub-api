@@ -1,6 +1,8 @@
 import { VersionRelation } from "../DBVersion";
-import { ProjectRelation } from "../DBProject";
+import { ProjectSlugRelation } from "../DBProject";
 
-export interface ProjectHasVersions extends VersionRelation, ProjectRelation {
+export interface ProjectHasVersions
+  extends VersionRelation,
+    ProjectSlugRelation {
   id: number;
 }

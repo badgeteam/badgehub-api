@@ -1,6 +1,8 @@
-import { ProjectRelation } from "../DBProject";
+import { ProjectSlugRelation } from "../DBProject";
 import { VoteFromUserRelation } from "../DBVoteFromUser";
 
-export interface ProjectHasVotes extends VoteFromUserRelation, ProjectRelation {
+export interface ProjectHasVotes
+  extends VoteFromUserRelation,
+    ProjectSlugRelation {
   id: number;
 }

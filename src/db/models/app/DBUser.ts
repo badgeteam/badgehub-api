@@ -1,15 +1,14 @@
 import { DBDatedData } from "./DBDatedData";
 import { TimestampTZ } from "@db/DBTypes";
 
-export interface UserRelation {
-  user_id: DBUser["id"];
+export interface UserEmailRelation {
+  user_email: DBUser["email"];
 }
 // table name: users
 export interface DBUser extends DBDatedData {
-  id: number;
+  email: string;
   admin: boolean;
   name: string;
-  email: string;
   password: string;
   remember_token?: string;
   editor: string;

@@ -13,6 +13,16 @@ import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app
 import { DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
 
+function valueIsDefinedForKey(obj: object, key: string) {
+  return (obj as any)[key] !== undefined;
+}
+
+function getKeysWithDefinedValues<O extends object>(obj: O) {
+  return Object.keys(obj)
+    .filter((key) => valueIsDefinedForKey(obj, key))
+    .join(",");
+}
+
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
 
@@ -25,12 +35,14 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   async upsertProject(
-    projectSlug: ProjectCore["slug"],
-    project: Exclude<Partial<ProjectCore>, "slug">
+    project: Partial<ProjectCore> & Pick<ProjectCore, "slug">
   ): Promise<void> {
+    const keys = sql`(${getKeysWithDefinedValues(project)})`;
     await this.pool.query(
-      sql`insert into projects (slug)
-          values (${projectSlug})`
+      sql`insert into projects ${keys}
+          values (${project.slug}, ${project.user_email ?? "null"}, ${project.git ?? "null"},
+                  ${project.allow_team_fixes ?? "null"}) on conflict do
+          update`
     );
   }
 
@@ -99,6 +111,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     let query = sql`select p.slug,
                            p.git,
                            p.allow_team_fixes,
+                           p.user_email,
                            p.created_at,
                            p.updated_at,
                            p.deleted_at,
@@ -140,6 +153,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
       return {
         version: undefined, // TODO
         allow_team_fixes: false,
+        user_email: dbProject.user_email,
         author: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
         badges: [], // TODO
         category: dbProject.category || "uncategorized",
@@ -161,7 +175,6 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         slug: dbProject.slug,
         states: undefined,
         status: undefined, // TODO
-        user: undefined, // TODO
         versions: undefined, // TODO
         dependencies: undefined, // TODO
         votes: undefined, // TODO

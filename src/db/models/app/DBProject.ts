@@ -1,4 +1,4 @@
-import { UserRelation } from "./DBUser";
+import { DBUser, UserEmailRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 import { VersionRelation } from "./DBVersion";
 
@@ -8,8 +8,7 @@ export type ProjectSlug = string;
 export interface DBProject
   extends DBDatedData,
     VersionRelation, // The Latest DBVersion
-    UserRelation {
-  id: number;
+    UserEmailRelation {
   slug: ProjectSlug; // The directory name of this app
   git?: string; // repository url
   allow_team_fixes: boolean;
@@ -17,8 +16,4 @@ export interface DBProject
 
 export interface ProjectSlugRelation {
   project_slug: DBProject["slug"];
-}
-
-export interface ProjectRelation {
-  project_id: DBProject["id"];
 }

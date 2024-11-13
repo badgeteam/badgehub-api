@@ -13,12 +13,12 @@ export class PrivateRestController {
   /**
    * Create a new app
    */
-  @Post("/apps/{slug}") // TODO Fix this is not working yet, we get a 404
+  @Post("/apps/{slug}")
   public async upsertProject(
     @Path() slug: string,
     @Body() props: Exclude<Partial<ProjectCore>, "slug">
   ): Promise<void> {
-    await this.badgeHubData.upsertProject(slug, props);
+    await this.badgeHubData.upsertProject({ slug, ...props });
   }
 
   /**
