@@ -82,7 +82,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   async getBadges(): Promise<Badge[]> {
     return await this.pool
       .query(
-        sql`SELECT name, slug
+        sql`select name, slug
             from badges`
       )
       .then((res) => res.rows);
@@ -94,7 +94,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     badgeSlug?: string;
     appCategory?: AppCategoryName;
   }): Promise<Project[]> {
-    let query = sql`SELECT p.slug,
+    let query = sql`select p.slug,
                            p.git,
                            p.allow_team_fixes,
                            p.created_at,
@@ -111,10 +111,10 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                            m.licence_file,
                            m.name, 
                            u.name as author_name
-                    FROM projects p
-                             LEFT JOIN users u on p.user_id = user.id
-                             LEFT JOIN versions v ON p.version_id = v.id
-                             LEFT JOIN metadata_file_contents m ON v.metadata_file_contents_id = m.id`;
+                    from projects p
+                             left join users u on p.user_id = user.id
+                             left join versions v on p.version_id = v.id
+                             left join metadata_file_contents m on v.metadata_file_contents_id = m.id`;
     if (filter?.pageLength) {
       query = sql`${query}
       OFFSET
