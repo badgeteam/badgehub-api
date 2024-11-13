@@ -3,9 +3,9 @@ enum ErrorType {
   NotAuthenticated = "ERROR_NOT_AUTHENTICATED",
 }
 class BadgeHubApiError extends Error {
-  name: ErrorType;
-  message: string;
-  cause: any;
+  override name: ErrorType;
+  override message: string;
+  override cause: any;
 
   constructor({
     name,
