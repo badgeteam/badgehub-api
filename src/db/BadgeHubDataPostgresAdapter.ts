@@ -56,7 +56,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  getUser(userId: number): Promise<User> {
+  getUser(userEmail: string): Promise<User> {
     throw new Error("Method not implemented.");
   }
 
@@ -64,11 +64,17 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  getFileDownloadLink(fileId: number): Promise<string> {
+  getFileDownloadLink(
+    projectSlug: string,
+    versionRevision: number,
+    filePath: string
+  ): Promise<string> {
     throw new Error("Method not implemented.");
   }
-
-  getVersionDownloadLink(versionId: number): Promise<string> {
+  getVersionDownloadLink(
+    projectSlug: string,
+    versionRevision: number
+  ): Promise<string> {
     throw new Error("Method not implemented.");
   }
 
@@ -96,6 +102,8 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                            v.semantic_version,
                            v.status,
                            v.git_commit_id,
+                           v.published,
+                           v.published_at,
                            v.revision,
                            v.size_of_zip,
                            m.description,
@@ -133,25 +141,25 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         created_at: dbProject.created_at,
         updated_at: dbProject.updated_at,
         deleted_at: dbProject.deleted_at,
-        dependencies: [], // TODO
         description: dbProject.description,
-        download_counter: 0,
+        download_counter: undefined, // TODO
         git: dbProject.git,
         git_commit_id: dbProject.git_commit_id,
         interpreter: dbProject.interpreter,
         license: dbProject.license_file, // TODO check what we should do with the license, possibly we could say that this is either a path or 'MIT'|..., but then still we should read out the licens somewhere if it is a file.
         name: dbProject.name,
-        published_at: undefined,
+        published_at: dbProject.published_at, // TODO
         revision: dbProject.revision,
-        size_of_content: 0, // TODO
+        size_of_content: undefined, // TODO
         size_of_zip: dbProject.size_of_zip,
         slug: dbProject.slug,
-        states: [],
-        status: "unknown", // TODO
+        states: undefined,
+        status: undefined, // TODO
         user: undefined, // TODO
-        versions: [], // TODO
-        votes: [], // TODO
-        warnings: [], // TODO
+        versions: undefined, // TODO
+        dependencies: undefined, // TODO
+        votes: undefined, // TODO
+        warnings: undefined, // TODO
       };
     });
   }

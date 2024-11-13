@@ -19,10 +19,17 @@ export interface BadgeHubDataPort {
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
   getProject(projectSlug: ProjectSlug): Promise<Project>;
   getVersion(projectSlug: ProjectSlug): Promise<Version>;
-  getUser(userId: User["id"]): Promise<User>;
+  getUser(userEmail: User["email"]): Promise<User>;
   updateUser(updatedUser: User): Promise<void>;
-  getFileDownloadLink(fileId: FileMetadata["id"]): Promise<string>;
-  getVersionDownloadLink(versionId: Version["id"]): Promise<string>;
+  getFileDownloadLink(
+    projectSlug: Project["slug"],
+    versionRevision: number,
+    filePath: FileMetadata["name"]
+  ): Promise<string>;
+  getVersionDownloadLink(
+    projectSlug: Project["slug"],
+    versionRevision: number
+  ): Promise<string>;
   getBadges(): Promise<Badge[]>;
   getCategories(): Promise<AppCategoryName[]>;
   getProjects(filter?: {
