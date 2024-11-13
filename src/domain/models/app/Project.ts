@@ -1,5 +1,5 @@
-import { Version, VersionRelation } from "./Version";
-import { User, UserRelation } from "./User";
+import { Version } from "./Version";
+import { User } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
 import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";

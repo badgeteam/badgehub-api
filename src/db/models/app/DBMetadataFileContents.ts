@@ -3,8 +3,6 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
-import { BadgeSlug } from "../DBBadge";
-import { CategoryNameRelation } from "@db/models/app/DBCategory";
 import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 
 export interface MetadataFileContentsRelation {

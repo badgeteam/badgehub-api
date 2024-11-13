@@ -1,5 +1,6 @@
 import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
+
 export interface Warning {
   description: string;
 }

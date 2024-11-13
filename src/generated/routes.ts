@@ -71,28 +71,23 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectSlug: {
-    dataType: "refAlias",
-    type: { dataType: "string", validators: {} },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Dependency: {
+  User: {
     dataType: "refObject",
     properties: {
-      project_slug: { ref: "ProjectSlug", required: true },
-      semantic_version_range: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectStatusOnBadge: {
-    dataType: "refObject",
-    properties: {
-      badge: { ref: "Badge", required: true },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      status: { ref: "ProjectStatusName", required: true },
+      admin: { dataType: "boolean", required: true },
+      name: { dataType: "string", required: true },
+      email: { dataType: "string", required: true },
+      password: { dataType: "string", required: true },
+      remember_token: { dataType: "string" },
+      editor: { dataType: "string", required: true },
+      public: { dataType: "boolean", required: true },
+      show_projects: { dataType: "boolean", required: true },
+      google2fa_enabled: { dataType: "boolean", required: true },
+      google2fa_secret: { dataType: "string" },
+      email_verified_at: { dataType: "datetime" },
     },
     additionalProperties: false,
   },
@@ -117,27 +112,6 @@ const models: TsoaRoute.Models = {
       app_metadata: { ref: "MetadataFileContents", required: true },
       published: { dataType: "boolean", required: true },
       download_count: { dataType: "double", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  User: {
-    dataType: "refObject",
-    properties: {
-      created_at: { dataType: "datetime", required: true },
-      updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
-      admin: { dataType: "boolean", required: true },
-      name: { dataType: "string", required: true },
-      email: { dataType: "string", required: true },
-      password: { dataType: "string", required: true },
-      remember_token: { dataType: "string" },
-      editor: { dataType: "string", required: true },
-      public: { dataType: "boolean", required: true },
-      show_projects: { dataType: "boolean", required: true },
-      google2fa_enabled: { dataType: "boolean", required: true },
-      google2fa_secret: { dataType: "string" },
-      email_verified_at: { dataType: "datetime" },
     },
     additionalProperties: false,
   },
@@ -224,6 +198,32 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectSlug: {
+    dataType: "refAlias",
+    type: { dataType: "string", validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Dependency: {
+    dataType: "refObject",
+    properties: {
+      project_slug: { ref: "ProjectSlug", required: true },
+      semantic_version_range: { dataType: "string", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectStatusOnBadge: {
+    dataType: "refObject",
+    properties: {
+      badge: { ref: "Badge", required: true },
+      created_at: { dataType: "datetime", required: true },
+      updated_at: { dataType: "datetime", required: true },
+      deleted_at: { dataType: "datetime" },
+      status: { ref: "ProjectStatusName", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   VoteFromUser: {
     dataType: "refObject",
     properties: {
@@ -263,8 +263,6 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      version: { ref: "Version", required: true },
-      user: { ref: "User", required: true },
       slug: { dataType: "string", required: true },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean", required: true },
@@ -274,15 +272,17 @@ const models: TsoaRoute.Models = {
       git_commit_id: { dataType: "string" },
       published_at: { dataType: "datetime" },
       download_counter: { dataType: "double", required: true },
-      license: { dataType: "string", required: true },
+      license: { dataType: "string" },
       size_of_zip: { dataType: "double" },
       size_of_content: { dataType: "double" },
       category: { ref: "AppCategoryName", required: true },
       description: { dataType: "string" },
-      revision: { dataType: "string", required: true },
+      revision: { dataType: "double" },
       status: { ref: "ProjectStatusName", required: true },
       author: { dataType: "string", required: true },
       interpreter: { dataType: "string", required: true },
+      user: { ref: "User" },
+      version: { ref: "Version" },
       badges: {
         dataType: "array",
         array: { dataType: "refObject", ref: "Badge" },

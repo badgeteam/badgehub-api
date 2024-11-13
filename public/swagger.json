@@ -56,27 +56,8 @@
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
       },
-      "ProjectSlug": {
-        "type": "string"
-      },
-      "Dependency": {
+      "User": {
         "properties": {
-          "project_slug": {
-            "$ref": "#/components/schemas/ProjectSlug"
-          },
-          "semantic_version_range": {
-            "type": "string"
-          }
-        },
-        "required": ["project_slug", "semantic_version_range"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "ProjectStatusOnBadge": {
-        "properties": {
-          "badge": {
-            "$ref": "#/components/schemas/Badge"
-          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -89,11 +70,53 @@
             "type": "string",
             "format": "date-time"
           },
-          "status": {
-            "$ref": "#/components/schemas/ProjectStatusName"
+          "admin": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "remember_token": {
+            "type": "string"
+          },
+          "editor": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "show_projects": {
+            "type": "boolean"
+          },
+          "google2fa_enabled": {
+            "type": "boolean"
+          },
+          "google2fa_secret": {
+            "type": "string"
+          },
+          "email_verified_at": {
+            "type": "string",
+            "format": "date-time"
           }
         },
-        "required": ["badge", "created_at", "updated_at", "status"],
+        "required": [
+          "created_at",
+          "updated_at",
+          "admin",
+          "name",
+          "email",
+          "password",
+          "editor",
+          "public",
+          "show_projects",
+          "google2fa_enabled"
+        ],
         "type": "object",
         "additionalProperties": false
       },
@@ -157,70 +180,6 @@
           "app_metadata",
           "published",
           "download_count"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "User": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "remember_token": {
-            "type": "string"
-          },
-          "editor": {
-            "type": "string"
-          },
-          "public": {
-            "type": "boolean"
-          },
-          "show_projects": {
-            "type": "boolean"
-          },
-          "google2fa_enabled": {
-            "type": "boolean"
-          },
-          "google2fa_secret": {
-            "type": "string"
-          },
-          "email_verified_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "created_at",
-          "updated_at",
-          "admin",
-          "name",
-          "email",
-          "password",
-          "editor",
-          "public",
-          "show_projects",
-          "google2fa_enabled"
         ],
         "type": "object",
         "additionalProperties": false
@@ -378,6 +337,47 @@
         "type": "object",
         "additionalProperties": false
       },
+      "ProjectSlug": {
+        "type": "string"
+      },
+      "Dependency": {
+        "properties": {
+          "project_slug": {
+            "$ref": "#/components/schemas/ProjectSlug"
+          },
+          "semantic_version_range": {
+            "type": "string"
+          }
+        },
+        "required": ["project_slug", "semantic_version_range"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "ProjectStatusOnBadge": {
+        "properties": {
+          "badge": {
+            "$ref": "#/components/schemas/Badge"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProjectStatusName"
+          }
+        },
+        "required": ["badge", "created_at", "updated_at", "status"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "VoteFromUser": {
         "properties": {
           "type": {
@@ -446,12 +446,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "version": {
-            "$ref": "#/components/schemas/Version"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
           "slug": {
             "type": "string"
           },
@@ -501,7 +495,8 @@
             "type": "string"
           },
           "revision": {
-            "type": "string"
+            "type": "number",
+            "format": "double"
           },
           "status": {
             "$ref": "#/components/schemas/ProjectStatusName"
@@ -511,6 +506,12 @@
           },
           "interpreter": {
             "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "version": {
+            "$ref": "#/components/schemas/Version"
           },
           "badges": {
             "items": {
@@ -558,15 +559,11 @@
         "required": [
           "created_at",
           "updated_at",
-          "version",
-          "user",
           "slug",
           "allow_team_fixes",
           "name",
           "download_counter",
-          "license",
           "category",
-          "revision",
           "status",
           "author",
           "interpreter",
