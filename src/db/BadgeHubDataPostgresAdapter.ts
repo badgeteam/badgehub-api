@@ -12,6 +12,7 @@ import sql from "sql-template-tag";
 import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
 import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
 import { DBUser } from "@db/models/app/DBUser";
+import moment from "moment";
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
@@ -93,16 +94,15 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     badgeSlug?: string;
     appCategory?: AppCategoryName;
   }): Promise<Project[]> {
-    let query = sql`SELECT slug,
-                           git,
-                           allow_team_fixes,
+    let query = sql`SELECT p.slug,
+                           p.git,
+                           p.allow_team_fixes,
                            p.created_at,
                            p.updated_at,
                            p.deleted_at,
                            v.semantic_version,
                            v.status,
                            v.git_commit_id,
-                           v.published,
                            v.published_at,
                            v.revision,
                            v.size_of_zip,
@@ -138,9 +138,9 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         badges: [], // TODO
         category: dbProject.category || "uncategorized",
         collaborators: [], // TODO
-        created_at: dbProject.created_at,
-        updated_at: dbProject.updated_at,
-        deleted_at: dbProject.deleted_at,
+        created_at: moment(dbProject.created_at).toDate(),
+        updated_at: moment(dbProject.updated_at).toDate(),
+        deleted_at: moment(dbProject.deleted_at).toDate(),
         description: dbProject.description,
         download_counter: undefined, // TODO
         git: dbProject.git,
@@ -148,7 +148,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         interpreter: dbProject.interpreter,
         license: dbProject.license_file, // TODO check what we should do with the license, possibly we could say that this is either a path or 'MIT'|..., but then still we should read out the licens somewhere if it is a file.
         name: dbProject.name,
-        published_at: dbProject.published_at, // TODO
+        published_at: moment(dbProject.published_at).toDate(),
         revision: dbProject.revision,
         size_of_content: undefined, // TODO
         size_of_zip: dbProject.size_of_zip,

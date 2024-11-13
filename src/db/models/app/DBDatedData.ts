@@ -1,5 +1,7 @@
+import { TimestampTZ } from "@db/DBTypes";
+
 export interface DBDatedData {
-  created_at: Date; // Creation date
-  updated_at: Date; // Last update date
-  deleted_at?: Date; // Optional Deletion date
+  created_at: TimestampTZ; // Creation date
+  updated_at: TimestampTZ; // Last update date
+  deleted_at?: TimestampTZ; // Optional Deletion date
 }

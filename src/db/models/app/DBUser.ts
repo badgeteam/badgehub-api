@@ -1,4 +1,5 @@
 import { DBDatedData } from "./DBDatedData";
+import { TimestampTZ } from "@db/DBTypes";
 
 export interface UserRelation {
   user_id: DBUser["id"];
@@ -16,5 +17,5 @@ export interface DBUser extends DBDatedData {
   show_projects: boolean;
   google2fa_enabled: boolean;
   google2fa_secret?: string;
-  email_verified_at?: Date;
+  email_verified_at?: TimestampTZ;
 }
