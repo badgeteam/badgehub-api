@@ -6,9 +6,10 @@
 import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
 
 export interface AppMetadataJSONRelation {
-  metadata_file_contents_id: DBAppMetadataJSON["id"];
+  app_metadata_json_id: DBAppMetadataJSON["id"];
 }
 
+// table name: app_metadata_json
 export interface DBAppMetadataJSON extends AppMetadataJSON {
   id: number;
 }

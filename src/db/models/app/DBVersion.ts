@@ -19,6 +19,6 @@ export interface DBVersion
   zip?: string;
   size_of_zip?: number;
   git_commit_id?: string;
-  published_at: TimestampTZ;
+  published_at?: TimestampTZ;
   download_count: number;
 }

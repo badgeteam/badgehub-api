@@ -88,7 +88,7 @@ const models: TsoaRoute.Models = {
         array: { dataType: "refObject", ref: "FileMetadata" },
         required: true,
       },
-      app_metadata: { ref: "MetadataFileContents", required: true },
+      app_metadata: { ref: "AppMetadataJSON", required: true },
       published_at: { dataType: "datetime", required: true },
       download_count: { dataType: "double", required: true },
     },
@@ -164,7 +164,7 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  MetadataFileContents: {
+  AppMetadataJSON: {
     dataType: "refObject",
     properties: {
       category: { ref: "AppCategoryName", required: true },
