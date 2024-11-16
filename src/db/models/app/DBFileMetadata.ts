@@ -6,6 +6,7 @@ export interface FileMetadataRelation {
   file_metadata_id: DBFileMetadata["id"];
 }
 
+// table name: file_metadata
 export interface DBFileMetadata
   extends VersionRelation,
     UserEmailRelation,

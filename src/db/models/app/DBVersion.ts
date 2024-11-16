@@ -1,7 +1,8 @@
-import { MetadataFileContentsRelation } from "./DBMetadataFileContents";
+import { AppMetadataJSONRelation } from "./DBAppMetadataJSON";
 import { DBDatedData } from "./DBDatedData";
 import { UserEmailRelation } from "./DBUser";
 import { TimestampTZ } from "@db/DBTypes";
+import { ProjectSlugRelation } from "@db/models/app/DBProject";
 
 export interface VersionRelation {
   version_id: DBVersion["id"];
@@ -10,7 +11,8 @@ export interface VersionRelation {
 export interface DBVersion
   extends UserEmailRelation,
     DBDatedData,
-    MetadataFileContentsRelation {
+    ProjectSlugRelation,
+    AppMetadataJSONRelation {
   id: number;
   revision: number;
   semantic_version?: string; // Changed! Semantic version

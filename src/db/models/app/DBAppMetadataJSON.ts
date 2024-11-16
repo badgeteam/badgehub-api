@@ -3,12 +3,12 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
-import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
+import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
 
-export interface MetadataFileContentsRelation {
-  metadata_file_contents_id: DBMetadataFileContents["id"];
+export interface AppMetadataJSONRelation {
+  metadata_file_contents_id: DBAppMetadataJSON["id"];
 }
 
-export interface DBMetadataFileContents extends MetadataFileContents {
+export interface DBAppMetadataJSON extends AppMetadataJSON {
   id: number;
 }

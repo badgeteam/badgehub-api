@@ -3,7 +3,7 @@ import { User } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
 import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
-import { MetadataFileContents } from "./MetadataFileContents";
+import { AppMetadataJSON } from "./AppMetadataJSON";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
 import { AppCategoryName } from "@domain/models/app/Category";
@@ -37,7 +37,7 @@ export interface Project extends ProjectCore, DatedData {
   readonly revision?: number; // latest revsion number of the app
   readonly status?: ProjectStatusName; // Status of newest version with a non-empty status
   readonly author?: string; // user->name
-  readonly interpreter?: MetadataFileContents["interpreter"]; // Interpreter for latest version of app
+  readonly interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of app
 
   // Relations
   readonly version?: Version;

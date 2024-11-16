@@ -6,7 +6,7 @@ import { BadgeSlug } from "@db/models/DBBadge";
 import { HasCategory } from "@domain/models/app/Category";
 
 // table name: metadata_file_contents
-export interface MetadataFileContents extends HasCategory {
+export interface AppMetadataJSON extends HasCategory {
   name: string;
   description?: string;
   author?: string; // The name of the author

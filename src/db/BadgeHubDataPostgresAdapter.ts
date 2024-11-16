@@ -9,7 +9,7 @@ import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
 import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
 import sql, { join } from "sql-template-tag";
-import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
+import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
 import { DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";

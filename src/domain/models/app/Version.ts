@@ -1,4 +1,4 @@
-import { MetadataFileContents } from "./MetadataFileContents";
+import { AppMetadataJSON } from "./AppMetadataJSON";
 import { DatedData } from "./DatedData";
 import { UserRelation } from "./User";
 import { FileMetadata } from "./FileMetadata";
@@ -14,7 +14,7 @@ export interface Version extends UserRelation, DatedData {
   size_of_zip?: number;
   git_commit_id?: string;
   files: Array<FileMetadata>;
-  app_metadata: MetadataFileContents; // Changed! New property that has the content of the metadata.json file that is installed on the app.
+  app_metadata: AppMetadataJSON; // Changed! New property that has the content of the metadata.json file that is installed on the app.
   published_at: Date;
   download_count: number;
 }

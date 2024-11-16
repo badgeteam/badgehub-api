@@ -97,7 +97,7 @@
             "type": "array"
           },
           "app_metadata": {
-            "$ref": "#/components/schemas/MetadataFileContents"
+            "$ref": "#/components/schemas/AppMetadataJSON"
           },
           "published_at": {
             "type": "string",
@@ -270,7 +270,7 @@
         "type": "object",
         "description": "Construct a type with a set of properties K of type T"
       },
-      "MetadataFileContents": {
+      "AppMetadataJSON": {
         "properties": {
           "category": {
             "$ref": "#/components/schemas/AppCategoryName"

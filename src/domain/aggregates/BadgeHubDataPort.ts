@@ -2,7 +2,7 @@ import { Project, ProjectCore, ProjectSlug } from "@domain/models/app/Project";
 import { Version } from "@domain/models/app/Version";
 import { User } from "@domain/models/app/User";
 import { FileMetadata } from "@domain/models/app/FileMetadata";
-import { MetadataFileContents } from "@domain/models/app/MetadataFileContents";
+import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
 import { Badge } from "@domain/models/Badge";
 import { AppCategoryName } from "@domain/models/app/Category";
 
