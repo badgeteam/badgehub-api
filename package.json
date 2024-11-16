@@ -14,10 +14,15 @@
     "dev": "node --import tsx --watch src/index.ts",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
     "test": "vitest --coverage.enabled true",
+    "db-migrate:up": "db-migrate up",
+    "db-migrate:down": "db-migrate down",
+    "db-migrate:create": "db-migrate create --sql-file true",
     "prepare": "husky"
   },
   "license": "MIT",
   "dependencies": {
+    "db-migrate": "^0.11.14",
+    "db-migrate-pg": "^1.5.2",
     "express": "^4.21.1",
     "jose": "^5.9.6",
     "moment": "^2.30.1",

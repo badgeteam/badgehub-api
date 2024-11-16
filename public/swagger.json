@@ -159,12 +159,6 @@
           "show_projects": {
             "type": "boolean"
           },
-          "google2fa_enabled": {
-            "type": "boolean"
-          },
-          "google2fa_secret": {
-            "type": "string"
-          },
           "email_verified_at": {
             "type": "string",
             "format": "date-time"
@@ -179,8 +173,7 @@
           "password",
           "editor",
           "public",
-          "show_projects",
-          "google2fa_enabled"
+          "show_projects"
         ],
         "type": "object",
         "additionalProperties": false
