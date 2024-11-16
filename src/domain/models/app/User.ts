@@ -13,7 +13,5 @@ export interface User extends DatedData {
   editor: string;
   public: boolean;
   show_projects: boolean;
-  google2fa_enabled: boolean;
-  google2fa_secret?: string;
   email_verified_at?: Date;
 }

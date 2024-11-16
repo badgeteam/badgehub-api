@@ -109,8 +109,6 @@ const models: TsoaRoute.Models = {
       editor: { dataType: "string", required: true },
       public: { dataType: "boolean", required: true },
       show_projects: { dataType: "boolean", required: true },
-      google2fa_enabled: { dataType: "boolean", required: true },
-      google2fa_secret: { dataType: "string" },
       email_verified_at: { dataType: "datetime" },
     },
     additionalProperties: false,
