@@ -8,20 +8,11 @@ import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
 import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
-import sql from "sql-template-tag";
+import sql, { join } from "sql-template-tag";
 import { DBMetadataFileContents as DBMetadataFileContents } from "@db/models/app/DBMetadataFileContents";
 import { DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
-
-function valueIsDefinedForKey(obj: object, key: string) {
-  return (obj as any)[key] !== undefined;
-}
-
-function getKeysWithDefinedValues<O extends object>(obj: O) {
-  return Object.keys(obj)
-    .filter((key) => valueIsDefinedForKey(obj, key))
-    .join(",");
-}
+import { getEntriesWithDefinedValues } from "@util/objectEntries";
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
@@ -34,20 +25,42 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  async upsertProject(
+  async insertProject(
     project: Partial<ProjectCore> & Pick<ProjectCore, "slug">
   ): Promise<void> {
-    const keys = sql`(${getKeysWithDefinedValues(project)})`;
+    const definedEntries = getEntriesWithDefinedValues(project);
+    const keys = join(definedEntries.map(([key]) => key));
+    const values = join(definedEntries.map(([, value]) => value));
     await this.pool.query(
-      sql`insert into projects ${keys}
-          values (${project.slug}, ${project.user_email ?? "null"}, ${project.git ?? "null"},
-                  ${project.allow_team_fixes ?? "null"}) on conflict do
-          update`
+      sql`insert into projects (${keys})
+          values (${values})`
     );
   }
 
-  deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    throw new Error("Method not implemented.");
+  async updateProject(
+    projectSlug: ProjectSlug,
+    changes: Partial<Omit<ProjectCore, "slug">>
+  ): Promise<void> {
+    const definedEntries = getEntriesWithDefinedValues(changes);
+    const setters = join(
+      // TODO maybe better use raw(key) to help with readability of the strings after we have parsed the input with something like zod so that sql injection is not possible
+      definedEntries.map(
+        ([key, value]) => sql`${key}
+        =
+        ${value}`
+      )
+    );
+    if (definedEntries.length !== 0) {
+      await this.pool.query(sql`update projects
+                                set ${setters}
+                                where slug = ${projectSlug}`);
+    }
+  }
+
+  async deleteProject(projectSlug: ProjectSlug): Promise<void> {
+    await this.pool.query(sql`delete
+                              from projects
+                              where slug = ${projectSlug}`);
   }
 
   writeFile(

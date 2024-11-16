@@ -7,7 +7,11 @@ import { Badge } from "@domain/models/Badge";
 import { AppCategoryName } from "@domain/models/app/Category";
 
 export interface BadgeHubDataPort {
-  upsertProject(project: Exclude<Partial<ProjectCore>, "slug">): Promise<void>;
+  insertProject(project: ProjectCore): Promise<void>;
+  updateProject(
+    projectSlug: ProjectSlug,
+    changes: Partial<Omit<ProjectCore, "slug">>
+  ): Promise<void>;
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
 

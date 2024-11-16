@@ -1,7 +1,8 @@
-import { Body, Path, Post, Route, Tags } from "tsoa";
+import { Body, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import { ProjectCore } from "@domain/models/app/Project";
+// TODO verify author against logged in user
 
 @Route("/api/v3")
 @Tags("private")
@@ -14,11 +15,22 @@ export class PrivateRestController {
    * Create a new app
    */
   @Post("/apps/{slug}")
-  public async upsertProject(
+  public async insertProject(
     @Path() slug: string,
-    @Body() props: Exclude<Partial<ProjectCore>, "slug">
+    @Body() props: Exclude<ProjectCore, "slug">
   ): Promise<void> {
-    await this.badgeHubData.upsertProject({ slug, ...props });
+    await this.badgeHubData.insertProject({ ...props, slug });
+  }
+
+  /**
+   * Create a new app
+   */
+  @Patch("/apps/{slug}")
+  public async updateProject(
+    @Path() slug: string,
+    @Body() changes: Partial<Omit<ProjectCore, "slug">>
+  ): Promise<void> {
+    await this.badgeHubData.updateProject(slug, changes);
   }
 
   /**

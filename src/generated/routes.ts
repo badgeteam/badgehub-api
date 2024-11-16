@@ -315,23 +315,33 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Partial_ProjectCore_: {
+  ProjectCore: {
+    dataType: "refObject",
+    properties: {
+      slug: { dataType: "string", required: true },
+      user_email: { dataType: "string", required: true },
+      git: { dataType: "string" },
+      allow_team_fixes: { dataType: "boolean" },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Exclude_ProjectCore.slug_": {
+    dataType: "refAlias",
+    type: { ref: "ProjectCore", validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Partial_Omit_ProjectCore.slug__": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
-        slug: { dataType: "string" },
         user_email: { dataType: "string" },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
       },
       validators: {},
     },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Exclude_Partial_ProjectCore_.slug_": {
-    dataType: "refAlias",
-    type: { ref: "Partial_ProjectCore_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Uint8Array: {
@@ -531,10 +541,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.upsertProject
+      PrivateRestController.prototype.insertProject
     ),
 
-    async function PrivateRestController_upsertProject(
+    async function PrivateRestController_insertProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -545,7 +555,7 @@ export function RegisterRoutes(app: Router) {
           in: "body",
           name: "props",
           required: true,
-          ref: "Exclude_Partial_ProjectCore_.slug_",
+          ref: "Exclude_ProjectCore.slug_",
         },
       };
 
@@ -562,7 +572,55 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "upsertProject",
+          methodName: "insertProject",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.patch(
+    "/api/v3/apps/:slug",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.updateProject
+    ),
+
+    async function PrivateRestController_updateProject(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        changes: {
+          in: "body",
+          name: "changes",
+          required: true,
+          ref: "Partial_Omit_ProjectCore.slug__",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "updateProject",
           controller,
           response,
           next,

@@ -99,5 +99,6 @@ docker compose --file docker-compose-production.yml down
 
 - [Express](https://expressjs.com/), a framework for Node.js
 - [tsoa](https://tsoa-community.github.io/docs/) for generating a swagger file from code
+- [sql-template-tag](https://github.com/blakeembrey/sql-template-tag) for more easily writing SQL queries
 - [tsx](https://tsx.is/) for watching TypeScript files in Node.js
 - [PM2](https://pm2.keymetrics.io/) for managing Node.js processes

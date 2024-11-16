@@ -561,7 +561,7 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Partial_ProjectCore_": {
+      "ProjectCore": {
         "properties": {
           "slug": {
             "type": "string"
@@ -576,12 +576,28 @@
             "type": "boolean"
           }
         },
+        "required": ["slug", "user_email"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Exclude_ProjectCore.slug_": {
+        "$ref": "#/components/schemas/ProjectCore",
+        "description": "Exclude from T those types that are assignable to U"
+      },
+      "Partial_Omit_ProjectCore.slug__": {
+        "properties": {
+          "user_email": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          }
+        },
         "type": "object",
         "description": "Make all properties in T optional"
-      },
-      "Exclude_Partial_ProjectCore_.slug_": {
-        "$ref": "#/components/schemas/Partial_ProjectCore_",
-        "description": "Exclude from T those types that are assignable to U"
       },
       "Uint8Array": {
         "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
@@ -755,7 +771,7 @@
         ]
       },
       "post": {
-        "operationId": "UpsertProject",
+        "operationId": "InsertProject",
         "responses": {
           "204": {
             "description": "No content"
@@ -779,7 +795,38 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Exclude_Partial_ProjectCore_.slug_"
+                "$ref": "#/components/schemas/Exclude_ProjectCore.slug_"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "UpdateProject",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Partial_Omit_ProjectCore.slug__"
               }
             }
           }
