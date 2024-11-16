@@ -7,7 +7,7 @@ export type ProjectSlug = string;
 // table name: projects
 export interface DBProject
   extends DBDatedData,
-    VersionRelation, // The Latest DBVersion
+    Partial<VersionRelation>, // The Latest DBVersion
     UserEmailRelation {
   slug: ProjectSlug; // The directory name of this app
   git?: string; // repository url
