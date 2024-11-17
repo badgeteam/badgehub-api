@@ -58,11 +58,24 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     return dbCategoryNames.map((dbCategory) => dbCategory.name);
   }
 
+  private _createDraftVersionSql(slug: ProjectSlug) {
+    return sql``;
+  }
+
   async insertProject(project: DBProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
-    let sql2 = sql`insert into projects (${keys})
-                   values (${values})`;
-    await this.pool.query(sql2.text, sql2.values);
+    this._createDraftVersionSql(project.slug);
+    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name) values (${project.slug})`;
+
+    await this.pool.query(sql`
+          with inserted_app_metadata as (${insertAppMetadataSql} returning id),
+               inserted_version as (
+                   insert
+                       into versions (project_slug, app_metadata_json_id)
+                           values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+          insert
+          into projects (${keys}, version_id)
+          values (${values}, (select id from inserted_version))`);
   }
 
   async updateProject(
@@ -205,7 +218,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     badgeSlug?: string;
     appCategory?: AppCategoryName;
   }): Promise<Project[]> {
-    let query = sql`${getBaseSelectProjectQuery()} and p.deleted_at is null`;
+    let query = getBaseSelectProjectQuery();
     if (filter?.pageLength) {
       query = sql`${query}
       limit

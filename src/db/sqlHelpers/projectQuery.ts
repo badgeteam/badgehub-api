@@ -26,12 +26,11 @@ export function getBaseSelectProjectQuery() {
                            m.name,
                            u.name as author_name
                     from projects p
-                             left join users u on p.user_id = u.id
+                             left join users u on p.user_id = u.id and u.deleted_at is null
                              left join versions v on p.version_id = v.id
-                             left join app_metadata_jsons m on v.app_metadata_json_id = m.id
+                             left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
                     where
-                      and u.deleted_at is null
-                      and v.deleted_at is null
+                      p.deleted_at is null
     `;
 }
 

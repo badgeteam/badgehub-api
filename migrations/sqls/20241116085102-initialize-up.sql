@@ -97,7 +97,7 @@ create table versions
     id                   serial primary key,        -- auto-incrementing unique identifier
     project_slug         text    not null,          -- fk to projects
     app_metadata_json_id integer not null,          -- fk to metadata files
-    revision             integer not null,          -- version revision number
+    revision             integer not null default 0,          -- version revision number
     semantic_version     text,                      -- optional semantic version
     zip                  text,                      -- optional zip file name or path
     size_of_zip          bigint,                    -- optional size of the zip file
