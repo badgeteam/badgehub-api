@@ -8,7 +8,7 @@ import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
 import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
-import sql, { join } from "sql-template-tag";
+import sql, { join, raw } from "sql-template-tag";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
 import { DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
@@ -29,12 +29,11 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     project: Partial<ProjectCore> & Pick<ProjectCore, "slug">
   ): Promise<void> {
     const definedEntries = getEntriesWithDefinedValues(project);
-    const keys = join(definedEntries.map(([key]) => key));
+    const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
     const values = join(definedEntries.map(([, value]) => value));
-    await this.pool.query(
-      sql`insert into projects (${keys})
-          values (${values})`
-    );
+    let sql2 = sql`insert into projects (${keys})
+        values (${values})`;
+    await this.pool.query(sql2.text, sql2.values);
   }
 
   async updateProject(
@@ -43,9 +42,11 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   ): Promise<void> {
     const definedEntries = getEntriesWithDefinedValues(changes);
     const setters = join(
-      // TODO maybe better use raw(key) to help with readability of the strings after we have parsed the input with something like zod so that sql injection is not possible
       definedEntries.map(
-        ([key, value]) => sql`${key}
+        ([
+          key,
+          value,
+        ]) => sql`${raw(key)} // raw is ok here because these keys are checked against our typescript definitions by tsoa
         =
         ${value}`
       )
