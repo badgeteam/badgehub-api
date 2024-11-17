@@ -28,7 +28,7 @@ create table users
     editor            text,
     public            boolean,
     show_projects     boolean,
-    email_verified_at timestamptz,
+    email_verified_at timestamptz default null, -- email verification timestamp
     created_at        timestamptz default now(), -- to capture creation timestamps
     updated_at        timestamptz default now(), -- to track updates
     deleted_at        timestamptz default null   -- soft delete timestamp (nullable)
@@ -102,7 +102,7 @@ create table versions
     zip                  text,                      -- optional zip file name or path
     size_of_zip          bigint,                    -- optional size of the zip file
     git_commit_id        text,                      -- optional git commit id
-    published_at         timestamptz,               -- required publish timestamp
+    published_at         timestamptz default null,               -- required publish timestamp
     download_count       bigint      default 0,     -- download count with default value
     created_at           timestamptz default now(), -- track creation time
     updated_at           timestamptz default now(), -- track updates
