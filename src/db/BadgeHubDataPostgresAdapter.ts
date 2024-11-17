@@ -58,13 +58,8 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     return dbCategoryNames.map((dbCategory) => dbCategory.name);
   }
 
-  private _createDraftVersionSql(slug: ProjectSlug) {
-    return sql``;
-  }
-
   async insertProject(project: DBProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
-    this._createDraftVersionSql(project.slug);
     const insertAppMetadataSql = sql`insert into app_metadata_jsons (name) values (${project.slug})`;
 
     await this.pool.query(sql`
