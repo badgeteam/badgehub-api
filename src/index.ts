@@ -2,6 +2,9 @@ import app from "./app";
 import { RegisterRoutes } from "./generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT } from "@config";
+import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
+
+disableWriteWhenNotDev(app);
 
 RegisterRoutes(app);
 
