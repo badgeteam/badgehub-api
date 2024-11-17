@@ -1,12 +1,12 @@
-import { config } from "dotenv";
 import app from "./app";
 import { RegisterRoutes } from "./generated/routes";
+import { addTsoaValidationFailureLogging } from "@util/logging";
+import { EXPRESS_PORT } from "@config";
 
-config();
 RegisterRoutes(app);
 
-const port = 8081;
+addTsoaValidationFailureLogging(app);
 
-app.listen(port, () => {
+app.listen(EXPRESS_PORT, () => {
   console.info(`Node.js server started.`);
 });
