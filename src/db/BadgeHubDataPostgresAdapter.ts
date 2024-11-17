@@ -76,9 +76,9 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     }
   }
 
+  // TODO test
   async deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    await this.pool.query(sql`delete
-                              from projects
+    await this.pool.query(sql`update projects set deleted_at = now()
                               where slug = ${projectSlug}`);
   }
 

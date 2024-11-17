@@ -58,9 +58,6 @@
       },
       "Version": {
         "properties": {
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -106,17 +103,19 @@
           "download_count": {
             "type": "number",
             "format": "double"
+          },
+          "project_slug": {
+            "type": "string"
           }
         },
         "required": [
-          "user",
           "created_at",
           "updated_at",
           "revision",
           "files",
           "app_metadata",
-          "published_at",
-          "download_count"
+          "download_count",
+          "project_slug"
         ],
         "type": "object",
         "additionalProperties": false
@@ -855,6 +854,27 @@
           }
         }
       },
+      "delete": {
+        "operationId": "DeleteProject",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ]
+      },
       "patch": {
         "operationId": "UpdateProject",
         "responses": {
@@ -1008,8 +1028,8 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/version": {
-      "post": {
+    "/api/v3/apps/{slug}/publish": {
+      "patch": {
         "operationId": "PublishVersion",
         "responses": {
           "204": {

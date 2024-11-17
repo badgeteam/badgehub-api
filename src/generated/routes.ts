@@ -74,7 +74,6 @@ const models: TsoaRoute.Models = {
   Version: {
     dataType: "refObject",
     properties: {
-      user: { ref: "User", required: true },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
@@ -89,8 +88,9 @@ const models: TsoaRoute.Models = {
         required: true,
       },
       app_metadata: { ref: "AppMetadataJSON", required: true },
-      published_at: { dataType: "datetime", required: true },
+      published_at: { dataType: "datetime" },
       download_count: { dataType: "double", required: true },
+      project_slug: { dataType: "string", required: true },
     },
     additionalProperties: false,
   },
@@ -676,6 +676,48 @@ export function RegisterRoutes(app: Router) {
     }
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.delete(
+    "/api/v3/apps/:slug",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.deleteProject
+    ),
+
+    async function PrivateRestController_deleteProject(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, ref: "ProjectSlug" },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "deleteProject",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
@@ -827,8 +869,8 @@ export function RegisterRoutes(app: Router) {
     }
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.post(
-    "/api/v3/apps/:slug/version",
+  app.patch(
+    "/api/v3/apps/:slug/publish",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.publishVersion

@@ -1,4 +1,4 @@
-import { Body, Patch, Path, Post, Route, Tags } from "tsoa";
+import { Body, Delete, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
@@ -34,6 +34,14 @@ export class PrivateRestController {
     @Body() props: Omit<DBInsertProject, "slug">
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
+  }
+
+  /**
+   * Create a new app
+   */
+  @Delete("/apps/{slug}")
+  public async deleteProject(@Path() slug: DBProject["slug"]): Promise<void> {
+    await this.badgeHubData.deleteProject(slug);
   }
 
   /**
