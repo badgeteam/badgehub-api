@@ -1,10 +1,14 @@
-import { Project, ProjectCore, ProjectSlug } from "@domain/models/app/Project";
-import { Version } from "@domain/models/app/Version";
-import { User } from "@domain/models/app/User";
-import { FileMetadata } from "@domain/models/app/FileMetadata";
-import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
-import { Badge } from "@domain/models/Badge";
-import { AppCategoryName } from "@domain/models/app/Category";
+import {
+  Project,
+  ProjectCore,
+  ProjectSlug,
+} from "@domain/readModels/app/Project";
+import { Version } from "@domain/readModels/app/Version";
+import { User } from "@domain/readModels/app/User";
+import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
+import { Badge } from "@domain/readModels/Badge";
+import { AppCategoryName } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 

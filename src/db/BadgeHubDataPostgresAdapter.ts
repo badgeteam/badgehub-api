@@ -1,9 +1,13 @@
-import { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
-import { Badge } from "@domain/models/Badge";
-import { Project, ProjectCore, ProjectSlug } from "@domain/models/app/Project";
-import { User } from "@domain/models/app/User";
-import { Version } from "@domain/models/app/Version";
-import { AppCategoryName } from "@domain/models/app/Category";
+import { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
+import { Badge } from "@domain/readModels/Badge";
+import {
+  Project,
+  ProjectCore,
+  ProjectSlug,
+} from "@domain/readModels/app/Project";
+import { User } from "@domain/readModels/app/User";
+import { Version } from "@domain/readModels/app/Version";
+import { AppCategoryName } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
@@ -13,6 +17,9 @@ import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAp
 import { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
+import { DBBadge } from "@db/models/DBBadge";
+import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DatedData } from "@domain/readModels/app/DatedData";
 
 function getInsertKeysAndValuesSql(user: Object) {
   const definedEntries = getEntriesWithDefinedValues(user);

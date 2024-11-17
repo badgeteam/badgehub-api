@@ -3,7 +3,7 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
-import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
+import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
 
 export interface AppMetadataJSONRelation {
   app_metadata_json_id: DBAppMetadataJSON["id"];

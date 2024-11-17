@@ -6,7 +6,7 @@ import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { AppMetadataJSON } from "./AppMetadataJSON";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
-import { AppCategoryName } from "@domain/models/app/Category";
+import { AppCategoryName } from "@domain/readModels/app/Category";
 
 export type ProjectStatusName =
   | "working"

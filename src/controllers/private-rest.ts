@@ -1,5 +1,5 @@
 import { Body, Patch, Path, Post, Route, Tags } from "tsoa";
-import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
+import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";

@@ -3,7 +3,7 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 import { BadgeSlug } from "@db/models/DBBadge";
-import { HasCategory } from "@domain/models/app/Category";
+import { HasCategory } from "@domain/readModels/app/Category";
 
 export interface AppMetadataJSON extends Partial<HasCategory> {
   name?: string;

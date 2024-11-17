@@ -1,6 +1,7 @@
 import { DBDatedData } from "./app/DBDatedData";
 import { BadgeRelation } from "./DBBadge";
 import { ProjectStatusName } from "@domain/models/app/Project";
+import { ProjectStatusName } from "@domain/readModels/app/Project";
 
 export interface ProjectStatusOnBadgeRelation {
   project_status_on_badge_id: DBProjectStatusOnBadge["id"];
