@@ -1,9 +1,16 @@
 import pg from "pg";
 import express, { Express, Router } from "express";
+import {
+  POSTGRES_DB,
+  POSTGRES_HOST,
+  POSTGRES_PASSWORD,
+  POSTGRES_PORT,
+  POSTGRES_USER,
+} from "@config";
 
 const CATEGORIES_COUNT = 15;
 
-export default async function populate(app: Express) {
+export default async function populateDB(app: Express) {
   const router = Router();
 
   app.use(express.json());
@@ -11,11 +18,11 @@ export default async function populate(app: Express) {
   app.use("/", router);
 
   const pool = new pg.Pool({
-    host: "db",
-    database: process.env.POSTGRES_DB,
-    user: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    port: 5432,
+    host: POSTGRES_HOST,
+    database: POSTGRES_DB,
+    user: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    port: POSTGRES_PORT,
   });
 
   router.get("/populate", async (req, res) => {
