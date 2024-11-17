@@ -314,6 +314,12 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Uint8Array: {
+    dataType: "refObject",
+    properties: {},
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
     dataType: "refAlias",
     type: {
@@ -380,12 +386,6 @@ const models: TsoaRoute.Models = {
       },
       validators: {},
     },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Uint8Array: {
-    dataType: "refObject",
-    properties: {},
-    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -563,6 +563,198 @@ export function RegisterRoutes(app: Router) {
 
         await templateService.apiHandler({
           methodName: "getProject",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/files/latest/:filePath",
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getLatestPublishedFile
+    ),
+
+    async function PublicRestController_getLatestPublishedFile(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        filePath: {
+          in: "path",
+          name: "filePath",
+          required: true,
+          dataType: "string",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getLatestPublishedFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/files/rev:revision/:filePath",
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getFileForVersion
+    ),
+
+    async function PublicRestController_getFileForVersion(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        revision: {
+          in: "path",
+          name: "revision",
+          required: true,
+          dataType: "double",
+        },
+        filePath: {
+          in: "path",
+          name: "filePath",
+          required: true,
+          dataType: "string",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getFileForVersion",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/zip/latest",
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getLatestPublishedZip
+    ),
+
+    async function PublicRestController_getLatestPublishedZip(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getLatestPublishedZip",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/zip/rev:revision",
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getZipForVersion
+    ),
+
+    async function PublicRestController_getZipForVersion(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        revision: {
+          in: "path",
+          name: "revision",
+          required: true,
+          dataType: "double",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getZipForVersion",
           controller,
           response,
           next,
@@ -767,7 +959,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/file/:filePath",
+    "/api/v3/apps/:slug/files/draft/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.writeFile
@@ -809,6 +1001,96 @@ export function RegisterRoutes(app: Router) {
 
         await templateService.apiHandler({
           methodName: "writeFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/files/draft/:filePath",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.getDraftFile
+    ),
+
+    async function PrivateRestController_getDraftFile(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        filePath: {
+          in: "path",
+          name: "filePath",
+          required: true,
+          dataType: "string",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "getDraftFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/zip/draft",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.getLatestPublishedZip
+    ),
+
+    async function PrivateRestController_getLatestPublishedZip(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "getLatestPublishedZip",
           controller,
           response,
           next,

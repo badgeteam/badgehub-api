@@ -76,4 +76,48 @@ export class PublicRestController {
     }
     return details;
   }
+
+  /**
+   * get the latest published version of a file in the project
+   */
+  @Get("/apps/{slug}/files/latest/{filePath}")
+  public async getLatestPublishedFile(
+    @Path() slug: string,
+    @Path() filePath: string
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getFileContents(slug, "latest", filePath);
+  }
+
+  /**
+   * get a file for a specific version of the project
+   */
+  @Get(`/apps/{slug}/files/rev{revision}/{filePath}`)
+  public async getFileForVersion(
+    @Path() slug: string,
+    @Path() revision: number,
+    @Path() filePath: string
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getFileContents(slug, revision, filePath);
+  }
+
+  /**
+   * get the latest published version of the app in zip format
+   */
+  @Get("/apps/{slug}/zip/latest")
+  public async getLatestPublishedZip(
+    @Path() slug: string
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getVersionZipContents(slug, "latest");
+  }
+
+  /**
+   * get the app zip for a specific version of the project
+   */
+  @Get(`/apps/{slug}/zip/rev{revision}`)
+  public async getZipForVersion(
+    @Path() slug: string,
+    @Path() revision: number
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getVersionZipContents(slug, revision);
+  }
 }

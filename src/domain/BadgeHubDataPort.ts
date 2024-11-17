@@ -40,16 +40,16 @@ export interface BadgeHubDataPort {
 
   updateUser(updatedUser: User): Promise<void>;
 
-  getFileDownloadLink(
+  getFileContents(
     projectSlug: Project["slug"],
-    versionRevision: number,
+    versionRevision: number | "draft" | "latest",
     filePath: FileMetadata["name"]
-  ): Promise<string>;
+  ): Promise<Uint8Array>;
 
-  getVersionDownloadLink(
+  getVersionZipContents(
     projectSlug: Project["slug"],
-    versionRevision: number
-  ): Promise<string>;
+    versionRevision: number | "draft" | "latest"
+  ): Promise<Uint8Array>;
 
   getBadges(): Promise<Badge[]>;
 

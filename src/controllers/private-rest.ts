@@ -1,4 +1,4 @@
-import { Body, Delete, Patch, Path, Post, Route, Tags } from "tsoa";
+import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
@@ -58,13 +58,34 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/file/{filePath}")
+  @Post("/apps/{slug}/files/draft/{filePath}")
   public async writeFile(
     @Path() slug: string,
     @Path() filePath: string,
     @Body() fileContent: string | Uint8Array
   ): Promise<void> {
     await this.badgeHubData.writeFile(slug, filePath, fileContent);
+  }
+
+  /**
+   * get the latest draft version of the project.
+   */
+  @Get("/apps/{slug}/files/draft/{filePath}")
+  public async getDraftFile(
+    @Path() slug: string,
+    @Path() filePath: string
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getFileContents(slug, "draft", filePath);
+  }
+
+  /**
+   * get the latest draft version of the app in zip format
+   */
+  @Get("/apps/{slug}/zip/draft")
+  public async getLatestPublishedZip(
+    @Path() slug: string
+  ): Promise<Uint8Array> {
+    return await this.badgeHubData.getVersionZipContents(slug, "draft");
   }
 
   /**

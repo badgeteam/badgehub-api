@@ -183,18 +183,18 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  getFileDownloadLink(
+  getFileContents(
     projectSlug: string,
-    versionRevision: number,
+    versionRevision: number | "draft" | "latest",
     filePath: string
-  ): Promise<string> {
+  ): Promise<Uint8Array> {
     throw new Error("Method not implemented.");
   }
 
-  getVersionDownloadLink(
+  getVersionZipContents(
     projectSlug: string,
     versionRevision: number
-  ): Promise<string> {
+  ): Promise<Uint8Array> {
     throw new Error("Method not implemented.");
   }
 
