@@ -129,26 +129,22 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                            p.updated_at,
                            p.deleted_at,
                            v.semantic_version,
-                           v.status,
                            v.git_commit_id,
                            v.published_at,
                            v.revision,
                            v.size_of_zip,
                            m.description,
                            m.interpreter,
-                           m.licence_file,
+                           m.license_file,
                            m.name,
                            u.name as author_name
                     from projects p
-                             left join users u on p.user_id = user.id
+                             left join users u on p.user_email = u.email
                              left join versions v on p.version_id = v.id
-                             left join metadata_file_contents m on v.metadata_file_contents_id = m.id
+                             left join app_metadata_jsons m on v.app_metadata_json_id = m.id
                     where p.deleted_at is null
                       and u.deleted_at is null
                       and v.deleted_at is null
-    `;
-
-    query = sql`${query}
     `;
     if (filter?.pageLength) {
       query = sql`${query}

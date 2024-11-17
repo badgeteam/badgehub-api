@@ -932,7 +932,7 @@
   },
   "servers": [
     {
-      "url": "/"
+      "url": "https://localhost:8081/"
     }
   ]
 }

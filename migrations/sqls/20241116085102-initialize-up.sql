@@ -86,7 +86,7 @@ create table versions
 (
     id               serial primary key,        -- auto-incrementing unique identifier
     project_slug     text    not null,          -- fk to projects
-    metadata_file_id bigint  not null,          -- fk to metadata files
+    app_metadata_json_id integer not null,          -- fk to metadata files
     revision         integer not null,          -- version revision number
     semantic_version text,                      -- optional semantic version
     zip              text,                      -- optional zip file name or path
@@ -98,7 +98,7 @@ create table versions
     updated_at       timestamptz default now(), -- track updates
     deleted_at       timestamptz,               -- soft delete timestamp (nullable)
     constraint versions_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade,
-    constraint versions_metadata_file_id_fk foreign key (metadata_file_id) references app_metadata_jsons (id) on delete cascade
+    constraint versions_app_metadata_json_id_fk foreign key (app_metadata_json_id) references app_metadata_jsons (id) on delete cascade
 );
 alter table projects add constraint projects_version_id_fk foreign key (version_id) references versions (id) on delete set null;
 
