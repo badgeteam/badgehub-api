@@ -1,8 +1,8 @@
-import { UserEmailRelation } from "../DBUser";
+import { UserRelation } from "../DBUser";
 import { ProjectSlugRelation } from "../DBProject";
 
 export interface ProjectHasCollaborators
   extends ProjectSlugRelation,
-    UserEmailRelation {
+    UserRelation {
   id: number;
 }

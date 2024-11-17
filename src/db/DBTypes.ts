@@ -1,2 +1,1 @@
-export type TimestampTZ =
-  `${string}-${string}-${string} ${string}:${string}:${string}.${string} +${string}`;
+export type TimestampTZ = string; // it would be cool if we could use the following: `${string}-${string}-${string} ${string}:${string}:${string}.${string} +${string}`, but this would result in a TSOA generation error

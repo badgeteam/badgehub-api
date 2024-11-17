@@ -5,9 +5,10 @@ export interface UserRelation {
 }
 
 export interface User extends DatedData {
+  id: string;
+  email: string;
   admin: boolean;
   name: string;
-  email: string;
   password: string;
   remember_token?: string;
   editor: string;

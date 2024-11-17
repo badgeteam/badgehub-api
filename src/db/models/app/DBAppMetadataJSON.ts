@@ -10,6 +10,7 @@ export interface AppMetadataJSONRelation {
 }
 
 // table name: app_metadata_json
-export interface DBAppMetadataJSON extends AppMetadataJSON {
+export interface DBInsertAppMetadataJSON extends AppMetadataJSON {}
+export interface DBAppMetadataJSON extends DBInsertAppMetadataJSON {
   id: number;
 }

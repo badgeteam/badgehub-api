@@ -1,7 +1,9 @@
 import { Body, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/aggregates/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
-import { ProjectCore } from "@domain/models/app/Project";
+import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
+import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+
 // TODO verify author against logged in user
 
 @Route("/api/v3")
@@ -12,12 +14,23 @@ export class PrivateRestController {
   ) {}
 
   /**
+   * Create a new user
+   */
+  @Post("/users/{userId}")
+  public async insertUser(
+    @Path() userId: DBUser["id"],
+    @Body() props: Omit<DBInsertUser, "id">
+  ): Promise<void> {
+    await this.badgeHubData.insertUser({ ...props, id: userId });
+  }
+
+  /**
    * Create a new app
    */
   @Post("/apps/{slug}")
   public async insertProject(
-    @Path() slug: string,
-    @Body() props: Omit<ProjectCore, "slug">
+    @Path() slug: DBProject["slug"],
+    @Body() props: Omit<DBInsertProject, "slug">
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
   }
@@ -27,8 +40,8 @@ export class PrivateRestController {
    */
   @Patch("/apps/{slug}")
   public async updateProject(
-    @Path() slug: string,
-    @Body() changes: Partial<Omit<ProjectCore, "slug">>
+    @Path() slug: DBProject["slug"],
+    @Body() changes: Partial<Omit<DBProject, "slug">>
   ): Promise<void> {
     await this.badgeHubData.updateProject(slug, changes);
   }

@@ -1,5 +1,5 @@
 import { VoteRelation } from "./DBVote";
-import { UserEmailRelation } from "./DBUser";
+import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 
 export interface VoteFromUserRelation {
@@ -8,7 +8,7 @@ export interface VoteFromUserRelation {
 
 export interface DBVoteFromUser
   extends VoteRelation,
-    UserEmailRelation,
+    UserRelation,
     DBDatedData {
   id: number;
 }

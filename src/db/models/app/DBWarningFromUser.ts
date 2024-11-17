@@ -1,5 +1,5 @@
 import { WarningRelation } from "./DBWarning";
-import { UserEmailRelation } from "./DBUser";
+import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 
 export interface WarningFromUserRelation {
@@ -8,7 +8,7 @@ export interface WarningFromUserRelation {
 
 export interface DBWarningFromUser
   extends WarningRelation,
-    UserEmailRelation,
+    UserRelation,
     DBDatedData {
   id: number;
 }

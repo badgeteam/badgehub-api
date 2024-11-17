@@ -5,8 +5,8 @@
 import { BadgeSlug } from "@db/models/DBBadge";
 import { HasCategory } from "@domain/models/app/Category";
 
-export interface AppMetadataJSON extends HasCategory {
-  name: string;
+export interface AppMetadataJSON extends Partial<HasCategory> {
+  name?: string;
   description?: string;
   author?: string; // The name of the author
   icon?: string; // The relative icon path

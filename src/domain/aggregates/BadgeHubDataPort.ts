@@ -5,12 +5,17 @@ import { FileMetadata } from "@domain/models/app/FileMetadata";
 import { AppMetadataJSON } from "@domain/models/app/AppMetadataJSON";
 import { Badge } from "@domain/models/Badge";
 import { AppCategoryName } from "@domain/models/app/Category";
+import { DBInsertUser } from "@db/models/app/DBUser";
+import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 
 export interface BadgeHubDataPort {
-  insertProject(project: ProjectCore): Promise<void>;
+  insertUser(user: DBInsertUser): Promise<void>;
+
+  insertProject(project: DBInsertProject): Promise<void>;
+
   updateProject(
     projectSlug: ProjectSlug,
-    changes: Partial<Omit<ProjectCore, "slug">>
+    changes: Partial<Omit<DBProject, "slug">>
   ): Promise<void>;
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
@@ -22,6 +27,7 @@ export interface BadgeHubDataPort {
   ): Promise<void>;
 
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
+
   getProject(projectSlug: ProjectSlug): Promise<Project>;
 
   getVersion(projectSlug: ProjectSlug): Promise<Version>;

@@ -1,5 +1,5 @@
 import { VersionRelation } from "./DBVersion";
-import { UserEmailRelation } from "./DBUser";
+import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 
 export interface FileMetadataRelation {
@@ -9,7 +9,7 @@ export interface FileMetadataRelation {
 // table name: file_metadata
 export interface DBFileMetadata
   extends VersionRelation,
-    UserEmailRelation,
+    UserRelation,
     DBDatedData {
   id: number;
   lintable?: boolean; // Some files in a project can be auto-lintable, others not

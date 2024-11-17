@@ -10,9 +10,16 @@ import { DBProject as DBProject } from "@db/models/app/DBProject";
 import { DBVersion as DBVersion } from "@db/models/app/DBVersion";
 import sql, { join, raw } from "sql-template-tag";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
-import { DBUser } from "@db/models/app/DBUser";
+import { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import moment from "moment";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
+
+function getInsertKeysAndValuesSql(user: Object) {
+  const definedEntries = getEntriesWithDefinedValues(user);
+  const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
+  const values = join(definedEntries.map(([, value]) => value));
+  return { keys, values };
+}
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
@@ -21,16 +28,18 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     this.pool = getPool();
   }
 
+  async insertUser(user: DBInsertUser): Promise<void> {
+    const { keys, values } = getInsertKeysAndValuesSql(user);
+    const insertQuery = sql`insert into users (${keys}) values (${values})`;
+    await this.pool.query(insertQuery);
+  }
+
   getCategories(): Promise<AppCategoryName[]> {
     throw new Error("Method not implemented.");
   }
 
-  async insertProject(
-    project: Partial<ProjectCore> & Pick<ProjectCore, "slug">
-  ): Promise<void> {
-    const definedEntries = getEntriesWithDefinedValues(project);
-    const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
-    const values = join(definedEntries.map(([, value]) => value));
+  async insertProject(project: DBProject): Promise<void> {
+    const { keys, values } = getInsertKeysAndValuesSql(project);
     let sql2 = sql`insert into projects (${keys})
         values (${values})`;
     await this.pool.query(sql2.text, sql2.values);
@@ -125,7 +134,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     let query = sql`select p.slug,
                            p.git,
                            p.allow_team_fixes,
-                           p.user_email,
+                           p.user_id,
                            p.created_at,
                            p.updated_at,
                            p.deleted_at,
@@ -140,7 +149,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                            m.name,
                            u.name as author_name
                     from projects p
-                             left join users u on p.user_email = u.email
+                             left join users u on p.user_id = u.id
                              left join versions v on p.version_id = v.id
                              left join app_metadata_jsons m on v.app_metadata_json_id = m.id
                     where p.deleted_at is null
@@ -163,10 +172,10 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
       return {
         version: undefined, // TODO
         allow_team_fixes: false,
-        user_email: dbProject.user_email,
+        user_id: dbProject.user_id,
         author: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
         badges: [], // TODO
-        category: dbProject.category || "uncategorized",
+        category: dbProject.category || "Uncategorised",
         collaborators: [], // TODO
         created_at: moment(dbProject.created_at).toDate(),
         updated_at: moment(dbProject.updated_at).toDate(),
