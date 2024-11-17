@@ -29,11 +29,14 @@ function getInsertKeysAndValuesSql(user: Object) {
 }
 
 function dateStringsToDates(dbDatedData: DBDatedData): DatedData {
-  return {
+  const datedData: DatedData = {
     created_at: moment(dbDatedData.created_at).toDate(),
     updated_at: moment(dbDatedData.updated_at).toDate(),
-    deleted_at: moment(dbDatedData.deleted_at).toDate(),
   };
+  if (dbDatedData.deleted_at) {
+    datedData.deleted_at = moment(dbDatedData.deleted_at).toDate();
+  }
+  return datedData;
 }
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
