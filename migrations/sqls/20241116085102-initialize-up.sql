@@ -14,33 +14,33 @@ create table badges
     name       text,
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
-    deleted_at timestamptz                -- soft delete timestamp (nullable)
+    deleted_at timestamptz default null   -- soft delete timestamp (nullable)
 );
 
 create table users
 (
-    id                text primary key,               -- using text as recommended
-    email             text unique,                    -- using text as recommended
+    id                text primary key,          -- using text as recommended
+    email             text unique,               -- using text as recommended
     admin             boolean,
-    name              text    not null,
-    password          text    not null,
+    name              text not null,
+    password          text not null,
     remember_token    text,
     editor            text,
     public            boolean,
     show_projects     boolean,
     email_verified_at timestamptz,
-    created_at        timestamptz      default now(), -- to capture creation timestamps
-    updated_at        timestamptz      default now(), -- to track updates
-    deleted_at        timestamptz
+    created_at        timestamptz default now(), -- to capture creation timestamps
+    updated_at        timestamptz default now(), -- to track updates
+    deleted_at        timestamptz default null   -- soft delete timestamp (nullable)
 );
 
 create table projects
 (
     created_at       timestamptz not null default now(),
     updated_at       timestamptz not null default now(),
-    deleted_at       timestamptz,
+    deleted_at       timestamptz          default null,
     version_id       integer,
-    user_id       text        not null,
+    user_id          text        not null,
     slug             text        not null primary key,
     git              text,
     allow_team_fixes boolean,
@@ -55,7 +55,7 @@ create table categories
     name       text not null primary key, -- app category name
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
-    deleted_at timestamptz                -- soft delete timestamp (nullable)
+    deleted_at timestamptz default null   -- soft delete timestamp (nullable)
 );
 
 -- index for faster lookups and soft delete queries
@@ -65,26 +65,26 @@ create index idx_categories_deleted_at on categories (deleted_at);
 
 create table app_metadata_jsons
 (
-    id                        serial primary key,                    -- unique identifier
-    category                  text, -- fk to categories (hascategory relation)
-    name                      text,                         -- app name
-    description               text,                                  -- optional description
-    author                    text,                                  -- optional author name
-    icon                      text,                                  -- optional relative path for the icon
-    license_file              text,                                  -- optional license file path or type name
-    is_library                boolean       default false,           -- whether the app is a library
-    is_hidden                 boolean       default false,           -- whether the app is hidden in the launcher
-    semantic_version          text,                                  -- semantic version
-    interpreter               text,                                  -- interpreter (e.g., 'python')
-    main_executable           text,                                  -- main executable path
-    main_executable_overrides jsonb,                                 -- overrides for the main executable
-    file_mappings             jsonb,                                 -- file mappings
-    file_mappings_overrides   jsonb,                                 -- overrides or additions for file mappings
-    created_at                timestamptz   default now(),           -- record creation timestamp
-    updated_at                timestamptz   default now(),           -- record update timestamp
-    deleted_at                timestamptz,                           -- soft delete timestamp (nullable)
+    id                        serial primary key,          -- unique identifier
+    category                  text,                        -- fk to categories (hascategory relation)
+    name                      text,                        -- app name
+    description               text,                        -- optional description
+    author                    text,                        -- optional author name
+    icon                      text,                        -- optional relative path for the icon
+    license_file              text,                        -- optional license file path or type name
+    is_library                boolean     default false,   -- whether the app is a library
+    is_hidden                 boolean     default false,   -- whether the app is hidden in the launcher
+    semantic_version          text,                        -- semantic version
+    interpreter               text,                        -- interpreter (e.g., 'python')
+    main_executable           text,                        -- main executable path
+    main_executable_overrides jsonb,                       -- overrides for the main executable
+    file_mappings             jsonb,                       -- file mappings
+    file_mappings_overrides   jsonb,                       -- overrides or additions for file mappings
+    created_at                timestamptz default now(),   -- record creation timestamp
+    updated_at                timestamptz default now(),   -- record update timestamp
+    deleted_at                timestamptz default null,    -- soft delete timestamp (nullable)
     constraint app_metadata_jsons_category_fk foreign key (category)
-        references categories (name) on delete set default           -- category relation
+        references categories (name) on delete set default -- category relation
 );
 
 create index idx_app_metadata_jsons_name on app_metadata_jsons (name);
@@ -106,7 +106,7 @@ create table versions
     download_count       bigint      default 0,     -- download count with default value
     created_at           timestamptz default now(), -- track creation time
     updated_at           timestamptz default now(), -- track updates
-    deleted_at           timestamptz,               -- soft delete timestamp (nullable)
+    deleted_at           timestamptz default null,               -- soft delete timestamp (nullable)
     constraint versions_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade,
     constraint versions_app_metadata_json_id_fk foreign key (app_metadata_json_id) references app_metadata_jsons (id) on delete cascade
 );
