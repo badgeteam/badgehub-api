@@ -28,6 +28,14 @@ function getInsertKeysAndValuesSql(user: Object) {
   return { keys, values };
 }
 
+function dateStringsToDates(dbDatedData: DBDatedData): DatedData {
+  return {
+    created_at: moment(dbDatedData.created_at).toDate(),
+    updated_at: moment(dbDatedData.updated_at).toDate(),
+    deleted_at: moment(dbDatedData.deleted_at).toDate(),
+  };
+}
+
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
 
@@ -37,7 +45,8 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
 
   async insertUser(user: DBInsertUser): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(user);
-    const insertQuery = sql`insert into users (${keys}) values (${values})`;
+    const insertQuery = sql`insert into users (${keys})
+                            values (${values})`;
     await this.pool.query(insertQuery);
   }
 
@@ -48,7 +57,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   async insertProject(project: DBProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
     let sql2 = sql`insert into projects (${keys})
-        values (${values})`;
+                   values (${values})`;
     await this.pool.query(sql2.text, sql2.values);
   }
 
@@ -124,12 +133,17 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   async getBadges(): Promise<Badge[]> {
-    return await this.pool
+    const dbBadges: DBBadge[] = await this.pool
       .query(
-        sql`select name, slug
+        sql`select slug, name
             from badges`
       )
       .then((res) => res.rows);
+    return dbBadges.map((dbBadge) => ({
+      slug: dbBadge.slug,
+      name: dbBadge.name,
+      ...dateStringsToDates(dbBadge),
+    }));
   }
 
   async getProjects(filter?: {
@@ -184,9 +198,6 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         badges: [], // TODO
         category: dbProject.category || "Uncategorised",
         collaborators: [], // TODO
-        created_at: moment(dbProject.created_at).toDate(),
-        updated_at: moment(dbProject.updated_at).toDate(),
-        deleted_at: moment(dbProject.deleted_at).toDate(),
         description: dbProject.description,
         download_counter: undefined, // TODO
         git: dbProject.git,
@@ -205,6 +216,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         dependencies: undefined, // TODO
         votes: undefined, // TODO
         warnings: undefined, // TODO
+        ...dateStringsToDates(dbProject),
       };
     });
   }

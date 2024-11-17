@@ -8,6 +8,15 @@ create table badgehub.migrations
 
 -- create tables
 
+create table badges
+(
+    slug       text not null primary key,
+    name       text,
+    created_at timestamptz default now(), -- creation timestamp
+    updated_at timestamptz default now(), -- update timestamp
+    deleted_at timestamptz                -- soft delete timestamp (nullable)
+);
+
 create table users
 (
     id                text primary key,               -- using text as recommended
