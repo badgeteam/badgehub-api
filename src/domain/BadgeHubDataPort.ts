@@ -1,12 +1,7 @@
-import {
-  Project,
-  ProjectCore,
-  ProjectSlug,
-} from "@domain/readModels/app/Project";
+import { Project, ProjectSlug } from "@domain/readModels/app/Project";
 import { Version } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
-import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
 import { Badge } from "@domain/readModels/Badge";
 import { AppCategoryName } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
@@ -29,6 +24,11 @@ export interface BadgeHubDataPort {
     filePath: string,
     contents: string | Uint8Array
   ): Promise<void>;
+
+  writeProjectZip(
+    projectSlug: string,
+    zipContent: Uint8Array
+  ): Promise<Version>;
 
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
 

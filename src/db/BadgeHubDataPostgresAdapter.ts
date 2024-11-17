@@ -100,8 +100,19 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  publishVersion(projectSlug: string): Promise<void> {
+  writeProjectZip(
+    projectSlug: string,
+    zipContent: Uint8Array
+  ): Promise<Version> {
     throw new Error("Method not implemented.");
+  }
+
+  async publishVersion(projectSlug: string): Promise<void> {
+    await this.pool.query(
+      sql`update versions v
+          set published_at=now()
+          where (published_at is null and v.id = (select version_id from projects p where slug = ${projectSlug}))`
+    );
   }
 
   getProject(projectSlug: string): Promise<Project> {

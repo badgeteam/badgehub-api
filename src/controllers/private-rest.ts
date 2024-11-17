@@ -3,6 +3,7 @@ import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+import { Version } from "@domain/readModels/app/Version";
 
 // TODO verify author against logged in user
 
@@ -65,11 +66,13 @@ export class PrivateRestController {
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array
-  ): Promise<void> {
-    throw new Error("Not implemented");
+  ): Promise<Version> {
+    return await this.badgeHubData.writeProjectZip(slug, zipContent);
   }
 
-  // Publish the latest draft version
+  /**
+   * Publish the latest draft version
+   */
   @Post("/apps/{slug}/version")
   public async publishVersion(@Path() slug: string) {
     await this.badgeHubData.publishVersion(slug);

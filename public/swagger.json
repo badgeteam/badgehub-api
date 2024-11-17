@@ -972,8 +972,15 @@
       "post": {
         "operationId": "WriteZip",
         "responses": {
-          "204": {
-            "description": "No content"
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            }
           }
         },
         "description": "Upload a file to the latest draft version of the project.",
@@ -1009,6 +1016,7 @@
             "description": "No content"
           }
         },
+        "description": "Publish the latest draft version",
         "tags": ["private"],
         "security": [],
         "parameters": [
