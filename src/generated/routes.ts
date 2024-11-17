@@ -313,20 +313,25 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectCore: {
-    dataType: "refObject",
-    properties: {
-      slug: { dataType: "string", required: true },
-      user_email: { dataType: "string", required: true },
-      git: { dataType: "string" },
-      allow_team_fixes: { dataType: "boolean" },
+  "Pick_ProjectCore.Exclude_keyofProjectCore.slug__": {
+    dataType: "refAlias",
+    type: {
+      dataType: "nestedObjectLiteral",
+      nestedProperties: {
+        user_email: { dataType: "string", required: true },
+        git: { dataType: "string" },
+        allow_team_fixes: { dataType: "boolean" },
+      },
+      validators: {},
     },
-    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Exclude_ProjectCore.slug_": {
+  "Omit_ProjectCore.slug_": {
     dataType: "refAlias",
-    type: { ref: "ProjectCore", validators: {} },
+    type: {
+      ref: "Pick_ProjectCore.Exclude_keyofProjectCore.slug__",
+      validators: {},
+    },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Partial_Omit_ProjectCore.slug__": {
@@ -553,7 +558,7 @@ export function RegisterRoutes(app: Router) {
           in: "body",
           name: "props",
           required: true,
-          ref: "Exclude_ProjectCore.slug_",
+          ref: "Omit_ProjectCore.slug_",
         },
       };
 

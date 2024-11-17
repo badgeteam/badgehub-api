@@ -17,7 +17,7 @@ export class PrivateRestController {
   @Post("/apps/{slug}")
   public async insertProject(
     @Path() slug: string,
-    @Body() props: Exclude<ProjectCore, "slug">
+    @Body() props: Omit<ProjectCore, "slug">
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
   }
