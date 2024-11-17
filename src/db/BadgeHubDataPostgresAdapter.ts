@@ -28,6 +28,7 @@ import {
 } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@db/models/app/DBVersion";
 import { DBAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { DBCategory } from "@db/models/app/DBCategory";
 
 function getInsertKeysAndValuesSql(user: Object) {
   const definedEntries = getEntriesWithDefinedValues(user);
@@ -50,8 +51,11 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     await this.pool.query(insertQuery);
   }
 
-  getCategories(): Promise<AppCategoryName[]> {
-    throw new Error("Method not implemented.");
+  async getCategories(): Promise<AppCategoryName[]> {
+    const dbCategoryNames: Pick<DBCategory, "name">[] = await this.pool
+      .query(sql`select name from categories`)
+      .then((res) => res.rows);
+    return dbCategoryNames.map((dbCategory) => dbCategory.name);
   }
 
   async insertProject(project: DBProject): Promise<void> {
