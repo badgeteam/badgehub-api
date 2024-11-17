@@ -81,7 +81,7 @@ export class PrivateRestController {
   /**
    * Publish the latest draft version
    */
-  @Post("/apps/{slug}/version")
+  @Patch("/apps/{slug}/publish")
   public async publishVersion(@Path() slug: string) {
     await this.badgeHubData.publishVersion(slug);
   }

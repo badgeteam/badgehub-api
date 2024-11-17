@@ -20,13 +20,22 @@ import {
   ProjectQueryResponse,
   projectQueryResponseToReadModel,
 } from "@db/sqlHelpers/projectQuery";
-import { dateStringsToDates } from "@db/sqlHelpers/datedData";
+import { dateStringsToDates, timestampTZToDate } from "@db/sqlHelpers/dbDates";
+import { DBVersion } from "@db/models/app/DBVersion";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 function getInsertKeysAndValuesSql(user: Object) {
   const definedEntries = getEntriesWithDefinedValues(user);
   const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
   const values = join(definedEntries.map(([, value]) => value));
   return { keys, values };
+}
+
+// Helper to make typescript happy regarding deleted_at while still doing all the rest of the type checks
+function tsStripDeletedAt<T extends DBDatedData>(
+  datedData: T
+): Omit<T, "deleted_at"> {
+  return datedData as Omit<T, "deleted_at">;
 }
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
@@ -97,6 +106,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
+  // TODO test
   async publishVersion(projectSlug: string): Promise<void> {
     await this.pool.query(
       sql`update versions v
@@ -105,6 +115,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     );
   }
 
+  // TODO test
   async getProject(projectSlug: string): Promise<Project> {
     const project: ProjectQueryResponse = await this.pool
       .query(sql`${getBaseSelectProjectQuery()} and p.slug = ${projectSlug}`)
@@ -112,11 +123,39 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     return projectQueryResponseToReadModel(project);
   }
 
-  getVersion(projectSlug: string): Promise<Version> {
-    throw new Error("Method not implemented.");
+  // TODO test
+  async getVersion(projectSlug: string): Promise<Version> {
+    const selectVersionIdForProject = sql`select version_id from projects p where p.slug = ${projectSlug}`;
+    const dbVersion: DBVersion = await this.pool
+      .query(
+        sql`select 
+          v.id,
+          v.revision,
+          v.semantic_version,
+          v.zip,
+          v.size_of_zip,
+          v.git_commit_id,
+          v.published_at,
+          v.download_count,
+          v.project_slug,
+          v.app_metadata_json_id,
+          v.created_at,
+          v.updated_at,
+          v.deleted_at
+        from versions v where v.id = (${selectVersionIdForProject})
+        `
+      )
+      .then((res) => res.rows[0]);
+    return {
+      ...tsStripDeletedAt(dbVersion),
+      files: [], // TODO
+      app_metadata: {}, // TODO
+      published_at: timestampTZToDate(dbVersion.published_at),
+      ...dateStringsToDates(dbVersion),
+    };
   }
 
-  getUser(userEmail: string): Promise<User> {
+  getUser(userId: string): Promise<User> {
     throw new Error("Method not implemented.");
   }
 
@@ -159,7 +198,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     badgeSlug?: string;
     appCategory?: AppCategoryName;
   }): Promise<Project[]> {
-    let query = getBaseSelectProjectQuery();
+    let query = sql`${getBaseSelectProjectQuery()} and p.deleted_at is null`;
     if (filter?.pageLength) {
       query = sql`${query}
       limit

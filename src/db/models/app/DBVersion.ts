@@ -1,6 +1,5 @@
 import { AppMetadataJSONRelation } from "./DBAppMetadataJSON";
 import { DBDatedData } from "./DBDatedData";
-import { UserRelation } from "./DBUser";
 import { TimestampTZ } from "@db/DBTypes";
 import { ProjectSlugRelation } from "@db/models/app/DBProject";
 
@@ -8,8 +7,7 @@ export interface VersionRelation {
   version_id: DBVersion["id"];
 }
 export interface DBInsertVersion
-  extends UserRelation,
-    AppMetadataJSONRelation,
+  extends AppMetadataJSONRelation,
     ProjectSlugRelation {
   id: number;
   revision: number;

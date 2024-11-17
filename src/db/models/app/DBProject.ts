@@ -1,4 +1,4 @@
-import { DBUser, UserRelation } from "./DBUser";
+import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 import { VersionRelation } from "./DBVersion";
 import { AppCategoryName } from "@domain/readModels/app/Category";

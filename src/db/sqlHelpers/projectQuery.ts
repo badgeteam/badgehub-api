@@ -5,7 +5,7 @@ import { DBVersion } from "@db/models/app/DBVersion";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
 import { DBUser } from "@db/models/app/DBUser";
 import sql from "sql-template-tag";
-import { dateStringsToDates } from "@db/sqlHelpers/datedData";
+import { dateStringsToDates } from "@db/sqlHelpers/dbDates";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,
@@ -29,7 +29,7 @@ export function getBaseSelectProjectQuery() {
                              left join users u on p.user_id = u.id
                              left join versions v on p.version_id = v.id
                              left join app_metadata_jsons m on v.app_metadata_json_id = m.id
-                    where p.deleted_at is null
+                    where
                       and u.deleted_at is null
                       and v.deleted_at is null
     `;
