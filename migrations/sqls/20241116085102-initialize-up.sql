@@ -14,7 +14,7 @@ create table badges
     name       text,
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
-    deleted_at timestamptz default null   -- soft delete timestamp (nullable)
+    deleted_at timestamptz   -- soft delete timestamp (nullable)
 );
 
 create table users
@@ -28,17 +28,17 @@ create table users
     editor            text,
     public            boolean,
     show_projects     boolean,
-    email_verified_at timestamptz default null, -- email verification timestamp
+    email_verified_at timestamptz, -- email verification timestamp
     created_at        timestamptz default now(), -- to capture creation timestamps
     updated_at        timestamptz default now(), -- to track updates
-    deleted_at        timestamptz default null   -- soft delete timestamp (nullable)
+    deleted_at        timestamptz   -- soft delete timestamp (nullable)
 );
 
 create table projects
 (
     created_at       timestamptz not null default now(),
     updated_at       timestamptz not null default now(),
-    deleted_at       timestamptz          default null,
+    deleted_at       timestamptz         ,
     version_id       integer,
     user_id          text        not null,
     slug             text        not null primary key,
@@ -55,7 +55,7 @@ create table categories
     name       text not null primary key, -- app category name
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
-    deleted_at timestamptz default null   -- soft delete timestamp (nullable)
+    deleted_at timestamptz   -- soft delete timestamp (nullable)
 );
 
 -- index for faster lookups and soft delete queries
@@ -82,7 +82,7 @@ create table app_metadata_jsons
     file_mappings_overrides   jsonb,                       -- overrides or additions for file mappings
     created_at                timestamptz default now(),   -- record creation timestamp
     updated_at                timestamptz default now(),   -- record update timestamp
-    deleted_at                timestamptz default null,    -- soft delete timestamp (nullable)
+    deleted_at                timestamptz,    -- soft delete timestamp (nullable)
     constraint app_metadata_jsons_category_fk foreign key (category)
         references categories (name) on delete set default -- category relation
 );
@@ -102,11 +102,11 @@ create table versions
     zip                  text,                      -- optional zip file name or path
     size_of_zip          bigint,                    -- optional size of the zip file
     git_commit_id        text,                      -- optional git commit id
-    published_at         timestamptz default null,               -- required publish timestamp
+    published_at         timestamptz,               -- required publish timestamp
     download_count       bigint      default 0,     -- download count with default value
     created_at           timestamptz default now(), -- track creation time
     updated_at           timestamptz default now(), -- track updates
-    deleted_at           timestamptz default null,               -- soft delete timestamp (nullable)
+    deleted_at           timestamptz,               -- soft delete timestamp (nullable)
     constraint versions_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade,
     constraint versions_app_metadata_json_id_fk foreign key (app_metadata_json_id) references app_metadata_jsons (id) on delete cascade
 );
