@@ -20,22 +20,20 @@ import {
   ProjectQueryResponse,
   projectQueryResponseToReadModel,
 } from "@db/sqlHelpers/projectQuery";
-import { dateStringsToDates, timestampTZToDate } from "@db/sqlHelpers/dbDates";
+import {
+  convertDatedData,
+  extractDatedDataConverted,
+  stripDatedData,
+  timestampTZToDate,
+} from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@db/models/app/DBVersion";
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
 function getInsertKeysAndValuesSql(user: Object) {
   const definedEntries = getEntriesWithDefinedValues(user);
   const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
   const values = join(definedEntries.map(([, value]) => value));
   return { keys, values };
-}
-
-// Helper to make typescript happy regarding deleted_at while still doing all the rest of the type checks
-function tsStripDeletedAt<T extends DBDatedData>(
-  datedData: T
-): Omit<T, "deleted_at"> {
-  return datedData as Omit<T, "deleted_at">;
 }
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
@@ -87,7 +85,8 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
 
   // TODO test
   async deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    await this.pool.query(sql`update projects set deleted_at = now()
+    await this.pool.query(sql`update projects
+                              set deleted_at = now()
                               where slug = ${projectSlug}`);
   }
 
@@ -124,11 +123,12 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   // TODO test
-  async getVersion(projectSlug: string): Promise<Version> {
+  async getDraftVersion(projectSlug: string): Promise<Version> {
     const selectVersionIdForProject = sql`select version_id from projects p where p.slug = ${projectSlug}`;
-    const dbVersion: DBVersion = await this.pool
-      .query(
-        sql`select 
+    const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
+      await this.pool
+        .query(
+          sql`select 
           v.id,
           v.revision,
           v.semantic_version,
@@ -141,17 +141,20 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
           v.app_metadata_json_id,
           v.created_at,
           v.updated_at,
-          v.deleted_at
-        from versions v where v.id = (${selectVersionIdForProject})
+          v.deleted_at,
+          to_jsonb(m) as app_metadata
+        from versions v
+        left join app_metadata_jsons m on v.app_metadata_json_id = m.id
+        where v.id = (${selectVersionIdForProject})
         `
-      )
-      .then((res) => res.rows[0]);
+        )
+        .then((res) => res.rows[0]);
+    const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
-      ...tsStripDeletedAt(dbVersion),
+      ...convertDatedData(dbVersion),
       files: [], // TODO
-      app_metadata: {}, // TODO
+      app_metadata: stripDatedData(appMetadataWithoutId), // TODO
       published_at: timestampTZToDate(dbVersion.published_at),
-      ...dateStringsToDates(dbVersion),
     };
   }
 
@@ -188,7 +191,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     return dbBadges.map((dbBadge) => ({
       slug: dbBadge.slug,
       name: dbBadge.name,
-      ...dateStringsToDates(dbBadge),
+      ...extractDatedDataConverted(dbBadge),
     }));
   }
 

@@ -34,7 +34,7 @@ export interface BadgeHubDataPort {
 
   getProject(projectSlug: ProjectSlug): Promise<Project>;
 
-  getVersion(projectSlug: ProjectSlug): Promise<Version>;
+  getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
 
   getUser(userId: User["id"]): Promise<User>;
 

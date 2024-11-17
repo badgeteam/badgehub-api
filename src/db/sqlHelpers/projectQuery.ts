@@ -5,7 +5,7 @@ import { DBVersion } from "@db/models/app/DBVersion";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
 import { DBUser } from "@db/models/app/DBUser";
 import sql from "sql-template-tag";
-import { dateStringsToDates } from "@db/sqlHelpers/dbDates";
+import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,
@@ -64,7 +64,7 @@ export const projectQueryResponseToReadModel = (
     dependencies: undefined, // TODO
     votes: undefined, // TODO
     warnings: undefined, // TODO
-    ...dateStringsToDates(dbProject),
+    ...extractDatedDataConverted(dbProject),
   };
 };
 export type ProjectQueryResponse = DBProject &

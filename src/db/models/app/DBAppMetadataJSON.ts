@@ -4,6 +4,7 @@
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 
 import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 export interface AppMetadataJSONRelation {
   app_metadata_json_id: DBAppMetadataJSON["id"];
@@ -11,6 +12,8 @@ export interface AppMetadataJSONRelation {
 
 // table name: app_metadata_json
 export interface DBInsertAppMetadataJSON extends AppMetadataJSON {}
-export interface DBAppMetadataJSON extends DBInsertAppMetadataJSON {
+export interface DBAppMetadataJSON
+  extends DBDatedData,
+    DBInsertAppMetadataJSON {
   id: number;
 }
