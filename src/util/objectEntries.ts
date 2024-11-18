@@ -4,7 +4,7 @@ function entryHasDefinedValue<K, V>(
   return entry[1] !== undefined;
 }
 
-type Entry<T extends object> = NonNullable<
+export type Entry<T extends object> = NonNullable<
   {
     [K in keyof T]: [K, T[K]];
   }[keyof T]

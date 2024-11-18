@@ -3,7 +3,8 @@ import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";
-import { Version } from "@domain/readModels/app/Version";
+import type { Version } from "@domain/readModels/app/Version";
+import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
 // TODO verify author against logged in user
 
@@ -65,6 +66,17 @@ export class PrivateRestController {
     @Body() fileContent: string | Uint8Array
   ): Promise<void> {
     await this.badgeHubData.writeFile(slug, filePath, fileContent);
+  }
+
+  /**
+   * Change the metadata of the latest draft version of the project.
+   */
+  @Patch("/apps/{slug}/metadata/draft")
+  public async changeAppMetadata(
+    @Path() slug: string,
+    @Body() appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+  ): Promise<void> {
+    await this.badgeHubData.updateDraftMetadata(slug, appMetadataChanges);
   }
 
   /**

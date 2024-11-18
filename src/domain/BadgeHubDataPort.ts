@@ -6,6 +6,7 @@ import { Badge } from "@domain/readModels/Badge";
 import { AppCategoryName } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
 export interface BadgeHubDataPort {
   insertUser(user: DBInsertUser): Promise<void>;
@@ -61,4 +62,9 @@ export interface BadgeHubDataPort {
     badgeSlug?: Badge["slug"];
     appCategory?: AppCategoryName;
   }): Promise<Project[]>;
+
+  updateDraftMetadata(
+    slug: string,
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+  ): Promise<void>;
 }

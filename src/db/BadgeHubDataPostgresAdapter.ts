@@ -13,7 +13,7 @@ import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
-import { getEntriesWithDefinedValues } from "@util/objectEntries";
+import { Entry, getEntriesWithDefinedValues } from "@util/objectEntries";
 import { DBBadge } from "@db/models/DBBadge";
 import {
   getBaseSelectProjectQuery,
@@ -27,7 +27,10 @@ import {
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@db/models/app/DBVersion";
-import { DBAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import {
+  DBAppMetadataJSON,
+  DBInsertAppMetadataJSON,
+} from "@db/models/app/DBAppMetadataJSON";
 import { DBCategory } from "@db/models/app/DBCategory";
 
 function getInsertKeysAndValuesSql(user: Object) {
@@ -35,6 +38,21 @@ function getInsertKeysAndValuesSql(user: Object) {
   const keys = join(definedEntries.map(([key]) => raw(key))); // raw is ok here because these keys are checked against our typescript definitions by tsoa
   const values = join(definedEntries.map(([, value]) => value));
   return { keys, values };
+}
+
+function getUpdateAssigmentsSql(
+  definedEntries: Entry<Partial<Omit<ProjectCore, "slug">>>[]
+) {
+  return join(
+    definedEntries.map(
+      ([
+        key,
+        value,
+      ]) => sql`${raw(key)} // raw is ok here because these keys are checked against our typescript definitions by tsoa
+        =
+        ${value}`
+    )
+  );
 }
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
@@ -78,16 +96,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     changes: Partial<Omit<ProjectCore, "slug">>
   ): Promise<void> {
     const definedEntries = getEntriesWithDefinedValues(changes);
-    const setters = join(
-      definedEntries.map(
-        ([
-          key,
-          value,
-        ]) => sql`${raw(key)} // raw is ok here because these keys are checked against our typescript definitions by tsoa
-        =
-        ${value}`
-      )
-    );
+    const setters = getUpdateAssigmentsSql(definedEntries);
     if (definedEntries.length !== 0) {
       await this.pool.query(sql`update projects
                                 set ${setters}
@@ -106,6 +115,13 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     projectSlug: ProjectSlug,
     filePath: string,
     contents: string | Uint8Array
+  ): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  updateDraftMetadata(
+    slug: string,
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
   ): Promise<void> {
     throw new Error("Method not implemented.");
   }
