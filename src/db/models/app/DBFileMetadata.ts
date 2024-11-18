@@ -7,10 +7,7 @@ export interface FileMetadataRelation {
 }
 
 // table name: file_metadata
-export interface DBFileMetadata
-  extends VersionRelation,
-    UserRelation,
-    DBDatedData {
+export interface DBFileMetadata extends UserRelation, DBDatedData {
   id: number;
   lintable?: boolean; // Some files in a project can be auto-lintable, others not
   extension: string;

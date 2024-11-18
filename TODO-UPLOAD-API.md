@@ -47,6 +47,8 @@ When you upload a zip, file upload should be done for all the files in the zip (
 
 - The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
 
+### AUto run db-migrate:up on start
+
 ### Maybe change http status codes and message
 
 - currently, it will return 204 for the write api's, maybe that should be 200 OK?
@@ -55,3 +57,7 @@ When you upload a zip, file upload should be done for all the files in the zip (
 ### Maybe improve SQL debugging
 
 - We currently don't see the sql queries printed, even if they fail, maybe we should add that.
+
+### Change it to make it clear that draft version is always unpublished
+
+=> so publish should also create a new version

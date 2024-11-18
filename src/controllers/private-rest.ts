@@ -103,7 +103,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/zip")
+  @Post("/apps/{slug}/zip/draft")
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array
