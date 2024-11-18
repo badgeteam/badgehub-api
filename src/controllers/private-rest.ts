@@ -1,13 +1,20 @@
 import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
-import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
-import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 import type { Version } from "@domain/readModels/app/Version";
+import type { ProjectSlug } from "@domain/readModels/app/Project";
+import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
+import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
-// TODO verify author against logged in user
+interface UserProps extends Omit<DBInsertUser, "id"> {}
 
+interface ProjectProps extends Omit<DBInsertProject, "slug"> {}
+interface ProjectPropsPartial extends Partial<ProjectProps> {}
+interface DbInsertAppMetadataJSONPartial
+  extends Partial<DBInsertAppMetadataJSON> {}
+
+// TODO verify author against logged in user
 @Route("/api/v3")
 @Tags("private")
 export class PrivateRestController {
@@ -21,7 +28,7 @@ export class PrivateRestController {
   @Post("/users/{userId}")
   public async insertUser(
     @Path() userId: DBUser["id"],
-    @Body() props: Omit<DBInsertUser, "id">
+    @Body() props: UserProps
   ): Promise<void> {
     await this.badgeHubData.insertUser({ ...props, id: userId });
   }
@@ -31,8 +38,8 @@ export class PrivateRestController {
    */
   @Post("/apps/{slug}")
   public async insertProject(
-    @Path() slug: DBProject["slug"],
-    @Body() props: Omit<DBInsertProject, "slug">
+    @Path() slug: ProjectSlug,
+    @Body() props: ProjectProps
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
   }
@@ -41,7 +48,7 @@ export class PrivateRestController {
    * Create a new app
    */
   @Delete("/apps/{slug}")
-  public async deleteProject(@Path() slug: DBProject["slug"]): Promise<void> {
+  public async deleteProject(@Path() slug: ProjectSlug): Promise<void> {
     await this.badgeHubData.deleteProject(slug);
   }
 
@@ -50,8 +57,8 @@ export class PrivateRestController {
    */
   @Patch("/apps/{slug}")
   public async updateProject(
-    @Path() slug: DBProject["slug"],
-    @Body() changes: Partial<Omit<DBProject, "slug">>
+    @Path() slug: ProjectSlug,
+    @Body() changes: ProjectPropsPartial
   ): Promise<void> {
     await this.badgeHubData.updateProject(slug, changes);
   }
@@ -74,7 +81,7 @@ export class PrivateRestController {
   @Patch("/apps/{slug}/metadata/draft")
   public async changeAppMetadata(
     @Path() slug: string,
-    @Body() appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+    @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
   ): Promise<void> {
     await this.badgeHubData.updateDraftMetadata(slug, appMetadataChanges);
   }

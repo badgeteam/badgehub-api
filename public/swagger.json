@@ -596,9 +596,39 @@
         "type": "object",
         "description": "From T, pick a set of properties whose keys are in the union K"
       },
-      "Omit_DBInsertUser.id_": {
-        "$ref": "#/components/schemas/Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__",
-        "description": "Construct a type with the properties of T except for those in type K."
+      "UserProps": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "remember_token": {
+            "type": "string"
+          },
+          "editor": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "show_projects": {
+            "type": "boolean"
+          },
+          "email_verified_at": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "name", "password"],
+        "type": "object",
+        "additionalProperties": false
       },
       "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
         "properties": {
@@ -623,11 +653,7 @@
         "type": "object",
         "description": "From T, pick a set of properties whose keys are in the union K"
       },
-      "Omit_DBInsertProject.slug_": {
-        "$ref": "#/components/schemas/Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__",
-        "description": "Construct a type with the properties of T except for those in type K."
-      },
-      "Partial_Omit_DBProject.slug__": {
+      "ProjectProps": {
         "properties": {
           "category": {
             "$ref": "#/components/schemas/AppCategoryName"
@@ -644,19 +670,121 @@
           },
           "user_id": {
             "type": "string"
+          }
+        },
+        "required": ["user_id"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "ProjectPropsPartial": {
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
           },
-          "created_at": {
+          "version_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "git": {
             "type": "string"
           },
-          "updated_at": {
-            "type": "string"
+          "allow_team_fixes": {
+            "type": "boolean"
           },
-          "deleted_at": {
+          "user_id": {
             "type": "string"
           }
         },
         "type": "object",
-        "description": "Make all properties in T optional"
+        "additionalProperties": false
+      },
+      "Record_string.string_": {
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "Record_string._source-string--destination-string_-Array_": {
+        "properties": {},
+        "additionalProperties": {
+          "items": {
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": ["destination", "source"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "DbInsertAppMetadataJSONPartial": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "license_file": {
+            "type": "string"
+          },
+          "is_library": {
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "main_executable": {
+            "type": "string"
+          },
+          "main_executable_overrides": {
+            "$ref": "#/components/schemas/Record_string.string_"
+          },
+          "file_mappings": {
+            "items": {
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": ["destination", "source"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file_mappings_overrides": {
+            "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
       }
     },
     "securitySchemes": {}
@@ -848,7 +976,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Omit_DBInsertProject.slug_"
+                "$ref": "#/components/schemas/ProjectProps"
               }
             }
           }
@@ -900,7 +1028,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Partial_Omit_DBProject.slug__"
+                "$ref": "#/components/schemas/ProjectPropsPartial"
               }
             }
           }
@@ -1087,7 +1215,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Omit_DBInsertUser.id_"
+                "$ref": "#/components/schemas/UserProps"
               }
             }
           }
@@ -1178,6 +1306,39 @@
         ]
       }
     },
+    "/api/v3/apps/{slug}/metadata/draft": {
+      "patch": {
+        "operationId": "ChangeAppMetadata",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Change the metadata of the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DbInsertAppMetadataJSONPartial"
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v3/apps/{slug}/zip/draft": {
       "get": {
         "operationId": "GetLatestPublishedZip",
@@ -1206,9 +1367,7 @@
             }
           }
         ]
-      }
-    },
-    "/api/v3/apps/{slug}/zip": {
+      },
       "post": {
         "operationId": "WriteZip",
         "responses": {

@@ -339,12 +339,20 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Omit_DBInsertUser.id_": {
-    dataType: "refAlias",
-    type: {
-      ref: "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__",
-      validators: {},
+  UserProps: {
+    dataType: "refObject",
+    properties: {
+      email: { dataType: "string", required: true },
+      admin: { dataType: "boolean" },
+      name: { dataType: "string", required: true },
+      password: { dataType: "string", required: true },
+      remember_token: { dataType: "string" },
+      editor: { dataType: "string" },
+      public: { dataType: "boolean" },
+      show_projects: { dataType: "boolean" },
+      email_verified_at: { dataType: "string" },
     },
+    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
@@ -362,30 +370,89 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Omit_DBInsertProject.slug_": {
+  ProjectProps: {
+    dataType: "refObject",
+    properties: {
+      category: { ref: "AppCategoryName" },
+      version_id: { dataType: "double" },
+      git: { dataType: "string" },
+      allow_team_fixes: { dataType: "boolean" },
+      user_id: { dataType: "string", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectPropsPartial: {
+    dataType: "refObject",
+    properties: {
+      category: { ref: "AppCategoryName" },
+      version_id: { dataType: "double" },
+      git: { dataType: "string" },
+      allow_team_fixes: { dataType: "boolean" },
+      user_id: { dataType: "string" },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Record_string.string_": {
     dataType: "refAlias",
     type: {
-      ref: "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__",
+      dataType: "nestedObjectLiteral",
+      nestedProperties: {},
+      additionalProperties: { dataType: "string" },
       validators: {},
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Partial_Omit_DBProject.slug__": {
+  "Record_string._source-string--destination-string_-Array_": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
-      nestedProperties: {
-        category: { ref: "AppCategoryName" },
-        version_id: { dataType: "double" },
-        git: { dataType: "string" },
-        allow_team_fixes: { dataType: "boolean" },
-        user_id: { dataType: "string" },
-        created_at: { dataType: "string" },
-        updated_at: { dataType: "string" },
-        deleted_at: { dataType: "string" },
+      nestedProperties: {},
+      additionalProperties: {
+        dataType: "array",
+        array: {
+          dataType: "nestedObjectLiteral",
+          nestedProperties: {
+            destination: { dataType: "string", required: true },
+            source: { dataType: "string", required: true },
+          },
+        },
       },
       validators: {},
     },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  DbInsertAppMetadataJSONPartial: {
+    dataType: "refObject",
+    properties: {
+      name: { dataType: "string" },
+      description: { dataType: "string" },
+      author: { dataType: "string" },
+      icon: { dataType: "string" },
+      license_file: { dataType: "string" },
+      is_library: { dataType: "boolean" },
+      is_hidden: { dataType: "boolean" },
+      semantic_version: { dataType: "string" },
+      interpreter: { dataType: "string" },
+      main_executable: { dataType: "string" },
+      main_executable_overrides: { ref: "Record_string.string_" },
+      file_mappings: {
+        dataType: "array",
+        array: {
+          dataType: "nestedObjectLiteral",
+          nestedProperties: {
+            destination: { dataType: "string", required: true },
+            source: { dataType: "string", required: true },
+          },
+        },
+      },
+      file_mappings_overrides: {
+        ref: "Record_string._source-string--destination-string_-Array_",
+      },
+      category: { ref: "AppCategoryName" },
+    },
+    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -786,12 +853,7 @@ export function RegisterRoutes(app: Router) {
           required: true,
           dataType: "string",
         },
-        props: {
-          in: "body",
-          name: "props",
-          required: true,
-          ref: "Omit_DBInsertUser.id_",
-        },
+        props: { in: "body", name: "props", required: true, ref: "UserProps" },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -838,7 +900,7 @@ export function RegisterRoutes(app: Router) {
           in: "body",
           name: "props",
           required: true,
-          ref: "Omit_DBInsertProject.slug_",
+          ref: "ProjectProps",
         },
       };
 
@@ -928,7 +990,7 @@ export function RegisterRoutes(app: Router) {
           in: "body",
           name: "changes",
           required: true,
-          ref: "Partial_Omit_DBProject.slug__",
+          ref: "ProjectPropsPartial",
         },
       };
 
@@ -1001,6 +1063,54 @@ export function RegisterRoutes(app: Router) {
 
         await templateService.apiHandler({
           methodName: "writeFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.patch(
+    "/api/v3/apps/:slug/metadata/draft",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.changeAppMetadata
+    ),
+
+    async function PrivateRestController_changeAppMetadata(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        appMetadataChanges: {
+          in: "body",
+          name: "appMetadataChanges",
+          required: true,
+          ref: "DbInsertAppMetadataJSONPartial",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "changeAppMetadata",
           controller,
           response,
           next,
@@ -1104,7 +1214,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/zip",
+    "/api/v3/apps/:slug/zip/draft",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.writeZip
