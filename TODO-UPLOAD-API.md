@@ -43,7 +43,8 @@ When you upload a zip, file upload should be done for all the files in the zip (
 
 ### (one/many) to many relations from the [relations](src/db/models/app/relations) dir
 
-- this will allow eg finding all the collaborators on a project, but also all projects that a user has collaborated on...
+- Currently, the only one that is really needed is the file to version relation, others can wait.
+- this will allow eg. finding all the collaborators on a project, but also all projects that a user has collaborated on...
 
 ### Test with frontend for feature parity compared to master
 
