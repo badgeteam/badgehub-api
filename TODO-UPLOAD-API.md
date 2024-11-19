@@ -22,6 +22,8 @@ The publish patch api on a project will mark the latest version as published now
 
 Since we don't have security on our api yet, I added code that makes sure that the upload api only works when the NODE_ENV is set to development
 
+### Auto run db-migrate:up on start
+
 ## TODO
 
 ### Single File upload
@@ -46,8 +48,6 @@ When you upload a zip, file upload should be done for all the files in the zip (
 ### Test with frontend for feature parity compared to master
 
 - The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
-
-### AUto run db-migrate:up on start
 
 ### Maybe change http status codes and message
 

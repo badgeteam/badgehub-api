@@ -3,13 +3,19 @@ import { RegisterRoutes } from "./generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
+import { runMigrations } from "@db/migrations";
 
-disableWriteWhenNotDev(app);
+async function startServer() {
+  disableWriteWhenNotDev(app);
 
-RegisterRoutes(app);
+  RegisterRoutes(app);
 
-addTsoaValidationFailureLogging(app);
+  addTsoaValidationFailureLogging(app);
 
-app.listen(EXPRESS_PORT, () => {
-  console.info(`Node.js server started.`);
-});
+  await runMigrations();
+  app.listen(EXPRESS_PORT, () => {
+    console.info(`Node.js server started.`);
+  });
+}
+
+startServer();
