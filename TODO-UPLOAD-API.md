@@ -24,7 +24,21 @@ Since we don't have security on our api yet, I added code that makes sure that t
 
 ### Auto run db-migrate:up on start
 
-## TODO
+## TODO before first merge of code
+
+### Test with frontend for feature parity compared to master
+
+- The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
+
+### Migrate sample data
+
+- We should migrate the sample data to the new structure, if we do this in the migration script, then it will also work for the deployed data.
+
+### Change category to have a slug and a name separately, and reference slug in the project
+
+### Go for consistent naming: is it apps or projects, is it devices or badges?
+
+## TODO to make a full app app upload and download api MVP that the badge can use
 
 ### Single File upload
 
@@ -43,12 +57,9 @@ When you upload a zip, file upload should be done for all the files in the zip (
 
 ### (one/many) to many relations from the [relations](src/db/models/app/relations) dir
 
-- Currently, the only one that is really needed is the file to version relation, others can wait.
+- The one that is really needed for project upload is the file to version relation, others can wait.
+- To have feature parity with master, we also need the ProjectStatusOnBadge relation
 - this will allow eg. finding all the collaborators on a project, but also all projects that a user has collaborated on...
-
-### Test with frontend for feature parity compared to master
-
-- The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
 
 ### Maybe change http status codes and message
 
