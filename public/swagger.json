@@ -952,7 +952,7 @@
         ]
       },
       "post": {
-        "operationId": "InsertProject",
+        "operationId": "CreateApp",
         "responses": {
           "204": {
             "description": "No content"
@@ -983,7 +983,7 @@
         }
       },
       "delete": {
-        "operationId": "DeleteProject",
+        "operationId": "DeleteApp",
         "responses": {
           "204": {
             "description": "No content"
@@ -1004,7 +1004,7 @@
         ]
       },
       "patch": {
-        "operationId": "UpdateProject",
+        "operationId": "UpdateApp",
         "responses": {
           "204": {
             "description": "No content"

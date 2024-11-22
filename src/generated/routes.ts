@@ -882,10 +882,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.insertProject
+      PrivateRestController.prototype.createApp
     ),
 
-    async function PrivateRestController_insertProject(
+    async function PrivateRestController_createApp(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -913,7 +913,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "insertProject",
+          methodName: "createApp",
           controller,
           response,
           next,
@@ -930,10 +930,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.deleteProject
+      PrivateRestController.prototype.deleteApp
     ),
 
-    async function PrivateRestController_deleteProject(
+    async function PrivateRestController_deleteApp(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -955,7 +955,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "deleteProject",
+          methodName: "deleteApp",
           controller,
           response,
           next,
@@ -972,10 +972,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.updateProject
+      PrivateRestController.prototype.updateApp
     ),
 
-    async function PrivateRestController_updateProject(
+    async function PrivateRestController_updateApp(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1003,7 +1003,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "updateProject",
+          methodName: "updateApp",
           controller,
           response,
           next,

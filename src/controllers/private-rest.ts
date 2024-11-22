@@ -37,7 +37,7 @@ export class PrivateRestController {
    * Create a new app
    */
   @Post("/apps/{slug}")
-  public async insertProject(
+  public async createApp(
     @Path() slug: ProjectSlug,
     @Body() props: ProjectProps
   ): Promise<void> {
@@ -48,7 +48,7 @@ export class PrivateRestController {
    * Create a new app
    */
   @Delete("/apps/{slug}")
-  public async deleteProject(@Path() slug: ProjectSlug): Promise<void> {
+  public async deleteApp(@Path() slug: ProjectSlug): Promise<void> {
     await this.badgeHubData.deleteProject(slug);
   }
 
@@ -56,7 +56,7 @@ export class PrivateRestController {
    * Create a new app
    */
   @Patch("/apps/{slug}")
-  public async updateProject(
+  public async updateApp(
     @Path() slug: ProjectSlug,
     @Body() changes: ProjectPropsPartial
   ): Promise<void> {
