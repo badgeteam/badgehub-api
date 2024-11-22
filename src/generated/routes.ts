@@ -472,10 +472,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getBadges
+      PublicRestController.prototype.getDevices
     ),
 
-    async function PublicRestController_getBadges(
+    async function PublicRestController_getDevices(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -495,7 +495,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getBadges",
+          methodName: "getDevices",
           controller,
           response,
           next,
@@ -551,11 +551,9 @@ export function RegisterRoutes(app: Router) {
   app.get(
     "/api/v3/apps",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getProjects
-    ),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApps),
 
-    async function PublicRestController_getProjects(
+    async function PublicRestController_getApps(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -580,7 +578,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getProjects",
+          methodName: "getApps",
           controller,
           response,
           next,
@@ -596,11 +594,9 @@ export function RegisterRoutes(app: Router) {
   app.get(
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getProject
-    ),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApp),
 
-    async function PublicRestController_getProject(
+    async function PublicRestController_getApp(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -629,7 +625,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getProject",
+          methodName: "getApp",
           controller,
           response,
           next,

@@ -30,7 +30,7 @@ export class PublicRestController {
    * Get list of devices (badges)
    */
   @Get("/devices")
-  public async getBadges(): Promise<Badge[]> {
+  public async getDevices(): Promise<Badge[]> {
     return await this.badgeHubData.getBadges();
   }
 
@@ -46,7 +46,7 @@ export class PublicRestController {
    * Get list of apps, optionally limited by page start/length and/or filtered by category
    */
   @Get("/apps")
-  public async getProjects(
+  public async getApps(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
     @Query() category?: string,
@@ -64,7 +64,7 @@ export class PublicRestController {
    * Get app details
    */
   @Get("/apps/{slug}")
-  public async getProject(
+  public async getApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {

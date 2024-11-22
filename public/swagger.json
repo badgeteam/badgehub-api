@@ -801,7 +801,7 @@
   "paths": {
     "/api/v3/devices": {
       "get": {
-        "operationId": "GetBadges",
+        "operationId": "GetDevices",
         "responses": {
           "200": {
             "description": "Ok",
@@ -849,7 +849,7 @@
     },
     "/api/v3/apps": {
       "get": {
-        "operationId": "GetProjects",
+        "operationId": "GetApps",
         "responses": {
           "200": {
             "description": "Ok",
@@ -908,7 +908,7 @@
     },
     "/api/v3/apps/{slug}": {
       "get": {
-        "operationId": "GetProject",
+        "operationId": "GetApp",
         "responses": {
           "200": {
             "description": "Ok",
