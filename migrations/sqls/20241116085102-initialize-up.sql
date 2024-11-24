@@ -73,8 +73,8 @@ create table app_metadata_jsons
     author                    text,                        -- optional user_name name
     icon                      text,                        -- optional relative path for the icon
     license_file              text,                        -- optional license file path or type name
-    is_library                boolean,   -- whether the app is a library
-    is_hidden                 boolean,   -- whether the app is hidden in the launcher
+    is_library                boolean,                     -- whether the app is a library
+    is_hidden                 boolean,                     -- whether the app is hidden in the launcher
     semantic_version          text,                        -- semantic version
     interpreter               text,                        -- interpreter (e.g., 'python')
     main_executable           text,                        -- main executable path
@@ -126,10 +126,95 @@ INSERT INTO badgehub.categories (name, slug, deleted_at, created_at, updated_at)
 SELECT name, slug, deleted_at, created_at, updated_at
 FROM badgehub_old.categories;
 
-INSERT INTO badgehub.users (id, admin, name, email, email_verified_at, password, remember_token, editor, public, show_projects, deleted_at, created_at, updated_at)
-SELECT id, admin, name, email, email_verified_at, password, remember_token, editor, public, show_projects, deleted_at, created_at, updated_at
+INSERT INTO badgehub.users (id, admin, name, email, email_verified_at, password, remember_token, editor, public,
+                            show_projects, deleted_at, created_at, updated_at)
+SELECT id,
+       admin,
+       name,
+       email,
+       email_verified_at,
+       password,
+       remember_token,
+       editor,
+       public,
+       show_projects,
+       deleted_at,
+       created_at,
+       updated_at
 FROM badgehub_old.users;
 
-INSERT INTO badgehub.projects (slug, user_id, git, allow_team_fixes, deleted_at, created_at, updated_at)
-SELECT slug, user_id, git, allow_team_fixes, deleted_at, created_at, updated_at
-FROM badgehub_old.projects;
+with spo as (select po.slug,
+                    po.name,
+                    po.description,
+                    po.project_type,
+                    po.user_id,
+                    po.license,
+                    po.download_counter,
+                    po.created_at,
+                    po.published_at,
+                    po.updated_at,
+                    po.deleted_at,
+                    c.name as category,
+                    u.name as author
+             from badgehub_old.projects po
+                      left join badgehub_old.categories c on po.category_id = c.id
+                      left join badgehub_old.users u on po.user_id = u.id),
+     inserted_app_metadata as (insert
+         into app_metadata_jsons (category,
+                                  name,
+                                  description,
+                                  author,
+                                  license_file,
+                                  interpreter,
+                                  created_at,
+                                  updated_at,
+                                  deleted_at)
+             select category,
+                    name,
+                    description,
+                    author,
+                    license,
+                    project_type,
+                    created_at,
+                    updated_at,
+                    deleted_at
+             from spo
+             returning id)
+        ,
+     inserted_project as (
+         insert
+             into badgehub.projects (slug,
+                                     user_id,
+                                     created_at,
+                                     updated_at,
+                                     deleted_at)
+                 select slug,
+                        user_id,
+                        created_at,
+                        updated_at,
+                        deleted_at
+                 from spo)
+
+insert
+into versions (project_slug,
+               app_metadata_json_id,
+               download_count,
+               published_at,
+               created_at,
+               updated_at,
+               deleted_at)
+select slug,
+       id,
+       download_counter,
+       published_at,
+       created_at,
+       updated_at,
+       deleted_at
+from spo,
+     inserted_app_metadata;
+
+
+update projects
+set version_id = versions.id
+from versions
+where versions.project_slug = projects.slug and projects.version_id is null;
