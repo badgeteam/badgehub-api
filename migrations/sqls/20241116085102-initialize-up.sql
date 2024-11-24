@@ -53,7 +53,7 @@ create index idx_user_id on projects (user_id); -- allow searching projects by u
 create table categories
 (
     slug       text not null primary key, -- category slug
-    name       text not null,             -- category name
+    name       text not null unique,             -- category name
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
     deleted_at timestamptz                -- soft delete timestamp (nullable)
@@ -85,7 +85,7 @@ create table app_metadata_jsons
     updated_at                timestamptz default now(),   -- record update timestamp
     deleted_at                timestamptz,                 -- soft delete timestamp (nullable)
     constraint app_metadata_jsons_category_fk foreign key (category)
-        references categories (slug) on delete set default -- category_slug relation
+        references categories (name) on delete set default -- category_slug relation
 );
 
 create index idx_app_metadata_jsons_name on app_metadata_jsons (name);
