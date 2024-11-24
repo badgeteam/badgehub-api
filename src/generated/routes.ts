@@ -57,6 +57,15 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Category: {
+    dataType: "refObject",
+    properties: {
+      name: { ref: "AppCategoryName", required: true },
+      slug: { dataType: "string", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   ProjectStatusName: {
     dataType: "refAlias",
     type: {
@@ -168,7 +177,7 @@ const models: TsoaRoute.Models = {
   AppMetadataJSON: {
     dataType: "refObject",
     properties: {
-      category: { ref: "AppCategoryName" },
+      category_slug: { dataType: "string" },
       name: { dataType: "string" },
       description: { dataType: "string" },
       author: { dataType: "string" },
@@ -275,11 +284,11 @@ const models: TsoaRoute.Models = {
       license: { dataType: "string" },
       size_of_zip: { dataType: "double" },
       size_of_content: { dataType: "double" },
-      category: { ref: "AppCategoryName", required: true },
+      category_slug: { dataType: "string", required: true },
       description: { dataType: "string" },
       revision: { dataType: "double" },
       status: { ref: "ProjectStatusName" },
-      author: { dataType: "string" },
+      user_name: { dataType: "string" },
       interpreter: { dataType: "string" },
       version: { ref: "Version" },
       badges: {
@@ -360,7 +369,6 @@ const models: TsoaRoute.Models = {
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
-        category: { ref: "AppCategoryName" },
         version_id: { dataType: "double" },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
@@ -373,7 +381,6 @@ const models: TsoaRoute.Models = {
   ProjectProps: {
     dataType: "refObject",
     properties: {
-      category: { ref: "AppCategoryName" },
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
@@ -385,7 +392,6 @@ const models: TsoaRoute.Models = {
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      category: { ref: "AppCategoryName" },
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
@@ -450,7 +456,7 @@ const models: TsoaRoute.Models = {
       file_mappings_overrides: {
         ref: "Record_string._source-string--destination-string_-Array_",
       },
-      category: { ref: "AppCategoryName" },
+      category_slug: { dataType: "string" },
     },
     additionalProperties: false,
   },

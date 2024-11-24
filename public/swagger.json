@@ -52,6 +52,19 @@
           "Interpreter"
         ]
       },
+      "Category": {
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "slug"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "ProjectStatusName": {
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
@@ -275,8 +288,8 @@
       },
       "AppMetadataJSON": {
         "properties": {
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
+          "category_slug": {
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -487,8 +500,8 @@
             "type": "number",
             "format": "double"
           },
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
+          "category_slug": {
+            "type": "string"
           },
           "description": {
             "type": "string"
@@ -500,7 +513,7 @@
           "status": {
             "$ref": "#/components/schemas/ProjectStatusName"
           },
-          "author": {
+          "user_name": {
             "type": "string"
           },
           "interpreter": {
@@ -552,7 +565,13 @@
             "type": "array"
           }
         },
-        "required": ["slug", "user_id", "created_at", "updated_at", "category"],
+        "required": [
+          "slug",
+          "user_id",
+          "created_at",
+          "updated_at",
+          "category_slug"
+        ],
         "type": "object",
         "additionalProperties": false
       },
@@ -632,9 +651,6 @@
       },
       "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
         "properties": {
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
           "version_id": {
             "type": "number",
             "format": "double"
@@ -655,9 +671,6 @@
       },
       "ProjectProps": {
         "properties": {
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
           "version_id": {
             "type": "number",
             "format": "double"
@@ -678,9 +691,6 @@
       },
       "ProjectPropsPartial": {
         "properties": {
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
           "version_id": {
             "type": "number",
             "format": "double"
@@ -779,8 +789,8 @@
           "file_mappings_overrides": {
             "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
           },
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
+          "category_slug": {
+            "type": "string"
           }
         },
         "type": "object",
@@ -833,7 +843,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/AppCategoryName"
+                    "$ref": "#/components/schemas/Category"
                   },
                   "type": "array"
                 }
@@ -865,7 +875,7 @@
             }
           }
         },
-        "description": "Get list of apps, optionally limited by page start/length and/or filtered by category",
+        "description": "Get list of apps, optionally limited by page start/length and/or filtered by category_slug",
         "tags": ["public"],
         "security": [],
         "parameters": [

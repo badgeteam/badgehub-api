@@ -3,7 +3,7 @@ import { Version } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
-import { AppCategoryName } from "@domain/readModels/app/Category";
+import { Category } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
@@ -54,13 +54,13 @@ export interface BadgeHubDataPort {
 
   getBadges(): Promise<Badge[]>;
 
-  getCategories(): Promise<AppCategoryName[]>;
+  getCategories(): Promise<Category[]>;
 
   getProjects(filter?: {
     pageStart?: number;
     pageLength?: number;
     badgeSlug?: Badge["slug"];
-    appCategory?: AppCategoryName;
+    appCategory?: Category["slug"];
   }): Promise<Project[]>;
 
   updateDraftMetadata(

@@ -1,7 +1,6 @@
 import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 import { VersionRelation } from "./DBVersion";
-import { AppCategoryName } from "@domain/readModels/app/Category";
 import { ProjectSlug } from "@domain/readModels/app/Project";
 
 export interface DBInsertProject
@@ -10,7 +9,6 @@ export interface DBInsertProject
   slug: ProjectSlug; // The directory name of this app
   git?: string; // repository url
   allow_team_fixes?: boolean;
-  category?: AppCategoryName;
 }
 
 // table name: projects

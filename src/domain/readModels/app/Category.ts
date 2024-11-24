@@ -1,6 +1,6 @@
 import { DBCategory } from "@db/models/app/DBCategory";
 
-export type AppCategoryName =
+type AppCategoryName =
   | "Uncategorised"
   | "Event related"
   | "Games"

@@ -7,7 +7,7 @@ import {
 } from "@domain/readModels/app/Project";
 import { User } from "@domain/readModels/app/User";
 import { Version } from "@domain/readModels/app/Version";
-import { AppCategoryName } from "@domain/readModels/app/Category";
+import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBProject as DBProject } from "@db/models/app/DBProject";
@@ -69,7 +69,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     await this.pool.query(insertQuery);
   }
 
-  async getCategories(): Promise<AppCategoryName[]> {
+  async getCategories(): Promise<Category[]> {
     const dbCategoryNames: Pick<DBCategory, "name">[] = await this.pool
       .query(sql`select name from categories`)
       .then((res) => res.rows);
@@ -227,7 +227,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     pageStart?: number;
     pageLength?: number;
     badgeSlug?: string;
-    appCategory?: AppCategoryName;
+    appCategory?: Category["slug"];
   }): Promise<Project[]> {
     let query = getBaseSelectProjectQuery();
     if (filter?.pageLength) {

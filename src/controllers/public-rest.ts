@@ -4,8 +4,8 @@ import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { Project } from "@domain/readModels/app/Project";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 
-import { AppCategoryName } from "@domain/readModels/app/Category";
 import { Badge } from "@domain/readModels/Badge";
+import { Category } from "@domain/readModels/app/Category";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -38,7 +38,7 @@ export class PublicRestController {
    * Get list of categories
    */
   @Get("/categories")
-  public async getCategories(): Promise<AppCategoryName[]> {
+  public async getCategories(): Promise<Category[]> {
     return await this.badgeHubData.getCategories();
   }
 
@@ -49,14 +49,14 @@ export class PublicRestController {
   public async getApps(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
-    @Query() category?: string,
+    @Query() category?: Category["slug"],
     @Query() device?: string
   ): Promise<Project[]> {
     return await this.badgeHubData.getProjects({
       pageStart,
       pageLength,
       badgeSlug: device,
-      appCategory: category as AppCategoryName,
+      appCategory: category,
     });
   }
 
