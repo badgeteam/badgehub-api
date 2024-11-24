@@ -14,7 +14,7 @@ interface ProjectPropsPartial extends Partial<ProjectProps> {}
 interface DbInsertAppMetadataJSONPartial
   extends Partial<DBInsertAppMetadataJSON> {}
 
-// TODO verify author against logged in user
+// TODO verify user_name against logged in user
 @Route("/api/v3")
 @Tags("private")
 export class PrivateRestController {

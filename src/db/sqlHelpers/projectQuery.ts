@@ -41,9 +41,9 @@ export const projectQueryResponseToReadModel = (
     version: undefined, // TODO
     allow_team_fixes: false,
     user_id: dbProject.user_id,
-    author: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
+    user_name: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
     badges: [], // TODO
-    category: dbProject.category || "Uncategorised",
+    category_slug: dbProject.category_slug || "uncategorised",
     collaborators: [], // TODO
     description: dbProject.description,
     download_counter: undefined, // TODO

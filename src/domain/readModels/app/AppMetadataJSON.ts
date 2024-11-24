@@ -3,12 +3,12 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 import { BadgeSlug } from "@db/models/DBBadge";
-import { HasCategory } from "@domain/readModels/app/Category";
+import { CategorySlugRelation } from "@domain/readModels/app/Category";
 
-export interface AppMetadataJSON extends Partial<HasCategory> {
+export interface AppMetadataJSON extends Partial<CategorySlugRelation> {
   name?: string;
   description?: string;
-  author?: string; // The name of the author
+  author?: string; // The name of the user_name
   icon?: string; // The relative icon path
   license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
   is_library?: boolean; // Whether this app can be used as a library by other apps

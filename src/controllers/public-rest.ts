@@ -43,7 +43,7 @@ export class PublicRestController {
   }
 
   /**
-   * Get list of apps, optionally limited by page start/length and/or filtered by category
+   * Get list of apps, optionally limited by page start/length and/or filtered by category_slug
    */
   @Get("/apps")
   public async getApps(

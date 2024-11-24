@@ -1,3 +1,5 @@
+import { DBCategory } from "@db/models/app/DBCategory";
+
 export type AppCategoryName =
   | "Uncategorised"
   | "Event related"
@@ -13,11 +15,13 @@ export type AppCategoryName =
   | "Unusable"
   | "Adult"
   | "Virus"
-  | "Interpreter"; // Changed! the interpreter category was added here for the case of libraries.
+  | "Interpreter"; // Changed! the interpreter category_slug was added here for the case of libraries.
 
-export interface HasCategory {
-  category: AppCategoryName;
+export interface CategorySlugRelation {
+  category_slug: DBCategory["slug"];
 }
+
 export interface Category {
   name: AppCategoryName;
+  slug: string;
 }

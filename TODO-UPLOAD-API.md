@@ -30,13 +30,13 @@ Since we don't have security on our api yet, I added code that makes sure that t
 
 - The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
 - undo renaming methods: getDevices
-- undo simplifying category to have only a name
+- undo simplifying category_slug to have only a name
 
 ### Migrate sample data
 
 - We should migrate the sample data to the new structure, if we do this in the migration script, then it will also work for the deployed data.
 
-### Change category to have a slug and a name separately, and reference slug in the project
+### Change category_slug to have a slug and a name separately, and reference slug in the project
 
 ### Go for consistent naming: is it apps or projects, is it devices or badges?
 
