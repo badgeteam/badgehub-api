@@ -29,6 +29,15 @@ These sql commands should take care of changing the database schema as well as m
 npm run db-migrate:up
 ```
 
+#### Create updated mock.sql
+
+For the mock data, we always want up to date tables, so after you have done the migration on the mock data, you should re-export the database.
+You can do this with the pg_dump command in the postgres container:
+
+    ```bash
+    docker exec -it badgehub_db_1 pg_dump -U badgehub -d badgehub -a -t badgehub.badge_project > mock.sql
+    ```
+
 #### Run the down migration to test it.
 
 ```bash
