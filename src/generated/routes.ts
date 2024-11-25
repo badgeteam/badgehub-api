@@ -177,9 +177,9 @@ const models: TsoaRoute.Models = {
   AppMetadataJSON: {
     dataType: "refObject",
     properties: {
-      category_slug: { dataType: "string" },
       name: { dataType: "string" },
       description: { dataType: "string" },
+      category: { ref: "AppCategoryName" },
       author: { dataType: "string" },
       icon: { dataType: "string" },
       license_file: { dataType: "string" },
@@ -284,7 +284,7 @@ const models: TsoaRoute.Models = {
       license: { dataType: "string" },
       size_of_zip: { dataType: "double" },
       size_of_content: { dataType: "double" },
-      category_slug: { dataType: "string", required: true },
+      category: { ref: "AppCategoryName", required: true },
       description: { dataType: "string" },
       revision: { dataType: "double" },
       status: { ref: "ProjectStatusName" },
@@ -434,6 +434,7 @@ const models: TsoaRoute.Models = {
     properties: {
       name: { dataType: "string" },
       description: { dataType: "string" },
+      category: { ref: "AppCategoryName" },
       author: { dataType: "string" },
       icon: { dataType: "string" },
       license_file: { dataType: "string" },
@@ -456,7 +457,6 @@ const models: TsoaRoute.Models = {
       file_mappings_overrides: {
         ref: "Record_string._source-string--destination-string_-Array_",
       },
-      category_slug: { dataType: "string" },
     },
     additionalProperties: false,
   },

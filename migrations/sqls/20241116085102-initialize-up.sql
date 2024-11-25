@@ -216,3 +216,18 @@ update projects
 set version_id = versions.id
 from versions
 where versions.project_slug = projects.slug and projects.version_id is null;
+
+create table versioned_dependencies (
+    id           serial primary key,
+    project_slug text    not null,
+    depends_on_project_slug text    not null,
+    semantic_version_range text,
+    constraint versioned_dependency_depends_on_project_slug_fk foreign key (depends_on_project_slug) references projects (slug) on delete cascade,
+    constraint versioned_dependency_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade
+);
+
+with old_dependencies as (
+    select depends_on_project_id, project_id
+    from badgehub_old.dependencies
+) insert into badgehub.versioned_dependencies (depends_on_project_slug, project_slug) select depends_on_project_id, project_id from old_dependencies;
+
