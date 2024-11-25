@@ -32,7 +32,7 @@ export interface Project extends ProjectCore, DatedData {
   license?: string; // Eg. MIT
   size_of_zip?: number;
   size_of_content?: number;
-  category_slug: Category["slug"];
+  category: Category["name"];
   description?: string; // description in metadata of latest version of the app
   revision?: number; // latest revsion number of the app
   status?: ProjectStatusName; // Status of newest version with a non-empty status

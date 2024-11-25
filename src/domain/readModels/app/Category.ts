@@ -1,6 +1,6 @@
 import { DBCategory } from "@db/models/app/DBCategory";
 
-type AppCategoryName =
+export type AppCategoryName =
   | "Uncategorised"
   | "Event related"
   | "Games"
@@ -19,6 +19,10 @@ type AppCategoryName =
 
 export interface CategorySlugRelation {
   category_slug: DBCategory["slug"];
+}
+
+export interface CategoryNameRelation {
+  category_name: DBCategory["name"];
 }
 
 export interface Category {

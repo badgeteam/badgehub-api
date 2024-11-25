@@ -288,14 +288,14 @@
       },
       "AppMetadataJSON": {
         "properties": {
-          "category_slug": {
-            "type": "string"
-          },
           "name": {
             "type": "string"
           },
           "description": {
             "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
           },
           "author": {
             "type": "string"
@@ -500,8 +500,8 @@
             "type": "number",
             "format": "double"
           },
-          "category_slug": {
-            "type": "string"
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
           },
           "description": {
             "type": "string"
@@ -565,13 +565,7 @@
             "type": "array"
           }
         },
-        "required": [
-          "slug",
-          "user_id",
-          "created_at",
-          "updated_at",
-          "category_slug"
-        ],
+        "required": ["slug", "user_id", "created_at", "updated_at", "category"],
         "type": "object",
         "additionalProperties": false
       },
@@ -744,6 +738,9 @@
           "description": {
             "type": "string"
           },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
           "author": {
             "type": "string"
           },
@@ -788,9 +785,6 @@
           },
           "file_mappings_overrides": {
             "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
-          },
-          "category_slug": {
-            "type": "string"
           }
         },
         "type": "object",
