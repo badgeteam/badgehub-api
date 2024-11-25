@@ -53,7 +53,7 @@ create index idx_user_id on projects (user_id); -- allow searching projects by u
 create table categories
 (
     slug       text not null primary key, -- category slug
-    name       text not null unique,             -- category name
+    name       text not null unique,      -- category name
     created_at timestamptz default now(), -- creation timestamp
     updated_at timestamptz default now(), -- update timestamp
     deleted_at timestamptz                -- soft delete timestamp (nullable)
@@ -210,24 +210,66 @@ select slug,
        created_at,
        updated_at,
        deleted_at
-from spo JOIN inserted_app_metadata m ON spo.name = m.name;
+from spo
+         JOIN inserted_app_metadata m ON spo.name = m.name;
 
 update projects
 set version_id = versions.id
 from versions
-where versions.project_slug = projects.slug and projects.version_id is null;
+where versions.project_slug = projects.slug
+  and projects.version_id is null;
 
-create table versioned_dependencies (
-    id           serial primary key,
-    project_slug text    not null,
-    depends_on_project_slug text    not null,
-    semantic_version_range text,
-    constraint versioned_dependency_depends_on_project_slug_fk foreign key (depends_on_project_slug) references projects (slug) on delete cascade,
+create table versioned_dependencies
+(
+    id                      serial primary key,
+    project_slug            text not null,
+    depends_on_project_slug text not null,
+    semantic_version_range  text,
+    created_at              timestamptz default now(), -- record creation timestamp
+    updated_at              timestamptz default now(), -- record update timestamp
+    deleted_at              timestamptz,               -- soft delete timestamp (nullable)    constraint versioned_dependency_depends_on_project_slug_fk foreign key (depends_on_project_slug) references projects (slug) on delete cascade,
     constraint versioned_dependency_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade
 );
 
-with old_dependencies as (
-    select depends_on_project_id, project_id
-    from badgehub_old.dependencies
-) insert into badgehub.versioned_dependencies (depends_on_project_slug, project_slug) select depends_on_project_id, project_id from old_dependencies;
+with old_dependencies as (select depends_on_project_id,
+                                 po.slug  as project_slug,
+                                 dpo.slug as depends_on_project_slug,
+                                 project_id,
+                                 badgehub_old.dependencies.created_at,
+                                 badgehub_old.dependencies.updated_at
+                          from badgehub_old.dependencies
+                                   left join badgehub_old.projects po on project_id = po.id
+                                   left join badgehub_old.projects dpo on depends_on_project_id = dpo.id)
+insert
+into badgehub.versioned_dependencies (depends_on_project_slug, project_slug, created_at, updated_at)
+select depends_on_project_slug, project_slug, created_at, updated_at
+from old_dependencies;
 
+
+create table project_statuses_on_badges
+(
+    id           serial primary key,
+    project_slug text not null,
+    badge_slug   text not null,
+    status       text,
+    created_at   timestamptz default now(),
+    updated_at   timestamptz default now(),
+    deleted_at   timestamptz,
+    constraint project_statuses_on_badges_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade,
+    constraint project_statuses_on_badges_badge_slug_fk foreign key (badge_slug) references badges (slug) on delete cascade
+);
+
+with old_statuses as (select project_id,
+                             badge_id,
+                             b.slug as badge_slug,
+                             p.slug as project_slug,
+                             status,
+                             bp.created_at,
+                             bp.updated_at
+                      from badgehub_old.badge_project bp
+                               left join badgehub_old.badges b on badge_id  = b.id
+                               left join badgehub_old.projects p on project_id = p.id)
+insert
+into badgehub.project_statuses_on_badges (project_slug, badge_slug, status, created_at, updated_at)
+select project_slug, badge_slug, status, created_at, updated_at
+from old_statuses;
