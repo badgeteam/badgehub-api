@@ -24,17 +24,19 @@ Since we don't have security on our api yet, I added code that makes sure that t
 
 ### Auto run db-migrate:up on start
 
-## TODO before first merge of code
-
-### also add badgehub.badge_project cross table
-
-### Test with frontend for feature parity compared to master
-
-- The public api has not changed that much but we should make 100% sure that we don't have a downgrade after merging this PR
+### Also added project_statuses_on_badges table and dependencies table
 
 ### Migrate sample data
 
-- We should migrate the sample data to the new structure, if we do this in the migration script, then it will also work for the deployed data.
+- Sample data was migrated by re-exporting the database with pg_dump
+
+### README.md was updated with instructions
+
+## TODO before first merge of code
+
+### Test with frontend for feature parity compared to master
+
+#### Fix filtering on badge and category
 
 ### Change category_slug to have a slug and a name separately, and reference slug in the project
 
@@ -75,3 +77,5 @@ When you upload a zip, file upload should be done for all the files in the zip (
 ### Change it to make it clear that draft version is always unpublished
 
 => so publish should also create a new version
+
+### Maybe add more documenation regarding the philosophy of the database structure, the file management, the git/metadata.json as source of truth and the port and adapter stuff.
