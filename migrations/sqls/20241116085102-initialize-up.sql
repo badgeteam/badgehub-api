@@ -179,7 +179,7 @@ with spo as (select po.slug,
                     updated_at,
                     deleted_at
              from spo
-             returning id)
+             returning id, name)
         ,
      inserted_project as (
          insert
@@ -210,9 +210,7 @@ select slug,
        created_at,
        updated_at,
        deleted_at
-from spo,
-     inserted_app_metadata;
-
+from spo JOIN inserted_app_metadata m ON spo.name = m.name;
 
 update projects
 set version_id = versions.id
