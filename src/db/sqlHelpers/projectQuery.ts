@@ -7,6 +7,7 @@ import { DBUser } from "@db/models/app/DBUser";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 import { Category } from "@domain/readModels/app/Category";
+import { Badge } from "@domain/readModels/Badge";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,
@@ -36,35 +37,34 @@ export function getBaseSelectProjectQuery() {
 }
 
 export const projectQueryResponseToReadModel = (
-  dbProject: ProjectQueryResponse
+  enrichedDBProject: ProjectQueryResponse
 ): Project => {
   return {
     version: undefined, // TODO
     allow_team_fixes: false,
-    user_id: dbProject.user_id,
-    user_name: dbProject.author_name, // todo maybe change to email, full id or object with multiple fields
-    badges: [], // TODO
-    category: dbProject.category || "Uncategorised",
+    user_id: enrichedDBProject.user_id,
+    user_name: enrichedDBProject.author_name, // todo maybe change to email, full id or object with multiple fields
+    category: enrichedDBProject.category || "Uncategorised",
     collaborators: [], // TODO
-    description: dbProject.description,
+    description: enrichedDBProject.description,
     download_counter: undefined, // TODO
-    git: dbProject.git,
-    git_commit_id: dbProject.git_commit_id,
-    interpreter: dbProject.interpreter,
-    license: dbProject.license_file, // TODO check what we should do with the license, possibly we could say that this is either a path or 'MIT'|..., but then still we should read out the licens somewhere if it is a file.
-    name: dbProject.name,
-    published_at: moment(dbProject.published_at).toDate(),
-    revision: dbProject.revision,
+    git: enrichedDBProject.git,
+    git_commit_id: enrichedDBProject.git_commit_id,
+    interpreter: enrichedDBProject.interpreter,
+    license: enrichedDBProject.license_file, // TODO check what we should do with the license, possibly we could say that this is either a path or 'MIT'|..., but then still we should read out the licens somewhere if it is a file.
+    name: enrichedDBProject.name,
+    published_at: moment(enrichedDBProject.published_at).toDate(),
+    revision: enrichedDBProject.revision,
     size_of_content: undefined, // TODO
-    size_of_zip: dbProject.size_of_zip,
-    slug: dbProject.slug,
+    size_of_zip: enrichedDBProject.size_of_zip,
+    slug: enrichedDBProject.slug,
     states: undefined,
     status: undefined, // TODO
     versions: undefined, // TODO
     dependencies: undefined, // TODO
     votes: undefined, // TODO
     warnings: undefined, // TODO
-    ...extractDatedDataConverted(dbProject),
+    ...extractDatedDataConverted(enrichedDBProject),
   };
 };
 export type ProjectQueryResponse = DBProject &

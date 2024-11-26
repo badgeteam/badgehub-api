@@ -258,7 +258,7 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Record_BadgeSlug.string_": {
+      "Record_Badge-at-slug.string_": {
         "properties": {},
         "additionalProperties": {
           "type": "string"
@@ -266,7 +266,7 @@
         "type": "object",
         "description": "Construct a type with a set of properties K of type T"
       },
-      "Record_BadgeSlug.Array__source-string--destination-string___": {
+      "Record_Badge-at-slug.Array__source-string--destination-string___": {
         "properties": {},
         "additionalProperties": {
           "items": {
@@ -322,7 +322,7 @@
             "type": "string"
           },
           "main_executable_overrides": {
-            "$ref": "#/components/schemas/Record_BadgeSlug.string_"
+            "$ref": "#/components/schemas/Record_Badge-at-slug.string_"
           },
           "file_mappings": {
             "items": {
@@ -340,7 +340,7 @@
             "type": "array"
           },
           "file_mappings_overrides": {
-            "$ref": "#/components/schemas/Record_BadgeSlug.Array__source-string--destination-string___"
+            "$ref": "#/components/schemas/Record_Badge-at-slug.Array__source-string--destination-string___"
           }
         },
         "type": "object",

@@ -79,17 +79,18 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
 
   async insertProject(project: DBProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
-    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name) values (${project.slug})`;
+    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name)
+                                     values (${project.slug})`;
 
     await this.pool.query(sql`
-          with inserted_app_metadata as (${insertAppMetadataSql} returning id),
-               inserted_version as (
-                   insert
-                       into versions (project_slug, app_metadata_json_id)
-                           values (${project.slug}, (select id from inserted_app_metadata)) returning id)
-          insert
-          into projects (${keys}, version_id)
-          values (${values}, (select id from inserted_version))`);
+        with inserted_app_metadata as (${insertAppMetadataSql} returning id),
+             inserted_version as (
+                 insert
+                     into versions (project_slug, app_metadata_json_id)
+                         values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+        insert
+        into projects (${keys}, version_id)
+        values (${values}, (select id from inserted_version))`);
   }
 
   async updateProject(
@@ -143,15 +144,8 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     );
   }
 
-  // TODO test
   async getProject(projectSlug: string): Promise<Project> {
-    const project: ProjectQueryResponse = await this.pool
-      .query(
-        sql`${getBaseSelectProjectQuery()} where
-                      p.deleted_at is null and p.slug = ${projectSlug}`
-      )
-      .then((res) => res.rows[0]);
-    return projectQueryResponseToReadModel(project);
+    return (await this.getProjects({ projectSlug }))[0]!;
   }
 
   // TODO test
@@ -228,6 +222,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   async getProjects(filter?: {
+    projectSlug?: Project["slug"];
     pageStart?: number;
     pageLength?: number;
     badgeSlug?: Badge["slug"];
@@ -238,21 +233,47 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
       query = sql`${query}
       inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug = ${filter.badgeSlug}`;
     }
+    query = sql`${query} where p.deleted_at is null`;
+
     if (filter?.categorySlug) {
-      query = sql`${query}
-      where c.slug = ${filter.categorySlug}`;
+      query = sql`${query} and c.slug = ${filter.categorySlug}`;
     }
+
+    if (filter?.projectSlug) {
+      query = sql`${query} and p.slug = ${filter.projectSlug}`;
+    }
+
     if (filter?.pageLength) {
       query = sql`${query}
-      where p.deleted_at is null
       limit
       ${filter.pageLength}
       offset
       ${filter?.pageStart ?? 0}`;
     }
+
     const projects: ProjectQueryResponse[] = await this.pool
       .query(query)
       .then((res) => res.rows);
-    return projects.map(projectQueryResponseToReadModel);
+    const badgesMap = await this._getBadgesMap(projects.map((p) => p.slug));
+    return projects.map(projectQueryResponseToReadModel).map((p) => ({
+      ...p,
+      badges: badgesMap[p.slug],
+    }));
+  }
+
+  private async _getBadgesMap(projectSlugs: Project["slug"][]) {
+    if (!projectSlugs.length) {
+      return {};
+    }
+    const query = sql`select project_slug, json_agg(badge_slug) as badges from project_statuses_on_badges where project_slug in (${join(projectSlugs)}) group by project_slug`;
+
+    const badges: { project_slug: Project["slug"]; badges: Badge["slug"][] }[] =
+      await this.pool.query(query).then((res) => res.rows);
+
+    const badgesMap: Record<Project["slug"], Badge["slug"][]> =
+      Object.fromEntries(
+        badges.map(({ project_slug, badges }) => [project_slug, badges])
+      );
+    return badgesMap;
   }
 }

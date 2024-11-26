@@ -145,7 +145,7 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Record_BadgeSlug.string_": {
+  "Record_Badge-at-slug.string_": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
@@ -155,7 +155,7 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Record_BadgeSlug.Array__source-string--destination-string___": {
+  "Record_Badge-at-slug.Array__source-string--destination-string___": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
@@ -188,7 +188,7 @@ const models: TsoaRoute.Models = {
       semantic_version: { dataType: "string" },
       interpreter: { dataType: "string" },
       main_executable: { dataType: "string" },
-      main_executable_overrides: { ref: "Record_BadgeSlug.string_" },
+      main_executable_overrides: { ref: "Record_Badge-at-slug.string_" },
       file_mappings: {
         dataType: "array",
         array: {
@@ -200,7 +200,7 @@ const models: TsoaRoute.Models = {
         },
       },
       file_mappings_overrides: {
-        ref: "Record_BadgeSlug.Array__source-string--destination-string___",
+        ref: "Record_Badge-at-slug.Array__source-string--destination-string___",
       },
     },
     additionalProperties: false,
