@@ -146,7 +146,10 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   // TODO test
   async getProject(projectSlug: string): Promise<Project> {
     const project: ProjectQueryResponse = await this.pool
-      .query(sql`${getBaseSelectProjectQuery()} and p.slug = ${projectSlug}`)
+      .query(
+        sql`${getBaseSelectProjectQuery()} where
+                      p.deleted_at is null and p.slug = ${projectSlug}`
+      )
       .then((res) => res.rows[0]);
     return projectQueryResponseToReadModel(project);
   }
@@ -227,12 +230,21 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   async getProjects(filter?: {
     pageStart?: number;
     pageLength?: number;
-    badgeSlug?: string;
-    appCategory?: Category["slug"];
+    badgeSlug?: Badge["slug"];
+    categorySlug?: Category["slug"];
   }): Promise<Project[]> {
     let query = getBaseSelectProjectQuery();
+    if (filter?.badgeSlug) {
+      query = sql`${query}
+      inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug = ${filter.badgeSlug}`;
+    }
+    if (filter?.categorySlug) {
+      query = sql`${query}
+      where c.slug = ${filter.categorySlug}`;
+    }
     if (filter?.pageLength) {
       query = sql`${query}
+      where p.deleted_at is null
       limit
       ${filter.pageLength}
       offset

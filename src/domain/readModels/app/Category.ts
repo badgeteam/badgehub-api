@@ -15,7 +15,7 @@ export type AppCategoryName =
   | "Unusable"
   | "Adult"
   | "Virus"
-  | "Interpreter"; // Changed! the interpreter category_slug was added here for the case of libraries.
+  | "Interpreter"; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {
   category_slug: DBCategory["slug"];

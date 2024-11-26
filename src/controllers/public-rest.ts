@@ -43,7 +43,7 @@ export class PublicRestController {
   }
 
   /**
-   * Get list of apps, optionally limited by page start/length and/or filtered by category_slug
+   * Get list of apps, optionally limited by page start/length and/or filtered by categorySlug
    */
   @Get("/apps")
   public async getApps(
@@ -56,7 +56,7 @@ export class PublicRestController {
       pageStart,
       pageLength,
       badgeSlug: device,
-      appCategory: category,
+      categorySlug: category,
     });
   }
 

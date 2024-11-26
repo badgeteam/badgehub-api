@@ -32,17 +32,17 @@ Since we don't have security on our api yet, I added code that makes sure that t
 
 ### README.md was updated with instructions
 
+### Tested with frontend for feature parity compared to master
+
+- with filtering on category and device working
+
+### Kept changes to fronted minimal by keeping current http api almost the same
+
 ## TODO before first merge of code
 
-### Test with frontend for feature parity compared to master
+### Consistent naming: is it apps or projects, is it devices or badges?
 
-#### Fix filtering on badge and category
-
-### Change category_slug to have a slug and a name separately, and reference slug in the project
-
-### Go for consistent naming: is it apps or projects, is it devices or badges?
-
-## TODO to make a full app app upload and download api MVP that the badge can use
+## TODO to make a full app upload and download api MVP that the badge can use
 
 ### Single File upload
 
@@ -78,4 +78,4 @@ When you upload a zip, file upload should be done for all the files in the zip (
 
 => so publish should also create a new version
 
-### Maybe add more documenation regarding the philosophy of the database structure, the file management, the git/metadata.json as source of truth and the port and adapter stuff.
+### Maybe add more documention regarding the philosophy of the database structure, the file management, the git/metadata.json as source of truth and the port and adapter stuff.

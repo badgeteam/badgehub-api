@@ -85,7 +85,7 @@ create table app_metadata_jsons
     updated_at                timestamptz default now(),   -- record update timestamp
     deleted_at                timestamptz,                 -- soft delete timestamp (nullable)
     constraint app_metadata_jsons_category_fk foreign key (category)
-        references categories (name) on delete set default -- category_slug relation
+        references categories (name) on delete set default -- categorySlug relation
 );
 
 create index idx_app_metadata_jsons_name on app_metadata_jsons (name);

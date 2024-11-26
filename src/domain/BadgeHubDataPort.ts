@@ -60,7 +60,7 @@ export interface BadgeHubDataPort {
     pageStart?: number;
     pageLength?: number;
     badgeSlug?: Badge["slug"];
-    appCategory?: Category["slug"];
+    categorySlug?: Category["slug"];
   }): Promise<Project[]>;
 
   updateDraftMetadata(

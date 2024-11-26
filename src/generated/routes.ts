@@ -291,10 +291,7 @@ const models: TsoaRoute.Models = {
       user_name: { dataType: "string" },
       interpreter: { dataType: "string" },
       version: { ref: "Version" },
-      badges: {
-        dataType: "array",
-        array: { dataType: "refObject", ref: "Badge" },
-      },
+      badges: { dataType: "array", array: { dataType: "string" } },
       dependencies: {
         dataType: "array",
         array: { dataType: "refObject", ref: "Dependency" },

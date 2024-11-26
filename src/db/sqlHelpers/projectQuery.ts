@@ -6,6 +6,7 @@ import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAp
 import { DBUser } from "@db/models/app/DBUser";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
+import { Category } from "@domain/readModels/app/Category";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,
@@ -30,8 +31,7 @@ export function getBaseSelectProjectQuery() {
                              left join users u on p.user_id = u.id and u.deleted_at is null
                              left join versions v on p.version_id = v.id
                              left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
-                    where
-                      p.deleted_at is null
+                             left join categories c on m.category = c.name and c.deleted_at is null
     `;
 }
 
@@ -71,4 +71,5 @@ export type ProjectQueryResponse = DBProject &
   DBVersion &
   DBMetadataFileContents & {
     author_name: DBUser["name"];
+    category_slug: Category["slug"];
   };

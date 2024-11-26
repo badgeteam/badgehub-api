@@ -41,7 +41,7 @@ export interface Project extends ProjectCore, DatedData {
 
   // Relations
   version?: Version;
-  badges?: Array<Badge>;
+  badges?: Array<Badge["slug"]>;
   dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
   states?: Array<ProjectStatusOnBadge>;
   versions?: Array<Version>;

@@ -524,7 +524,7 @@
           },
           "badges": {
             "items": {
-              "$ref": "#/components/schemas/Badge"
+              "type": "string"
             },
             "type": "array"
           },
@@ -869,7 +869,7 @@
             }
           }
         },
-        "description": "Get list of apps, optionally limited by page start/length and/or filtered by category_slug",
+        "description": "Get list of apps, optionally limited by page start/length and/or filtered by categorySlug",
         "tags": ["public"],
         "security": [],
         "parameters": [
