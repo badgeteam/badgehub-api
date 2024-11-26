@@ -21,7 +21,7 @@ export function timestampTZToDate<T extends string | undefined>(
   ) as T extends undefined ? undefined : Date;
 }
 
-type OmitDatedData<T extends DBDatedData> = Omit<
+export type OmitDatedData<T extends DBDatedData> = Omit<
   T,
   "deleted_at" | "updated_at" | "created_at"
 >;

@@ -23,6 +23,7 @@ import {
 import {
   convertDatedData,
   extractDatedDataConverted,
+  OmitDatedData,
   stripDatedData,
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
@@ -70,10 +71,10 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   async getCategories(): Promise<Category[]> {
-    const dbCategoryNames: Pick<DBCategory, "name">[] = await this.pool
-      .query(sql`select name from categories`)
+    const dbCategoryNames: OmitDatedData<DBCategory>[] = await this.pool
+      .query(sql`select name, slug from categories`)
       .then((res) => res.rows);
-    return dbCategoryNames.map((dbCategory) => dbCategory.name);
+    return dbCategoryNames.map((dbCategory) => dbCategory);
   }
 
   async insertProject(project: DBProject): Promise<void> {
