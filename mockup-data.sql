@@ -114,13 +114,35 @@ ALTER TABLE badgehub.categories OWNER TO badgehub;
 --
 
 CREATE TABLE badgehub.migrations (
-    id integer DEFAULT nextval('badgehub_old.migrations_id_seq'::regclass) NOT NULL,
+    id integer NOT NULL,
     name character varying(255) NOT NULL,
     run_on timestamp without time zone NOT NULL
 );
 
 
 ALTER TABLE badgehub.migrations OWNER TO badgehub;
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE; Schema: badgehub; Owner: badgehub
+--
+
+CREATE SEQUENCE badgehub.migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE badgehub.migrations_id_seq OWNER TO badgehub;
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: badgehub; Owner: badgehub
+--
+
+ALTER SEQUENCE badgehub.migrations_id_seq OWNED BY badgehub.migrations.id;
+
 
 --
 -- Name: project_statuses_on_badges; Type: TABLE; Schema: badgehub; Owner: badgehub
@@ -170,7 +192,7 @@ CREATE TABLE badgehub.projects (
     updated_at timestamp with time zone DEFAULT now() NOT NULL,
     deleted_at timestamp with time zone,
     version_id integer,
-    user_id text NOT NULL,
+    user_id integer NOT NULL,
     slug text NOT NULL,
     git text,
     allow_team_fixes boolean
@@ -184,7 +206,7 @@ ALTER TABLE badgehub.projects OWNER TO badgehub;
 --
 
 CREATE TABLE badgehub.users (
-    id text NOT NULL,
+    id integer NOT NULL,
     email text,
     admin boolean,
     name text NOT NULL,
@@ -201,6 +223,28 @@ CREATE TABLE badgehub.users (
 
 
 ALTER TABLE badgehub.users OWNER TO badgehub;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: badgehub; Owner: badgehub
+--
+
+CREATE SEQUENCE badgehub.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE badgehub.users_id_seq OWNER TO badgehub;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: badgehub; Owner: badgehub
+--
+
+ALTER SEQUENCE badgehub.users_id_seq OWNED BY badgehub.users.id;
+
 
 --
 -- Name: versioned_dependencies; Type: TABLE; Schema: badgehub; Owner: badgehub
@@ -294,10 +338,24 @@ ALTER TABLE ONLY badgehub.app_metadata_jsons ALTER COLUMN id SET DEFAULT nextval
 
 
 --
+-- Name: migrations id; Type: DEFAULT; Schema: badgehub; Owner: badgehub
+--
+
+ALTER TABLE ONLY badgehub.migrations ALTER COLUMN id SET DEFAULT nextval('badgehub.migrations_id_seq'::regclass);
+
+
+--
 -- Name: project_statuses_on_badges id; Type: DEFAULT; Schema: badgehub; Owner: badgehub
 --
 
 ALTER TABLE ONLY badgehub.project_statuses_on_badges ALTER COLUMN id SET DEFAULT nextval('badgehub.project_statuses_on_badges_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: badgehub; Owner: badgehub
+--
+
+ALTER TABLE ONLY badgehub.users ALTER COLUMN id SET DEFAULT nextval('badgehub.users_id_seq'::regclass);
 
 
 --
@@ -417,7 +475,6 @@ COPY badgehub.badges (slug, name, created_at, updated_at, deleted_at) FROM stdin
 mch2022	mch2022	2022-06-12 16:41:34+00	2022-06-12 16:41:48+00	\N
 troopers23	troopers23	2023-06-19 17:48:13+00	2023-06-19 17:48:13+00	\N
 why2025	WHY2025	2024-05-22 11:17:11.441719+00	2024-05-22 11:17:11.441719+00	\N
-admin	Admin	\N	\N	\N
 \.
 
 
@@ -449,7 +506,7 @@ sao	SAO	\N	\N	\N
 --
 
 COPY badgehub.migrations (id, name, run_on) FROM stdin;
-38	/20241116085102-initialize	2024-11-25 23:55:13.518
+1	/20241116085102-initialize	2024-11-27 23:56:35.535
 \.
 
 
@@ -851,10 +908,24 @@ SELECT pg_catalog.setval('badgehub.app_metadata_jsons_id_seq', 87, true);
 
 
 --
+-- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: badgehub; Owner: badgehub
+--
+
+SELECT pg_catalog.setval('badgehub.migrations_id_seq', 1, true);
+
+
+--
 -- Name: project_statuses_on_badges_id_seq; Type: SEQUENCE SET; Schema: badgehub; Owner: badgehub
 --
 
 SELECT pg_catalog.setval('badgehub.project_statuses_on_badges_id_seq', 105, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: badgehub; Owner: badgehub
+--
+
+SELECT pg_catalog.setval('badgehub.users_id_seq', 1, false);
 
 
 --
@@ -901,14 +972,6 @@ ALTER TABLE ONLY badgehub.categories
 
 ALTER TABLE ONLY badgehub.categories
     ADD CONSTRAINT categories_pkey PRIMARY KEY (slug);
-
-
---
--- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: badgehub; Owner: badgehub
---
-
-ALTER TABLE ONLY badgehub.migrations
-    ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
 
 
 --

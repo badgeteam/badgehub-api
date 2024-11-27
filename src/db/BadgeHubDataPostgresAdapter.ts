@@ -184,7 +184,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     };
   }
 
-  getUser(userId: string): Promise<User> {
+  getUser(userId: User["id"]): Promise<User> {
     throw new Error("Method not implemented.");
   }
 

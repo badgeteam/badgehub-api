@@ -34,9 +34,15 @@ npm run db-migrate:up
 For the mock data, we always want up to date tables, so after you have done the migration on the mock data, you should re-export the database.
 You can do this with the pg_dump command in the postgres container:
 
-    ```bash
-    docker exec -it badgehub_db_1 pg_dump -U badgehub -d badgehub -a -t badgehub.badge_project > mock.sql
-    ```
+```bash
+npm run overwrite-mockup-data
+```
+
+Note: you might have to change the db container name in the script. Eg on mac with podman its with underscores instead of dashes which makes the command:
+
+```bash
+docker exec -it badgehub-api_db_1 /usr/bin/pg_dump --username badgehub --schema badgehub badgehub > mockup-data.sql
+```
 
 #### Run the down migration to test it.
 
