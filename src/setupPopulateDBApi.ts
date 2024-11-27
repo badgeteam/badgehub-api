@@ -10,7 +10,7 @@ import {
 
 const CATEGORIES_COUNT = 15;
 
-export default async function populateDB(app: Express) {
+export default async function setupPopulateDBApi(app: Express) {
   const router = Router();
 
   app.use(express.json());
