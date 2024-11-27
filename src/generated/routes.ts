@@ -1,11 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import {
-  TsoaRoute,
-  fetchMiddlewares,
-  ExpressTemplateService,
-} from "@tsoa/runtime";
+import type { TsoaRoute } from "@tsoa/runtime";
+import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -110,7 +107,7 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "string", required: true },
+      id: { dataType: "double", required: true },
       email: { dataType: "string", required: true },
       admin: { dataType: "boolean", required: true },
       name: { dataType: "string", required: true },
@@ -269,7 +266,7 @@ const models: TsoaRoute.Models = {
     dataType: "refObject",
     properties: {
       slug: { dataType: "string", required: true },
-      user_id: { dataType: "string", required: true },
+      user_id: { dataType: "double", required: true },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
@@ -369,7 +366,7 @@ const models: TsoaRoute.Models = {
         version_id: { dataType: "double" },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
-        user_id: { dataType: "string", required: true },
+        user_id: { dataType: "double", required: true },
       },
       validators: {},
     },
@@ -381,7 +378,7 @@ const models: TsoaRoute.Models = {
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "string", required: true },
+      user_id: { dataType: "double", required: true },
     },
     additionalProperties: false,
   },
@@ -392,7 +389,7 @@ const models: TsoaRoute.Models = {
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "string" },
+      user_id: { dataType: "double" },
     },
     additionalProperties: false,
   },
@@ -471,6 +468,7 @@ export function RegisterRoutes(app: Router) {
   //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
   //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
   // ###########################################################################################################
+
   app.get(
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
@@ -850,7 +848,7 @@ export function RegisterRoutes(app: Router) {
           in: "path",
           name: "userId",
           required: true,
-          dataType: "string",
+          dataType: "double",
         },
         props: { in: "body", name: "props", required: true, ref: "UserProps" },
       };
