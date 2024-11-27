@@ -1,10 +1,13 @@
-import { config } from "dotenv";
 import app from "./app";
+import { RegisterRoutes } from "./generated/routes";
+import { EXPRESS_PORT } from "@config";
 
-config();
+async function startServer() {
+  RegisterRoutes(app);
 
-const port = 8081;
+  app.listen(EXPRESS_PORT, () => {
+    console.info(`Node.js server started.`);
+  });
+}
 
-app.listen(port, () => {
-  console.info(`Node.js server started.`);
-});
+startServer();
