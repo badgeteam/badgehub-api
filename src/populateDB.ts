@@ -3,7 +3,7 @@ import express, { Express, Router } from "express";
 
 const CATEGORIES_COUNT = 15;
 
-export default async function populate(app: Express) {
+export default async function populateDB(app: Express) {
   const router = Router();
 
   app.use(express.json());
