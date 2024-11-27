@@ -1,9 +1,12 @@
 -- back up with old schema
 alter schema badgehub rename to badgehub_old;
 create schema badgehub;
-create table badgehub.migrations
-(
-    like badgehub_old.migrations including all
+
+-- Recfreate badgehub.migrations
+CREATE TABLE badgehub.migrations (
+                                         id serial NOT NULL,
+                                         name character varying(255) NOT NULL,
+                                         run_on timestamp without time zone NOT NULL
 );
 
 -- create tables
@@ -19,7 +22,7 @@ create table badges
 
 create table users
 (
-    id                text primary key,
+    id                serial primary key,
     email             text unique,
     admin             boolean,
     name              text not null,
@@ -40,7 +43,7 @@ create table projects
     updated_at       timestamptz not null default now(),
     deleted_at       timestamptz,
     version_id       integer,
-    user_id          text        not null,
+    user_id          integer        not null,
     slug             text        not null primary key,
     git              text,
     allow_team_fixes boolean,
