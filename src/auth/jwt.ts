@@ -1,9 +1,4 @@
-import {
-  ErrorType,
-  BadgeHubApiError,
-  NotAuthorizedError,
-  NotAuthenticatedError,
-} from "../error";
+import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "../error";
 import { isAdmin, isContributor, UserRole } from "./role";
 import { JWTPayload, jwtVerify } from "jose";
 import { NextFunction, Request, Response } from "express";
