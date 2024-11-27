@@ -1,13 +1,21 @@
 import pg from "pg";
+import {
+  POSTGRES_DB,
+  POSTGRES_HOST,
+  POSTGRES_PASSWORD,
+  POSTGRES_PORT,
+  POSTGRES_USER,
+} from "@config";
+
 let pool: pg.Pool;
 export const getPool = () => {
   if (!pool) {
     pool = new pg.Pool({
-      host: process.env.POSTGRES_HOST,
-      database: process.env.POSTGRES_DB,
-      user: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      port: 5432,
+      host: POSTGRES_HOST,
+      database: POSTGRES_DB,
+      user: POSTGRES_USER,
+      password: POSTGRES_PASSWORD,
+      port: POSTGRES_PORT,
     });
   }
   return pool;
