@@ -4,7 +4,7 @@ import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT, NODE_ENV } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
-import setupPopulateDBApi from "@__test__/setupPopulateDBApi";
+import setupPopulateDBApi from "@setupPopulateDBApi";
 
 async function startServer() {
   disableWriteWhenNotDev(app);
