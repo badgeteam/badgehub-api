@@ -1,12 +1,17 @@
 import app from "./app";
 import { RegisterRoutes } from "./generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
-import { EXPRESS_PORT } from "@config";
+import { EXPRESS_PORT, NODE_ENV } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
+import setupPopulateDBApi from "@__test__/setupPopulateDBApi";
 
 async function startServer() {
   disableWriteWhenNotDev(app);
+
+  if (NODE_ENV === "development") {
+    setupPopulateDBApi(app);
+  }
 
   RegisterRoutes(app);
 
