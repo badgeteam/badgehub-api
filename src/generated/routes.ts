@@ -2,15 +2,15 @@
 /* eslint-disable */
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import type { TsoaRoute } from "@tsoa/runtime";
-import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
+import { ExpressTemplateService, fetchMiddlewares } from "@tsoa/runtime";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PrivateRestController } from "./../controllers/private-rest.js";
 import type {
   Request as ExRequest,
-  Response as ExResponse,
   RequestHandler,
+  Response as ExResponse,
   Router,
 } from "express";
 

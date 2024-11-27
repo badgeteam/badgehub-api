@@ -7,9 +7,33 @@ import {
   POSTGRES_PORT,
   POSTGRES_USER,
 } from "@config";
+import sql from "sql-template-tag";
+import { DBInsertUser } from "@db/models/app/DBUser";
+import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBInsertProject } from "@db/models/app/DBProject";
+import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
+import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
+import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
 
-const CATEGORIES_COUNT = 15;
-
+const CATEGORY_NAMES = [
+  "Uncategorised",
+  "Event related",
+  "Games",
+  "Graphics",
+  "Hardware",
+  "Utility",
+  "Wearable",
+  "Data",
+  "Silly",
+  "Hacking",
+  "Troll",
+  "Unusable",
+  "Adult",
+  "Virus",
+  // "Interpreter", // TODO add Interpreter to mock data?
+] as const;
+const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 export default async function setupPopulateDBApi(app: Express) {
   const router = Router();
 
@@ -25,27 +49,29 @@ export default async function setupPopulateDBApi(app: Express) {
     port: POSTGRES_PORT,
   });
 
-  router.get("/populate", async (req, res) => {
-    await deleteDatabases(pool);
+  router.post("/populate", async (req, res) => {
+    await cleanDatabases(pool);
     await populateDatabases(pool);
     return res.status(200).send("Population done.");
   });
 }
 
-async function deleteDatabases(pool: pg.Pool) {
+async function cleanDatabases(pool: pg.Pool) {
   const client = await pool.connect();
-  await client.query("DELETE FROM badgehub.badge_project");
-  await client.query("DELETE FROM badgehub.dependencies");
-  await client.query("DELETE FROM badgehub.users");
-  await client.query("DELETE FROM badgehub.projects");
+  await client.query(sql`delete from badgehub.users`);
+  await client.query(sql`delete from badgehub.projects`);
+  await client.query(sql`delete from badgehub.app_metadata_jsons`);
+  await client.query(sql`delete from badgehub.versions`);
+  await client.query(sql`delete from badgehub.versioned_dependencies`);
+  await client.query(sql`delete from badgehub.project_statuses_on_badges`);
   client.release();
 }
 
 async function populateDatabases(pool: pg.Pool) {
   const client = await pool.connect();
   const userCount = await insertUsers(client);
-  const projectCount = await insertProjects(client, userCount);
-  await badgeProjectCrossTable(client, projectCount);
+  const projectSlugs = await insertProjects(client, userCount);
+  await badgeProjectCrossTable(client, projectSlugs);
   client.release();
 }
 
@@ -156,7 +182,7 @@ async function insertUsers(client: pg.PoolClient) {
     "hotmail.com",
   ];
 
-  for (const id in users) {
+  for (let id = 0; id < users.length; id++) {
     const isAdmin = random(10) == 0;
     const name = users[id]!;
     const email = `${name.toLowerCase()}@${domains[random(domains.length)]}`;
@@ -168,30 +194,26 @@ async function insertUsers(client: pg.PoolClient) {
     const updatedAt = date(createDate + random(100));
 
     console.log(`insert into users ${name}`);
-
-    await client.query(
-      `INSERT INTO badgehub.users
-            (id, admin, name, email, password, public, show_projects, created_at, updated_at) VALUES 
-            ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-      [
-        id,
-        isAdmin,
-        name,
-        email,
-        password,
-        isPublic,
-        showProjects,
-        createdAt,
-        updatedAt,
-      ]
-    );
+    const toInsert: DBInsertUser & DBDatedData = {
+      id,
+      admin: isAdmin,
+      name,
+      email,
+      password,
+      public: isPublic,
+      show_projects: showProjects,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    };
+    const badgeHubAdapter = new BadgeHubDataPostgresAdapter();
+    await badgeHubAdapter.insertUser(toInsert);
   }
 
   return users.length;
 }
 
 async function insertProjects(client: pg.PoolClient, userCount: number) {
-  const apps = [
+  const projectSlugs = [
     "CodeCraft",
     "PixelPulse",
     "BitBlast",
@@ -280,74 +302,73 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
     "HackQuest",
     "SecureSphere",
   ];
+  const badgeHubAdapter = new BadgeHubDataPostgresAdapter();
 
-  for (const id in apps) {
-    const name = apps[id]!;
+  for (let id = 0; id < projectSlugs.length; id++) {
+    const name = projectSlugs[id]!;
     const slug = name.toLowerCase();
     const description = getDescription(name);
     const userId = random(userCount);
-    const categoryId = random(CATEGORIES_COUNT) + 1;
+    const categoryId = random(CATEGORIES_COUNT);
     const createDate = -random(600);
     const createdAt = date(createDate);
     const updatedAt = date(createDate + random(100));
 
     console.log(`insert into projects ${name} (${description})`);
 
-    await client.query(
-      `INSERT INTO badgehub.projects
-            (id, name, slug, description, user_id, category_id, created_at, updated_at) VALUES
-            ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [id, name, slug, description, userId, categoryId, createdAt, updatedAt]
+    const inserted: DBInsertProject & DBDatedData = {
+      slug,
+      user_id: userId,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    };
+
+    await badgeHubAdapter.insertProject(inserted);
+    const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
+      name,
+      description,
+      category: CATEGORY_NAMES[categoryId],
+      created_at: createdAt,
+      updated_at: updatedAt,
+    };
+
+    await badgeHubAdapter.writeFile(
+      inserted.slug,
+      "metadata.json",
+      JSON.stringify(appMetadata)
     );
   }
 
-  return apps.length;
+  return projectSlugs.map((slug) => slug.toLowerCase());
 }
 
 async function badgeProjectCrossTable(
   client: pg.PoolClient,
-  projectCount: number
+  projectSlugs: string[]
 ) {
-  const badgeIds = [1, 2, 5]; // Hardcoded! Update by hand
-  for (let index = 0; index < projectCount; index++) {
-    const badgeId = badgeIds[random(3)];
+  const badgeSlugs = ["mch2022", "troopers23", "why2025"] as const; // Hardcoded! Update by hand
+  for (let index = 0; index < projectSlugs.length; index++) {
+    const badgeSlug = badgeSlugs[random(3)]!;
+    let insertObject1: DBInsertProjectStatusOnBadge = {
+      badge_slug: badgeSlug,
+      project_slug: projectSlugs[index]!,
+    };
+    const insert1 = getInsertKeysAndValuesSql(insertObject1);
     await client.query(
-      `INSERT INTO badgehub.badge_project
-            (badge_id, project_id) VALUES
-            ($1, $2)`,
-      [badgeId, index]
+      sql`insert into badgehub.project_statuses_on_badges (${insert1.keys}) values (${insert1.values})`
     );
 
     // Some project support two badges
-    const badgeId2 = badgeIds[random(3)];
-    if (badgeId2 != badgeId && random(3) == 1) {
+    const badgeId2 = badgeSlugs[random(3)]!;
+    if (badgeId2 != badgeSlug && random(3) == 1) {
+      const insertObject2: DBInsertProjectStatusOnBadge = {
+        badge_slug: badgeId2,
+        project_slug: projectSlugs[index]!,
+      };
+      const insert2 = getInsertKeysAndValuesSql(insertObject2);
       await client.query(
-        `INSERT INTO badgehub.badge_project
-                (badge_id, project_id) VALUES
-                ($1, $2)`,
-        [badgeId2, index]
+        sql`insert into badgehub.project_statuses_on_badges (${insert2.keys}) values (${insert2.values})`
       );
     }
-  }
-}
-
-// Not in use right now
-async function userProjectsCrossTable(
-  client: pg.PoolClient,
-  userCount: number,
-  projectCount: number
-) {
-  for (let index = 0; index < 300; index++) {
-    const userId = random(userCount);
-    const projectId = random(projectCount);
-    const createDate = -random(600);
-    const createdAt = date(createDate);
-    const updatedAt = date(createDate + random(100));
-    await client.query(
-      `INSERT INTO badgehub.project_user
-        (id, user_id, project_id, created_at, updated_at) VALUES
-        ($1, $2, $3, $4, $5)`,
-      [index, userId, projectId, createdAt, updatedAt]
-    );
   }
 }
