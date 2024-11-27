@@ -66,7 +66,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/files/draft/{filePath}")
+  @Post("/apps/{slug}/draft/files/{filePath}")
   public async writeFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -78,7 +78,7 @@ export class PrivateRestController {
   /**
    * Change the metadata of the latest draft version of the project.
    */
-  @Patch("/apps/{slug}/metadata/draft")
+  @Patch("/apps/{slug}/draft/metadata")
   public async changeAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
@@ -89,7 +89,7 @@ export class PrivateRestController {
   /**
    * get the latest draft version of the project.
    */
-  @Get("/apps/{slug}/files/draft/{filePath}")
+  @Get("/apps/{slug}/draft/files/{filePath}")
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string
@@ -100,7 +100,7 @@ export class PrivateRestController {
   /**
    * get the latest draft version of the app in zip format
    */
-  @Get("/apps/{slug}/zip/draft")
+  @Get("/apps/{slug}/draft/zip")
   public async getLatestPublishedZip(
     @Path() slug: string
   ): Promise<Uint8Array> {
@@ -110,7 +110,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/zip/draft")
+  @Post("/apps/{slug}/draft/zip")
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array
