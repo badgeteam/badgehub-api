@@ -11,13 +11,17 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
+    "noImplicitAny": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "lib": ["es2022"]
+    "lib": ["es2022"],
+    "paths": {
+      "@*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

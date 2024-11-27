@@ -2,6 +2,11 @@
   "entryFile": "src/index.ts",
   "controllerPathGlobs": ["src/controllers/**/*-rest.ts"],
   "noImplicitAdditionalProperties": "throw-on-extras",
+  "compilerOptions": {
+    "paths": {
+      "@*": ["./src/*"]
+    }
+  },
   "spec": {
     "outputDirectory": "public",
     "version": "3",
