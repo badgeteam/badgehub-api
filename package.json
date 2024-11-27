@@ -25,9 +25,11 @@
     "db-migrate-pg": "^1.5.2",
     "express": "^4.21.1",
     "jose": "^5.9.6",
+    "moment": "^2.30.1",
     "pg": "^8.11.5",
     "pino-http": "^10.1.0",
     "pm2": "^5.4.0",
+    "sql-template-tag": "^5.2.1",
     "swagger-ui-express": "^5.0.0",
     "tsoa": "^6.2.1"
   },
