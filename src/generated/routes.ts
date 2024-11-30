@@ -2,15 +2,15 @@
 /* eslint-disable */
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import type { TsoaRoute } from "@tsoa/runtime";
-import { ExpressTemplateService, fetchMiddlewares } from "@tsoa/runtime";
+import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PrivateRestController } from "./../controllers/private-rest.js";
 import type {
   Request as ExRequest,
-  RequestHandler,
   Response as ExResponse,
+  RequestHandler,
   Router,
 } from "express";
 
@@ -107,7 +107,7 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      id: { dataType: "string", required: true },
+      id: { dataType: "double", required: true },
       email: { dataType: "string", required: true },
       admin: { dataType: "boolean", required: true },
       name: { dataType: "string", required: true },
@@ -266,7 +266,7 @@ const models: TsoaRoute.Models = {
     dataType: "refObject",
     properties: {
       slug: { dataType: "string", required: true },
-      user_id: { dataType: "string", required: true },
+      user_id: { dataType: "double", required: true },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
@@ -366,7 +366,7 @@ const models: TsoaRoute.Models = {
         version_id: { dataType: "double" },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
-        user_id: { dataType: "string", required: true },
+        user_id: { dataType: "double", required: true },
       },
       validators: {},
     },
@@ -378,7 +378,7 @@ const models: TsoaRoute.Models = {
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "string", required: true },
+      user_id: { dataType: "double", required: true },
     },
     additionalProperties: false,
   },
@@ -389,7 +389,7 @@ const models: TsoaRoute.Models = {
       version_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "string" },
+      user_id: { dataType: "double" },
     },
     additionalProperties: false,
   },
@@ -848,7 +848,7 @@ export function RegisterRoutes(app: Router) {
           in: "path",
           name: "userId",
           required: true,
-          dataType: "string",
+          dataType: "double",
         },
         props: { in: "body", name: "props", required: true, ref: "UserProps" },
       };
@@ -1018,7 +1018,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/files/draft/:filePath",
+    "/api/v3/apps/:slug/draft/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.writeFile
@@ -1073,7 +1073,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
-    "/api/v3/apps/:slug/metadata/draft",
+    "/api/v3/apps/:slug/draft/metadata",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.changeAppMetadata
@@ -1121,7 +1121,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/files/draft/:filePath",
+    "/api/v3/apps/:slug/draft/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getDraftFile
@@ -1169,7 +1169,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/zip/draft",
+    "/api/v3/apps/:slug/draft/zip",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getLatestPublishedZip
@@ -1211,7 +1211,7 @@ export function RegisterRoutes(app: Router) {
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/zip/draft",
+    "/api/v3/apps/:slug/draft/zip",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.writeZip
