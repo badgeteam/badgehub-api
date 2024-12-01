@@ -1,6 +1,6 @@
-import { VersionRelation } from "./Version";
-import { UserRelation } from "./User";
-import { DatedData } from "./DatedData";
+import type { VersionRelation } from "./Version";
+import type { UserRelation } from "./User";
+import type { DatedData } from "./DatedData";
 
 export interface FileMetadata extends VersionRelation, UserRelation, DatedData {
   editable?: boolean;

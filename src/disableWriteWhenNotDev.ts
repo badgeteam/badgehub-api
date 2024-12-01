@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from "express";
+import type { Express, NextFunction, Request, Response } from "express";
 import { NODE_ENV } from "@config";
 
 export function disableWriteWhenNotDev(app: Express) {

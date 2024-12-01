@@ -1,12 +1,12 @@
-import { Project, ProjectSlug } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
-import { User } from "@domain/readModels/app/User";
-import { FileMetadata } from "@domain/readModels/app/FileMetadata";
-import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
-import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
-import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import type { Project, ProjectSlug } from "@domain/readModels/app/Project";
+import type { Version } from "@domain/readModels/app/Version";
+import type { User } from "@domain/readModels/app/User";
+import type { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import type { Badge } from "@domain/readModels/Badge";
+import type { Category } from "@domain/readModels/app/Category";
+import type { DBInsertUser } from "@db/models/app/DBUser";
+import type { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
 export interface BadgeHubDataPort {
   insertUser(user: DBInsertUser): Promise<void>;

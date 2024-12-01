@@ -1,38 +1,38 @@
-import { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
-import { Badge } from "@domain/readModels/Badge";
-import {
+import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
+import type { Badge } from "@domain/readModels/Badge";
+import type {
   Project,
   ProjectCore,
   ProjectSlug,
 } from "@domain/readModels/app/Project";
-import { User } from "@domain/readModels/app/User";
-import { Version } from "@domain/readModels/app/Version";
-import { Category } from "@domain/readModels/app/Category";
+import type { User } from "@domain/readModels/app/User";
+import type { Version } from "@domain/readModels/app/Version";
+import type { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBProject as DBProject } from "@db/models/app/DBProject";
+import type { DBProject as DBProject } from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/app/DBUser";
+import type { DBInsertUser } from "@db/models/app/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
-import { DBBadge } from "@db/models/DBBadge";
+import type { DBBadge } from "@db/models/DBBadge";
 import {
   getBaseSelectProjectQuery,
-  ProjectQueryResponse,
+  type ProjectQueryResponse,
   projectQueryResponseToReadModel,
 } from "@db/sqlHelpers/projectQuery";
 import {
   convertDatedData,
   extractDatedDataConverted,
-  OmitDatedData,
+  type OmitDatedData,
   stripDatedData,
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
-import { DBVersion } from "@db/models/app/DBVersion";
-import {
+import type { DBVersion } from "@db/models/app/DBVersion";
+import type {
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
 } from "@db/models/app/DBAppMetadataJSON";
-import { DBCategory } from "@db/models/app/DBCategory";
+import type { DBCategory } from "@db/models/app/DBCategory";
 import {
   assertValidColumKey,
   getInsertKeysAndValuesSql,

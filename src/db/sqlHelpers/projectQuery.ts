@@ -1,12 +1,12 @@
-import { Project } from "@domain/readModels/app/Project";
+import type { Project } from "@domain/readModels/app/Project";
 import moment from "moment/moment";
-import { DBProject } from "@db/models/app/DBProject";
-import { DBVersion } from "@db/models/app/DBVersion";
-import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
-import { DBUser } from "@db/models/app/DBUser";
+import type { DBProject } from "@db/models/app/DBProject";
+import type { DBVersion } from "@db/models/app/DBVersion";
+import type { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";
+import type { DBUser } from "@db/models/app/DBUser";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
-import { Category } from "@domain/readModels/app/Category";
+import type { Category } from "@domain/readModels/app/Category";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,

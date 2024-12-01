@@ -1,7 +1,7 @@
-import { AppMetadataJSON } from "./AppMetadataJSON";
-import { DatedData } from "./DatedData";
-import { FileMetadata } from "./FileMetadata";
-import { Project } from "@domain/readModels/app/Project";
+import type { AppMetadataJSON } from "./AppMetadataJSON";
+import type { DatedData } from "./DatedData";
+import type { FileMetadata } from "./FileMetadata";
+import type { Project } from "@domain/readModels/app/Project";
 
 export interface VersionRelation {
   version: Version;

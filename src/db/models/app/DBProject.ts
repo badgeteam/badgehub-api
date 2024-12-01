@@ -1,7 +1,7 @@
-import { UserRelation } from "./DBUser";
-import { DBDatedData } from "./DBDatedData";
-import { VersionRelation } from "./DBVersion";
-import { ProjectSlug } from "@domain/readModels/app/Project";
+import type { UserRelation } from "./DBUser";
+import type { DBDatedData } from "./DBDatedData";
+import type { VersionRelation } from "./DBVersion";
+import type { ProjectSlug } from "@domain/readModels/app/Project";
 
 export interface DBInsertProject
   extends Partial<VersionRelation>, // The Latest DBVersion

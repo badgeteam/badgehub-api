@@ -1,11 +1,11 @@
 import type { TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
-import { Project } from "@domain/readModels/app/Project";
+import type { Project } from "@domain/readModels/app/Project";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
 
-import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
+import type { Badge } from "@domain/readModels/Badge";
+import type { Category } from "@domain/readModels/app/Category";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa

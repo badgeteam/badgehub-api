@@ -1,5 +1,5 @@
-import { ProjectSlugRelation } from "../DBProject";
-import { VoteFromUserRelation } from "../DBVoteFromUser";
+import type { ProjectSlugRelation } from "../DBProject";
+import type { VoteFromUserRelation } from "../DBVoteFromUser";
 
 // TODO implement table
 export interface ProjectHasVotes

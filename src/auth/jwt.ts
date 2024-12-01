@@ -1,7 +1,7 @@
 import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "../error";
 import { isAdmin, isContributor, UserRole } from "./role";
-import { JWTPayload, jwtVerify } from "jose";
-import { NextFunction, Request, Response } from "express";
+import { type JWTPayload, jwtVerify } from "jose";
+import type { NextFunction, Request, Response } from "express";
 
 // Middleware for routes that require a contributor role
 const ensureAdminRouteMiddleware = async (

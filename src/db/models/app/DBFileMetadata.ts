@@ -1,5 +1,5 @@
-import { UserRelation } from "./DBUser";
-import { DBDatedData } from "./DBDatedData";
+import type { UserRelation } from "./DBUser";
+import type { DBDatedData } from "./DBDatedData";
 
 export interface FileMetadataRelation {
   file_metadata_id: DBFileMetadata["id"];

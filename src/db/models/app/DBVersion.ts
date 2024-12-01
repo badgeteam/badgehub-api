@@ -1,7 +1,7 @@
-import { AppMetadataJSONRelation } from "./DBAppMetadataJSON";
-import { DBDatedData } from "./DBDatedData";
-import { TimestampTZ } from "@db/DBTypes";
-import { ProjectSlugRelation } from "@db/models/app/DBProject";
+import type { AppMetadataJSONRelation } from "./DBAppMetadataJSON";
+import type { DBDatedData } from "./DBDatedData";
+import type { TimestampTZ } from "@db/DBTypes";
+import type { ProjectSlugRelation } from "@db/models/app/DBProject";
 
 export interface VersionRelation {
   version_id: DBVersion["id"];

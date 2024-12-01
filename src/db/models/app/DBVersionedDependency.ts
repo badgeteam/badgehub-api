@@ -1,4 +1,4 @@
-import { ProjectSlugRelation } from "./DBProject";
+import type { ProjectSlugRelation } from "./DBProject";
 
 type VersionedDependencyId = number;
 

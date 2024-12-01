@@ -1,5 +1,5 @@
-import { DBDatedData } from "./DBDatedData";
-import { TimestampTZ } from "@db/DBTypes";
+import type { DBDatedData } from "./DBDatedData";
+import type { TimestampTZ } from "@db/DBTypes";
 
 export interface UserRelation {
   user_id: DBUser["id"];

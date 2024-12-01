@@ -1,5 +1,5 @@
-import { UserRelation } from "../DBUser";
-import { ProjectSlugRelation } from "../DBProject";
+import type { UserRelation } from "../DBUser";
+import type { ProjectSlugRelation } from "../DBProject";
 
 // TODO implement table
 export interface ProjectHasCollaborators

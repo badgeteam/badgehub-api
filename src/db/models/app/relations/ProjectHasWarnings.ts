@@ -1,6 +1,6 @@
-import { ProjectSlugRelation } from "../DBProject";
-import { WarningRelation } from "../DBWarning";
-import { WarningFromUserRelation } from "../DBWarningFromUser";
+import type { ProjectSlugRelation } from "../DBProject";
+import type { WarningRelation } from "../DBWarning";
+import type { WarningFromUserRelation } from "../DBWarningFromUser";
 
 // TODO implement table
 export interface ProjectHasWarnings

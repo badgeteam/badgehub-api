@@ -1,4 +1,4 @@
-import { Vote } from "@domain/readModels/app/VoteFromUser";
+import type { Vote } from "@domain/readModels/app/VoteFromUser";
 
 export interface VoteRelation {
   vote_id: DBVote["id"];

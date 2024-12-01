@@ -1,5 +1,5 @@
-import { UserRelation } from "./User";
-import { DatedData } from "./DatedData";
+import type { UserRelation } from "./User";
+import type { DatedData } from "./DatedData";
 
 export interface Vote {
   type: "up" | "down" | "pig";

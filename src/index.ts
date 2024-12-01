@@ -1,5 +1,5 @@
 import app from "./app";
-import { RegisterRoutes } from "./generated/routes";
+import { RegisterRoutes } from "@generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT, NODE_ENV } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";

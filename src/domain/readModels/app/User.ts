@@ -1,4 +1,4 @@
-import { DatedData } from "./DatedData";
+import type { DatedData } from "./DatedData";
 
 export interface UserRelation {
   user: User;

@@ -1,5 +1,5 @@
 import pg from "pg";
-import express, { Express, Router } from "express";
+import express, { type Express, Router } from "express";
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
@@ -8,13 +8,13 @@ import {
   POSTGRES_USER,
 } from "@config";
 import sql from "sql-template-tag";
-import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBDatedData } from "@db/models/app/DBDatedData";
-import { DBInsertProject } from "@db/models/app/DBProject";
+import type { DBInsertUser } from "@db/models/app/DBUser";
+import type { DBDatedData } from "@db/models/app/DBDatedData";
+import type { DBInsertProject } from "@db/models/app/DBProject";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
-import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
-import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
+import type { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
 
 const CATEGORY_NAMES = [
   "Uncategorised",

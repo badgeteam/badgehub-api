@@ -1,4 +1,4 @@
-import { Express, NextFunction, Request, Response } from "express";
+import type { Express, NextFunction, Request, Response } from "express";
 import { ValidateError } from "@tsoa/runtime";
 
 export function addTsoaValidationFailureLogging(app: Express) {

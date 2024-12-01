@@ -1,12 +1,12 @@
-import { Version } from "./Version";
-import { User } from "./User";
-import { DatedData } from "./DatedData";
-import { Badge } from "../Badge";
-import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
-import { AppMetadataJSON } from "./AppMetadataJSON";
-import { VoteFromUser } from "./VoteFromUser";
-import { WarningFromUser } from "./WarningFromUser";
-import { Category } from "@domain/readModels/app/Category";
+import type { Version } from "./Version";
+import type { User } from "./User";
+import type { DatedData } from "./DatedData";
+import type { Badge } from "../Badge";
+import type { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
+import type { AppMetadataJSON } from "./AppMetadataJSON";
+import type { VoteFromUser } from "./VoteFromUser";
+import type { WarningFromUser } from "./WarningFromUser";
+import type { Category } from "@domain/readModels/app/Category";
 
 export type ProjectStatusName =
   | "working"

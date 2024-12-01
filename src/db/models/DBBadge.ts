@@ -1,4 +1,4 @@
-import { DBDatedData } from "./app/DBDatedData";
+import type { DBDatedData } from "./app/DBDatedData";
 
 export interface BadgeSlugRelation {
   badge_slug: DBBadge["slug"];

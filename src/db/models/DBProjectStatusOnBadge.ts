@@ -1,7 +1,7 @@
-import { DBDatedData } from "./app/DBDatedData";
-import { BadgeSlugRelation } from "./DBBadge";
-import { ProjectStatusName } from "@domain/readModels/app/Project";
-import { ProjectSlugRelation } from "@db/models/app/DBProject";
+import type { DBDatedData } from "./app/DBDatedData";
+import type { BadgeSlugRelation } from "./DBBadge";
+import type { ProjectStatusName } from "@domain/readModels/app/Project";
+import type { ProjectSlugRelation } from "@db/models/app/DBProject";
 
 export interface DBInsertProjectStatusOnBadge
   extends BadgeSlugRelation,

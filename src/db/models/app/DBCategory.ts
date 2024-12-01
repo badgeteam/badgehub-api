@@ -1,5 +1,5 @@
-import { DBDatedData } from "@db/models/app/DBDatedData";
-import { AppCategoryName } from "@domain/readModels/app/Category";
+import type { DBDatedData } from "@db/models/app/DBDatedData";
+import type { AppCategoryName } from "@domain/readModels/app/Category";
 
 // table name: categories
 export interface DBCategory extends DBDatedData {
