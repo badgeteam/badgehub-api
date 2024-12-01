@@ -1,8 +1,10 @@
 {
-  "script": "dist/index.js",
+  "script": "src/index.ts",
+  "interpreter": "node",
+  "interpreter_args": "--import tsx",
   "name": "badgehub",
   "exec_mode": "cluster",
-  "instances": 4,
+  "instances": 1,
   "error_file": "./logs/error.log",
   "out_file": "./logs/access.log",
   "combine_logs": true
