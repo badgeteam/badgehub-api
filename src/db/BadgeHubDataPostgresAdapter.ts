@@ -8,7 +8,7 @@ import type {
 import type { User } from "@domain/readModels/app/User";
 import type { Version } from "@domain/readModels/app/Version";
 import type { Category } from "@domain/readModels/app/Category";
-import { Pool } from "pg";
+import type { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import type { DBProject as DBProject } from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
