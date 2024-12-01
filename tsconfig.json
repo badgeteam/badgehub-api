@@ -17,7 +17,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "dist",
+    "noEmit": true,
     "lib": ["es2022"],
     "paths": {
       "@*": ["./src/*"]
