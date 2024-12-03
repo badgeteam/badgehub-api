@@ -332,7 +332,7 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
       updated_at: updatedAt,
     };
 
-    await badgeHubAdapter.writeFile(
+    await badgeHubAdapter.writeDraftFile(
       inserted.slug,
       "metadata.json",
       JSON.stringify(appMetadata)
