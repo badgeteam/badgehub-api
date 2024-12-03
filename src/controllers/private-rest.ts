@@ -72,7 +72,7 @@ export class PrivateRestController {
     @Path() filePath: string,
     @Body() fileContent: string | Uint8Array
   ): Promise<void> {
-    await this.badgeHubData.writeFile(slug, filePath, fileContent);
+    await this.badgeHubData.writeDraftFile(slug, filePath, fileContent);
   }
 
   /**
@@ -115,7 +115,7 @@ export class PrivateRestController {
     @Path() slug: string,
     @Body() zipContent: Uint8Array
   ): Promise<Version> {
-    return await this.badgeHubData.writeProjectZip(slug, zipContent);
+    return await this.badgeHubData.writeDraftProjectZip(slug, zipContent);
   }
 
   /**

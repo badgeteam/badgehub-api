@@ -20,13 +20,13 @@ export interface BadgeHubDataPort {
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
 
-  writeFile(
+  writeDraftFile(
     projectSlug: ProjectSlug,
     filePath: string,
     contents: string | Uint8Array
   ): Promise<void>;
 
-  writeProjectZip(
+  writeDraftProjectZip(
     projectSlug: string,
     zipContent: Uint8Array
   ): Promise<Version>;

@@ -106,7 +106,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
                               where slug = ${projectSlug}`);
   }
 
-  async writeFile(
+  async writeDraftFile(
     projectSlug: ProjectSlug,
     filePath: string,
     contents: string | Uint8Array
@@ -143,7 +143,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     throw new Error("Method not implemented.");
   }
 
-  writeProjectZip(
+  writeDraftProjectZip(
     projectSlug: string,
     zipContent: Uint8Array
   ): Promise<Version> {
