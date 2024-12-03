@@ -20,3 +20,13 @@ export const getPool = () => {
   }
   return pool;
 };
+
+export const getClient = () => {
+  return new pg.Client({
+    host: POSTGRES_HOST,
+    database: POSTGRES_DB,
+    user: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+    port: POSTGRES_PORT,
+  });
+};

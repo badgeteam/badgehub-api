@@ -12,6 +12,8 @@
     "build": "tsc",
     "swagger": "tsoa spec-and-routes",
     "dev": "node --import tsx --watch src/index.ts",
+    "docker-compose-test:up": "docker compose -f compose.test.yml up -d",
+    "docker-compose-test:down": "docker compose -f compose.test.yml down",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
     "test": "vitest --coverage.enabled true",
     "db-migrate:up": "db-migrate up",
