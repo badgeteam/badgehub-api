@@ -30,7 +30,8 @@ export class PrivateRestController {
     @Path() userId: DBUser["id"],
     @Body() props: UserProps
   ): Promise<void> {
-    await this.badgeHubData.insertUser({ ...props, id: userId });
+    // TODO implement with proper password handling (salting, hashing, ...)
+    throw new Error("Not implemented");
   }
 
   /**
