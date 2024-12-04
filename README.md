@@ -35,7 +35,13 @@ For the mock data, we always want up to date tables, so after you have done the 
 You can do this with the pg_dump command in the postgres container:
 
 ```bash
-npm run backup
+npm run overwrite-mockup-data
+```
+
+Note: you might have to change the db container name in the script. Eg on mac with podman its with underscores instead of dashes which makes the command:
+
+```bash
+docker exec -it badgehub-api_db_1 /usr/bin/pg_dump --username badgehub --schema badgehub badgehub > mockup-data.sql
 ```
 
 #### Run the down migration to test it.

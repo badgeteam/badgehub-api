@@ -5,7 +5,7 @@ export interface UserRelation {
   user_id: DBUser["id"];
 }
 export interface DBInsertUser {
-  id: string;
+  id: number;
   email: string;
   admin?: boolean;
   name: string;

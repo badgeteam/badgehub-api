@@ -4,13 +4,42 @@ import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
+import { DBInsertUser } from "@db/models/app/DBUser";
+import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
 export interface BadgeHubDataPort {
+  insertUser(user: DBInsertUser): Promise<void>;
+
+  insertProject(project: DBInsertProject): Promise<void>;
+
+  updateProject(
+    projectSlug: ProjectSlug,
+    changes: Partial<Omit<DBProject, "slug">>
+  ): Promise<void>;
+
+  deleteProject(projectSlug: ProjectSlug): Promise<void>;
+
+  writeDraftFile(
+    projectSlug: ProjectSlug,
+    filePath: string,
+    contents: string | Uint8Array
+  ): Promise<void>;
+
+  writeDraftProjectZip(
+    projectSlug: string,
+    zipContent: Uint8Array
+  ): Promise<Version>;
+
+  publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
+
   getProject(projectSlug: ProjectSlug): Promise<Project>;
 
   getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
 
   getUser(userId: User["id"]): Promise<User>;
+
+  updateUser(updatedUser: User): Promise<void>;
 
   getFileContents(
     projectSlug: Project["slug"],
@@ -33,4 +62,9 @@ export interface BadgeHubDataPort {
     badgeSlug?: Badge["slug"];
     categorySlug?: Category["slug"];
   }): Promise<Project[]>;
+
+  updateDraftMetadata(
+    slug: string,
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+  ): Promise<void>;
 }

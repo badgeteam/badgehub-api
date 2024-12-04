@@ -1,12 +1,19 @@
 import { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { Badge } from "@domain/readModels/Badge";
-import { Project } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectCore,
+  ProjectSlug,
+} from "@domain/readModels/app/Project";
 import { User } from "@domain/readModels/app/User";
 import { Version } from "@domain/readModels/app/Version";
 import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import sql, { join } from "sql-template-tag";
+import { DBProject as DBProject } from "@db/models/app/DBProject";
+import sql, { join, raw } from "sql-template-tag";
+import { DBInsertUser } from "@db/models/app/DBUser";
+import { getEntriesWithDefinedValues } from "@util/objectEntries";
 import { DBBadge } from "@db/models/DBBadge";
 import {
   getBaseSelectProjectQuery,
@@ -21,14 +28,40 @@ import {
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@db/models/app/DBVersion";
-import { DBAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import {
+  DBAppMetadataJSON,
+  DBInsertAppMetadataJSON,
+} from "@db/models/app/DBAppMetadataJSON";
 import { DBCategory } from "@db/models/app/DBCategory";
+import {
+  assertValidColumKey,
+  getInsertKeysAndValuesSql,
+} from "@db/sqlHelpers/objectToSQL";
+
+function getUpdateAssigmentsSql(changes: Object) {
+  const changeEntries = getEntriesWithDefinedValues(changes);
+  if (!changeEntries.length) {
+    return;
+  }
+  return join(
+    changeEntries.map(
+      ([key, value]) => sql`${raw(assertValidColumKey(key))} = ${value}`
+    )
+  );
+}
 
 export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   private readonly pool: Pool;
 
   constructor() {
     this.pool = getPool();
+  }
+
+  async insertUser(user: DBInsertUser): Promise<void> {
+    const { keys, values } = getInsertKeysAndValuesSql(user);
+    const insertQuery = sql`insert into users (${keys})
+                            values (${values})`;
+    await this.pool.query(insertQuery);
   }
 
   async getCategories(): Promise<Category[]> {
@@ -38,11 +71,98 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     return dbCategoryNames.map((dbCategory) => dbCategory);
   }
 
+  async insertProject(project: DBProject): Promise<void> {
+    const { keys, values } = getInsertKeysAndValuesSql(project);
+    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name)
+                                     values (${project.slug})`;
+
+    await this.pool.query(sql`
+        with inserted_app_metadata as (${insertAppMetadataSql} returning id),
+             inserted_version as (
+                 insert
+                     into versions (project_slug, app_metadata_json_id)
+                         values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+        insert
+        into projects (${keys}, version_id)
+        values (${values}, (select id from inserted_version))`);
+  }
+
+  async updateProject(
+    projectSlug: ProjectSlug,
+    changes: Partial<Omit<ProjectCore, "slug">>
+  ): Promise<void> {
+    const setters = getUpdateAssigmentsSql(changes);
+    if (!setters) {
+      return;
+    }
+    await this.pool.query(sql`update projects
+                              set ${setters}
+                              where slug = ${projectSlug}`);
+  }
+
+  async deleteProject(projectSlug: ProjectSlug): Promise<void> {
+    await this.pool.query(sql`update projects
+                              set deleted_at = now()
+                              where slug = ${projectSlug}`);
+  }
+
+  async writeDraftFile(
+    projectSlug: ProjectSlug,
+    filePath: string,
+    contents: string | Uint8Array
+  ): Promise<void> {
+    if (filePath === "metadata.json") {
+      const appMetadata: DBAppMetadataJSON = JSON.parse(
+        typeof contents === "string"
+          ? contents
+          : new TextDecoder().decode(contents)
+      );
+      const setters = getUpdateAssigmentsSql(appMetadata);
+      if (!setters) {
+        return;
+      }
+
+      const appMetadataUpdateQuery = sql`update app_metadata_jsons
+                                         set ${setters}
+                                         where id = (select app_metadata_json_id
+                                                     from versions v
+                                                     where v.id =
+                                                           (select projects.version_id from projects where slug = ${projectSlug}))`;
+      await this.pool.query(appMetadataUpdateQuery);
+    } else {
+      throw new Error(
+        "Method not implemented for files other than the metadata.json file yet."
+      );
+    }
+  }
+
+  updateDraftMetadata(
+    slug: string,
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+  ): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  writeDraftProjectZip(
+    projectSlug: string,
+    zipContent: Uint8Array
+  ): Promise<Version> {
+    throw new Error("Method not implemented.");
+  }
+
+  async publishVersion(projectSlug: string): Promise<void> {
+    await this.pool.query(
+      sql`update versions v
+          set published_at=now()
+          where (published_at is null and v.id = (select version_id from projects p where slug = ${projectSlug}))`
+    );
+  }
+
   async getProject(projectSlug: string): Promise<Project> {
     return (await this.getProjects({ projectSlug }))[0]!;
   }
 
-  // TODO test
+  // TODO use and test
   async getDraftVersion(projectSlug: string): Promise<Version> {
     const selectVersionIdForProject = sql`select version_id from projects p where p.slug = ${projectSlug}`;
     const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
@@ -78,7 +198,11 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
     };
   }
 
-  getUser(userId: string): Promise<User> {
+  getUser(userId: User["id"]): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
+
+  updateUser(updatedUser: User): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
