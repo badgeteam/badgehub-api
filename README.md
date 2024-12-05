@@ -115,7 +115,7 @@ At the moment, this is the database schema:
 
 ## - Production -
 
-In production, use the production docker compose file `docker-compose-production.yml`.
+In production, use the production docker compose file `docker-compose.production.yml`.
 The `NODE_ENV` environment file is set to `production`, there's no watcher and
 PM2 is used to run Node.js multithreaded.
 
@@ -127,7 +127,7 @@ be copied.
 To start:
 
 ```bash
-docker compose --file docker-compose-production.yml up --detach
+docker compose --file docker-compose.production.yml up --detach
 ```
 
 Then visit [http://localhost:9001/](http://localhost:9001/) for the production BadgeHub homepage
@@ -136,7 +136,7 @@ and [http://localhost:9002/](http://localhost:9002/) for PG_Admin, the UI for th
 To wind down:
 
 ```bash
-docker compose --file docker-compose-production.yml down
+docker compose --file docker-compose.production.yml down
 ```
 
 ## Tools used
