@@ -25,7 +25,7 @@ jobs:
           npm run build
       - name: Start environment
         run: |
-          docker compose -f compose.test.yml up -d --wait
+          npm run test-db:up
       - name: Run test
         run: |
           npm run test
