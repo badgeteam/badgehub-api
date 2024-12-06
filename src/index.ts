@@ -1,10 +1,21 @@
-import { config } from "dotenv";
 import app from "./app";
+import { RegisterRoutes } from "./generated/routes";
+import { addTsoaValidationFailureLogging } from "@util/logging";
+import { EXPRESS_PORT } from "@config";
+import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
+import { runMigrations } from "@db/migrations";
 
-config();
+async function startServer() {
+  disableWriteWhenNotDev(app);
 
-const port = 8081;
+  RegisterRoutes(app);
 
-app.listen(port, () => {
-  console.info(`Node.js server started.`);
-});
+  addTsoaValidationFailureLogging(app);
+
+  await runMigrations();
+  app.listen(EXPRESS_PORT, () => {
+    console.info(`Node.js server started.`);
+  });
+}
+
+startServer();
