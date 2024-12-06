@@ -19,8 +19,8 @@ create table badges
 
 create table users
 (
-    id                text primary key,          -- using text as recommended
-    email             text unique,               -- using text as recommended
+    id                text primary key,
+    email             text unique,
     admin             boolean,
     name              text not null,
     password          text not null,
@@ -44,7 +44,7 @@ create table projects
     slug             text        not null primary key,
     git              text,
     allow_team_fixes boolean,
-    constraint projects_user_id_fk foreign key (user_id) references users (id) on delete cascade -- if user is deleted, delete his projects
+    constraint projects_user_id_fk foreign key (user_id) references users (id) on delete cascade -- if a user is deleted from the database, the projects associated with that user should also be deleted
 );
 
 create index idx_user_id on projects (user_id); -- allow searching projects by user_id efficiently
