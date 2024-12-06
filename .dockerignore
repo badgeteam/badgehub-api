@@ -8,6 +8,7 @@
 # Useless and heavy folders
 **/build
 **/dist
+data
 [...]
 **/.next
 **/.vercel
