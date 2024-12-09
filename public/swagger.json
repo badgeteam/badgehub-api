@@ -148,7 +148,8 @@
             "format": "date-time"
           },
           "id": {
-            "type": "string"
+            "type": "number",
+            "format": "double"
           },
           "email": {
             "type": "string"
@@ -447,7 +448,8 @@
             "type": "string"
           },
           "user_id": {
-            "type": "string"
+            "type": "number",
+            "format": "double"
           },
           "git": {
             "type": "string"
@@ -572,6 +574,224 @@
       "Uint8Array": {
         "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
         "properties": {},
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "remember_token": {
+            "type": "string"
+          },
+          "editor": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "show_projects": {
+            "type": "boolean"
+          },
+          "email_verified_at": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "name", "password"],
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "UserProps": {
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "remember_token": {
+            "type": "string"
+          },
+          "editor": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "show_projects": {
+            "type": "boolean"
+          },
+          "email_verified_at": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "name", "password"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
+        "properties": {
+          "version_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["user_id"],
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "ProjectProps": {
+        "properties": {
+          "version_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["user_id"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "ProjectPropsPartial": {
+        "properties": {
+          "version_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "user_id": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Record_string.string_": {
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "Record_string._source-string--destination-string_-Array_": {
+        "properties": {},
+        "additionalProperties": {
+          "items": {
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": ["destination", "source"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "DbInsertAppMetadataJSONPartial": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "author": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "license_file": {
+            "type": "string"
+          },
+          "is_library": {
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "main_executable": {
+            "type": "string"
+          },
+          "main_executable_overrides": {
+            "$ref": "#/components/schemas/Record_string.string_"
+          },
+          "file_mappings": {
+            "items": {
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": ["destination", "source"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file_mappings_overrides": {
+            "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
+          }
+        },
         "type": "object",
         "additionalProperties": false
       }
@@ -739,6 +959,89 @@
             }
           }
         ]
+      },
+      "post": {
+        "operationId": "CreateApp",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectProps"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DeleteApp",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateApp",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPropsPartial"
+              }
+            }
+          }
+        }
       }
     },
     "/api/v3/apps/{slug}/files/latest/{filePath}": {
@@ -895,26 +1198,235 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/version": {
+    "/api/v3/users/{userId}": {
       "post": {
-        "operationId": "CreateVersion",
+        "operationId": "InsertUser",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new user",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProps"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/apps/{slug}/draft/files/{filePath}": {
+      "post": {
+        "operationId": "WriteFile",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Upload a file to the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Uint8Array"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "GetDraftFile",
         "responses": {
           "200": {
             "description": "Ok",
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Badge"
-                  },
-                  "type": "array"
+                  "$ref": "#/components/schemas/Uint8Array"
                 }
               }
             }
           }
         },
-        "description": "Get list of devices (badges)",
-        "tags": ["public"],
+        "description": "get the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v3/apps/{slug}/draft/metadata": {
+      "patch": {
+        "operationId": "ChangeAppMetadata",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Change the metadata of the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DbInsertAppMetadataJSONPartial"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/apps/{slug}/draft/zip": {
+      "get": {
+        "operationId": "GetLatestPublishedZip",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Uint8Array"
+                }
+              }
+            }
+          }
+        },
+        "description": "get the latest draft version of the app in zip format",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "WriteZip",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Version"
+                }
+              }
+            }
+          }
+        },
+        "description": "Upload a file to the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Uint8Array"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/apps/{slug}/publish": {
+      "patch": {
+        "operationId": "PublishVersion",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Publish the latest draft version",
+        "tags": ["private"],
         "security": [],
         "parameters": [
           {

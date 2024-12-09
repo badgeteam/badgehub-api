@@ -5,7 +5,7 @@ export interface UserRelation {
 }
 
 export interface User extends DatedData {
-  id: string;
+  id: number;
   email: string;
   admin: boolean;
   name: string;

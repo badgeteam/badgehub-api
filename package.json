@@ -15,6 +15,7 @@
     "test-db:up": "docker compose -f docker-compose.test-db.yml up -d --wait",
     "test-db:down": "docker compose -f docker-compose.test-db.yml down",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",
+    "overwrite-mockup-data": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub --schema badgehub badgehub > mockup-data.sql",
     "test": "vitest --coverage.enabled true",
     "db-migrate:up": "db-migrate up",
     "db-migrate:down": "db-migrate down",
