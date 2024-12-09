@@ -1,0 +1,169 @@
+import { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
+import { Badge } from "@domain/readModels/Badge";
+import { Project } from "@domain/readModels/app/Project";
+import { User } from "@domain/readModels/app/User";
+import { Version } from "@domain/readModels/app/Version";
+import { Category } from "@domain/readModels/app/Category";
+import { Pool } from "pg";
+import { getPool } from "@db/connectionPool";
+import sql, { join } from "sql-template-tag";
+import { DBBadge } from "@db/models/DBBadge";
+import {
+  getBaseSelectProjectQuery,
+  ProjectQueryResponse,
+  projectQueryResponseToReadModel,
+} from "@db/sqlHelpers/projectQuery";
+import {
+  convertDatedData,
+  extractDatedDataConverted,
+  OmitDatedData,
+  stripDatedData,
+  timestampTZToDate,
+} from "@db/sqlHelpers/dbDates";
+import { DBVersion } from "@db/models/app/DBVersion";
+import { DBAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { DBCategory } from "@db/models/app/DBCategory";
+
+export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
+  private readonly pool: Pool;
+
+  constructor() {
+    this.pool = getPool();
+  }
+
+  async getCategories(): Promise<Category[]> {
+    const dbCategoryNames: OmitDatedData<DBCategory>[] = await this.pool
+      .query(sql`select name, slug from categories`)
+      .then((res) => res.rows);
+    return dbCategoryNames.map((dbCategory) => dbCategory);
+  }
+
+  async getProject(projectSlug: string): Promise<Project> {
+    return (await this.getProjects({ projectSlug }))[0]!;
+  }
+
+  // TODO test
+  async getDraftVersion(projectSlug: string): Promise<Version> {
+    const selectVersionIdForProject = sql`select version_id from projects p where p.slug = ${projectSlug}`;
+    const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
+      await this.pool
+        .query(
+          sql`select 
+          v.id,
+          v.revision,
+          v.semantic_version,
+          v.zip,
+          v.size_of_zip,
+          v.git_commit_id,
+          v.published_at,
+          v.download_count,
+          v.project_slug,
+          v.app_metadata_json_id,
+          v.created_at,
+          v.updated_at,
+          v.deleted_at,
+          to_jsonb(m) as app_metadata
+        from versions v
+        left join app_metadata_jsons m on v.app_metadata_json_id = m.id
+        where v.id = (${selectVersionIdForProject})
+        `
+        )
+        .then((res) => res.rows[0]);
+    const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
+    return {
+      ...convertDatedData(dbVersion),
+      files: [], // TODO
+      app_metadata: stripDatedData(appMetadataWithoutId), // TODO
+      published_at: timestampTZToDate(dbVersion.published_at),
+    };
+  }
+
+  getUser(userId: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
+
+  getFileContents(
+    projectSlug: string,
+    versionRevision: number | "draft" | "latest",
+    filePath: string
+  ): Promise<Uint8Array> {
+    throw new Error("Method not implemented.");
+  }
+
+  getVersionZipContents(
+    projectSlug: string,
+    versionRevision: number
+  ): Promise<Uint8Array> {
+    throw new Error("Method not implemented.");
+  }
+
+  async getBadges(): Promise<Badge[]> {
+    const dbBadges: DBBadge[] = await this.pool
+      .query(
+        sql`select slug, name
+            from badges`
+      )
+      .then((res) => res.rows);
+    return dbBadges.map((dbBadge) => ({
+      slug: dbBadge.slug,
+      name: dbBadge.name,
+      ...extractDatedDataConverted(dbBadge),
+    }));
+  }
+
+  async getProjects(filter?: {
+    projectSlug?: Project["slug"];
+    pageStart?: number;
+    pageLength?: number;
+    badgeSlug?: Badge["slug"];
+    categorySlug?: Category["slug"];
+  }): Promise<Project[]> {
+    let query = getBaseSelectProjectQuery();
+    if (filter?.badgeSlug) {
+      query = sql`${query}
+      inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug = ${filter.badgeSlug}`;
+    }
+    query = sql`${query} where p.deleted_at is null`;
+
+    if (filter?.categorySlug) {
+      query = sql`${query} and c.slug = ${filter.categorySlug}`;
+    }
+
+    if (filter?.projectSlug) {
+      query = sql`${query} and p.slug = ${filter.projectSlug}`;
+    }
+
+    if (filter?.pageLength) {
+      query = sql`${query}
+      limit
+      ${filter.pageLength}
+      offset
+      ${filter?.pageStart ?? 0}`;
+    }
+
+    const projects: ProjectQueryResponse[] = await this.pool
+      .query(query)
+      .then((res) => res.rows);
+    const badgesMap = await this._getBadgesMap(projects.map((p) => p.slug));
+    return projects.map(projectQueryResponseToReadModel).map((p) => ({
+      ...p,
+      badges: badgesMap[p.slug],
+    }));
+  }
+
+  private async _getBadgesMap(projectSlugs: Project["slug"][]) {
+    if (!projectSlugs.length) {
+      return {};
+    }
+    const query = sql`select project_slug, json_agg(badge_slug) as badges from project_statuses_on_badges where project_slug in (${join(projectSlugs)}) group by project_slug`;
+
+    const badges: { project_slug: Project["slug"]; badges: Badge["slug"][] }[] =
+      await this.pool.query(query).then((res) => res.rows);
+
+    const badgesMap: Record<Project["slug"], Badge["slug"][]> =
+      Object.fromEntries(
+        badges.map(({ project_slug, badges }) => [project_slug, badges])
+      );
+    return badgesMap;
+  }
+}
