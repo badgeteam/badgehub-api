@@ -11,7 +11,7 @@ import sql from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { DBInsertProject } from "@db/models/app/DBProject";
-import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
+import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
@@ -205,7 +205,7 @@ async function insertUsers(client: pg.PoolClient) {
       created_at: createdAt,
       updated_at: updatedAt,
     };
-    const badgeHubAdapter = new BadgeHubDataPostgresAdapter();
+    const badgeHubAdapter = new PostgreSQLBadgeHubMetadata();
     await badgeHubAdapter.insertUser(toInsert);
   }
 
@@ -302,7 +302,7 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
     "HackQuest",
     "SecureSphere",
   ];
-  const badgeHubAdapter = new BadgeHubDataPostgresAdapter();
+  const badgeHubAdapter = new PostgreSQLBadgeHubMetadata();
 
   for (let id = 0; id < projectSlugs.length; id++) {
     const name = projectSlugs[id]!;

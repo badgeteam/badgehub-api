@@ -1,14 +1,13 @@
 import { Project, ProjectSlug } from "@domain/readModels/app/Project";
 import { Version } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
-import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 
-export interface BadgeHubDataPort {
+export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;
 
   insertProject(project: DBInsertProject): Promise<void>;
@@ -20,17 +19,6 @@ export interface BadgeHubDataPort {
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
 
-  writeDraftFile(
-    projectSlug: ProjectSlug,
-    filePath: string,
-    contents: string | Uint8Array
-  ): Promise<void>;
-
-  writeDraftProjectZip(
-    projectSlug: string,
-    zipContent: Uint8Array
-  ): Promise<Version>;
-
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
 
   getProject(projectSlug: ProjectSlug): Promise<Project>;
@@ -40,17 +28,6 @@ export interface BadgeHubDataPort {
   getUser(userId: User["id"]): Promise<User>;
 
   updateUser(updatedUser: User): Promise<void>;
-
-  getFileContents(
-    projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest",
-    filePath: FileMetadata["name"]
-  ): Promise<Uint8Array>;
-
-  getVersionZipContents(
-    projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest"
-  ): Promise<Uint8Array>;
 
   getBadges(): Promise<Badge[]>;
 
