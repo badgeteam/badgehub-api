@@ -1,4 +1,3 @@
-import { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { Badge } from "@domain/readModels/Badge";
 import {
   Project,
@@ -37,6 +36,7 @@ import {
   assertValidColumKey,
   getInsertKeysAndValuesSql,
 } from "@db/sqlHelpers/objectToSQL";
+import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 
 function getUpdateAssigmentsSql(changes: Object) {
   const changeEntries = getEntriesWithDefinedValues(changes);
@@ -50,7 +50,7 @@ function getUpdateAssigmentsSql(changes: Object) {
   );
 }
 
-export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
+export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   private readonly pool: Pool;
 
   constructor() {
@@ -60,7 +60,7 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   async insertUser(user: DBInsertUser): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(user);
     const insertQuery = sql`insert into users (${keys})
-                            values (${values})`;
+                                values (${values})`;
     await this.pool.query(insertQuery);
   }
 
@@ -74,17 +74,16 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   async insertProject(project: DBProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
     const insertAppMetadataSql = sql`insert into app_metadata_jsons (name)
-                                     values (${project.slug})`;
+                                         values (${project.slug})`;
 
     await this.pool.query(sql`
-        with inserted_app_metadata as (${insertAppMetadataSql} returning id),
-             inserted_version as (
-                 insert
-                     into versions (project_slug, app_metadata_json_id)
-                         values (${project.slug}, (select id from inserted_app_metadata)) returning id)
-        insert
-        into projects (${keys}, version_id)
-        values (${values}, (select id from inserted_version))`);
+            with inserted_app_metadata as (${insertAppMetadataSql} returning id), inserted_version as (
+            insert
+            into versions (project_slug, app_metadata_json_id)
+            values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+            insert
+            into projects (${keys}, version_id)
+            values (${values}, (select id from inserted_version))`);
   }
 
   async updateProject(
@@ -96,65 +95,21 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
       return;
     }
     await this.pool.query(sql`update projects
-                              set ${setters}
-                              where slug = ${projectSlug}`);
+                                  set ${setters}
+                                  where slug = ${projectSlug}`);
   }
 
   async deleteProject(projectSlug: ProjectSlug): Promise<void> {
     await this.pool.query(sql`update projects
-                              set deleted_at = now()
-                              where slug = ${projectSlug}`);
-  }
-
-  async writeDraftFile(
-    projectSlug: ProjectSlug,
-    filePath: string,
-    contents: string | Uint8Array
-  ): Promise<void> {
-    if (filePath === "metadata.json") {
-      const appMetadata: DBAppMetadataJSON = JSON.parse(
-        typeof contents === "string"
-          ? contents
-          : new TextDecoder().decode(contents)
-      );
-      const setters = getUpdateAssigmentsSql(appMetadata);
-      if (!setters) {
-        return;
-      }
-
-      const appMetadataUpdateQuery = sql`update app_metadata_jsons
-                                         set ${setters}
-                                         where id = (select app_metadata_json_id
-                                                     from versions v
-                                                     where v.id =
-                                                           (select projects.version_id from projects where slug = ${projectSlug}))`;
-      await this.pool.query(appMetadataUpdateQuery);
-    } else {
-      throw new Error(
-        "Method not implemented for files other than the metadata.json file yet."
-      );
-    }
-  }
-
-  updateDraftMetadata(
-    slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
-  ): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-
-  writeDraftProjectZip(
-    projectSlug: string,
-    zipContent: Uint8Array
-  ): Promise<Version> {
-    throw new Error("Method not implemented.");
+                                  set deleted_at = now()
+                                  where slug = ${projectSlug}`);
   }
 
   async publishVersion(projectSlug: string): Promise<void> {
     await this.pool.query(
       sql`update versions v
-          set published_at=now()
-          where (published_at is null and v.id = (select version_id from projects p where slug = ${projectSlug}))`
+                set published_at=now()
+                where (published_at is null and v.id = (select version_id from projects p where slug = ${projectSlug}))`
     );
   }
 
@@ -203,21 +158,6 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
   }
 
   updateUser(updatedUser: User): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-
-  getFileContents(
-    projectSlug: string,
-    versionRevision: number | "draft" | "latest",
-    filePath: string
-  ): Promise<Uint8Array> {
-    throw new Error("Method not implemented.");
-  }
-
-  getVersionZipContents(
-    projectSlug: string,
-    versionRevision: number
-  ): Promise<Uint8Array> {
     throw new Error("Method not implemented.");
   }
 
@@ -289,5 +229,23 @@ export class BadgeHubDataPostgresAdapter implements BadgeHubDataPort {
         badges.map(({ project_slug, badges }) => [project_slug, badges])
       );
     return badgesMap;
+  }
+
+  async updateDraftMetadata(
+    projectSlug: string,
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+  ): Promise<void> {
+    const setters = getUpdateAssigmentsSql(appMetadataChanges);
+    if (!setters) {
+      return;
+    }
+
+    const appMetadataUpdateQuery = sql`update app_metadata_jsons
+                                         set ${setters}
+                                         where id = (select app_metadata_json_id
+                                                     from versions v
+                                                     where v.id =
+                                                           (select projects.version_id from projects where slug = ${projectSlug}))`;
+    await this.pool.query(appMetadataUpdateQuery);
   }
 }

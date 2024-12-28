@@ -1,10 +1,11 @@
 import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
-import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
-import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
+import { BadgeHubData } from "@domain/BadgeHubData";
+import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import type { ProjectSlug } from "@domain/readModels/app/Project";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -18,7 +19,10 @@ interface DbInsertAppMetadataJSONPartial
 @Tags("private")
 export class PrivateRestController {
   public constructor(
-    private badgeHubData: BadgeHubDataPort = new BadgeHubDataPostgresAdapter()
+    private badgeHubData: BadgeHubData = new BadgeHubData(
+      new PostgreSQLBadgeHubMetadata(),
+      new NodeFSBadgeHubFiles()
+    )
   ) {}
 
   /**
