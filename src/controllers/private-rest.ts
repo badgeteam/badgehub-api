@@ -1,7 +1,6 @@
 import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
 import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
 import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
-import type { Version } from "@domain/readModels/app/Version";
 import type { ProjectSlug } from "@domain/readModels/app/Project";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
@@ -115,15 +114,15 @@ export class PrivateRestController {
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array
-  ): Promise<Version> {
-    return await this.badgeHubData.writeDraftProjectZip(slug, zipContent);
+  ): Promise<void> {
+    await this.badgeHubData.writeDraftProjectZip(slug, zipContent);
   }
 
   /**
    * Publish the latest draft version
    */
   @Patch("/apps/{slug}/publish")
-  public async publishVersion(@Path() slug: string) {
+  public async publishVersion(@Path() slug: string): Promise<void> {
     await this.badgeHubData.publishVersion(slug);
   }
 }
