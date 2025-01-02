@@ -1,11 +1,12 @@
 import type { TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
-import type { BadgeHubDataPort } from "@domain/BadgeHubDataPort";
+import { BadgeHubData } from "@domain/BadgeHubData";
 import { Project } from "@domain/readModels/app/Project";
-import { BadgeHubDataPostgresAdapter } from "@db/BadgeHubDataPostgresAdapter";
+import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
+import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -23,7 +24,10 @@ import { Category } from "@domain/readModels/app/Category";
 @Tags("public")
 export class PublicRestController {
   public constructor(
-    private badgeHubData: BadgeHubDataPort = new BadgeHubDataPostgresAdapter()
+    private badgeHubData: BadgeHubData = new BadgeHubData(
+      new PostgreSQLBadgeHubMetadata(),
+      new NodeFSBadgeHubFiles()
+    )
   ) {}
 
   /**
