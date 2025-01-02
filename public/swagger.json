@@ -1381,15 +1381,8 @@
       "post": {
         "operationId": "WriteZip",
         "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Version"
-                }
-              }
-            }
+          "204": {
+            "description": "No content"
           }
         },
         "description": "Upload a file to the latest draft version of the project.",
