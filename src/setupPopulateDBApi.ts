@@ -11,10 +11,12 @@ import sql from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { DBInsertProject } from "@db/models/app/DBProject";
-import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
+import { BadgeHubData } from "@domain/BadgeHubData";
+import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
+import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -50,14 +52,22 @@ export default async function setupPopulateDBApi(app: Express) {
   });
 
   router.post("/populate", async (req, res) => {
-    await cleanDatabases(pool);
-    await populateDatabases(pool);
-    return res.status(200).send("Population done.");
+    const client: pg.PoolClient = await pool.connect();
+    const badgeHubData = new BadgeHubData(
+      new PostgreSQLBadgeHubMetadata(),
+      new NodeFSBadgeHubFiles()
+    );
+    try {
+      await cleanDatabases(client);
+      await populateDatabases(client, badgeHubData);
+      return res.status(200).send("Population done.");
+    } finally {
+      client.release();
+    }
   });
 }
 
-async function cleanDatabases(pool: pg.Pool) {
-  const client = await pool.connect();
+async function cleanDatabases(client: pg.PoolClient) {
   await client.query(sql`delete from badgehub.users`);
   await client.query(sql`delete from badgehub.projects`);
   await client.query(sql`delete from badgehub.app_metadata_jsons`);
@@ -67,12 +77,13 @@ async function cleanDatabases(pool: pg.Pool) {
   client.release();
 }
 
-async function populateDatabases(pool: pg.Pool) {
-  const client = await pool.connect();
-  const userCount = await insertUsers(client);
-  const projectSlugs = await insertProjects(client, userCount);
+async function populateDatabases(
+  client: pg.PoolClient,
+  badgeHubData: BadgeHubData
+) {
+  const userCount = await insertUsers(badgeHubData);
+  const projectSlugs = await insertProjects(badgeHubData, userCount);
   await badgeProjectCrossTable(client, projectSlugs);
-  client.release();
 }
 
 function random(n: number) {
@@ -98,7 +109,7 @@ function getDescription(appName: string) {
   }
 }
 
-async function insertUsers(client: pg.PoolClient) {
+async function insertUsers(badgeHubData: BadgeHubData) {
   const users = [
     "TechTinkerer",
     "CodeCrafter",
@@ -205,14 +216,14 @@ async function insertUsers(client: pg.PoolClient) {
       created_at: createdAt,
       updated_at: updatedAt,
     };
-    const badgeHubAdapter = new PostgreSQLBadgeHubMetadata();
-    await badgeHubAdapter.insertUser(toInsert);
+
+    await badgeHubData.insertUser(toInsert);
   }
 
   return users.length;
 }
 
-async function insertProjects(client: pg.PoolClient, userCount: number) {
+async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
   const projectSlugs = [
     "CodeCraft",
     "PixelPulse",
@@ -302,7 +313,6 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
     "HackQuest",
     "SecureSphere",
   ];
-  const badgeHubAdapter = new PostgreSQLBadgeHubMetadata();
 
   for (let id = 0; id < projectSlugs.length; id++) {
     const name = projectSlugs[id]!;
@@ -323,7 +333,7 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
       updated_at: updatedAt,
     };
 
-    await badgeHubAdapter.insertProject(inserted);
+    await badgeHubData.insertProject(inserted);
     const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
       name,
       description,
@@ -332,7 +342,7 @@ async function insertProjects(client: pg.PoolClient, userCount: number) {
       updated_at: updatedAt,
     };
 
-    await badgeHubAdapter.writeDraftFile(
+    await badgeHubData.writeDraftFile(
       inserted.slug,
       "metadata.json",
       JSON.stringify(appMetadata)
