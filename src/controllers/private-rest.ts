@@ -5,6 +5,7 @@ import {
   Patch,
   Path,
   Post,
+  Request,
   Route,
   Tags,
   UploadedFile,
@@ -16,6 +17,8 @@ import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import express from "express";
+import { Readable } from "node:stream";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -115,8 +118,13 @@ export class PrivateRestController {
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, "draft", filePath);
+  ): Promise<Readable> {
+    const fileContents = await this.badgeHubData.getFileContents(
+      slug,
+      "draft",
+      filePath
+    );
+    return Readable.from(fileContents);
   }
 
   /**

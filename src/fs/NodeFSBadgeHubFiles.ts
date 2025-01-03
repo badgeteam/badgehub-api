@@ -14,6 +14,6 @@ export class NodeFSBadgeHubFiles implements BadgeHubFiles {
   }
 
   getFileContents(pathParts: string[]): Promise<Uint8Array> {
-    throw new Error("Method not implemented.");
+    return fs.readFile(path.join(DATA_DIR, ...pathParts));
   }
 }
