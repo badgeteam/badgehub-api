@@ -1033,10 +1033,10 @@ export function RegisterRoutes(
     ]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.writeFile
+      PrivateRestController.prototype.writeDraftFile
     ),
 
-    async function PrivateRestController_writeFile(
+    async function PrivateRestController_writeDraftFile(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1070,7 +1070,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "writeFile",
+          methodName: "writeDraftFile",
           controller,
           response,
           next,
@@ -1087,10 +1087,10 @@ export function RegisterRoutes(
     "/api/v3/apps/:slug/draft/metadata",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.changeAppMetadata
+      PrivateRestController.prototype.changeDraftAppMetadata
     ),
 
-    async function PrivateRestController_changeAppMetadata(
+    async function PrivateRestController_changeDraftAppMetadata(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1118,7 +1118,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "changeAppMetadata",
+          methodName: "changeDraftAppMetadata",
           controller,
           response,
           next,
