@@ -17,6 +17,7 @@ import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge"
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import { Readable } from "node:stream";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -342,11 +343,12 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
       updated_at: updatedAt,
     };
 
-    await badgeHubData.writeDraftFile(
-      inserted.slug,
-      "metadata.json",
-      JSON.stringify(appMetadata)
-    );
+    const fileContent = Buffer.from(JSON.stringify(appMetadata));
+    await badgeHubData.writeDraftFile(inserted.slug, "metadata.json", {
+      mimetype: "application/json",
+      size: fileContent.length,
+      fileContent: fileContent,
+    });
   }
 
   return projectSlugs.map((slug) => slug.toLowerCase());
@@ -365,7 +367,8 @@ async function badgeProjectCrossTable(
     };
     const insert1 = getInsertKeysAndValuesSql(insertObject1);
     await client.query(
-      sql`insert into badgehub.project_statuses_on_badges (${insert1.keys}) values (${insert1.values})`
+      sql`insert into badgehub.project_statuses_on_badges (${insert1.keys})
+                values (${insert1.values})`
     );
 
     // Some project support two badges
@@ -377,7 +380,8 @@ async function badgeProjectCrossTable(
       };
       const insert2 = getInsertKeysAndValuesSql(insertObject2);
       await client.query(
-        sql`insert into badgehub.project_statuses_on_badges (${insert2.keys}) values (${insert2.values})`
+        sql`insert into badgehub.project_statuses_on_badges (${insert2.keys})
+                    values (${insert2.values})`
       );
     }
   }
