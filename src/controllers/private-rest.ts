@@ -83,7 +83,7 @@ export class PrivateRestController {
    * Upload a file to the latest draft version of the project.
    */
   @Post("/apps/{slug}/draft/files/{filePath}")
-  public async writeFile(
+  public async writeDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
     @UploadedFile() file: Express.Multer.File
@@ -101,7 +101,7 @@ export class PrivateRestController {
    * Change the metadata of the latest draft version of the project.
    */
   @Patch("/apps/{slug}/draft/metadata")
-  public async changeAppMetadata(
+  public async changeDraftAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
   ): Promise<void> {
