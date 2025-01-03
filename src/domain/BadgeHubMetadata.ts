@@ -6,6 +6,7 @@ import { Category } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { UploadedFile } from "@domain/UploadedFile";
 
 export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;

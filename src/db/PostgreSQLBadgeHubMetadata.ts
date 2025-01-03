@@ -37,6 +37,7 @@ import {
   getInsertKeysAndValuesSql,
 } from "@db/sqlHelpers/objectToSQL";
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
+import { UploadedFile } from "@domain/UploadedFile";
 
 function getUpdateAssigmentsSql(changes: Object) {
   const changeEntries = getEntriesWithDefinedValues(changes);

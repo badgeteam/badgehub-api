@@ -13,6 +13,7 @@ import type {
   RequestHandler,
   Router,
 } from "express";
+import multer from "multer";
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
@@ -463,11 +464,16 @@ const templateService = new ExpressTemplateService(models, {
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
-export function RegisterRoutes(app: Router) {
+export function RegisterRoutes(
+  app: Router,
+  opts?: { multer?: ReturnType<typeof multer> }
+) {
   // ###########################################################################################################
   //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
   //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
   // ###########################################################################################################
+
+  const upload = opts?.multer || multer({ limits: { fileSize: 8388608 } });
 
   app.get(
     "/api/v3/devices",
@@ -1019,12 +1025,18 @@ export function RegisterRoutes(app: Router) {
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
     "/api/v3/apps/:slug/draft/files/:filePath",
+    upload.fields([
+      {
+        name: "file",
+        maxCount: 1,
+      },
+    ]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.writeFile
+      PrivateRestController.prototype.writeDraftFile
     ),
 
-    async function PrivateRestController_writeFile(
+    async function PrivateRestController_writeDraftFile(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1037,12 +1049,11 @@ export function RegisterRoutes(app: Router) {
           required: true,
           dataType: "string",
         },
-        fileContent: {
-          in: "body",
-          name: "fileContent",
+        file: {
+          in: "formData",
+          name: "file",
           required: true,
-          dataType: "union",
-          subSchemas: [{ dataType: "string" }, { ref: "Uint8Array" }],
+          dataType: "file",
         },
       };
 
@@ -1059,7 +1070,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "writeFile",
+          methodName: "writeDraftFile",
           controller,
           response,
           next,
@@ -1076,10 +1087,10 @@ export function RegisterRoutes(app: Router) {
     "/api/v3/apps/:slug/draft/metadata",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.changeAppMetadata
+      PrivateRestController.prototype.changeDraftAppMetadata
     ),
 
-    async function PrivateRestController_changeAppMetadata(
+    async function PrivateRestController_changeDraftAppMetadata(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1107,7 +1118,7 @@ export function RegisterRoutes(app: Router) {
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "changeAppMetadata",
+          methodName: "changeDraftAppMetadata",
           controller,
           response,
           next,

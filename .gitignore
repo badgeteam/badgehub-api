@@ -132,3 +132,7 @@ dist
 .pnp.*
 /backup/data-backup.sql
 /backup/
+
+# data dir
+data
+!data/.gitkeep

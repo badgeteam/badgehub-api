@@ -1,4 +1,15 @@
-import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
+import {
+  Body,
+  Delete,
+  Get,
+  Patch,
+  Path,
+  Post,
+  Request,
+  Route,
+  Tags,
+  UploadedFile,
+} from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import type { ProjectSlug } from "@domain/readModels/app/Project";
@@ -6,11 +17,15 @@ import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import express from "express";
+import { Readable } from "node:stream";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
 interface ProjectProps extends Omit<DBInsertProject, "slug"> {}
+
 interface ProjectPropsPartial extends Partial<ProjectProps> {}
+
 interface DbInsertAppMetadataJSONPartial
   extends Partial<DBInsertAppMetadataJSON> {}
 
@@ -71,19 +86,25 @@ export class PrivateRestController {
    * Upload a file to the latest draft version of the project.
    */
   @Post("/apps/{slug}/draft/files/{filePath}")
-  public async writeFile(
+  public async writeDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
-    @Body() fileContent: string | Uint8Array
+    @UploadedFile() file: Express.Multer.File
   ): Promise<void> {
-    await this.badgeHubData.writeDraftFile(slug, filePath, fileContent);
+    await this.badgeHubData.writeDraftFile(slug, filePath, {
+      mimetype: file.mimetype,
+      fileContent: file.buffer,
+      directory: file.destination,
+      fileName: file.filename,
+      size: file.size,
+    });
   }
 
   /**
    * Change the metadata of the latest draft version of the project.
    */
   @Patch("/apps/{slug}/draft/metadata")
-  public async changeAppMetadata(
+  public async changeDraftAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
   ): Promise<void> {
@@ -97,8 +118,13 @@ export class PrivateRestController {
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, "draft", filePath);
+  ): Promise<Readable> {
+    const fileContents = await this.badgeHubData.getFileContents(
+      slug,
+      "draft",
+      filePath
+    );
+    return Readable.from(fileContents);
   }
 
   /**
