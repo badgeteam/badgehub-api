@@ -1,4 +1,14 @@
-import { Body, Delete, Get, Patch, Path, Post, Route, Tags } from "tsoa";
+import {
+  Body,
+  Delete,
+  Get,
+  Patch,
+  Path,
+  Post,
+  Route,
+  Tags,
+  UploadedFile,
+} from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import type { ProjectSlug } from "@domain/readModels/app/Project";
@@ -10,7 +20,9 @@ import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
 interface ProjectProps extends Omit<DBInsertProject, "slug"> {}
+
 interface ProjectPropsPartial extends Partial<ProjectProps> {}
+
 interface DbInsertAppMetadataJSONPartial
   extends Partial<DBInsertAppMetadataJSON> {}
 
@@ -74,9 +86,15 @@ export class PrivateRestController {
   public async writeFile(
     @Path() slug: string,
     @Path() filePath: string,
-    @Body() fileContent: string | Uint8Array
+    @UploadedFile() file: Express.Multer.File
   ): Promise<void> {
-    await this.badgeHubData.writeDraftFile(slug, filePath, fileContent);
+    await this.badgeHubData.writeDraftFile(slug, filePath, {
+      mimetype: file.mimetype,
+      fileContent: file.buffer,
+      directory: file.destination,
+      fileName: file.filename,
+      size: file.size,
+    });
   }
 
   /**
