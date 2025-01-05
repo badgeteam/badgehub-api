@@ -9,17 +9,15 @@ COPY  --chown=node:node ./package*.json .
 RUN npm ci --only=production --ignore-scripts
 
 COPY --chown=node:node process.json .
+RUN mkdir -p /home/node/.pm2 /home/node/app/logs /home/node/app/pids && chown -R node:node /home/node/.pm2 /home/node/app/logs
 
 # db-migrate stuff
 COPY --chown=node:node migrations ./migrations
 COPY --chown=node:node database.json .
 
-# source code
 COPY --chown=node:node ./public ./public
 COPY --chown=node:node ./src ./src
-COPY --chown=node:node ./tsconfig.json ./tsconfig.json
-COPY --chown=node:node ./tsoa.json ./tsoa.json
 
 USER node
 EXPOSE 8081
-CMD ["node", "--import", "tsx", "src/index.ts"]
+CMD ["./node_modules/pm2/bin/pm2-runtime", "process.json"]
