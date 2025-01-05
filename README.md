@@ -122,9 +122,7 @@ At the moment, this is the database schema:
 ## - Production -
 
 In production, use the production docker compose file `docker-compose.production.yml`.
-The `NODE_ENV` environment file is set to `production`, there's no watcher and
-PM2 is used to run Node.js multithreaded.
-
+The `NODE_ENV` environment file is set to `production`.
 The first time, a Docker container is created. Make sure the `dist` directory
 contains the latest build to be copied to the container.
 Also the `public` directory and `package.json` and `package-lock.json` will
@@ -152,4 +150,3 @@ docker compose --file docker-compose.production.yml down
 - [sql-template-tag](https://github.com/blakeembrey/sql-template-tag) for more easily writing SQL queries
 - [db-migrate](https://db-migrate.readthedocs.io/en/latest/) for database migrations
 - [tsx](https://tsx.is/) for watching TypeScript files in Node.js
-- [PM2](https://pm2.keymetrics.io/) for managing Node.js processes
