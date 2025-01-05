@@ -129,19 +129,6 @@ Also the `public` directory and `package.json` and `package-lock.json` will
 be copied.
 
 To start:
-First clean up the previous containers.
-
-```bash
-docker compose --file docker-compose.production.yml down
-```
-
-Then build the docker api container.
-
-```bash
-docker compose --file docker-compose.production.yml build
-```
-
-Then start the docker containers.
 
 ```bash
 docker compose --file docker-compose.production.yml up --detach
