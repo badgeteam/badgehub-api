@@ -1,5 +1,5 @@
 import { Project, ProjectSlug } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
+import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -12,6 +12,7 @@ import {
 } from "@db/models/app/DBAppMetadataJSON";
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
+import { UploadedFile } from "@domain/UploadedFile";
 
 export class BadgeHubData {
   constructor(
@@ -70,11 +71,11 @@ export class BadgeHubData {
       // TODO file management: here we should get the file path from the DB in order to fetch the correct file
       throw new Error("Method not implemented.");
     }
-    return this.badgeHubFiles.getFileContents([
+    return this.badgeHubFiles.getFileContents(
       projectSlug,
       versionRevision,
-      ...filePath.split("/"),
-    ]);
+      filePath.split("/")
+    );
   }
 
   getVersionZipContents(
@@ -105,14 +106,12 @@ export class BadgeHubData {
   async writeDraftFile(
     projectSlug: ProjectSlug,
     filePath: string,
-    contents: string | Uint8Array
+    uploadedFile: UploadedFile
   ): Promise<void> {
-    await this._writeDraftFile(projectSlug, filePath.split("/"), contents);
+    await this._writeDraftFile(projectSlug, filePath.split("/"), uploadedFile);
     if (filePath === "metadata.json") {
       const appMetadata: DBAppMetadataJSON = JSON.parse(
-        typeof contents === "string"
-          ? contents
-          : new TextDecoder().decode(contents)
+        new TextDecoder().decode(uploadedFile.fileContent)
       );
       await this.badgeHubMetadata.updateDraftMetadata(projectSlug, appMetadata);
     }
@@ -132,18 +131,23 @@ export class BadgeHubData {
     const updatedDraftVersion =
       await this.badgeHubMetadata.getDraftVersion(slug);
     const updatedAppMetadata = updatedDraftVersion.app_metadata;
-    await this._writeDraftFile(
-      slug,
-      ["metadata.json"],
+    const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
     );
+    await this._writeDraftFile(slug, ["metadata.json"], {
+      mimetype: "application/json",
+      fileContent,
+      directory: undefined,
+      fileName: undefined,
+      size: fileContent.length,
+    });
   }
 
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
-    content: Uint8Array | string
+    uploadedFile: UploadedFile
   ) {
-    return this.badgeHubFiles.writeFile([slug, "draft", ...pathParts], content);
+    return this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
   }
 }

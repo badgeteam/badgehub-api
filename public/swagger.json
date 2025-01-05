@@ -1234,7 +1234,7 @@
     },
     "/api/v3/apps/{slug}/draft/files/{filePath}": {
       "post": {
-        "operationId": "WriteFile",
+        "operationId": "WriteDraftFile",
         "responses": {
           "204": {
             "description": "No content"
@@ -1264,16 +1264,16 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Uint8Array"
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
                   }
-                ]
+                },
+                "required": ["file"]
               }
             }
           }
@@ -1287,7 +1287,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }
@@ -1318,7 +1319,7 @@
     },
     "/api/v3/apps/{slug}/draft/metadata": {
       "patch": {
-        "operationId": "ChangeAppMetadata",
+        "operationId": "ChangeDraftAppMetadata",
         "responses": {
           "204": {
             "description": "No content"
