@@ -1,8 +1,19 @@
 import { UploadedFile } from "@domain/UploadedFile";
+import { ProjectSlug } from "@domain/readModels/app/Project";
+import { VersionRevision } from "@domain/readModels/app/Version";
 
 export interface BadgeHubFiles {
   // Using path parts instead of a string to make it easier to work with paths in a cross-platform way
-  writeFile(pathParts: string[], uploadedFile: UploadedFile): Promise<void>;
+  writeFile(
+    projectSlug: ProjectSlug,
+    versionRevision: VersionRevision,
+    pathParts: string[],
+    uploadedFile: UploadedFile
+  ): Promise<void>;
 
-  getFileContents(pathParts: string[]): Promise<Uint8Array>;
+  getFileContents(
+    projectSlug: ProjectSlug,
+    versionRevision: VersionRevision,
+    pathParts: string[]
+  ): Promise<Uint8Array>;
 }
