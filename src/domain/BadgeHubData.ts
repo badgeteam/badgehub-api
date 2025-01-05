@@ -1,5 +1,5 @@
 import { Project, ProjectSlug } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
+import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -71,11 +71,11 @@ export class BadgeHubData {
       // TODO file management: here we should get the file path from the DB in order to fetch the correct file
       throw new Error("Method not implemented.");
     }
-    return this.badgeHubFiles.getFileContents([
+    return this.badgeHubFiles.getFileContents(
       projectSlug,
       versionRevision,
-      ...filePath.split("/"),
-    ]);
+      filePath.split("/")
+    );
   }
 
   getVersionZipContents(
@@ -148,9 +148,6 @@ export class BadgeHubData {
     pathParts: string[],
     uploadedFile: UploadedFile
   ) {
-    return this.badgeHubFiles.writeFile(
-      [slug, "draft", ...pathParts],
-      uploadedFile
-    );
+    return this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
   }
 }
