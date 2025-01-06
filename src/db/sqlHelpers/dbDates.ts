@@ -1,6 +1,6 @@
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { DatedData } from "@domain/readModels/app/DatedData";
-import moment from "moment/moment";
+import moment from "moment";
 
 export function extractDatedDataConverted(dbDatedData: DBDatedData): DatedData {
   const datedData: DatedData = {
