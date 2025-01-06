@@ -1,7 +1,6 @@
 {
-  "script": "src/index.ts",
+  "script": "dist/index.cjs",
   "interpreter": "node",
-  "interpreter_args": "--import tsx",
   "name": "badgehub",
   "exec_mode": "cluster",
   "instances": 4,
