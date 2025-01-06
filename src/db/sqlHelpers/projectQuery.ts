@@ -1,5 +1,5 @@
 import { Project } from "@domain/readModels/app/Project";
-import moment from "moment/moment";
+import moment from "moment";
 import { DBProject } from "@db/models/app/DBProject";
 import { DBVersion } from "@db/models/app/DBVersion";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/app/DBAppMetadataJSON";

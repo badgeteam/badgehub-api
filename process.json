@@ -1,5 +1,5 @@
 {
-  "script": "dist/index.cjs",
+  "script": "dist/index.mjs",
   "interpreter": "node",
   "name": "badgehub",
   "exec_mode": "cluster",
