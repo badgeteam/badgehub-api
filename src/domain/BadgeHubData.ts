@@ -36,7 +36,6 @@ export class BadgeHubData {
   }
 
   deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    // TODO file management: move files from draft to version and latest
     return this.badgeHubMetadata.deleteProject(projectSlug);
   }
 
@@ -148,6 +147,12 @@ export class BadgeHubData {
     pathParts: string[],
     uploadedFile: UploadedFile
   ) {
-    return this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
+    const fileId = await this.badgeHubMetadata.prepareWriteDraftFile(
+      slug,
+      pathParts,
+      uploadedFile
+    );
+    await this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
+    await this.badgeHubMetadata.confirmWriteDraftFile(slug, pathParts);
   }
 }

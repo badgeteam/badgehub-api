@@ -17,7 +17,6 @@ import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge"
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
-import { Readable } from "node:stream";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -349,6 +348,7 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
       size: fileContent.length,
       fileContent: fileContent,
     });
+    // TODO also write __init__.py file that does print("Hello, World! from the {appname} app") for the interpreter
   }
 
   return projectSlugs.map((slug) => slug.toLowerCase());
