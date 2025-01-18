@@ -16,4 +16,4 @@ create table files
     primary key(version_id, dir, name, ext)
 );
 
-create unique index idx_files_sha256 on files (sha256);
+create index idx_files_sha256 on files (sha256);
