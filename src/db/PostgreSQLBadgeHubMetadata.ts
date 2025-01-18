@@ -55,7 +55,7 @@ function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   };
 }
 
-function getUpdateAssigmentsSql(changes: Object) {
+function getUpdateAssignmentsSql(changes: Object) {
   const changeEntries = getEntriesWithDefinedValues(changes);
   if (!changeEntries.length) {
     return;
@@ -155,7 +155,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: ProjectSlug,
     changes: Partial<Omit<ProjectCore, "slug">>
   ): Promise<void> {
-    const setters = getUpdateAssigmentsSql(changes);
+    const setters = getUpdateAssignmentsSql(changes);
     if (!setters) {
       return;
     }
@@ -303,7 +303,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: string,
     appMetadataChanges: Partial<DBInsertAppMetadataJSON>
   ): Promise<void> {
-    const setters = getUpdateAssigmentsSql(appMetadataChanges);
+    const setters = getUpdateAssignmentsSql(appMetadataChanges);
     if (!setters) {
       return;
     }
