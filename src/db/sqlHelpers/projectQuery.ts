@@ -1,4 +1,4 @@
-import { Project } from "@domain/readModels/app/Project";
+import { ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import moment from "moment";
 import { DBProject } from "@db/models/app/DBProject";
 import { DBVersion } from "@db/models/app/DBVersion";
@@ -37,7 +37,7 @@ export function getBaseSelectProjectQuery() {
 
 export const projectQueryResponseToReadModel = (
   enrichedDBProject: ProjectQueryResponse
-): Project => {
+): ProjectWithoutVersion => {
   return {
     version: undefined, // TODO
     allow_team_fixes: false,

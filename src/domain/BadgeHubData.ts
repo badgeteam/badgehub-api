@@ -1,4 +1,8 @@
-import { Project, ProjectSlug } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectSlug,
+  ProjectWithoutVersion,
+} from "@domain/readModels/app/Project";
 import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
@@ -98,7 +102,7 @@ export class BadgeHubData {
     pageLength?: number;
     badgeSlug?: Badge["slug"];
     categorySlug?: Category["slug"];
-  }): Promise<Project[]> {
+  }): Promise<ProjectWithoutVersion[]> {
     return this.badgeHubMetadata.getProjects(filter);
   }
 
