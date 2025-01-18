@@ -1,7 +1,7 @@
 import type { TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
-import { Project } from "@domain/readModels/app/Project";
+import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
@@ -55,7 +55,7 @@ export class PublicRestController {
     @Query() pageLength?: number,
     @Query() category?: Category["slug"],
     @Query() device?: string
-  ): Promise<Project[]> {
+  ): Promise<ProjectWithoutVersion[]> {
     return await this.badgeHubData.getProjects({
       pageStart,
       pageLength,

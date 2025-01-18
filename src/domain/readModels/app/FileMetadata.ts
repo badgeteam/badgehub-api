@@ -2,7 +2,7 @@ import { VersionRelation } from "./Version";
 import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
 
-export interface FileMetadata extends VersionRelation, DatedData {
+export interface FileMetadata extends DatedData {
   extension: string;
   dir: string; // directory of the file in the project, empty string if top level
   name: string; // file name without extension
