@@ -38,6 +38,8 @@ import {
 } from "@db/sqlHelpers/objectToSQL";
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
+import path from "node:path";
+import { calcSha256, getLockId } from "@util/digests";
 
 function getUpdateAssigmentsSql(changes: Object) {
   const changeEntries = getEntriesWithDefinedValues(changes);
@@ -51,11 +53,59 @@ function getUpdateAssigmentsSql(changes: Object) {
   );
 }
 
+const parsePath = (pathParts: string[]) => {
+  const fullPath = path.join(...pathParts);
+  const parsedPath = path.parse(fullPath);
+  const { dir, name, ext } = parsedPath;
+  return { dir, name, ext };
+};
+
+const selectDraftVersionId = (projectSlug: string) => {
+  return sql`(select version_id from project where slug = ${projectSlug})`;
+};
+
 export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   private readonly pool: Pool;
 
   constructor() {
     this.pool = getPool();
+  }
+
+  async prepareWriteDraftFile(
+    projectSlug: ProjectSlug,
+    pathParts: string[],
+    uploadedFile: UploadedFile
+  ): Promise<void> {
+    const { dir, name, ext } = parsePath(pathParts);
+    const mimetype = uploadedFile.mimetype;
+    const size = uploadedFile.size;
+    const lockId = await getLockId(projectSlug, dir, name, ext);
+    const sha256 = await calcSha256(uploadedFile);
+    await this.pool.query(sql`select pg_advisory_lock(${lockId})`);
+
+    await this.pool.query(
+      sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
+                values (${selectDraftVersionId(projectSlug)}, ${dir}, ${name}, ${ext}, ${mimetype},
+                        ${size}, ${sha256}) on conflict do
+            update set mimetype=${mimetype}, size_of_content=${size}, sha256=${sha256}, updated_at=now()`
+    );
+  }
+
+  async confirmWriteDraftFile(
+    projectSlug: ProjectSlug,
+    pathParts: string[]
+  ): Promise<void> {
+    const { dir, name, ext } = parsePath(pathParts);
+    const lockId = await getLockId(projectSlug, dir, name, ext);
+    await this.pool.query(
+      sql`update files
+                set confirmed_in_sync_on_disk = true
+                where version_id = ${selectDraftVersionId(projectSlug)}
+                  and dir = ${dir}
+                  and name = ${name}
+                  and ext = ${ext}`
+    );
+    await this.pool.query(sql`select pg_advisory_unlock(${lockId})`);
   }
 
   async insertUser(user: DBInsertUser): Promise<void> {
@@ -242,11 +292,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     }
 
     const appMetadataUpdateQuery = sql`update app_metadata_jsons
-                                         set ${setters}
-                                         where id = (select app_metadata_json_id
-                                                     from versions v
-                                                     where v.id =
-                                                           (select projects.version_id from projects where slug = ${projectSlug}))`;
+                                           set ${setters}
+                                           where id = (select app_metadata_json_id
+                                                       from versions v
+                                                       where v.id =
+                                                             (select projects.version_id from projects where slug = ${projectSlug}))`;
     await this.pool.query(appMetadataUpdateQuery);
   }
 }
