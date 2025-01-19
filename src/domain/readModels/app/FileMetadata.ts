@@ -1,5 +1,3 @@
-import { VersionRelation } from "./Version";
-import { UserRelation } from "./User";
 import { DatedData } from "./DatedData";
 
 export interface FileMetadata extends DatedData {

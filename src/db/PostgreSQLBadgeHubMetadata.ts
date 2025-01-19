@@ -10,10 +10,7 @@ import { Version } from "@domain/readModels/app/Version";
 import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import {
-  DBInsertProject,
-  DBProject as DBProject,
-} from "@db/models/app/DBProject";
+import { DBInsertProject } from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";

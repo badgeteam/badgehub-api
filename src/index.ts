@@ -23,4 +23,5 @@ async function startServer() {
   });
 }
 
+// noinspection JSIgnoredPromiseFromCall
 startServer();
