@@ -49,6 +49,7 @@
           "Unusable",
           "Adult",
           "Virus",
+          "SAO",
           "Interpreter"
         ]
       },
@@ -69,140 +70,8 @@
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
       },
-      "Version": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "semantic_version": {
-            "type": "string"
-          },
-          "zip": {
-            "type": "string"
-          },
-          "size_of_zip": {
-            "type": "number",
-            "format": "double"
-          },
-          "git_commit_id": {
-            "type": "string"
-          },
-          "files": {
-            "items": {
-              "$ref": "#/components/schemas/FileMetadata"
-            },
-            "type": "array"
-          },
-          "app_metadata": {
-            "$ref": "#/components/schemas/AppMetadataJSON"
-          },
-          "published_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "download_count": {
-            "type": "number",
-            "format": "double"
-          },
-          "project_slug": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "created_at",
-          "updated_at",
-          "revision",
-          "files",
-          "app_metadata",
-          "download_count",
-          "project_slug"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "User": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
-          "email": {
-            "type": "string"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "name": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "remember_token": {
-            "type": "string"
-          },
-          "editor": {
-            "type": "string"
-          },
-          "public": {
-            "type": "boolean"
-          },
-          "show_projects": {
-            "type": "boolean"
-          },
-          "email_verified_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "created_at",
-          "updated_at",
-          "id",
-          "email",
-          "admin",
-          "name",
-          "password",
-          "editor",
-          "public",
-          "show_projects"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
       "FileMetadata": {
         "properties": {
-          "version": {
-            "$ref": "#/components/schemas/Version"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -214,47 +83,52 @@
           "deleted_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "editable": {
-            "type": "boolean"
-          },
-          "lintable": {
-            "type": "boolean"
           },
           "extension": {
             "type": "string"
           },
-          "baseName": {
+          "dir": {
             "type": "string"
           },
-          "mime": {
+          "name": {
+            "type": "string"
+          },
+          "ext": {
+            "type": "string"
+          },
+          "mimetype": {
             "type": "string"
           },
           "size_of_content": {
             "type": "number",
             "format": "double"
           },
-          "crc32": {
+          "sha256": {
             "type": "string"
+          },
+          "confirmed_in_sync_on_disk": {
+            "type": "boolean"
           },
           "size_formatted": {
             "type": "string"
           },
-          "name": {
+          "full_path": {
             "type": "string"
           }
         },
         "required": [
-          "version",
-          "user",
           "created_at",
           "updated_at",
           "extension",
-          "baseName",
+          "dir",
+          "name",
+          "ext",
+          "mimetype",
           "size_of_content",
-          "crc32",
+          "sha256",
+          "confirmed_in_sync_on_disk",
           "size_formatted",
-          "name"
+          "full_path"
         ],
         "type": "object",
         "additionalProperties": false
@@ -347,6 +221,70 @@
         "type": "object",
         "additionalProperties": false
       },
+      "Version": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "size_of_zip": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/FileMetadata"
+            },
+            "type": "array"
+          },
+          "app_metadata": {
+            "$ref": "#/components/schemas/AppMetadataJSON"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "download_count": {
+            "type": "number",
+            "format": "double"
+          },
+          "project_slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "revision",
+          "files",
+          "app_metadata",
+          "download_count",
+          "project_slug"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
       "ProjectSlug": {
         "type": "string"
       },
@@ -385,6 +323,68 @@
           }
         },
         "required": ["badge", "created_at", "updated_at", "status"],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "User": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deleted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "number",
+            "format": "double"
+          },
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "remember_token": {
+            "type": "string"
+          },
+          "editor": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "show_projects": {
+            "type": "boolean"
+          },
+          "email_verified_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "id",
+          "email",
+          "admin",
+          "name",
+          "password",
+          "editor",
+          "public",
+          "show_projects"
+        ],
         "type": "object",
         "additionalProperties": false
       },
@@ -571,6 +571,13 @@
         "type": "object",
         "additionalProperties": false
       },
+      "Exclude_Project.version_": {
+        "$ref": "#/components/schemas/Project",
+        "description": "Exclude from T those types that are assignable to U"
+      },
+      "ProjectWithoutVersion": {
+        "$ref": "#/components/schemas/Exclude_Project.version_"
+      },
       "Uint8Array": {
         "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
         "properties": {},
@@ -651,6 +658,15 @@
             "type": "number",
             "format": "double"
           },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "deleted_at": {
+            "type": "string"
+          },
           "git": {
             "type": "string"
           },
@@ -672,6 +688,15 @@
             "type": "number",
             "format": "double"
           },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "deleted_at": {
+            "type": "string"
+          },
           "git": {
             "type": "string"
           },
@@ -692,6 +717,15 @@
           "version_id": {
             "type": "number",
             "format": "double"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "deleted_at": {
+            "type": "string"
           },
           "git": {
             "type": "string"
@@ -866,7 +900,7 @@
               "application/json": {
                 "schema": {
                   "items": {
-                    "$ref": "#/components/schemas/Project"
+                    "$ref": "#/components/schemas/ProjectWithoutVersion"
                   },
                   "type": "array"
                 }

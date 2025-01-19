@@ -1,4 +1,3 @@
-import { ProjectSlug } from "@domain/readModels/app/Project";
 import { subtle } from "node:crypto";
 import { UploadedFile } from "@domain/UploadedFile";
 

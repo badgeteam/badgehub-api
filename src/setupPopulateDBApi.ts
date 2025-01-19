@@ -17,7 +17,6 @@ import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge"
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
-import * as fs from "node:fs";
 import { stringToNumberDigest } from "@util/digests";
 
 const CATEGORY_NAMES = [
@@ -44,7 +43,7 @@ const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Upda
 const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
-export default async function setupPopulateDBApi(app: Express) {
+export default function setupPopulateDBApi(app: Express) {
   const router = Router();
 
   app.use(express.json());
