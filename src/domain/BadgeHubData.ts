@@ -17,6 +17,7 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 export class BadgeHubData {
   constructor(
@@ -109,9 +110,15 @@ export class BadgeHubData {
   async writeDraftFile(
     projectSlug: ProjectSlug,
     filePath: string,
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ): Promise<void> {
-    await this._writeDraftFile(projectSlug, filePath.split("/"), uploadedFile);
+    await this._writeDraftFile(
+      projectSlug,
+      filePath.split("/"),
+      uploadedFile,
+      dates
+    );
     if (filePath === "metadata.json") {
       const appMetadata: DBAppMetadataJSON = JSON.parse(
         new TextDecoder().decode(uploadedFile.fileContent)
@@ -149,12 +156,14 @@ export class BadgeHubData {
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ) {
-    const fileId = await this.badgeHubMetadata.prepareWriteDraftFile(
+    await this.badgeHubMetadata.prepareWriteDraftFile(
       slug,
       pathParts,
-      uploadedFile
+      uploadedFile,
+      dates
     );
     await this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
     await this.badgeHubMetadata.confirmWriteDraftFile(slug, pathParts);

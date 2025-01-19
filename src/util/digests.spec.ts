@@ -1,28 +1,48 @@
 import { describe, it, expect } from "vitest";
-import { calcSha256, getLockId } from "@util/digests";
+import { calcSha256, stringToNumberDigest } from "@util/digests";
 import { UploadedFile } from "@domain/UploadedFile";
 
 describe("digests", () => {
-  describe("getLockId", () => {
+  describe("stringToNumberDigest in case of getLockIdU usage", () => {
     it("lock id should be deterministic", async () => {
-      const result = await getLockId("test", "a", "b", "c");
-      expect(result).toEqual(await getLockId("test", "a", "b", "c"));
+      const result = await stringToNumberDigest(
+        ["test", "a", "b", "c"].join(",")
+      );
+      expect(result).toEqual(
+        await stringToNumberDigest(["test", "a", "b", "c"].join(","))
+      );
     });
     it("lock id should be different for different project", async () => {
-      const result = await getLockId("test", "a", "b", "c");
-      expect(result).not.toEqual(await getLockId("test2", "a", "b", "c"));
+      const result = await stringToNumberDigest(
+        ["test", "a", "b", "c"].join(",")
+      );
+      expect(result).not.toEqual(
+        await stringToNumberDigest(["test2", "a", "b", "c"].join(","))
+      );
     });
     it("lock id should be different for different dir", async () => {
-      const result = await getLockId("test", "a", "b", "c");
-      expect(result).not.toEqual(await getLockId("test", "a2", "b", "c"));
+      const result = await stringToNumberDigest(
+        ["test", "a", "b", "c"].join(",")
+      );
+      expect(result).not.toEqual(
+        await stringToNumberDigest(["test", "a2", "b", "c"].join(","))
+      );
     });
     it("lock id should be different for different name", async () => {
-      const result = await getLockId("test", "a", "b", "c");
-      expect(result).not.toEqual(await getLockId("test", "a", "b2", "c"));
+      const result = await stringToNumberDigest(
+        ["test", "a", "b", "c"].join(",")
+      );
+      expect(result).not.toEqual(
+        await stringToNumberDigest(["test", "a", "b2", "c"].join(","))
+      );
     });
     it("lock id should be different for different ext", async () => {
-      const result = await getLockId("test", "a", "b", "c");
-      expect(result).not.toEqual(await getLockId("test", "a", "b", "c2"));
+      const result = await stringToNumberDigest(
+        ["test", "a", "b", "c"].join(",")
+      );
+      expect(result).not.toEqual(
+        await stringToNumberDigest(["test", "a", "b", "c2"].join(","))
+      );
     });
   });
 

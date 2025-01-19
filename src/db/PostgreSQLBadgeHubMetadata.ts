@@ -10,7 +10,10 @@ import { Version } from "@domain/readModels/app/Version";
 import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBProject as DBProject } from "@db/models/app/DBProject";
+import {
+  DBInsertProject,
+  DBProject as DBProject,
+} from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
@@ -40,11 +43,22 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
 import path from "node:path";
-import { calcSha256, getLockId } from "@util/digests";
+import { calcSha256, stringToNumberDigest } from "@util/digests";
 import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 const ONE_KILO = 1000;
+
+async function getLockId(
+  projectSlug: ProjectSlug,
+  dir: string,
+  name: string,
+  ext: string
+) {
+  const inputString = [projectSlug, dir, name, ext].join(",");
+  return await stringToNumberDigest(inputString);
+}
 
 function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
@@ -88,7 +102,8 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   async prepareWriteDraftFile(
     projectSlug: ProjectSlug,
     pathParts: string[],
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ): Promise<void> {
     const { dir, name, ext } = parsePath(pathParts);
     const mimetype = uploadedFile.mimetype;
@@ -103,6 +118,16 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                         ${size}, ${sha256}) on conflict (version_id, dir, name, ext) do
             update set mimetype=${mimetype}, size_of_content=${size}, sha256=${sha256}, updated_at=now()`
     );
+    if (dates) {
+      await this.pool.query(sql`update files
+                    set created_at = ${dates.created_at},
+                        updated_at = ${dates.updated_at},
+                        deleted_at = ${dates.deleted_at}
+                    where version_id = ${selectDraftVersionId(projectSlug)}
+                    and dir = ${dir}
+                    and name = ${name}
+                    and ext = ${ext}`);
+    }
   }
 
   async confirmWriteDraftFile(
@@ -136,16 +161,18 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     return dbCategoryNames.map((dbCategory) => dbCategory);
   }
 
-  async insertProject(project: DBProject): Promise<void> {
+  async insertProject(project: DBInsertProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
-    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name)
-                                         values (${project.slug})`;
+    const createdAt = project.created_at ?? raw("now()");
+    const updatedAt = project.updated_at ?? raw("now()");
+    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name,created_at,updated_at)
+                                                                        values (${project.slug}, ${createdAt}, ${updatedAt})`;
 
     await this.pool.query(sql`
-            with inserted_app_metadata as (${insertAppMetadataSql} returning id), inserted_version as (
+            with inserted_app_metadata as (${insertAppMetadataSql} returning id,created_at,updated_at), inserted_version as (
             insert
-            into versions (project_slug, app_metadata_json_id)
-            values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+            into versions (project_slug, app_metadata_json_id, created_at, updated_at)
+            values (${project.slug}, (select id from inserted_app_metadata), (select created_at from inserted_app_metadata), (select updated_at from inserted_app_metadata)) returning id)
             insert
             into projects (${keys}, version_id)
             values (${values}, (select id from inserted_version))`);

@@ -11,6 +11,7 @@ import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { UploadedFile } from "@domain/UploadedFile";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;
@@ -53,7 +54,8 @@ export interface BadgeHubMetadata {
   prepareWriteDraftFile(
     projectSlug: ProjectSlug,
     pathParts: string[],
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ): Promise<void>;
 
   confirmWriteDraftFile(
