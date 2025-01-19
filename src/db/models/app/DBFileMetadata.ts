@@ -4,6 +4,7 @@ import { VersionRelation } from "@db/models/app/DBVersion";
 
 // table name: file_metadata
 export interface DBFileMetadata extends VersionRelation, DBDatedData {
+  id: number;
   extension: string;
   dir: string; // directory of the file in the project, empty string if top level
   name: string; // file name without extension

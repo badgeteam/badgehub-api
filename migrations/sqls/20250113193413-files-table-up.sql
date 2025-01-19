@@ -1,6 +1,7 @@
 
 create table files
 (
+    id              SERIAL PRIMARY KEY,                     -- new serial primary key
     version_id      integer not null,                   -- foreign key to versions table (optional)
     dir       text   not null,           -- directory of the file in the project, empty string if top level
     name       text   not null,           -- file name without extension
@@ -13,7 +14,7 @@ create table files
     updated_at      timestamptz not null default now(), -- track updates
     deleted_at      timestamptz,               -- soft delete timestamp (nullable)
     constraint files_version_id_fk foreign key (version_id) references versions (id) on delete cascade, -- in the version gets removed, the files should be removed as well
-    primary key(version_id, dir, name, ext)
+    constraint files_unique_constraint unique (version_id, dir, name, ext) -- ensure uniqueness of file on a path in a version
 );
 
 create index idx_files_sha256 on files (sha256);
