@@ -3,16 +3,24 @@ import { DBDatedData } from "./DBDatedData";
 import { VersionRelation } from "./DBVersion";
 import { ProjectSlug } from "@domain/readModels/app/Project";
 
-export interface DBInsertProject
-  extends Partial<VersionRelation>, // The Latest DBVersion
-    UserRelation {
+interface DBProjectBase {
   slug: ProjectSlug; // The directory name of this app
   git?: string; // repository url
   allow_team_fixes?: boolean;
 }
 
+export interface DBInsertProject
+  extends DBProjectBase,
+    Partial<VersionRelation>,
+    UserRelation,
+    Partial<DBDatedData> {}
+
 // table name: projects
-export interface DBProject extends DBInsertProject, DBDatedData {}
+export interface DBProject
+  extends DBProjectBase,
+    VersionRelation,
+    UserRelation,
+    DBDatedData {}
 
 export interface ProjectSlugRelation {
   project_slug: DBProject["slug"];

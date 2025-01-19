@@ -1,13 +1,18 @@
--- back up with old schema
-alter schema badgehub rename to badgehub_old;
-create schema badgehub;
-
--- Recfreate badgehub.migrations
-CREATE TABLE badgehub.migrations (
-                                         id serial NOT NULL,
-                                         name character varying(255) NOT NULL,
-                                         run_on timestamp without time zone NOT NULL
-);
+-- cleanup db
+do
+$$
+declare
+tbl_name text;
+begin
+for tbl_name in
+select tablename
+from pg_tables
+where schemaname = 'badgehub'
+  and tablename != 'migrations'
+    loop
+        execute format('drop table if exists %I cascade', tbl_name);
+end loop;
+end $$;
 
 -- create tables
 
@@ -43,7 +48,7 @@ create table projects
     updated_at       timestamptz not null default now(),
     deleted_at       timestamptz,
     version_id       integer,
-    user_id          integer        not null,
+    user_id          integer     not null,
     slug             text        not null primary key,
     git              text,
     allow_team_fixes boolean,
@@ -120,108 +125,6 @@ alter table projects
 create index idx_versions_project_slug on versions (project_slug);
 create index idx_versions_published_at on versions (published_at);
 
--- Copy data from old schema to new schema
-INSERT INTO badgehub.badges (name, slug, deleted_at, created_at, updated_at)
-SELECT name, slug, deleted_at, created_at, updated_at
-FROM badgehub_old.badges;
-
-INSERT INTO badgehub.categories (name, slug, deleted_at, created_at, updated_at)
-SELECT name, slug, deleted_at, created_at, updated_at
-FROM badgehub_old.categories;
-
-INSERT INTO badgehub.users (id, admin, name, email, email_verified_at, password, remember_token, editor, public,
-                            show_projects, deleted_at, created_at, updated_at)
-SELECT id,
-       admin,
-       name,
-       email,
-       email_verified_at,
-       password,
-       remember_token,
-       editor,
-       public,
-       show_projects,
-       deleted_at,
-       created_at,
-       updated_at
-FROM badgehub_old.users;
-
-with spo as (select po.slug,
-                    po.name,
-                    po.description,
-                    po.project_type,
-                    po.user_id,
-                    po.license,
-                    po.download_counter,
-                    po.created_at,
-                    po.published_at,
-                    po.updated_at,
-                    po.deleted_at,
-                    c.name as category,
-                    u.name as author
-             from badgehub_old.projects po
-                      left join badgehub_old.categories c on po.category_id = c.id
-                      left join badgehub_old.users u on po.user_id = u.id),
-     inserted_app_metadata as (insert
-         into app_metadata_jsons (category,
-                                  name,
-                                  description,
-                                  author,
-                                  license_file,
-                                  interpreter,
-                                  created_at,
-                                  updated_at,
-                                  deleted_at)
-             select category,
-                    name,
-                    description,
-                    author,
-                    license,
-                    project_type,
-                    created_at,
-                    updated_at,
-                    deleted_at
-             from spo
-             returning id, name)
-        ,
-     inserted_project as (
-         insert
-             into badgehub.projects (slug,
-                                     user_id,
-                                     created_at,
-                                     updated_at,
-                                     deleted_at)
-                 select slug,
-                        user_id,
-                        created_at,
-                        updated_at,
-                        deleted_at
-                 from spo)
-
-insert
-into versions (project_slug,
-               app_metadata_json_id,
-               download_count,
-               published_at,
-               created_at,
-               updated_at,
-               deleted_at)
-select slug,
-       id,
-       download_counter,
-       published_at,
-       created_at,
-       updated_at,
-       deleted_at
-from spo
-         JOIN inserted_app_metadata m ON spo.name = m.name;
-
-update projects
-set version_id = versions.id
-from versions
-where versions.project_slug = projects.slug
-  and projects.version_id is null;
-
 create table versioned_dependencies
 (
     id                      serial primary key,
@@ -233,21 +136,6 @@ create table versioned_dependencies
     deleted_at              timestamptz,               -- soft delete timestamp (nullable)    constraint versioned_dependency_depends_on_project_slug_fk foreign key (depends_on_project_slug) references projects (slug) on delete cascade,
     constraint versioned_dependency_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade
 );
-
-with old_dependencies as (select depends_on_project_id,
-                                 po.slug  as project_slug,
-                                 dpo.slug as depends_on_project_slug,
-                                 project_id,
-                                 badgehub_old.dependencies.created_at,
-                                 badgehub_old.dependencies.updated_at
-                          from badgehub_old.dependencies
-                                   left join badgehub_old.projects po on project_id = po.id
-                                   left join badgehub_old.projects dpo on depends_on_project_id = dpo.id)
-insert
-into badgehub.versioned_dependencies (depends_on_project_slug, project_slug, created_at, updated_at)
-select depends_on_project_slug, project_slug, created_at, updated_at
-from old_dependencies;
-
 
 create table project_statuses_on_badges
 (
@@ -261,18 +149,3 @@ create table project_statuses_on_badges
     constraint project_statuses_on_badges_project_slug_fk foreign key (project_slug) references projects (slug) on delete cascade,
     constraint project_statuses_on_badges_badge_slug_fk foreign key (badge_slug) references badges (slug) on delete cascade
 );
-
-with old_statuses as (select project_id,
-                             badge_id,
-                             b.slug as badge_slug,
-                             p.slug as project_slug,
-                             status,
-                             bp.created_at,
-                             bp.updated_at
-                      from badgehub_old.badge_project bp
-                               left join badgehub_old.badges b on badge_id  = b.id
-                               left join badgehub_old.projects p on project_id = p.id)
-insert
-into badgehub.project_statuses_on_badges (project_slug, badge_slug, status, created_at, updated_at)
-select project_slug, badge_slug, status, created_at, updated_at
-from old_statuses;

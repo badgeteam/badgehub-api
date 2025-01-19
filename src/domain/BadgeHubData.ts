@@ -1,4 +1,8 @@
-import { Project, ProjectSlug } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectSlug,
+  ProjectWithoutVersion,
+} from "@domain/readModels/app/Project";
 import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
@@ -13,6 +17,7 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
 export class BadgeHubData {
   constructor(
@@ -36,7 +41,6 @@ export class BadgeHubData {
   }
 
   deleteProject(projectSlug: ProjectSlug): Promise<void> {
-    // TODO file management: move files from draft to version and latest
     return this.badgeHubMetadata.deleteProject(projectSlug);
   }
 
@@ -99,16 +103,22 @@ export class BadgeHubData {
     pageLength?: number;
     badgeSlug?: Badge["slug"];
     categorySlug?: Category["slug"];
-  }): Promise<Project[]> {
+  }): Promise<ProjectWithoutVersion[]> {
     return this.badgeHubMetadata.getProjects(filter);
   }
 
   async writeDraftFile(
     projectSlug: ProjectSlug,
     filePath: string,
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ): Promise<void> {
-    await this._writeDraftFile(projectSlug, filePath.split("/"), uploadedFile);
+    await this._writeDraftFile(
+      projectSlug,
+      filePath.split("/"),
+      uploadedFile,
+      dates
+    );
     if (filePath === "metadata.json") {
       const appMetadata: DBAppMetadataJSON = JSON.parse(
         new TextDecoder().decode(uploadedFile.fileContent)
@@ -146,8 +156,16 @@ export class BadgeHubData {
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
-    uploadedFile: UploadedFile
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
   ) {
-    return this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
+    await this.badgeHubMetadata.prepareWriteDraftFile(
+      slug,
+      pathParts,
+      uploadedFile,
+      dates
+    );
+    await this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
+    await this.badgeHubMetadata.confirmWriteDraftFile(slug, pathParts);
   }
 }
