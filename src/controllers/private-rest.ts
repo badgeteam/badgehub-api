@@ -5,7 +5,6 @@ import {
   Patch,
   Path,
   Post,
-  Request,
   Route,
   Tags,
   UploadedFile,
@@ -17,7 +16,6 @@ import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
-import express from "express";
 import { Readable } from "node:stream";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
