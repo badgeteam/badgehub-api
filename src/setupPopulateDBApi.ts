@@ -74,7 +74,6 @@ async function cleanDatabases(client: pg.PoolClient) {
   await client.query(sql`delete from badgehub.versions`);
   await client.query(sql`delete from badgehub.versioned_dependencies`);
   await client.query(sql`delete from badgehub.project_statuses_on_badges`);
-  client.release();
 }
 
 async function populateDatabases(
