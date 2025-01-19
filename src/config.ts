@@ -1,5 +1,4 @@
 import { config } from "dotenv";
-import * as path from "node:path";
 
 config();
 export const EXPRESS_PORT = 8081;

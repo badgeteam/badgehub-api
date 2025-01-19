@@ -1,4 +1,3 @@
-import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
 import { VersionRelation } from "@db/models/app/DBVersion";
 
