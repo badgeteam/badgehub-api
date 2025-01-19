@@ -15,6 +15,7 @@ export type AppCategoryName =
   | "Unusable"
   | "Adult"
   | "Virus"
+  | "SAO"
   | "Interpreter"; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {

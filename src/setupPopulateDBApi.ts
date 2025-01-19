@@ -18,6 +18,7 @@ import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 import * as fs from "node:fs";
+import { stringToNumberDigest } from "@util/digests";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -34,8 +35,14 @@ const CATEGORY_NAMES = [
   "Unusable",
   "Adult",
   "Virus",
-  // "Interpreter", // TODO add Interpreter to mock data?
+  "SAO",
+  "Interpreter",
 ] as const;
+
+const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
+const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Update by hand
+const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
+
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 export default async function setupPopulateDBApi(app: Express) {
   const router = Router();
@@ -75,19 +82,45 @@ async function cleanDatabases(client: pg.PoolClient) {
   await client.query(sql`delete from badgehub.versions`);
   await client.query(sql`delete from badgehub.versioned_dependencies`);
   await client.query(sql`delete from badgehub.project_statuses_on_badges`);
+  await client.query(sql`delete from badgehub.categories`);
+  await client.query(sql`delete from badgehub.badges`);
+}
+
+async function insertBadges(client: pg.PoolClient) {
+  for (const badgeNames of BADGES) {
+    const semiRandomNumber = await stringToNumberDigest(badgeNames);
+    const createDate = -(semiRandomNumber % 600);
+    const createdAt = date(createDate);
+    const updatedAt = date(createDate + (semiRandomNumber % 100));
+    await client.query(
+      sql`insert into badgehub.badges (name, slug, created_at, updated_at)
+                values (${badgeNames}, ${nameToSlug(badgeNames)}, ${createdAt}, ${updatedAt})`
+    );
+  }
+}
+
+async function insertCategories(client: pg.PoolClient) {
+  for (const categoryName of CATEGORY_NAMES) {
+    const semiRandomNumber = await stringToNumberDigest(categoryName);
+    const createDate = -(semiRandomNumber % 600);
+    const createdAt = date(createDate);
+    const updatedAt = date(createDate + (semiRandomNumber % 100));
+    await client.query(
+      sql`insert into badgehub.categories (name, slug, created_at, updated_at)
+                values (${categoryName}, ${nameToSlug(categoryName)}, ${createdAt}, ${updatedAt})`
+    );
+  }
 }
 
 async function populateDatabases(
   client: pg.PoolClient,
   badgeHubData: BadgeHubData
 ) {
+  await insertBadges(client);
+  await insertCategories(client);
   const userCount = await insertUsers(badgeHubData);
   const projectSlugs = await insertProjects(badgeHubData, userCount);
   await badgeProjectCrossTable(client, projectSlugs);
-}
-
-function random(n: number) {
-  return Math.floor(Math.random() * n);
 }
 
 function date(days: number) {
@@ -96,94 +129,94 @@ function date(days: number) {
   return d.toISOString();
 }
 
-function getDescription(appName: string) {
-  switch (random(4)) {
+async function getDescription(appName: string) {
+  switch ((await stringToNumberDigest(appName)) % 4) {
     case 0:
       return `Use ${appName} for some cool graphical effects.`;
     case 1:
       return `With ${appName}, you can do interesting things with the sensors.`;
     case 2:
       return `Make some magic happen with ${appName}.`;
-    default:
+    case 3:
       return `${appName} is just some silly test app.`;
   }
 }
 
-async function insertUsers(badgeHubData: BadgeHubData) {
-  const users = [
-    "TechTinkerer",
-    "CodeCrafter",
-    "PixelPilot",
-    "LogicLion",
-    "ElectronEager",
-    "NanoNomad",
-    "CircuitCraze",
-    "GameGlider",
-    "ByteBlast",
-    "CyberCraft",
-    "DigitalDynamo",
-    "CodeCreator",
-    "PixelPulse",
-    "LogicLuminary",
-    "ElectronEcho",
-    "NanoNinja",
-    "CircuitChampion",
-    "GameGazer",
-    "ByteBuddy",
-    "TechTornado",
-    "CodeChampion",
-    "PixelProdigy",
-    "LogicLabyrinth",
-    "ElectronExplorer",
-    "NanoNavigator",
-    "CircuitCatalyst",
-    "GameGuru",
-    "ByteBlaze",
-    "DigitalDreamer",
-    "CodeCommander",
-    "PixelPioneer",
-    "LogicLegend",
-    "ElectronElite",
-    "NanoNerd",
-    "CircuitCaptain",
-    "GameGenius",
-    "ByteBolt",
-    "CyberCipher",
-    "CodeConqueror",
-    "PixelPaladin",
-    "LogicLore",
-    "ElectronEnigma",
-    "CircuitConnoisseur",
-    "GameGuardian",
-    "ByteBandit",
-    "TechTinker",
-    "CodeCrusader",
-    "PixelPirate",
-    "ElectronEagle",
-    "CircuitSavant",
-    "GameGladiator",
-    "ByteBlitz",
-    "CyberSavvy",
-    "CodeCraftsman",
-    "PixelPro",
-    "LogicLoreMaster",
-    "ElectronEmperor",
-    "CircuitChamp",
-    "GameGizmo",
-    "ByteBrawler",
-    "TechTrailblazer",
-    "CodeCaptain",
-    "PixelPathfinder",
-    "LogicLionheart",
-    "ElectronExpedition",
-    "NanoNoble",
-    "CircuitCommander",
-    "GameGlobetrotter",
-    "CyberSherpa",
-    "CyberCraftsman",
-    "CodeConnoisseur",
-  ];
+const USERS = [
+  "TechTinkerer",
+  "CodeCrafter",
+  "PixelPilot",
+  "LogicLion",
+  "ElectronEager",
+  "NanoNomad",
+  "CircuitCraze",
+  "GameGlider",
+  "ByteBlast",
+  "CyberCraft",
+  "DigitalDynamo",
+  "CodeCreator",
+  "PixelPulse",
+  "LogicLuminary",
+  "ElectronEcho",
+  "NanoNinja",
+  "CircuitChampion",
+  "GameGazer",
+  "ByteBuddy",
+  "TechTornado",
+  "CodeChampion",
+  "PixelProdigy",
+  "LogicLabyrinth",
+  "ElectronExplorer",
+  "NanoNavigator",
+  "CircuitCatalyst",
+  "GameGuru",
+  "ByteBlaze",
+  "DigitalDreamer",
+  "CodeCommander",
+  "PixelPioneer",
+  "LogicLegend",
+  "ElectronElite",
+  "NanoNerd",
+  "CircuitCaptain",
+  "GameGenius",
+  "ByteBolt",
+  "CyberCipher",
+  "CodeConqueror",
+  "PixelPaladin",
+  "LogicLore",
+  "ElectronEnigma",
+  "CircuitConnoisseur",
+  "GameGuardian",
+  "ByteBandit",
+  "TechTinker",
+  "CodeCrusader",
+  "PixelPirate",
+  "ElectronEagle",
+  "CircuitSavant",
+  "GameGladiator",
+  "ByteBlitz",
+  "CyberSavvy",
+  "CodeCraftsman",
+  "PixelPro",
+  "LogicLoreMaster",
+  "ElectronEmperor",
+  "CircuitChamp",
+  "GameGizmo",
+  "ByteBrawler",
+  "TechTrailblazer",
+  "CodeCaptain",
+  "PixelPathfinder",
+  "LogicLionheart",
+  "ElectronExpedition",
+  "NanoNoble",
+  "CircuitCommander",
+  "GameGlobetrotter",
+  "CyberSherpa",
+  "CyberCraftsman",
+  "CodeConnoisseur",
+];
 
+async function insertUsers(badgeHubData: BadgeHubData) {
   const domains = [
     "bitlair.nl",
     "hackalot.nl",
@@ -192,17 +225,17 @@ async function insertUsers(badgeHubData: BadgeHubData) {
     "gmail.com",
     "hotmail.com",
   ];
-
-  for (let id = 0; id < users.length; id++) {
-    const isAdmin = random(10) == 0;
-    const name = users[id]!;
-    const email = `${name.toLowerCase()}@${domains[random(domains.length)]}`;
+  for (let id = 0; id < USERS.length; id++) {
+    const name = USERS[id]!;
+    const semiRandomNumber = await stringToNumberDigest(name);
+    const isAdmin = semiRandomNumber % 10 == 0;
+    const email = `${name.toLowerCase()}@${domains[semiRandomNumber % domains.length]}`;
     const password = "****";
-    const isPublic = random(10) != 0;
-    const showProjects = random(10) != 0;
-    const createDate = -random(600);
+    const isPublic = semiRandomNumber % 10 != 0;
+    const showProjects = semiRandomNumber % 10 != 0;
+    const createDate = -(semiRandomNumber % 600);
     const createdAt = date(createDate);
-    const updatedAt = date(createDate + random(100));
+    const updatedAt = date(createDate + (semiRandomNumber % 100));
 
     console.log(`insert into users ${name}`);
     const toInsert: DBInsertUser & DBDatedData = {
@@ -220,7 +253,7 @@ async function insertUsers(badgeHubData: BadgeHubData) {
     await badgeHubData.insertUser(toInsert);
   }
 
-  return users.length;
+  return USERS.length;
 }
 
 async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
@@ -316,13 +349,14 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
 
   for (let id = 0; id < projectSlugs.length; id++) {
     const name = projectSlugs[id]!;
+    const semiRandomNumber = await stringToNumberDigest(name);
     const slug = name.toLowerCase();
-    const description = getDescription(name);
-    const userId = random(userCount);
-    const categoryId = random(CATEGORIES_COUNT);
-    const createDate = -random(600);
+    const description = await getDescription(name);
+    const userId = semiRandomNumber % userCount;
+    const categoryId = semiRandomNumber % CATEGORIES_COUNT;
+    const createDate = -(semiRandomNumber % 600);
     const createdAt = date(createDate);
-    const updatedAt = date(createDate + random(100));
+    const updatedAt = date(createDate + (semiRandomNumber % 100));
 
     console.log(`insert into projects ${name} (${description})`);
 
@@ -337,6 +371,9 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
     const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
       name,
       description,
+      interpreter: "python",
+      author: USERS[userId]!,
+      license_file: "MIT",
       category: CATEGORY_NAMES[categoryId],
       created_at: createdAt,
       updated_at: updatedAt,
@@ -366,12 +403,13 @@ async function badgeProjectCrossTable(
   client: pg.PoolClient,
   projectSlugs: string[]
 ) {
-  const badgeSlugs = ["mch2022", "troopers23", "why2025"] as const; // Hardcoded! Update by hand
   for (let index = 0; index < projectSlugs.length; index++) {
-    const badgeSlug = badgeSlugs[random(3)]!;
+    let projectSlug = projectSlugs[index]!;
+    const semiRandomNumber = await stringToNumberDigest(projectSlug);
+    const badgeSlug = badgeSlugs[semiRandomNumber % 3]!;
     let insertObject1: DBInsertProjectStatusOnBadge = {
       badge_slug: badgeSlug,
-      project_slug: projectSlugs[index]!,
+      project_slug: projectSlug,
     };
     const insert1 = getInsertKeysAndValuesSql(insertObject1);
     await client.query(
@@ -380,11 +418,11 @@ async function badgeProjectCrossTable(
     );
 
     // Some project support two badges
-    const badgeId2 = badgeSlugs[random(3)]!;
-    if (badgeId2 != badgeSlug && random(3) == 1) {
+    const badgeId2 = badgeSlugs[semiRandomNumber % 3]!;
+    if (badgeId2 != badgeSlug && semiRandomNumber % 3 == 1) {
       const insertObject2: DBInsertProjectStatusOnBadge = {
         badge_slug: badgeId2,
-        project_slug: projectSlugs[index]!,
+        project_slug: projectSlug,
       };
       const insert2 = getInsertKeysAndValuesSql(insertObject2);
       await client.query(
