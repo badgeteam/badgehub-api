@@ -17,6 +17,7 @@ import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge"
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import * as fs from "node:fs";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -341,13 +342,21 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
       updated_at: updatedAt,
     };
 
-    const fileContent = Buffer.from(JSON.stringify(appMetadata));
+    const metadataJsonContent = Buffer.from(JSON.stringify(appMetadata));
     await badgeHubData.writeDraftFile(inserted.slug, "metadata.json", {
       mimetype: "application/json",
-      size: fileContent.length,
-      fileContent: fileContent,
+      size: metadataJsonContent.length,
+      fileContent: metadataJsonContent,
     });
-    // TODO also write __init__.py file that does print("Hello, World! from the {appname} app") for the interpreter
+
+    const initPyContent = Buffer.from(
+      `print('Hello world from the ${name} app')`
+    );
+    await badgeHubData.writeDraftFile(inserted.slug, "__init__.py", {
+      mimetype: "text/x-python-script",
+      size: initPyContent.length,
+      fileContent: initPyContent,
+    });
   }
 
   return projectSlugs.map((slug) => slug.toLowerCase());
