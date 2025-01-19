@@ -3,13 +3,17 @@ import {
   Project,
   ProjectCore,
   ProjectSlug,
+  ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
 import { User } from "@domain/readModels/app/User";
 import { Version } from "@domain/readModels/app/Version";
 import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBProject as DBProject } from "@db/models/app/DBProject";
+import {
+  DBInsertProject,
+  DBProject as DBProject,
+} from "@db/models/app/DBProject";
 import sql, { join, raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
@@ -38,8 +42,34 @@ import {
 } from "@db/sqlHelpers/objectToSQL";
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
+import path from "node:path";
+import { calcSha256, stringToNumberDigest } from "@util/digests";
+import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
+import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import { DBDatedData } from "@db/models/app/DBDatedData";
 
-function getUpdateAssigmentsSql(changes: Object) {
+const ONE_KILO = 1000;
+
+async function getLockId(
+  projectSlug: ProjectSlug,
+  dir: string,
+  name: string,
+  ext: string
+) {
+  const inputString = [projectSlug, dir, name, ext].join(",");
+  return await stringToNumberDigest(inputString);
+}
+
+function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
+  const { version_id, ...dbFileWithoutVersionId } = dbFile;
+  return {
+    ...convertDatedData(dbFileWithoutVersionId),
+    full_path: path.join(dbFile.dir, dbFile.name + dbFile.ext),
+    size_formatted: (dbFile.size_of_content / ONE_KILO).toFixed(2) + "KB",
+  };
+}
+
+function getUpdateAssignmentsSql(changes: Object) {
   const changeEntries = getEntriesWithDefinedValues(changes);
   if (!changeEntries.length) {
     return;
@@ -51,11 +81,70 @@ function getUpdateAssigmentsSql(changes: Object) {
   );
 }
 
+const parsePath = (pathParts: string[]) => {
+  const fullPath = path.join(...pathParts);
+  const parsedPath = path.parse(fullPath);
+  const { dir, name, ext } = parsedPath;
+  return { dir, name, ext };
+};
+
+const selectDraftVersionId = (projectSlug: string) => {
+  return sql`(select version_id from projects where slug = ${projectSlug})`;
+};
+
 export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   private readonly pool: Pool;
 
   constructor() {
     this.pool = getPool();
+  }
+
+  async prepareWriteDraftFile(
+    projectSlug: ProjectSlug,
+    pathParts: string[],
+    uploadedFile: UploadedFile,
+    dates?: DBDatedData
+  ): Promise<void> {
+    const { dir, name, ext } = parsePath(pathParts);
+    const mimetype = uploadedFile.mimetype;
+    const size = uploadedFile.size;
+    const lockId = await getLockId(projectSlug, dir, name, ext);
+    const sha256 = await calcSha256(uploadedFile);
+    await this.pool.query(sql`select pg_advisory_lock(${lockId})`);
+
+    await this.pool.query(
+      sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
+                values (${selectDraftVersionId(projectSlug)}, ${dir}, ${name}, ${ext}, ${mimetype},
+                        ${size}, ${sha256}) on conflict (version_id, dir, name, ext) do
+            update set mimetype=${mimetype}, size_of_content=${size}, sha256=${sha256}, updated_at=now()`
+    );
+    if (dates) {
+      await this.pool.query(sql`update files
+                    set created_at = ${dates.created_at},
+                        updated_at = ${dates.updated_at},
+                        deleted_at = ${dates.deleted_at}
+                    where version_id = ${selectDraftVersionId(projectSlug)}
+                    and dir = ${dir}
+                    and name = ${name}
+                    and ext = ${ext}`);
+    }
+  }
+
+  async confirmWriteDraftFile(
+    projectSlug: ProjectSlug,
+    pathParts: string[]
+  ): Promise<void> {
+    const { dir, name, ext } = parsePath(pathParts);
+    const lockId = await getLockId(projectSlug, dir, name, ext);
+    await this.pool.query(
+      sql`update files
+                set confirmed_in_sync_on_disk = true
+                where version_id = ${selectDraftVersionId(projectSlug)}
+                  and dir = ${dir}
+                  and name = ${name}
+                  and ext = ${ext}`
+    );
+    await this.pool.query(sql`select pg_advisory_unlock(${lockId})`);
   }
 
   async insertUser(user: DBInsertUser): Promise<void> {
@@ -72,16 +161,18 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     return dbCategoryNames.map((dbCategory) => dbCategory);
   }
 
-  async insertProject(project: DBProject): Promise<void> {
+  async insertProject(project: DBInsertProject): Promise<void> {
     const { keys, values } = getInsertKeysAndValuesSql(project);
-    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name)
-                                         values (${project.slug})`;
+    const createdAt = project.created_at ?? raw("now()");
+    const updatedAt = project.updated_at ?? raw("now()");
+    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name,created_at,updated_at)
+                                                                        values (${project.slug}, ${createdAt}, ${updatedAt})`;
 
     await this.pool.query(sql`
-            with inserted_app_metadata as (${insertAppMetadataSql} returning id), inserted_version as (
+            with inserted_app_metadata as (${insertAppMetadataSql} returning id,created_at,updated_at), inserted_version as (
             insert
-            into versions (project_slug, app_metadata_json_id)
-            values (${project.slug}, (select id from inserted_app_metadata)) returning id)
+            into versions (project_slug, app_metadata_json_id, created_at, updated_at)
+            values (${project.slug}, (select id from inserted_app_metadata), (select created_at from inserted_app_metadata), (select updated_at from inserted_app_metadata)) returning id)
             insert
             into projects (${keys}, version_id)
             values (${values}, (select id from inserted_version))`);
@@ -91,7 +182,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: ProjectSlug,
     changes: Partial<Omit<ProjectCore, "slug">>
   ): Promise<void> {
-    const setters = getUpdateAssigmentsSql(changes);
+    const setters = getUpdateAssignmentsSql(changes);
     if (!setters) {
       return;
     }
@@ -115,10 +206,13 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async getProject(projectSlug: string): Promise<Project> {
-    return (await this.getProjects({ projectSlug }))[0]!;
+    const projectWithoutVersion = (await this.getProjects({ projectSlug }))[0]!;
+    return {
+      ...projectWithoutVersion,
+      version: await this.getDraftVersion(projectSlug),
+    };
   }
 
-  // TODO use and test
   async getDraftVersion(projectSlug: string): Promise<Version> {
     const selectVersionIdForProject = sql`select version_id from projects p where p.slug = ${projectSlug}`;
     const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
@@ -148,7 +242,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),
-      files: [], // TODO
+      files: await this._getDraftFiles(dbVersion.id), // TODO
       app_metadata: stripDatedData(appMetadataWithoutId), // TODO
       published_at: timestampTZToDate(dbVersion.published_at),
     };
@@ -182,7 +276,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     pageLength?: number;
     badgeSlug?: Badge["slug"];
     categorySlug?: Category["slug"];
-  }): Promise<Project[]> {
+  }): Promise<ProjectWithoutVersion[]> {
     let query = getBaseSelectProjectQuery();
     if (filter?.badgeSlug) {
       query = sql`${query}
@@ -236,17 +330,24 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: string,
     appMetadataChanges: Partial<DBInsertAppMetadataJSON>
   ): Promise<void> {
-    const setters = getUpdateAssigmentsSql(appMetadataChanges);
+    const setters = getUpdateAssignmentsSql(appMetadataChanges);
     if (!setters) {
       return;
     }
 
     const appMetadataUpdateQuery = sql`update app_metadata_jsons
-                                         set ${setters}
-                                         where id = (select app_metadata_json_id
-                                                     from versions v
-                                                     where v.id =
-                                                           (select projects.version_id from projects where slug = ${projectSlug}))`;
+                                           set ${setters}
+                                           where id = (select app_metadata_json_id
+                                                       from versions v
+                                                       where v.id =
+                                                             (select projects.version_id from projects where slug = ${projectSlug}))`;
     await this.pool.query(appMetadataUpdateQuery);
+  }
+
+  async _getDraftFiles(id: DBVersion["id"]) {
+    const dbFiles = await this.pool.query(
+      sql`select * from files where version_id = ${id}`
+    );
+    return dbFiles.rows.map(dbFileToFileMetadata);
   }
 }
