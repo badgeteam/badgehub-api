@@ -45,10 +45,9 @@ const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 export default function setupPopulateDBApi(app: Express) {
   const router = Router();
+  // router.use(express.static("public"));
 
-  app.use(express.json());
-  app.use(express.static("public"));
-  app.use("/", router);
+  app.use("/populate", router);
 
   const pool = new pg.Pool({
     host: POSTGRES_HOST,
@@ -57,8 +56,7 @@ export default function setupPopulateDBApi(app: Express) {
     password: POSTGRES_PASSWORD,
     port: POSTGRES_PORT,
   });
-
-  router.post("/populate", async (req, res) => {
+  router.post("", async (req, res) => {
     const client: pg.PoolClient = await pool.connect();
     const badgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
