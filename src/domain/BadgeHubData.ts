@@ -163,15 +163,14 @@ export class BadgeHubData {
     dates?: DBDatedData
   ) {
     const sha256 = await calcSha256(uploadedFile);
-    await this.badgeHubMetadata.prepareWriteDraftFile(
+    await this.badgeHubFiles.writeFile(uploadedFile, sha256, dates);
+    await this.badgeHubMetadata.writeDraftFileMetadata(
       slug,
       pathParts,
       uploadedFile,
       sha256,
       dates
     );
-    await this.badgeHubFiles.writeFile(uploadedFile, sha256, dates);
-    await this.badgeHubMetadata.confirmWriteDraftFile(slug, pathParts);
   }
 
   getFileMetadata(

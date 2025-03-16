@@ -52,17 +52,12 @@ export interface BadgeHubMetadata {
     appMetadataChanges: Partial<DBInsertAppMetadataJSON>
   ): Promise<void>;
 
-  prepareWriteDraftFile(
+  writeDraftFileMetadata(
     projectSlug: ProjectSlug,
     pathParts: string[],
     uploadedFile: UploadedFile,
     sha256: string,
     dates?: DBDatedData
-  ): Promise<void>;
-
-  confirmWriteDraftFile(
-    projectSlug: ProjectSlug,
-    pathParts: string[]
   ): Promise<void>;
 
   getFileMetadata(
