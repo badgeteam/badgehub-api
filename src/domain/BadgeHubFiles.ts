@@ -8,7 +8,7 @@ export interface BadgeHubFiles {
   writeFile(
     uploadedFile: UploadedFile,
     sha256: string,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void>;
 
   getFileContents(sha256: string): Promise<Uint8Array | undefined>;

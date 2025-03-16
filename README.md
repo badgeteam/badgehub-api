@@ -29,20 +29,23 @@ These sql commands should take care of changing the database schema as well as m
 npm run db-migrate:up
 ```
 
-#### Create updated mock.sql
+#### Create updated mockup-data.sql
 
-For the mock data, we always want up to date tables, so after you have done the migration on the mock data, you should re-export the database.
-You can do this with the pg_dump command in the postgres container:
-
-```bash
-npm run overwrite-mockup-data
-```
-
-Note: you might have to change the db container name in the script. Eg on mac with podman its with underscores instead of dashes which makes the command:
+For the mock data, we always want up to date tables.
+So if you change something to the database, you should also update the population script and then you should run it from the server:
 
 ```bash
-docker exec -it badgehub-api_db_1 /usr/bin/pg_dump --username badgehub --schema badgehub badgehub > mockup-data.sql
+curl -X POST http://localhost:8081/dev/populate
 ```
+
+This script will also automatically update the `mockup-data.sql` file after completion.
+Note that this `mockup-data.sql` is not completely deterministic, so it might not be the same every time you run it.
+The actual table data should be deterministic though, it's just that the dumping can decide to dump the data in a slightly different order.
+To keep the determinism of the actual table content after repopulation, we do the following:
+
+- we reset the primary key sequence for each table after clearing the table at the start of the script
+- we use mock dates for the `created_at` and `updated_at` fields, so that the dates don't change when running the population script twice.
+-
 
 #### Run the down migration to test it.
 

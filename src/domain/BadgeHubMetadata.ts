@@ -49,7 +49,8 @@ export interface BadgeHubMetadata {
 
   updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    mockDates?: DBDatedData
   ): Promise<void>;
 
   writeDraftFileMetadata(
