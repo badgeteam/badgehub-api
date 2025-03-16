@@ -16,8 +16,8 @@ import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 import { stringToNumberDigest } from "@util/digests";
+import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -59,7 +59,7 @@ export default function setupPopulateDBApi(app: Express) {
     const client: pg.PoolClient = await pool.connect();
     const badgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
-      new NodeFSBadgeHubFiles()
+      new PostgreSQLBadgeHubFiles()
     );
     try {
       await cleanDatabases(client);

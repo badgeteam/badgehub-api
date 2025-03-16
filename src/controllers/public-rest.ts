@@ -6,7 +6,7 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
-import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -26,7 +26,7 @@ export class PublicRestController {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
-      new NodeFSBadgeHubFiles()
+      new PostgreSQLBadgeHubFiles()
     )
   ) {}
 
@@ -87,9 +87,20 @@ export class PublicRestController {
   @Get("/apps/{slug}/files/latest/{filePath}")
   public async getLatestPublishedFile(
     @Path() slug: string,
-    @Path() filePath: string
+    @Path() filePath: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, "latest", filePath);
+    const file = await this.badgeHubData.getFileContents(
+      slug,
+      "latest",
+      filePath
+    );
+    if (!file) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
+    return file;
   }
 
   /**
@@ -99,9 +110,20 @@ export class PublicRestController {
   public async getFileForVersion(
     @Path() slug: string,
     @Path() revision: number,
-    @Path() filePath: string
+    @Path() filePath: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, revision, filePath);
+    const file = await this.badgeHubData.getFileContents(
+      slug,
+      revision,
+      filePath
+    );
+    if (!file) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
+    return file;
   }
 
   /**

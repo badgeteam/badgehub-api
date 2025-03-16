@@ -40,7 +40,7 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
 import path from "node:path";
-import { calcSha256, stringToNumberDigest } from "@util/digests";
+import { stringToNumberDigest } from "@util/digests";
 import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { DBDatedData } from "@db/models/app/DBDatedData";
@@ -85,33 +85,59 @@ const parsePath = (pathParts: string[]) => {
   return { dir, name, ext };
 };
 
-const selectDraftVersionId = (projectSlug: string) => {
+const getDraftVersionIdQuery = (projectSlug: string) => {
   return sql`(select version_id from projects where slug = ${projectSlug})`;
 };
 
-export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
-  private readonly pool: Pool;
+const getVersionQuery = (
+  versionRevision: number | "draft" | "latest",
+  projectSlug: string
+) => {
+  if (versionRevision !== "draft") {
+    // TODO file management: here we should get the file path from the DB in order to fetch the correct file
+    throw new Error("getFileMetadata for non-draft version not implemented.");
+  }
+  return getDraftVersionIdQuery(projectSlug);
+};
 
-  constructor() {
-    this.pool = getPool();
+export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
+  private readonly pool: Pool = getPool();
+
+  constructor() {}
+
+  async getFileMetadata(
+    projectSlug: string,
+    versionRevision: number | "draft" | "latest",
+    filePath: string
+  ): Promise<FileMetadata> {
+    const versionQuery = getVersionQuery(versionRevision, projectSlug);
+    const { dir, name, ext } = parsePath(filePath.split("/"));
+    const {
+      rows: [metadata],
+    } = await this.pool.query<DBFileMetadata>(sql`select * from files
+                    where version_id = ${versionQuery}
+                    and dir = ${dir}
+                    and name = ${name}
+                    and ext = ${ext}`);
+    return dbFileToFileMetadata(metadata!);
   }
 
   async prepareWriteDraftFile(
     projectSlug: ProjectSlug,
     pathParts: string[],
     uploadedFile: UploadedFile,
+    sha256: string,
     dates?: DBDatedData
   ): Promise<void> {
     const { dir, name, ext } = parsePath(pathParts);
     const mimetype = uploadedFile.mimetype;
     const size = uploadedFile.size;
     const lockId = await getLockId(projectSlug, dir, name, ext);
-    const sha256 = await calcSha256(uploadedFile);
     await this.pool.query(sql`select pg_advisory_lock(${lockId})`);
 
     await this.pool.query(
       sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
-                values (${selectDraftVersionId(projectSlug)}, ${dir}, ${name}, ${ext}, ${mimetype},
+                values (${getVersionQuery("draft", projectSlug)}, ${dir}, ${name}, ${ext}, ${mimetype},
                         ${size}, ${sha256}) on conflict (version_id, dir, name, ext) do
             update set mimetype=${mimetype}, size_of_content=${size}, sha256=${sha256}, updated_at=now()`
     );
@@ -120,7 +146,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                     set created_at = ${dates.created_at},
                         updated_at = ${dates.updated_at},
                         deleted_at = ${dates.deleted_at}
-                    where version_id = ${selectDraftVersionId(projectSlug)}
+                    where version_id = ${getVersionQuery("draft", projectSlug)}
                     and dir = ${dir}
                     and name = ${name}
                     and ext = ${ext}`);
@@ -136,7 +162,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     await this.pool.query(
       sql`update files
           set confirmed_in_sync_with_file_data = true
-                where version_id = ${selectDraftVersionId(projectSlug)}
+                where version_id = ${getVersionQuery("draft", projectSlug)}
                   and dir = ${dir}
                   and name = ${name}
                   and ext = ${ext}`
@@ -152,10 +178,10 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async getCategories(): Promise<Category[]> {
-    const dbCategoryNames: OmitDatedData<DBCategory>[] = await this.pool
-      .query(sql`select name, slug from categories`)
+    const dbCategoryNames = await this.pool
+      .query<OmitDatedData<DBCategory>>(sql`select name, slug from categories`)
       .then((res) => res.rows);
-    return dbCategoryNames.map((dbCategory) => dbCategory);
+    return dbCategoryNames;
   }
 
   async insertProject(project: DBInsertProject): Promise<void> {
@@ -239,7 +265,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),
-      files: await this._getDraftFiles(dbVersion.id), // TODO
+      files: await this._getFilesMetadataForVersion(dbVersion.id), // TODO
       app_metadata: stripDatedData(appMetadataWithoutId), // TODO
       published_at: timestampTZToDate(dbVersion.published_at),
     };
@@ -341,7 +367,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     await this.pool.query(appMetadataUpdateQuery);
   }
 
-  async _getDraftFiles(id: DBVersion["id"]) {
+  async _getFilesMetadataForVersion(id: DBVersion["id"]) {
     const dbFiles = await this.pool.query(
       sql`select * from files where version_id = ${id}`
     );

@@ -5,8 +5,10 @@ import {
   Patch,
   Path,
   Post,
+  Res,
   Route,
   Tags,
+  type TsoaResponse,
   UploadedFile,
 } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
@@ -15,8 +17,8 @@ import type { ProjectSlug } from "@domain/readModels/app/Project";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
-import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 import { Readable } from "node:stream";
+import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -34,7 +36,7 @@ export class PrivateRestController {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
-      new NodeFSBadgeHubFiles()
+      new PostgreSQLBadgeHubFiles()
     )
   ) {}
 
@@ -115,13 +117,19 @@ export class PrivateRestController {
   @Get("/apps/{slug}/draft/files/{filePath}")
   public async getDraftFile(
     @Path() slug: string,
-    @Path() filePath: string
+    @Path() filePath: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Readable> {
     const fileContents = await this.badgeHubData.getFileContents(
       slug,
       "draft",
       filePath
     );
+    if (!fileContents) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
     return Readable.from(fileContents);
   }
 
