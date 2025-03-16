@@ -1,5 +1,5 @@
 import pg from "pg";
-import express, { Express, Router } from "express";
+import { Express, Router } from "express";
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
@@ -45,7 +45,6 @@ const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 export default function setupPopulateDBApi(app: Express) {
   const router = Router();
-  // router.use(express.static("public"));
 
   app.use("/populate", router);
 
