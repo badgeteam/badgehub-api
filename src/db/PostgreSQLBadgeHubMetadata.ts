@@ -122,7 +122,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     return dbFileToFileMetadata(metadata!);
   }
 
-  async prepareWriteDraftFile(
+  async writeDraftFileMetadata(
     projectSlug: ProjectSlug,
     pathParts: string[],
     uploadedFile: UploadedFile,
@@ -132,8 +132,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { dir, name, ext } = parsePath(pathParts);
     const mimetype = uploadedFile.mimetype;
     const size = uploadedFile.size;
-    const lockId = await getLockId(projectSlug, dir, name, ext);
-    await this.pool.query(sql`select pg_advisory_lock(${lockId})`);
 
     await this.pool.query(
       sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
@@ -151,23 +149,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                     and name = ${name}
                     and ext = ${ext}`);
     }
-  }
-
-  async confirmWriteDraftFile(
-    projectSlug: ProjectSlug,
-    pathParts: string[]
-  ): Promise<void> {
-    const { dir, name, ext } = parsePath(pathParts);
-    const lockId = await getLockId(projectSlug, dir, name, ext);
-    await this.pool.query(
-      sql`update files
-          set confirmed_in_sync_with_file_data = true
-                where version_id = ${getVersionQuery("draft", projectSlug)}
-                  and dir = ${dir}
-                  and name = ${name}
-                  and ext = ${ext}`
-    );
-    await this.pool.query(sql`select pg_advisory_unlock(${lockId})`);
   }
 
   async insertUser(user: DBInsertUser): Promise<void> {
