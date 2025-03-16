@@ -7,6 +7,8 @@ import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PrivateRestController } from "./../controllers/private-rest.js";
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { DevRestController } from "./../controllers/dev-rest.js";
 import type {
   Request as ExRequest,
   Response as ExResponse,
@@ -1339,6 +1341,46 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "publishVersion",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.post(
+    "/api/dev/populate",
+    ...fetchMiddlewares<RequestHandler>(DevRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      DevRestController.prototype.rePopulateDB
+    ),
+
+    async function DevRestController_rePopulateDB(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {};
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new DevRestController();
+
+        await templateService.apiHandler({
+          methodName: "rePopulateDB",
           controller,
           response,
           next,

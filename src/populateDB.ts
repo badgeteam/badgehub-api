@@ -1,5 +1,4 @@
 import pg from "pg";
-import { Express, Router } from "express";
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
@@ -43,11 +42,8 @@ const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Upda
 const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
-export default function setupPopulateDBApi(app: Express) {
-  const router = Router();
 
-  app.use("/populate", router);
-
+export async function repopulateDB() {
   const pool = new pg.Pool({
     host: POSTGRES_HOST,
     database: POSTGRES_DB,
@@ -55,24 +51,22 @@ export default function setupPopulateDBApi(app: Express) {
     password: POSTGRES_PASSWORD,
     port: POSTGRES_PORT,
   });
-  router.post("", async (req, res) => {
-    const client: pg.PoolClient = await pool.connect();
-    const badgeHubData = new BadgeHubData(
-      new PostgreSQLBadgeHubMetadata(),
-      new PostgreSQLBadgeHubFiles()
-    );
-    try {
-      await cleanDatabases(client);
-      await populateDatabases(client, badgeHubData);
-      return res.status(200).send("Population done.");
-    } finally {
-      client.release();
-    }
-  });
+  const client: pg.PoolClient = await pool.connect();
+  const badgeHubData = new BadgeHubData(
+    new PostgreSQLBadgeHubMetadata(),
+    new PostgreSQLBadgeHubFiles()
+  );
+  try {
+    await cleanDatabases(client);
+    await populateDatabases(client, badgeHubData);
+  } finally {
+    client.release();
+  }
 }
 
 async function cleanDatabases(client: pg.PoolClient) {
   await client.query(sql`delete from files`);
+  await client.query(sql`delete from file_data`);
   await client.query(sql`alter sequence files_id_seq restart`);
   await client.query(sql`delete from users`);
   await client.query(sql`alter sequence users_id_seq restart`);

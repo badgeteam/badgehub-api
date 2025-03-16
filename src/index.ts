@@ -3,7 +3,6 @@ import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT, NODE_ENV } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
-import setupPopulateDBApi from "./setupPopulateDBApi";
 import express from "express";
 import openapi from "./openapi";
 import { pinoHttp } from "pino-http";
@@ -19,10 +18,6 @@ async function startServer() {
   openapi(app);
 
   disableWriteWhenNotDev(app);
-
-  if (NODE_ENV === "development") {
-    setupPopulateDBApi(app);
-  }
 
   RegisterRoutes(app);
 

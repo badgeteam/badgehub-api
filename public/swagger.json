@@ -1519,6 +1519,27 @@
           }
         ]
       }
+    },
+    "/api/dev/populate": {
+      "post": {
+        "operationId": "RePopulateDB",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Repopulate the database with test data",
+        "tags": ["dev"],
+        "security": [],
+        "parameters": []
+      }
     }
   },
   "servers": [
