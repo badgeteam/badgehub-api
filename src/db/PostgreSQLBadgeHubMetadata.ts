@@ -135,7 +135,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const lockId = await getLockId(projectSlug, dir, name, ext);
     await this.pool.query(
       sql`update files
-                set confirmed_in_sync_on_disk = true
+          set confirmed_in_sync_with_file_data = true
                 where version_id = ${selectDraftVersionId(projectSlug)}
                   and dir = ${dir}
                   and name = ${name}
