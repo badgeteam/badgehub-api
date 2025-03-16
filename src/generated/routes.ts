@@ -328,12 +328,6 @@ const models: TsoaRoute.Models = {
     type: { ref: "Exclude_Project.version_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Uint8Array: {
-    dataType: "refObject",
-    properties: {},
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
     dataType: "refAlias",
     type: {
@@ -472,6 +466,12 @@ const models: TsoaRoute.Models = {
         ref: "Record_string._source-string--destination-string_-Array_",
       },
     },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Uint8Array: {
+    dataType: "refObject",
+    properties: {},
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -684,6 +684,13 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -737,6 +744,13 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -1169,6 +1183,13 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 

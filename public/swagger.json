@@ -106,7 +106,7 @@
           "sha256": {
             "type": "string"
           },
-          "confirmed_in_sync_on_disk": {
+          "confirmed_in_sync_with_file_data": {
             "type": "boolean"
           },
           "size_formatted": {
@@ -126,7 +126,7 @@
           "mimetype",
           "size_of_content",
           "sha256",
-          "confirmed_in_sync_on_disk",
+          "confirmed_in_sync_with_file_data",
           "size_formatted",
           "full_path"
         ],
@@ -578,12 +578,6 @@
       "ProjectWithoutVersion": {
         "$ref": "#/components/schemas/Exclude_Project.version_"
       },
-      "Uint8Array": {
-        "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
-        "properties": {},
-        "type": "object",
-        "additionalProperties": false
-      },
       "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
         "properties": {
           "email": {
@@ -826,6 +820,12 @@
             "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
           }
         },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Uint8Array": {
+        "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
+        "properties": {},
         "type": "object",
         "additionalProperties": false
       }
@@ -1087,7 +1087,24 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
                 }
               }
             }
@@ -1125,7 +1142,24 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
                 }
               }
             }
@@ -1172,7 +1206,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }
@@ -1202,7 +1237,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }
@@ -1323,6 +1359,22 @@
                 "schema": {
                   "type": "string",
                   "format": "byte"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
                 }
               }
             }
