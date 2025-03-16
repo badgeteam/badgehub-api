@@ -6,7 +6,7 @@ import {
   POSTGRES_PORT,
   POSTGRES_USER,
 } from "@config";
-import sql from "sql-template-tag";
+import sql, { raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { DBInsertProject } from "@db/models/app/DBProject";
@@ -17,6 +17,7 @@ import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { stringToNumberDigest } from "@util/digests";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import { exec } from "node:child_process";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -62,27 +63,42 @@ export async function repopulateDB() {
   } finally {
     client.release();
   }
+
+  const shouldRunWithPodman = await new Promise((resolve) =>
+    exec("podman --version", (error) => {
+      if (error) {
+        resolve(false); // assuming podman is not in use
+      } else {
+        // podman is in use, so we'll use that
+        resolve(true);
+      }
+    })
+  );
+  if (shouldRunWithPodman) {
+    exec("npm run podman:overwrite-mockup-data");
+  } else {
+    exec("npm run docker:overwrite-mockup-data");
+  }
 }
 
 async function cleanDatabases(client: pg.PoolClient) {
-  await client.query(sql`delete from files`);
-  await client.query(sql`delete from file_data`);
-  await client.query(sql`alter sequence files_id_seq restart`);
-  await client.query(sql`delete from users`);
-  await client.query(sql`alter sequence users_id_seq restart`);
-  await client.query(sql`delete from projects`);
-  await client.query(sql`delete from app_metadata_jsons`);
-  await client.query(sql`alter sequence app_metadata_jsons_id_seq restart`);
-  await client.query(sql`delete from versions`);
-  await client.query(sql`alter sequence versions_id_seq restart`);
-  await client.query(sql`delete from versioned_dependencies`);
-  await client.query(sql`alter sequence versioned_dependencies_id_seq restart`);
-  await client.query(sql`delete from project_statuses_on_badges`);
-  await client.query(
-    sql`alter sequence project_statuses_on_badges_id_seq restart`
-  );
-  await client.query(sql`delete from categories`);
-  await client.query(sql`delete from badges`);
+  const tablesWithIdSeq = [
+    "files",
+    "file_data",
+    "users",
+    "app_metadata_jsons",
+    "versions",
+    "versioned_dependencies",
+    "project_statuses_on_badges",
+  ];
+  for (const table of tablesWithIdSeq) {
+    await client.query(sql`delete from ${raw(table)}`);
+    await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
+  }
+  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
+  for (const table of tablesWithoutIdSeq) {
+    await client.query(sql`delete from ${raw(table)}`);
+  }
 }
 
 const TWENTY_FOUR_HOURS_IN_MS = 24 * 60 * 60 * 1000;

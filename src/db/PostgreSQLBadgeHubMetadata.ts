@@ -127,7 +127,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     pathParts: string[],
     uploadedFile: UploadedFile,
     sha256: string,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void> {
     const { dir, name, ext } = parsePath(pathParts);
     const mimetype = uploadedFile.mimetype;
@@ -139,11 +139,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                         ${size}, ${sha256}) on conflict (version_id, dir, name, ext) do
             update set mimetype=${mimetype}, size_of_content=${size}, sha256=${sha256}, updated_at=now()`
     );
-    if (dates) {
+    if (mockDates) {
       await this.pool.query(sql`update files
-                    set created_at = ${dates.created_at},
-                        updated_at = ${dates.updated_at},
-                        deleted_at = ${dates.deleted_at}
+                    set created_at = ${mockDates.created_at},
+                        updated_at = ${mockDates.updated_at},
+                        deleted_at = ${mockDates.deleted_at}
                     where version_id = ${getVersionQuery("draft", projectSlug)}
                     and dir = ${dir}
                     and name = ${name}

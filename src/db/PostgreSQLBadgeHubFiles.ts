@@ -58,7 +58,7 @@ export class PostgreSQLBadgeHubFiles implements BadgeHubFiles {
                 values (${sha256}, ${uploadedFile.fileContent})`
     );
     if (dates) {
-      await this.pool.query(sql`update files
+      await this.pool.query(sql`update file_data
                     set created_at = ${dates.created_at},
                         updated_at = ${dates.updated_at},
                         deleted_at = ${dates.deleted_at}

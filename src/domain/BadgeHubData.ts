@@ -114,19 +114,23 @@ export class BadgeHubData {
     projectSlug: ProjectSlug,
     filePath: string,
     uploadedFile: UploadedFile,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void> {
     await this._writeDraftFile(
       projectSlug,
       filePath.split("/"),
       uploadedFile,
-      dates
+      mockDates
     );
     if (filePath === "metadata.json") {
       const appMetadata: DBAppMetadataJSON = JSON.parse(
         new TextDecoder().decode(uploadedFile.fileContent)
       );
-      await this.badgeHubMetadata.updateDraftMetadata(projectSlug, appMetadata);
+      await this.badgeHubMetadata.updateDraftMetadata(
+        projectSlug,
+        appMetadata,
+        mockDates
+      );
     }
   }
 
@@ -138,7 +142,8 @@ export class BadgeHubData {
 
   async updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    mockDates?: DBDatedData
   ): Promise<void> {
     await this.badgeHubMetadata.updateDraftMetadata(slug, appMetadataChanges);
     const updatedDraftVersion =
@@ -147,29 +152,34 @@ export class BadgeHubData {
     const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
     );
-    await this._writeDraftFile(slug, ["metadata.json"], {
-      mimetype: "application/json",
-      fileContent,
-      directory: undefined,
-      fileName: undefined,
-      size: fileContent.length,
-    });
+    await this._writeDraftFile(
+      slug,
+      ["metadata.json"],
+      {
+        mimetype: "application/json",
+        fileContent,
+        directory: undefined,
+        fileName: undefined,
+        size: fileContent.length,
+      },
+      mockDates
+    );
   }
 
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
     uploadedFile: UploadedFile,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ) {
     const sha256 = await calcSha256(uploadedFile);
-    await this.badgeHubFiles.writeFile(uploadedFile, sha256, dates);
+    await this.badgeHubFiles.writeFile(uploadedFile, sha256, mockDates);
     await this.badgeHubMetadata.writeDraftFileMetadata(
       slug,
       pathParts,
       uploadedFile,
       sha256,
-      dates
+      mockDates
     );
   }
 
