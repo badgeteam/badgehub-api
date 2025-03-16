@@ -7,6 +7,7 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import { Readable } from "node:stream";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -89,7 +90,7 @@ export class PublicRestController {
     @Path() slug: string,
     @Path() filePath: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
-  ): Promise<Uint8Array> {
+  ): Promise<Readable> {
     const file = await this.badgeHubData.getFileContents(
       slug,
       "latest",
@@ -100,7 +101,7 @@ export class PublicRestController {
         reason: `No app with slug '${slug}' found`,
       });
     }
-    return file;
+    return Readable.from(file);
   }
 
   /**
@@ -112,7 +113,7 @@ export class PublicRestController {
     @Path() revision: number,
     @Path() filePath: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
-  ): Promise<Uint8Array> {
+  ): Promise<Readable> {
     const file = await this.badgeHubData.getFileContents(
       slug,
       revision,
@@ -123,17 +124,17 @@ export class PublicRestController {
         reason: `No app with slug '${slug}' found`,
       });
     }
-    return file;
+    return Readable.from(file);
   }
 
   /**
    * get the latest published version of the app in zip format
    */
   @Get("/apps/{slug}/zip/latest")
-  public async getLatestPublishedZip(
-    @Path() slug: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, "latest");
+  public async getLatestPublishedZip(@Path() slug: string): Promise<Readable> {
+    return Readable.from(
+      await this.badgeHubData.getVersionZipContents(slug, "latest")
+    );
   }
 
   /**
@@ -143,7 +144,9 @@ export class PublicRestController {
   public async getZipForVersion(
     @Path() slug: string,
     @Path() revision: number
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, revision);
+  ): Promise<Readable> {
+    return Readable.from(
+      await this.badgeHubData.getVersionZipContents(slug, revision)
+    );
   }
 }
