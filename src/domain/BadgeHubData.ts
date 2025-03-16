@@ -18,6 +18,7 @@ import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
 import { DBDatedData } from "@db/models/app/DBDatedData";
+import { calcSha256 } from "@util/digests";
 
 export class BadgeHubData {
   constructor(
@@ -66,20 +67,22 @@ export class BadgeHubData {
     return this.badgeHubMetadata.updateUser(updatedUser);
   }
 
-  getFileContents(
+  async getFileContents(
     projectSlug: Project["slug"],
     versionRevision: number | "draft" | "latest",
     filePath: FileMetadata["name"]
-  ): Promise<Uint8Array> {
-    if (versionRevision !== "draft" && versionRevision !== "latest") {
-      // TODO file management: here we should get the file path from the DB in order to fetch the correct file
-      throw new Error("Method not implemented.");
-    }
-    return this.badgeHubFiles.getFileContents(
+  ): Promise<Uint8Array | undefined> {
+    const fileMetadata = await this.getFileMetadata(
       projectSlug,
       versionRevision,
-      filePath.split("/")
+      filePath
     );
+    const sha256 = fileMetadata.sha256;
+    return this.getFileContentsBySha256(sha256);
+  }
+
+  getFileContentsBySha256(sha265: string): Promise<Uint8Array | undefined> {
+    return this.badgeHubFiles.getFileContents(sha265);
   }
 
   getVersionZipContents(
@@ -111,19 +114,23 @@ export class BadgeHubData {
     projectSlug: ProjectSlug,
     filePath: string,
     uploadedFile: UploadedFile,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void> {
     await this._writeDraftFile(
       projectSlug,
       filePath.split("/"),
       uploadedFile,
-      dates
+      mockDates
     );
     if (filePath === "metadata.json") {
       const appMetadata: DBAppMetadataJSON = JSON.parse(
         new TextDecoder().decode(uploadedFile.fileContent)
       );
-      await this.badgeHubMetadata.updateDraftMetadata(projectSlug, appMetadata);
+      await this.badgeHubMetadata.updateDraftMetadata(
+        projectSlug,
+        appMetadata,
+        mockDates
+      );
     }
   }
 
@@ -135,7 +142,8 @@ export class BadgeHubData {
 
   async updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    mockDates?: DBDatedData
   ): Promise<void> {
     await this.badgeHubMetadata.updateDraftMetadata(slug, appMetadataChanges);
     const updatedDraftVersion =
@@ -144,28 +152,46 @@ export class BadgeHubData {
     const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
     );
-    await this._writeDraftFile(slug, ["metadata.json"], {
-      mimetype: "application/json",
-      fileContent,
-      directory: undefined,
-      fileName: undefined,
-      size: fileContent.length,
-    });
+    await this._writeDraftFile(
+      slug,
+      ["metadata.json"],
+      {
+        mimetype: "application/json",
+        fileContent,
+        directory: undefined,
+        fileName: undefined,
+        size: fileContent.length,
+      },
+      mockDates
+    );
   }
 
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
     uploadedFile: UploadedFile,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ) {
-    await this.badgeHubMetadata.prepareWriteDraftFile(
+    const sha256 = await calcSha256(uploadedFile);
+    await this.badgeHubFiles.writeFile(uploadedFile, sha256, mockDates);
+    await this.badgeHubMetadata.writeDraftFileMetadata(
       slug,
       pathParts,
       uploadedFile,
-      dates
+      sha256,
+      mockDates
     );
-    await this.badgeHubFiles.writeFile(slug, "draft", pathParts, uploadedFile);
-    await this.badgeHubMetadata.confirmWriteDraftFile(slug, pathParts);
+  }
+
+  getFileMetadata(
+    projectSlug: string,
+    versionRevision: number | "draft" | "latest",
+    filePath: string
+  ): Promise<FileMetadata> {
+    return this.badgeHubMetadata.getFileMetadata(
+      projectSlug,
+      versionRevision,
+      filePath
+    );
   }
 }

@@ -7,6 +7,8 @@ import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PrivateRestController } from "./../controllers/private-rest.js";
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { DevRestController } from "./../controllers/dev-rest.js";
 import type {
   Request as ExRequest,
   Response as ExResponse,
@@ -92,7 +94,7 @@ const models: TsoaRoute.Models = {
       mimetype: { dataType: "string", required: true },
       size_of_content: { dataType: "double", required: true },
       sha256: { dataType: "string", required: true },
-      confirmed_in_sync_on_disk: { dataType: "boolean", required: true },
+      confirmed_in_sync_with_file_data: { dataType: "boolean", required: true },
       size_formatted: { dataType: "string", required: true },
       full_path: { dataType: "string", required: true },
     },
@@ -328,12 +330,6 @@ const models: TsoaRoute.Models = {
     type: { ref: "Exclude_Project.version_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Uint8Array: {
-    dataType: "refObject",
-    properties: {},
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
     dataType: "refAlias",
     type: {
@@ -472,6 +468,12 @@ const models: TsoaRoute.Models = {
         ref: "Record_string._source-string--destination-string_-Array_",
       },
     },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Uint8Array: {
+    dataType: "refObject",
+    properties: {},
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -684,6 +686,13 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -737,6 +746,13 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -1170,6 +1186,13 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1318,6 +1341,46 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "publishVersion",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.post(
+    "/api/dev/populate",
+    ...fetchMiddlewares<RequestHandler>(DevRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      DevRestController.prototype.rePopulateDB
+    ),
+
+    async function DevRestController_rePopulateDB(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {};
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new DevRestController();
+
+        await templateService.apiHandler({
+          methodName: "rePopulateDB",
           controller,
           response,
           next,
