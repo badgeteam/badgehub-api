@@ -8,4 +8,3 @@ export const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD;
 export const POSTGRES_HOST = process.env.POSTGRES_HOST;
 export const POSTGRES_PORT = 5432;
 export const NODE_ENV = process.env.NODE_ENV;
-export const DATA_DIR = process.env.DATA_DIR || "data";

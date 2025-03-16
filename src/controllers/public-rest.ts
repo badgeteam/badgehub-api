@@ -6,7 +6,8 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
-import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
+import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import { Readable } from "node:stream";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -26,7 +27,7 @@ export class PublicRestController {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
-      new NodeFSBadgeHubFiles()
+      new PostgreSQLBadgeHubFiles()
     )
   ) {}
 
@@ -87,9 +88,20 @@ export class PublicRestController {
   @Get("/apps/{slug}/files/latest/{filePath}")
   public async getLatestPublishedFile(
     @Path() slug: string,
-    @Path() filePath: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, "latest", filePath);
+    @Path() filePath: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Readable> {
+    const file = await this.badgeHubData.getFileContents(
+      slug,
+      "latest",
+      filePath
+    );
+    if (!file) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
+    return Readable.from(file);
   }
 
   /**
@@ -99,19 +111,30 @@ export class PublicRestController {
   public async getFileForVersion(
     @Path() slug: string,
     @Path() revision: number,
-    @Path() filePath: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getFileContents(slug, revision, filePath);
+    @Path() filePath: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Readable> {
+    const file = await this.badgeHubData.getFileContents(
+      slug,
+      revision,
+      filePath
+    );
+    if (!file) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
+    return Readable.from(file);
   }
 
   /**
    * get the latest published version of the app in zip format
    */
   @Get("/apps/{slug}/zip/latest")
-  public async getLatestPublishedZip(
-    @Path() slug: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, "latest");
+  public async getLatestPublishedZip(@Path() slug: string): Promise<Readable> {
+    return Readable.from(
+      await this.badgeHubData.getVersionZipContents(slug, "latest")
+    );
   }
 
   /**
@@ -121,7 +144,9 @@ export class PublicRestController {
   public async getZipForVersion(
     @Path() slug: string,
     @Path() revision: number
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, revision);
+  ): Promise<Readable> {
+    return Readable.from(
+      await this.badgeHubData.getVersionZipContents(slug, revision)
+    );
   }
 }

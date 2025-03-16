@@ -1,9 +1,13 @@
-import { describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test } from "vitest";
 import request from "supertest";
-import app from "../app";
 import { RegisterRoutes } from "@generated/routes";
+import express from "express";
 
 describe("API Routes", () => {
+  let app: ReturnType<typeof express>;
+  beforeEach(() => {
+    app = express();
+  });
   test("GET /vitest", async () => {
     RegisterRoutes(app);
     const res = await request(app).get("/api/v3/devices");

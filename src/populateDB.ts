@@ -1,5 +1,4 @@
 import pg from "pg";
-import { Express, Router } from "express";
 import {
   POSTGRES_DB,
   POSTGRES_HOST,
@@ -7,7 +6,7 @@ import {
   POSTGRES_PORT,
   POSTGRES_USER,
 } from "@config";
-import sql from "sql-template-tag";
+import sql, { raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { DBInsertProject } from "@db/models/app/DBProject";
@@ -16,8 +15,9 @@ import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { NodeFSBadgeHubFiles } from "@fs/NodeFSBadgeHubFiles";
 import { stringToNumberDigest } from "@util/digests";
+import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import { exec } from "node:child_process";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -43,11 +43,8 @@ const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Upda
 const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
-export default function setupPopulateDBApi(app: Express) {
-  const router = Router();
 
-  app.use("/populate", router);
-
+export async function repopulateDB() {
   const pool = new pg.Pool({
     host: POSTGRES_HOST,
     database: POSTGRES_DB,
@@ -55,40 +52,53 @@ export default function setupPopulateDBApi(app: Express) {
     password: POSTGRES_PASSWORD,
     port: POSTGRES_PORT,
   });
-  router.post("", async (req, res) => {
-    const client: pg.PoolClient = await pool.connect();
-    const badgeHubData = new BadgeHubData(
-      new PostgreSQLBadgeHubMetadata(),
-      new NodeFSBadgeHubFiles()
-    );
-    try {
-      await cleanDatabases(client);
-      await populateDatabases(client, badgeHubData);
-      return res.status(200).send("Population done.");
-    } finally {
-      client.release();
-    }
-  });
+  const client: pg.PoolClient = await pool.connect();
+  const badgeHubData = new BadgeHubData(
+    new PostgreSQLBadgeHubMetadata(),
+    new PostgreSQLBadgeHubFiles()
+  );
+  try {
+    await cleanDatabases(client);
+    await populateDatabases(client, badgeHubData);
+  } finally {
+    client.release();
+  }
+
+  const shouldRunWithPodman = await new Promise((resolve) =>
+    exec("podman --version", (error) => {
+      if (error) {
+        resolve(false); // assuming podman is not in use
+      } else {
+        // podman is in use, so we'll use that
+        resolve(true);
+      }
+    })
+  );
+  if (shouldRunWithPodman) {
+    exec("npm run podman:overwrite-mockup-data");
+  } else {
+    exec("npm run docker:overwrite-mockup-data");
+  }
 }
 
 async function cleanDatabases(client: pg.PoolClient) {
-  await client.query(sql`delete from files`);
-  await client.query(sql`alter sequence files_id_seq restart`);
-  await client.query(sql`delete from users`);
-  await client.query(sql`alter sequence users_id_seq restart`);
-  await client.query(sql`delete from projects`);
-  await client.query(sql`delete from app_metadata_jsons`);
-  await client.query(sql`alter sequence app_metadata_jsons_id_seq restart`);
-  await client.query(sql`delete from versions`);
-  await client.query(sql`alter sequence versions_id_seq restart`);
-  await client.query(sql`delete from versioned_dependencies`);
-  await client.query(sql`alter sequence versioned_dependencies_id_seq restart`);
-  await client.query(sql`delete from project_statuses_on_badges`);
-  await client.query(
-    sql`alter sequence project_statuses_on_badges_id_seq restart`
-  );
-  await client.query(sql`delete from categories`);
-  await client.query(sql`delete from badges`);
+  const tablesWithIdSeq = [
+    "files",
+    "file_data",
+    "users",
+    "app_metadata_jsons",
+    "versions",
+    "versioned_dependencies",
+    "project_statuses_on_badges",
+  ];
+  for (const table of tablesWithIdSeq) {
+    await client.query(sql`delete from ${raw(table)}`);
+    await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
+  }
+  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
+  for (const table of tablesWithoutIdSeq) {
+    await client.query(sql`delete from ${raw(table)}`);
+  }
 }
 
 const TWENTY_FOUR_HOURS_IN_MS = 24 * 60 * 60 * 1000;
