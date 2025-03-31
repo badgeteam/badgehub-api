@@ -1,112 +1,51 @@
-import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "../error";
+import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "@error";
 import { isAdmin, isContributor, UserRole } from "./role";
-import { JWTPayload, jwtVerify } from "jose";
+import { createRemoteJWKSet, JWTPayload, jwtVerify } from "jose";
 import { NextFunction, Request, Response } from "express";
 
-// Middleware for routes that require a contributor role
-const ensureAdminRouteMiddleware = async (
+export const testJwtMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  await handleMiddlewareCheck(req, res, ensureAdmin);
+  const authorized = await isAuthorized(req.headers.authorization);
 
+  console.log("authorized", authorized);
   next();
 };
 
-// Middleware for routes that require a contributor role
-const ensureContributorRouteMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  handleMiddlewareCheck(req, res, ensureContributor).then(next);
-};
-
-const handleMiddlewareCheck = async (
-  req: Request,
-  res: Response,
-  assertion: Function
-) => {
-  try {
-    const token = await decodeJwtFromRequest(req);
-    const roles: UserRole[] = rolesFromJwtPayload(token);
-
-    console.debug("Roles:", roles);
-    if (roles.length == 0) {
-      throw NotAuthorizedError();
-    }
-    assertion(roles);
-  } catch (e: any) {
-    handleError(e, res);
+async function isAuthorized(authorization?: string) {
+  if (!authorization) {
+    return false;
   }
-};
+  const [bearer, jwt] = authorization.split(" ");
 
-const handleError = (err: Error, res: Response) => {
-  if (err.name == ErrorType.NotAuthenticated) {
-    res.status(403).json({ error: err.message });
-  }
-  if (err.name == ErrorType.NotAuthorized) {
-    res.status(401).json({ error: err.message });
+  if (bearer != "Bearer" || !jwt || jwt == "undefined") {
+    return false;
   }
 
-  console.debug(err);
-  res.status(500).json({ error: "Internal server error" });
-};
+  console.log("bearer", bearer);
+  console.log("token", jwt);
 
-const ensureAdmin = (roles: UserRole[]) => {
-  roles.forEach((role) => {
-    if (!isAdmin(role)) {
-      throw NotAuthorizedError();
-    }
+  // See     https://github.com/panva/jose/blob/main/docs/jwt/verify/functions/jwtVerify.md
+  // Key     https://lemur-11.cloud-iam.com/auth/realms/badgehub
+  // https://lemur-11.cloud-iam.com/auth/realms/badgehub/protocol/openid-connect/certs
+  // Account https://lemur-11.cloud-iam.com/auth/realms/badgehub/account/
+
+  // Create a JWKS client using Keycloak's JWKS endpoint
+  const JWKS = createRemoteJWKSet(
+    new URL(
+      "https://lemur-11.cloud-iam.com/auth/realms/badgehub/protocol/openid-connect/certs"
+    )
+  );
+
+  // Verify the JWT
+  const { payload, protectedHeader } = await jwtVerify(jwt, JWKS, {
+    issuer: "https://lemur-11.cloud-iam.com/auth/realms/badgehub",
   });
-};
 
-const ensureContributor = (roles: UserRole[]) => {
-  roles.forEach((role) => {
-    if (!isContributor(role)) {
-      throw NotAuthorizedError();
-    }
-  });
-};
+  console.log("payload", payload);
+  console.log("protectedHeader", protectedHeader);
 
-const rolesFromJwtPayload = (payload: JWTPayload): UserRole[] => {
-  const aud = payload.aud;
-
-  if (!aud) {
-    return [];
-  }
-
-  if (typeof aud == "string") {
-    return [UserRole[aud as UserRole]];
-  }
-
-  return (aud as string[]).map((i: string) => {
-    return UserRole[i as UserRole];
-  });
-};
-
-const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    throw NotAuthenticatedError("missing API token");
-  }
-
-  try {
-    const result = await jwtVerify(
-      token,
-      new TextEncoder().encode(process.env.JWT_SIGNING_KEY)
-    );
-    const payload = result.payload;
-    if (!Object.hasOwn(payload, "aud")) {
-      throw NotAuthenticatedError("API token invalid");
-    }
-
-    return payload;
-  } catch (err) {
-    throw NotAuthenticatedError("API token invalid");
-  }
-};
-
-export { ensureAdminRouteMiddleware, ensureContributorRouteMiddleware };
+  return true;
+}
