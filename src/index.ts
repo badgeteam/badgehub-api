@@ -16,11 +16,11 @@ async function startServer() {
 
   app.use(express.json());
   app.use(express.static("public"));
-  app.use(pino);
+  // app.use(pino);
 
   // TODO: correct middleware
   // https://expressjs.com/en/guide/using-middleware.html
-  app.use(testJwtMiddleware);
+  // app.use(testJwtMiddleware);
 
   openapi(app);
 
