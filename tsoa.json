@@ -14,6 +14,14 @@
   },
   "routes": {
     "routesDir": "src/generated",
-    "esm": true
+    "esm": true,
+    "authenticationModule": "./authentication.ts"
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
   }
 }

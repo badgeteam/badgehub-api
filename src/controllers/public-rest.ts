@@ -1,4 +1,5 @@
 import type { TsoaResponse } from "tsoa";
+import { Security } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
@@ -30,6 +31,17 @@ export class PublicRestController {
       new PostgreSQLBadgeHubFiles()
     )
   ) {}
+
+  /**
+   * Only for testing auth endpoint
+   */
+  @Security("bearer")
+  @Get("/private")
+  public async getPrivate() {
+    return new Promise<string>((resolve, reject) => {
+      resolve("You're visiting a private api");
+    });
+  }
 
   /**
    * Get list of devices (badges)
