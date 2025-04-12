@@ -1,6 +1,4 @@
 import { UploadedFile } from "@domain/UploadedFile";
-import { ProjectSlug } from "@domain/readModels/app/Project";
-import { VersionRevision } from "@domain/readModels/app/Version";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 
 export interface BadgeHubFiles {

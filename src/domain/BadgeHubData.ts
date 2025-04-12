@@ -171,6 +171,18 @@ export class BadgeHubData {
     );
   }
 
+  getFileMetadata(
+    projectSlug: string,
+    versionRevision: number | "draft" | "latest",
+    filePath: string
+  ): Promise<FileMetadata> {
+    return this.badgeHubMetadata.getFileMetadata(
+      projectSlug,
+      versionRevision,
+      filePath
+    );
+  }
+
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
@@ -185,18 +197,6 @@ export class BadgeHubData {
       uploadedFile,
       sha256,
       mockDates
-    );
-  }
-
-  getFileMetadata(
-    projectSlug: string,
-    versionRevision: number | "draft" | "latest",
-    filePath: string
-  ): Promise<FileMetadata> {
-    return this.badgeHubMetadata.getFileMetadata(
-      projectSlug,
-      versionRevision,
-      filePath
     );
   }
 }
