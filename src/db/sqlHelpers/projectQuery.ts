@@ -29,7 +29,7 @@ export function getBaseSelectProjectQuery() {
                            u.name as author_name
                     from projects p
                              left join users u on p.user_id = u.id and u.deleted_at is null
-                             left join versions v on p.version_id = v.id
+                             left join versions v on p.latest_version_id = v.id
                              left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
                              left join categories c on m.category = c.name and c.deleted_at is null
     `;

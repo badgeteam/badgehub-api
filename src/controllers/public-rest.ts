@@ -66,17 +66,18 @@ export class PublicRestController {
   }
 
   /**
-   * Get app details
+   * Get app details with latest version
    */
+  @Get("/apps/{slug}/latest")
   @Get("/apps/{slug}")
   public async getApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getProject(slug);
+    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
     if (!details) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No public app with slug '${slug}' found`,
       });
     }
     return details;

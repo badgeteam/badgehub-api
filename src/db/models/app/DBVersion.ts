@@ -3,9 +3,11 @@ import { DBDatedData } from "./DBDatedData";
 import { TimestampTZ } from "@db/DBTypes";
 import { ProjectSlugRelation } from "@db/models/app/DBProject";
 
-export interface VersionRelation {
-  version_id: DBVersion["id"];
-}
+export type VersionRelation<K extends string> = Record<
+  K,
+  DBInsertVersion["id"]
+>;
+
 export interface DBInsertVersion
   extends AppMetadataJSONRelation,
     ProjectSlugRelation {
