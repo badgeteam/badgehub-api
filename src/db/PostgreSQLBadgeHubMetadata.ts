@@ -40,22 +40,11 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
 import path from "node:path";
-import { stringToNumberDigest } from "@util/digests";
 import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 
 const ONE_KILO = 1000;
-
-async function getLockId(
-  projectSlug: ProjectSlug,
-  dir: string,
-  name: string,
-  ext: string
-) {
-  const inputString = [projectSlug, dir, name, ext].join(",");
-  return await stringToNumberDigest(inputString);
-}
 
 function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
