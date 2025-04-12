@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
+import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
@@ -28,7 +28,17 @@ export interface BadgeHubMetadata {
 
   publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
 
-  getProject(projectSlug: ProjectSlug): Promise<Project>;
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project>;
+
+  getPublishedProject(
+    projectSlug: ProjectSlug,
+    versionRevision: VersionRevision
+  ): Promise<undefined | Project>;
+
+  getPublishedVersion(
+    projectSlug: ProjectSlug,
+    versionRevision: Exclude<VersionRevision, "draft">
+  ): Promise<undefined | Version>;
 
   getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
 

@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
+import { Version, VersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -47,16 +47,21 @@ export class BadgeHubData {
 
   // Publishes the current state of the app as a version
   publishVersion(projectSlug: ProjectSlug): Promise<void> {
-    // TODO file management: move files from draft to latest and save all files by hash as well
     return this.badgeHubMetadata.publishVersion(projectSlug);
   }
 
-  getProject(projectSlug: ProjectSlug): Promise<Project> {
-    return this.badgeHubMetadata.getProject(projectSlug);
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project> {
+    return this.badgeHubMetadata.getDraftProject(projectSlug);
   }
 
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version> {
-    return this.badgeHubMetadata.getDraftVersion(projectSlug);
+  getPublishedProject(
+    projectSlug: ProjectSlug,
+    versionRevision: Exclude<VersionRevision, "draft">
+  ): Promise<undefined | Project> {
+    return this.badgeHubMetadata.getPublishedProject(
+      projectSlug,
+      versionRevision
+    );
   }
 
   getUser(userId: User["id"]): Promise<User> {

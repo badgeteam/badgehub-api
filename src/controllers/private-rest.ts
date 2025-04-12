@@ -13,7 +13,7 @@ import {
 } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import type { ProjectSlug } from "@domain/readModels/app/Project";
+import { Project, type ProjectSlug } from "@domain/readModels/app/Project";
 import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
 import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
@@ -134,6 +134,23 @@ export class PrivateRestController {
   }
 
   /**
+   * Get app details with latest version
+   */
+  @Get("/apps/{slug}/draft")
+  public async getApp(
+    @Path() slug: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Project | undefined> {
+    const details = await this.badgeHubData.getDraftProject(slug);
+    if (!details) {
+      return notFoundResponse(404, {
+        reason: `No app with slug '${slug}' found`,
+      });
+    }
+    return details;
+  }
+
+  /**
    * get the latest draft version of the app in zip format
    */
   @Get("/apps/{slug}/draft/zip")
@@ -155,7 +172,7 @@ export class PrivateRestController {
   }
 
   /**
-   * Publish the latest draft version
+   * Publish the current draft as a new version
    */
   @Patch("/apps/{slug}/publish")
   public async publishVersion(@Path() slug: string): Promise<void> {

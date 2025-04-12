@@ -3,7 +3,9 @@ import { VersionRelation } from "@db/models/app/DBVersion";
 import { DBFileData } from "@db/models/app/DBFileData";
 
 // table name: files
-export interface DBFileMetadata extends VersionRelation, DBDatedData {
+export interface DBFileMetadata
+  extends VersionRelation<"version_id">,
+    DBDatedData {
   id: number;
   extension: string;
   dir: string; // directory of the file in the project, empty string if top level
