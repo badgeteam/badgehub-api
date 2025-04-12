@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { Version, VersionRevision } from "@domain/readModels/app/Version";
+import { PublishedVersionRevision } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -56,7 +56,7 @@ export class BadgeHubData {
 
   getPublishedProject(
     projectSlug: ProjectSlug,
-    versionRevision: Exclude<VersionRevision, "draft">
+    versionRevision: PublishedVersionRevision
   ): Promise<undefined | Project> {
     return this.badgeHubMetadata.getPublishedProject(
       projectSlug,

@@ -8,6 +8,7 @@ import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
+import { type PublishedVersionRevision } from "@domain/readModels/app/Version";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -66,21 +67,32 @@ export class PublicRestController {
   }
 
   /**
-   * Get app details with latest version
+   * Get app details for a specific published revision of the app
    */
-  @Get("/apps/{slug}/latest")
-  @Get("/apps/{slug}")
-  public async getApp(
+  @Get("/apps/{slug}/{versionRevision}")
+  public async getAppVersion(
     @Path() slug: string,
+    @Path() versionRevision: PublishedVersionRevision,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
+    const details = await this.badgeHubData.getPublishedProject(
+      slug,
+      versionRevision
+    );
     if (!details) {
       return notFoundResponse(404, {
         reason: `No public app with slug '${slug}' found`,
       });
     }
     return details;
+  }
+
+  @Get("/apps/{slug}")
+  public async getApp(
+    @Path() slug: string,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Project | undefined> {
+    return this.getAppVersion(slug, "latest", notFoundResponse);
   }
 
   /**

@@ -3,7 +3,8 @@ import { DatedData } from "./DatedData";
 import { FileMetadata } from "./FileMetadata";
 import { Project } from "@domain/readModels/app/Project";
 
-export type VersionRevision = number | "draft" | "latest";
+export type PublishedVersionRevision = number | "latest";
+export type VersionRevision = PublishedVersionRevision | "draft";
 
 export interface VersionRelation {
   version: Version;
