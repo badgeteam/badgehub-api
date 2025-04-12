@@ -48,6 +48,7 @@ import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { propIsDefined, WithRequiredProp } from "@util/assertions";
+import { TimestampTZ } from "@db/DBTypes";
 
 const ONE_KILO = 1000;
 
@@ -205,29 +206,38 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                   where slug = ${projectSlug}`);
   }
 
-  async publishVersion(projectSlug: string): Promise<void> {
-    await this.pool.query(
-      // We change the current draft version to a published version and then we copy all the file metadata entries for that version
-      sql`update versions v
-          set published_at=now()
-          where (v.id = (${getVersionQuery(projectSlug, "draft")}));
-      with new_draft_version as (
-          insert into versions (project_slug, app_metadata_json_id, revision)
-              select (project_slug, app_metadata_json_id, revision + 1)
-              from versions
-              where id = ${getVersionQuery(projectSlug, "draft")}
-              returning id)
-      update projects
-      set latest_version_id = (${getVersionQuery(projectSlug, "draft")}),
-          draft_version_id  = (select id from new_draft_version)
-      where slug = ${projectSlug};
-      insert into files
-      (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
-      select ((${getVersionQuery(projectSlug, "draft")}),
-              dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
-      from files
-      where version_id = (${getVersionQuery(projectSlug, "latest")})`
-    );
+  async publishVersion(
+    projectSlug: string,
+    mockDate?: TimestampTZ
+  ): Promise<void> {
+    await this.pool.query(sql`
+        with published_version as (
+            update versions v
+                set published_at = (${mockDate ?? raw("now()")})
+                where v.id = (${getVersionQuery(projectSlug, "draft")})
+                returning id),
+             new_draft_version as (
+                 insert into versions (project_slug, app_metadata_json_id, revision)
+                     select project_slug, app_metadata_json_id, revision + 1
+                     from versions
+                     where id = ${getVersionQuery(projectSlug, "draft")}
+                     returning id),
+             updated_projects as (
+                 update projects
+                     set latest_version_id = (select id from published_version),
+                         draft_version_id = (select id from new_draft_version)
+                     where slug = ${projectSlug}
+                     returning 1),
+             copied_files as (
+                 insert into files
+                     (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
+                     select (select id from published_version),
+                             dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at
+                     from files
+                     where version_id = (select id from new_draft_version)
+                     returning 1)
+        select 1;
+    `);
   }
 
   async getPublishedProject(

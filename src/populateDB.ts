@@ -92,12 +92,14 @@ async function cleanDatabases(client: pg.PoolClient) {
     "project_statuses_on_badges",
   ];
   for (const table of tablesWithIdSeq) {
-    await client.query(sql`delete from ${raw(table)}`);
+    await client.query(sql`delete
+                               from ${raw(table)}`);
     await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
   }
   const tablesWithoutIdSeq = ["projects", "categories", "badges"];
   for (const table of tablesWithoutIdSeq) {
-    await client.query(sql`delete from ${raw(table)}`);
+    await client.query(sql`delete
+                               from ${raw(table)}`);
   }
 }
 
@@ -139,6 +141,28 @@ async function insertCategories(client: pg.PoolClient) {
   }
 }
 
+const get1DayAfterSemiRandomUpdatedAt = async (projectSlug: string) => {
+  return new Date(
+    Date.parse((await getSemiRandomDates(projectSlug)).updated_at) +
+      TWENTY_FOUR_HOURS_IN_MS
+  ).toISOString();
+};
+
+async function publishSomeProjects(
+  badgeHubData: BadgeHubData,
+  projectSlugs: string[]
+) {
+  const halfOfProjectSlugs = projectSlugs.slice(0, projectSlugs.length >> 1);
+  await Promise.all(
+    halfOfProjectSlugs.map(async (projectSlug) =>
+      badgeHubData.publishVersion(
+        projectSlug,
+        await get1DayAfterSemiRandomUpdatedAt(projectSlug)
+      )
+    )
+  );
+}
+
 async function populateDatabases(
   client: pg.PoolClient,
   badgeHubData: BadgeHubData
@@ -147,6 +171,7 @@ async function populateDatabases(
   await insertCategories(client);
   const userCount = await insertUsers(badgeHubData);
   const projectSlugs = await insertProjects(badgeHubData, userCount);
+  await publishSomeProjects(badgeHubData, projectSlugs);
   await badgeProjectCrossTable(client, projectSlugs);
 }
 
@@ -261,7 +286,6 @@ async function insertUsers(badgeHubData: BadgeHubData) {
     const showProjects = semiRandomNumber % 10 != 0;
     const { created_at, updated_at } = await getSemiRandomDates(name);
 
-    console.log(`insert into users ${name}`);
     const toInsert: DBInsertUser & DBDatedData = {
       id,
       admin: isAdmin,
@@ -371,16 +395,13 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
     "SecureSphere",
   ];
 
-  for (let id = 0; id < projectSlugs.length; id++) {
-    const name = projectSlugs[id]!;
-    const semiRandomNumber = await stringToNumberDigest(name);
-    const slug = name.toLowerCase();
-    const description = await getDescription(name);
+  for (const projectSlug of projectSlugs) {
+    const semiRandomNumber = await stringToNumberDigest(projectSlug);
+    const slug = projectSlug.toLowerCase();
+    const description = await getDescription(projectSlug);
     const userId = semiRandomNumber % userCount;
     const categoryId = semiRandomNumber % CATEGORIES_COUNT;
-    const { created_at, updated_at } = await getSemiRandomDates(name);
-
-    console.log(`insert into projects ${name} (${description})`);
+    const { created_at, updated_at } = await getSemiRandomDates(projectSlug);
 
     const inserted: DBInsertProject & DBDatedData = {
       slug,
@@ -391,7 +412,7 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
 
     await badgeHubData.insertProject(inserted);
     const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
-      name,
+      name: projectSlug,
       description,
       interpreter: "python",
       author: USERS[userId]!,
@@ -414,7 +435,7 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
     );
 
     const initPyContent = Buffer.from(
-      `print('Hello world from the ${name} app')`
+      `print('Hello world from the ${projectSlug} app')`
     );
     await badgeHubData.writeDraftFile(
       inserted.slug,
@@ -446,7 +467,7 @@ async function badgeProjectCrossTable(
     };
     const insert1 = getInsertKeysAndValuesSql(insertObject1);
     await client.query(
-      sql`insert into badgehub.project_statuses_on_badges (${insert1.keys})
+      sql`insert into project_statuses_on_badges (${insert1.keys})
                 values (${insert1.values})`
     );
 
