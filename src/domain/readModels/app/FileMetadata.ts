@@ -8,7 +8,6 @@ export interface FileMetadata extends DatedData {
   mimetype: string; // Can include info about the programming language
   size_of_content: number;
   sha256: string; // lowercase hex sha256 digest, allows verifying whether content is the same as other file.
-  confirmed_in_sync_with_file_data: boolean;
   // Computed
   size_formatted: string; // Human readable size_of_content
   full_path: string; // full path of file with filename and extensions (dir+'/'+name+'.'+ext)

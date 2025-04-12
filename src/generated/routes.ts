@@ -94,7 +94,6 @@ const models: TsoaRoute.Models = {
       mimetype: { dataType: "string", required: true },
       size_of_content: { dataType: "double", required: true },
       sha256: { dataType: "string", required: true },
-      confirmed_in_sync_with_file_data: { dataType: "boolean", required: true },
       size_formatted: { dataType: "string", required: true },
       full_path: { dataType: "string", required: true },
     },
