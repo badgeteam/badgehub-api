@@ -17,6 +17,7 @@ import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { UploadedFile } from "@domain/UploadedFile";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import { TimestampTZ } from "@db/DBTypes";
 
 export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;
@@ -30,7 +31,10 @@ export interface BadgeHubMetadata {
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
 
-  publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
+  publishVersion(
+    projectSlug: ProjectSlug,
+    mockDate?: TimestampTZ
+  ): Promise<void>; // Publishes the current state of the app as a version
 
   getDraftProject(projectSlug: ProjectSlug): Promise<Project>;
 

@@ -19,6 +19,7 @@ import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { calcSha256 } from "@util/digests";
+import { TimestampTZ } from "@db/DBTypes";
 
 export class BadgeHubData {
   constructor(
@@ -46,8 +47,11 @@ export class BadgeHubData {
   }
 
   // Publishes the current state of the app as a version
-  publishVersion(projectSlug: ProjectSlug): Promise<void> {
-    return this.badgeHubMetadata.publishVersion(projectSlug);
+  publishVersion(
+    projectSlug: ProjectSlug,
+    mockDate?: TimestampTZ
+  ): Promise<void> {
+    return this.badgeHubMetadata.publishVersion(projectSlug, mockDate);
   }
 
   getDraftProject(projectSlug: ProjectSlug): Promise<Project> {
