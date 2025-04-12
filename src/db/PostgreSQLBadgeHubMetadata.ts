@@ -130,12 +130,12 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
     await this.pool.query(
       sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
-          values (${getVersionQuery(projectSlug, "draft")}, ${dir}, ${name}, ${ext}, ${mimetype},
-                  ${size}, ${sha256})
-          on conflict (version_id, dir, name, ext) do update set mimetype=${mimetype},
-                                                                 size_of_content=${size},
-                                                                 sha256=${sha256},
-                                                                 updated_at=now()`
+                values (${getVersionQuery(projectSlug, "draft")}, ${dir}, ${name}, ${ext}, ${mimetype},
+                        ${size}, ${sha256})
+                on conflict (version_id, dir, name, ext) do update set mimetype=${mimetype},
+                                                                       size_of_content=${size},
+                                                                       sha256=${sha256},
+                                                                       updated_at=now()`
     );
     if (mockDates) {
       await this.pool.query(sql`update files
@@ -160,7 +160,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const dbCategoryNames = await this.pool
       .query<OmitDatedData<DBCategory>>(
         sql`select name, slug
-                                                  from categories`
+                    from categories`
       )
       .then((res) => res.rows);
     return dbCategoryNames;
@@ -206,22 +206,27 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async publishVersion(projectSlug: string): Promise<void> {
-    // TODO file management: copy all files somehow to new draft version
     await this.pool.query(
-      sql`
-                update versions v
-                set published_at=now()
-                where (v.id = (${getVersionQuery(projectSlug, "draft")}));
-                with new_draft_version as (
-                    insert into versions (project_slug, app_metadata_json_id, revision)
-                        select (project_slug, app_metadata_json_id, revision + 1)
-                        from versions
-                        where id = ${getVersionQuery(projectSlug, "draft")}
-                        returning id)
-                update projects
-                set latest_version_id = (${getVersionQuery(projectSlug, "draft")}),
-                    draft_version_id  = (select id from new_draft_version)
-                where slug = ${projectSlug}`
+      // We change the current draft version to a published version and then we copy all the file metadata entries for that version
+      sql`update versions v
+          set published_at=now()
+          where (v.id = (${getVersionQuery(projectSlug, "draft")}));
+      with new_draft_version as (
+          insert into versions (project_slug, app_metadata_json_id, revision)
+              select (project_slug, app_metadata_json_id, revision + 1)
+              from versions
+              where id = ${getVersionQuery(projectSlug, "draft")}
+              returning id)
+      update projects
+      set latest_version_id = (${getVersionQuery(projectSlug, "draft")}),
+          draft_version_id  = (select id from new_draft_version)
+      where slug = ${projectSlug};
+      insert into files
+      (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
+      select ((${getVersionQuery(projectSlug, "draft")}),
+              dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
+      from files
+      where version_id = (${getVersionQuery(projectSlug, "latest")})`
     );
   }
 
