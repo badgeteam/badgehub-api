@@ -14,5 +14,4 @@ export interface DBFileMetadata
   mimetype: string; // Can include info about the programming language
   size_of_content: number;
   sha256: DBFileData["sha256"]; // lowercase hex sha256 digest, allows verifying whether content is the same as other file.
-  confirmed_in_sync_with_file_data: boolean;
 }
