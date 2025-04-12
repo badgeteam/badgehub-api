@@ -1,4 +1,5 @@
 class NullOrUndefinedError extends Error {}
+
 type AssertNull = <T>(
   item: T | null,
   errorMessage?: string
