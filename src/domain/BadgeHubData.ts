@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { PublishedVersionRevision } from "@domain/readModels/app/Version";
+import { RevisionNumberOrAlias } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -60,7 +60,7 @@ export class BadgeHubData {
 
   getPublishedProject(
     projectSlug: ProjectSlug,
-    versionRevision: PublishedVersionRevision
+    versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Project> {
     return this.badgeHubMetadata.getPublishedProject(
       projectSlug,
@@ -78,7 +78,7 @@ export class BadgeHubData {
 
   async getFileContents(
     projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: FileMetadata["name"]
   ): Promise<Uint8Array | undefined> {
     const fileMetadata = await this.getFileMetadata(
@@ -96,7 +96,7 @@ export class BadgeHubData {
 
   getVersionZipContents(
     projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest"
+    versionRevision: RevisionNumberOrAlias
   ): Promise<Uint8Array> {
     // TODO here we should get the file path from the DB in order to fetch the correct file
     throw new Error("Method not implemented.");
@@ -177,7 +177,7 @@ export class BadgeHubData {
 
   getFileMetadata(
     projectSlug: string,
-    versionRevision: number | "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: string
   ): Promise<FileMetadata> {
     return this.badgeHubMetadata.getFileMetadata(

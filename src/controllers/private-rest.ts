@@ -134,10 +134,10 @@ export class PrivateRestController {
   }
 
   /**
-   * Get app details with latest version
+   * Get App details of the draft version of the app
    */
   @Get("/apps/{slug}/draft")
-  public async getApp(
+  public async getDraftApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {

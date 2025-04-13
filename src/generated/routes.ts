@@ -2,7 +2,7 @@
 /* eslint-disable */
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import type { TsoaRoute } from "@tsoa/runtime";
-import { ExpressTemplateService, fetchMiddlewares } from "@tsoa/runtime";
+import { fetchMiddlewares, ExpressTemplateService } from "@tsoa/runtime";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { PublicRestController } from "./../controllers/public-rest.js";
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -11,8 +11,8 @@ import { PrivateRestController } from "./../controllers/private-rest.js";
 import { DevRestController } from "./../controllers/dev-rest.js";
 import type {
   Request as ExRequest,
-  RequestHandler,
   Response as ExResponse,
+  RequestHandler,
   Router,
 } from "express";
 import multer from "multer";
@@ -38,41 +38,20 @@ const models: TsoaRoute.Models = {
       dataType: "union",
       subSchemas: [
         { dataType: "enum", enums: ["Uncategorised"] },
-        {
-          dataType: "enum",
-          enums: ["Event related"],
-        },
+        { dataType: "enum", enums: ["Event related"] },
         { dataType: "enum", enums: ["Games"] },
-        {
-          dataType: "enum",
-          enums: ["Graphics"],
-        },
+        { dataType: "enum", enums: ["Graphics"] },
         { dataType: "enum", enums: ["Hardware"] },
-        {
-          dataType: "enum",
-          enums: ["Utility"],
-        },
+        { dataType: "enum", enums: ["Utility"] },
         { dataType: "enum", enums: ["Wearable"] },
-        {
-          dataType: "enum",
-          enums: ["Data"],
-        },
+        { dataType: "enum", enums: ["Data"] },
         { dataType: "enum", enums: ["Silly"] },
-        {
-          dataType: "enum",
-          enums: ["Hacking"],
-        },
+        { dataType: "enum", enums: ["Hacking"] },
         { dataType: "enum", enums: ["Troll"] },
-        {
-          dataType: "enum",
-          enums: ["Unusable"],
-        },
+        { dataType: "enum", enums: ["Unusable"] },
         { dataType: "enum", enums: ["Adult"] },
         { dataType: "enum", enums: ["Virus"] },
-        {
-          dataType: "enum",
-          enums: ["SAO"],
-        },
+        { dataType: "enum", enums: ["SAO"] },
         { dataType: "enum", enums: ["Interpreter"] },
       ],
       validators: {},
@@ -94,15 +73,17 @@ const models: TsoaRoute.Models = {
       dataType: "union",
       subSchemas: [
         { dataType: "enum", enums: ["working"] },
-        {
-          dataType: "enum",
-          enums: ["in_progress"],
-        },
+        { dataType: "enum", enums: ["in_progress"] },
         { dataType: "enum", enums: ["broken"] },
         { dataType: "enum", enums: ["unknown"] },
       ],
       validators: {},
     },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  RevisionNumber: {
+    dataType: "refAlias",
+    type: { dataType: "double", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   FileMetadata: {
@@ -191,7 +172,7 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      revision: { dataType: "double", required: true },
+      revision: { ref: "RevisionNumber", required: true },
       semantic_version: { dataType: "string" },
       zip: { dataType: "string" },
       size_of_zip: { dataType: "double" },
@@ -262,10 +243,7 @@ const models: TsoaRoute.Models = {
         dataType: "union",
         subSchemas: [
           { dataType: "enum", enums: ["up"] },
-          {
-            dataType: "enum",
-            enums: ["down"],
-          },
+          { dataType: "enum", enums: ["down"] },
           { dataType: "enum", enums: ["pig"] },
         ],
         required: true,
@@ -356,18 +334,6 @@ const models: TsoaRoute.Models = {
     type: { ref: "Exclude_Project.version_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  PublishedVersionRevision: {
-    dataType: "refAlias",
-    type: {
-      dataType: "union",
-      subSchemas: [
-        { dataType: "double" },
-        { dataType: "enum", enums: ["latest"] },
-      ],
-      validators: {},
-    },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
     dataType: "refAlias",
     type: {
@@ -408,8 +374,8 @@ const models: TsoaRoute.Models = {
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
-        latest_version_id: { dataType: "double" },
-        draft_version_id: { dataType: "double" },
+        latest_revision: { dataType: "double" },
+        draft_revision: { dataType: "double" },
         created_at: { dataType: "string" },
         updated_at: { dataType: "string" },
         deleted_at: { dataType: "string" },
@@ -424,8 +390,8 @@ const models: TsoaRoute.Models = {
   ProjectProps: {
     dataType: "refObject",
     properties: {
-      latest_version_id: { dataType: "double" },
-      draft_version_id: { dataType: "double" },
+      latest_revision: { dataType: "double" },
+      draft_revision: { dataType: "double" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
       deleted_at: { dataType: "string" },
@@ -439,8 +405,8 @@ const models: TsoaRoute.Models = {
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      latest_version_id: { dataType: "double" },
-      draft_version_id: { dataType: "double" },
+      latest_revision: { dataType: "double" },
+      draft_revision: { dataType: "double" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
       deleted_at: { dataType: "string" },
@@ -661,7 +627,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/:versionRevision",
+    "/api/v3/apps/:slug/rev:revision",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getAppVersion
@@ -674,11 +640,11 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
-        versionRevision: {
+        revision: {
           in: "path",
-          name: "versionRevision",
+          name: "revision",
           required: true,
-          ref: "PublishedVersionRevision",
+          ref: "RevisionNumber",
         },
         notFoundResponse: {
           in: "res",
@@ -835,7 +801,7 @@ export function RegisterRoutes(
           in: "path",
           name: "revision",
           required: true,
-          dataType: "double",
+          ref: "RevisionNumber",
         },
         filePath: {
           in: "path",
@@ -1320,9 +1286,11 @@ export function RegisterRoutes(
   app.get(
     "/api/v3/apps/:slug/draft",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
-    ...fetchMiddlewares<RequestHandler>(PrivateRestController.prototype.getApp),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.getDraftApp
+    ),
 
-    async function PrivateRestController_getApp(
+    async function PrivateRestController_getDraftApp(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1351,7 +1319,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "getApp",
+          methodName: "getDraftApp",
           controller,
           response,
           next,

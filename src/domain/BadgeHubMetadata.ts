@@ -3,11 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import {
-  PublishedVersionRevision,
-  Version,
-  VersionRevision,
-} from "@domain/readModels/app/Version";
+import { Version, RevisionNumberOrAlias } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
@@ -40,12 +36,12 @@ export interface BadgeHubMetadata {
 
   getPublishedProject(
     projectSlug: ProjectSlug,
-    versionRevision: VersionRevision
+    versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Project>;
 
   getPublishedVersion(
     projectSlug: ProjectSlug,
-    versionRevision: PublishedVersionRevision
+    versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Version>;
 
   getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
@@ -81,7 +77,7 @@ export interface BadgeHubMetadata {
 
   getFileMetadata(
     projectSlug: string,
-    versionRevision: number | "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: string
   ): Promise<FileMetadata>;
 }

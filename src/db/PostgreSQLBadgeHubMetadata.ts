@@ -7,9 +7,9 @@ import {
 } from "@domain/readModels/app/Project";
 import { User } from "@domain/readModels/app/User";
 import {
-  type PublishedVersionRevision,
+  type LatestVersionAlias,
+  RevisionNumberOrAlias,
   Version,
-  VersionRevision,
 } from "@domain/readModels/app/Version";
 import { Category } from "@domain/readModels/app/Category";
 import { Pool } from "pg";
@@ -47,7 +47,7 @@ import path from "node:path";
 import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { DBDatedData } from "@db/models/app/DBDatedData";
-import { propIsDefined, WithRequiredProp } from "@util/assertions";
+import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 
 const ONE_KILO = 1000;
@@ -82,16 +82,16 @@ const parsePath = (pathParts: string[]) => {
 
 const getVersionQuery = (
   projectSlug: ProjectSlug,
-  versionRevision: number | "draft" | "latest"
+  versionRevision: RevisionNumberOrAlias
 ): Sql => {
   if (typeof versionRevision === "number") {
-    return sql`${versionRevision}`;
+    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug})`;
   }
   switch (versionRevision) {
     case "draft":
-      return sql`(select draft_version_id from projects where slug = ${projectSlug})`;
+      return sql`(select id from versions where revision = (select draft_revision from projects where slug = ${projectSlug}) and project_slug = ${projectSlug})`;
     case "latest":
-      return sql`(select latest_version_id from projects where slug = ${projectSlug})`;
+      return sql`(select id from versions where revision = (select draft_revision from projects where slug = ${projectSlug}) and project_slug = ${projectSlug})`;
   }
 };
 
@@ -102,7 +102,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async getFileMetadata(
     projectSlug: string,
-    versionRevision: number | "draft" | "latest",
+    versionRevision: "draft" | "latest",
     filePath: string
   ): Promise<FileMetadata> {
     const versionQuery = getVersionQuery(projectSlug, versionRevision);
@@ -183,7 +183,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                      (select created_at from inserted_app_metadata),
                                      (select updated_at from inserted_app_metadata)) returning id)
             insert
-            into projects (${keys}, draft_version_id)
+            into projects (${keys}, draft_revision)
             values (${values}, (select id from inserted_version))`);
   }
 
@@ -211,38 +211,47 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     mockDate?: TimestampTZ
   ): Promise<void> {
     await this.pool.query(sql`
-        with published_version as (
-            update versions v
-                set published_at = (${mockDate ?? raw("now()")})
-                where v.id = (${getVersionQuery(projectSlug, "draft")})
-                returning id),
-             new_draft_version as (
-                 insert into versions (project_slug, app_metadata_json_id, revision)
-                     select project_slug, app_metadata_json_id, revision + 1
-                     from versions
-                     where id = ${getVersionQuery(projectSlug, "draft")}
-                     returning id),
-             updated_projects as (
-                 update projects
-                     set latest_version_id = (select id from published_version),
-                         draft_version_id = (select id from new_draft_version)
-                     where slug = ${projectSlug}
-                     returning 1),
-             copied_files as (
-                 insert into files
-                     (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at)
-                     select (select id from published_version),
-                             dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at, deleted_at
-                     from files
-                     where version_id = (select id from new_draft_version)
-                     returning 1)
-        select 1;
-    `);
+            with published_version as (
+                update versions v
+                    set published_at = (${mockDate ?? raw("now()")})
+                    where v.id = (${getVersionQuery(projectSlug, "draft")})
+                    returning id),
+                 new_draft_version as (
+                     insert into versions (project_slug, app_metadata_json_id, revision)
+                         select project_slug, app_metadata_json_id, revision + 1
+                         from versions
+                         where id = ${getVersionQuery(projectSlug, "draft")}
+                         returning id),
+                 updated_projects as (
+                     update projects
+                         set latest_revision = (select id from published_version),
+                             draft_revision = (select id from new_draft_version)
+                         where slug = ${projectSlug}
+                         returning 1),
+                 copied_files as (
+                     insert into files
+                         (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at,
+                          deleted_at)
+                         select (select id from published_version),
+                                dir,
+                                name,
+                                ext,
+                                mimetype,
+                                size_of_content,
+                                sha256,
+                                created_at,
+                                updated_at,
+                                deleted_at
+                         from files
+                         where version_id = (select id from new_draft_version)
+                         returning 1)
+            select 1;
+        `);
   }
 
   async getPublishedProject(
     projectSlug: string,
-    versionRevision: PublishedVersionRevision
+    versionRevision: LatestVersionAlias
   ): Promise<undefined | Project> {
     const version = await this.getPublishedVersion(
       projectSlug,
@@ -272,10 +281,10 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async getPublishedVersion(
     projectSlug: ProjectSlug,
-    versionRevision: VersionRevision
+    versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | WithRequiredProp<Version, "published_at">> {
     const version = await this.getVersion(projectSlug, versionRevision);
-    if (!propIsDefined(version, "published_at")) {
+    if (!propIsDefinedAndNotNull(version, "published_at")) {
       return;
     }
     return version;
@@ -283,7 +292,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async getVersion(
     projectSlug: ProjectSlug,
-    versionRevision: VersionRevision
+    versionRevision: RevisionNumberOrAlias
   ): Promise<Version> {
     const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
       await this.pool
@@ -304,7 +313,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                to_jsonb(m) as app_metadata
                         from versions v
                                  left join app_metadata_jsons m on v.app_metadata_json_id = m.id
-                        where v.id = ${getVersionQuery(projectSlug, versionRevision)}
+                        where v.id = (${getVersionQuery(projectSlug, versionRevision)})
                     `
         )
         .then((res) => res.rows[0]);
@@ -393,7 +402,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                            where id = (select app_metadata_json_id
                                                        from versions v
                                                        where v.id =
-                                                             (select projects.draft_version_id
+                                                             (select projects.draft_revision
                                                               from projects
                                                               where slug = ${projectSlug}))`;
     await this.pool.query(appMetadataUpdateQuery);
