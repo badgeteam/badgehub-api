@@ -574,18 +574,6 @@
       "ProjectWithoutVersion": {
         "$ref": "#/components/schemas/Exclude_Project.version_"
       },
-      "PublishedVersionRevision": {
-        "anyOf": [
-          {
-            "type": "number",
-            "format": "double"
-          },
-          {
-            "type": "string",
-            "enum": ["latest"]
-          }
-        ]
-      },
       "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
         "properties": {
           "email": {
@@ -964,60 +952,6 @@
             "required": false,
             "schema": {
               "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/api/v3/apps/{slug}/{versionRevision}": {
-      "get": {
-        "operationId": "GetAppVersion",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Project"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get app details for a specific published revision of the app",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "versionRevision",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/PublishedVersionRevision"
             }
           }
         ]
@@ -1511,7 +1445,7 @@
     },
     "/api/v3/apps/{slug}/draft": {
       "get": {
-        "operationId": "GetApp",
+        "operationId": "GetDraftApp",
         "responses": {
           "200": {
             "description": "Ok",

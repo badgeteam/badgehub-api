@@ -1,41 +1,9 @@
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
-import * as path from "node:path";
-import { ProjectSlug } from "@domain/readModels/app/Project";
-import { VersionRevision } from "@domain/readModels/app/Version";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import sql from "sql-template-tag";
 import { DBDatedData } from "@db/models/app/DBDatedData";
-
-// We want to ensure here that the given pathparts are valid and do not cause the full path to be outside of the project+version's directory
-// We cannot do this check in a higher layer because that would require knowledge of the file storage implementation.
-const getAndCheckFullPath = (
-  projectSlug: ProjectSlug,
-  versionRevision: VersionRevision,
-  pathParts: string[]
-) => {
-  const versionDir =
-    typeof versionRevision === "number"
-      ? `v${versionRevision}`
-      : versionRevision;
-  const resolvedVersionDir = path.resolve(projectSlug, versionDir);
-  const fullPath = path.resolve(resolvedVersionDir, ...pathParts);
-
-  if (!fullPath.startsWith(resolvedVersionDir + path.sep)) {
-    console.error(
-      "Malicious intent detected, path validity failed for arguments:",
-      projectSlug,
-      versionDir,
-      fullPath
-    );
-    throw new Error(
-      `Given path is invalid [${projectSlug}, ${versionDir}, ${pathParts.join("/")}], this request will be reported.`
-    );
-  }
-
-  return fullPath;
-};
 
 export class PostgreSQLBadgeHubFiles implements BadgeHubFiles {
   private readonly pool: Pool = getPool();
@@ -58,11 +26,13 @@ export class PostgreSQLBadgeHubFiles implements BadgeHubFiles {
                 values (${sha256}, ${uploadedFile.fileContent})`
     );
     if (dates) {
-      await this.pool.query(sql`update file_data
-                                      set created_at = ${dates.created_at},
-                                          updated_at = ${dates.updated_at},
-                                          deleted_at = ${dates.deleted_at}
-                                      where sha256 = ${sha256}`);
+      await this.pool.query(
+        sql`update file_data
+                    set created_at = ${dates.created_at},
+                        updated_at = ${dates.updated_at},
+                        deleted_at = ${dates.deleted_at}
+                    where sha256 = ${sha256}`
+      );
     }
   }
 
