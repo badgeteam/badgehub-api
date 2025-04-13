@@ -63,3 +63,9 @@ export const propIsDefined = <T extends object, K extends keyof T>(
   item: T | undefined,
   prop: K
 ): item is T & WithRequiredProp<T, K> => item?.[prop] !== undefined;
+
+export const propIsDefinedAndNotNull = <T extends object, K extends keyof T>(
+  item: T | undefined | null,
+  prop: K
+): item is T & WithRequiredProp<T, K> =>
+  item?.[prop] !== undefined && item?.[prop] !== null;

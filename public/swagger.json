@@ -70,6 +70,10 @@
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
       },
+      "RevisionNumber": {
+        "type": "number",
+        "format": "double"
+      },
       "FileMetadata": {
         "properties": {
           "created_at": {
@@ -232,8 +236,7 @@
             "format": "date-time"
           },
           "revision": {
-            "type": "number",
-            "format": "double"
+            "$ref": "#/components/schemas/RevisionNumber"
           },
           "semantic_version": {
             "type": "string"
@@ -644,11 +647,11 @@
       },
       "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
         "properties": {
-          "latest_version_id": {
+          "latest_revision": {
             "type": "number",
             "format": "double"
           },
-          "draft_version_id": {
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -678,11 +681,11 @@
       },
       "ProjectProps": {
         "properties": {
-          "latest_version_id": {
+          "latest_revision": {
             "type": "number",
             "format": "double"
           },
-          "draft_version_id": {
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -712,11 +715,11 @@
       },
       "ProjectPropsPartial": {
         "properties": {
-          "latest_version_id": {
+          "latest_revision": {
             "type": "number",
             "format": "double"
           },
-          "draft_version_id": {
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -957,6 +960,60 @@
         ]
       }
     },
+    "/api/v3/apps/{slug}/rev{revision}": {
+      "get": {
+        "operationId": "GetAppVersion",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get app details for a specific published revision of the app",
+        "tags": ["public"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RevisionNumber"
+            }
+          }
+        ]
+      }
+    },
     "/api/v3/apps/{slug}": {
       "get": {
         "operationId": "GetApp",
@@ -988,6 +1045,7 @@
             }
           }
         },
+        "description": "Get app details of the latest published version",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1189,8 +1247,7 @@
             "name": "revision",
             "required": true,
             "schema": {
-              "format": "double",
-              "type": "number"
+              "$ref": "#/components/schemas/RevisionNumber"
             }
           },
           {
@@ -1474,7 +1531,7 @@
             }
           }
         },
-        "description": "Get app details with latest version",
+        "description": "Get App details of the draft version of the app",
         "tags": ["private"],
         "security": [],
         "parameters": [

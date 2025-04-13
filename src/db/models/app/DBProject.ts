@@ -10,7 +10,7 @@ interface DBProjectBase {
 }
 
 type ProjectToVersionRelation = VersionRelation<
-  "latest_version_id" | "draft_version_id"
+  "latest_revision" | "draft_revision"
 >;
 
 export interface DBInsertProject

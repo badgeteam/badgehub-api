@@ -3,15 +3,18 @@ import { DatedData } from "./DatedData";
 import { FileMetadata } from "./FileMetadata";
 import { Project } from "@domain/readModels/app/Project";
 
-export type PublishedVersionRevision = number | "latest";
-export type VersionRevision = PublishedVersionRevision | "draft";
+export type LatestVersionAlias = "latest";
+type DraftVersionAlias = "draft";
+type LatestOrDraftAlias = LatestVersionAlias | DraftVersionAlias;
+export type RevisionNumber = number;
+export type RevisionNumberOrAlias = LatestOrDraftAlias | RevisionNumber;
 
 export interface VersionRelation {
   version: Version;
 }
 
 export interface Version extends DatedData {
-  revision: number;
+  revision: RevisionNumber;
   semantic_version?: string; // Changed! Semantic version
   zip?: string;
   size_of_zip?: number;
