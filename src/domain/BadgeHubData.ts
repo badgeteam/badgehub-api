@@ -154,7 +154,11 @@ export class BadgeHubData {
     appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
     mockDates?: DBDatedData
   ): Promise<void> {
-    await this.badgeHubMetadata.updateDraftMetadata(slug, appMetadataChanges);
+    await this.badgeHubMetadata.updateDraftMetadata(
+      slug,
+      appMetadataChanges,
+      mockDates
+    );
     const updatedDraftVersion =
       await this.badgeHubMetadata.getDraftVersion(slug);
     const updatedAppMetadata = updatedDraftVersion.app_metadata;

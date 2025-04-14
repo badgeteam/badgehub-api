@@ -12,6 +12,7 @@
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/index.mjs",
     "swagger": "tsoa spec-and-routes",
     "dev": "node --import tsx --watch src/index.ts",
+    "populate-db": "node --import tsx src/runPopulateDB.ts",
     "test-db:up": "docker compose -f docker-compose.test-db.yml up -d",
     "test-db:down": "docker compose -f docker-compose.test-db.yml down",
     "backup": "docker exec -it badgehub-api-db-1 /usr/bin/pg_dump --username badgehub badgehub -f /var/backup/data-backup-`date +\"%Y-%m-%dT%H:%m\"`.sql",

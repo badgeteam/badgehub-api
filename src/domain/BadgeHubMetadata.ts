@@ -72,7 +72,7 @@ export interface BadgeHubMetadata {
     pathParts: string[],
     uploadedFile: UploadedFile,
     sha256: string,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void>;
 
   getFileMetadata(
