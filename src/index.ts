@@ -10,14 +10,13 @@ import { pinoHttp } from "pino-http";
 async function startServer() {
   const app = express();
   const pino = pinoHttp();
+  disableWriteWhenNotDev(app);
 
   app.use(express.json());
   app.use(express.static("public"));
   app.use(pino);
 
   openapi(app);
-
-  disableWriteWhenNotDev(app);
 
   RegisterRoutes(app);
 
