@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
+import * as inspector from "node:inspector";
 
 describe(
   "API Routes",
@@ -28,24 +29,24 @@ describe(
         {
           "allow_team_fixes": false,
           "badges": [
-            "mch2022",
+            "why2025",
           ],
           "category": "Uncategorised",
           "collaborators": [],
-          "created_at": "2024-12-31T18:26:24.784Z",
-          "description": null,
+          "created_at": "2024-11-01T13:12:19.376Z",
+          "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
           "git_commit_id": null,
-          "interpreter": null,
-          "license": null,
-          "name": null,
-          "published_at": null,
-          "revision": null,
+          "interpreter": "python",
+          "license": "MIT",
+          "name": "CodeCraft",
+          "published_at": "2024-06-10T14:18:04.636Z",
+          "revision": 0,
           "size_of_zip": null,
-          "slug": "pixelplayground",
-          "updated_at": "2024-07-24T18:26:24.784Z",
-          "user_id": 63,
-          "user_name": "LogicLionheart",
+          "slug": "codecraft",
+          "updated_at": "2022-09-05T13:12:19.376Z",
+          "user_id": 24,
+          "user_name": "NanoNavigator",
         }
       `);
     });
@@ -93,17 +94,44 @@ describe(
               "semantic_version": null,
             },
             "app_metadata_json_id": 1,
-            "created_at": "2025-04-12T21:34:14.407Z",
+            "created_at": "2024-11-01T13:12:19.376Z",
             "download_count": "0",
-            "files": [],
+            "files": [
+              {
+                "created_at": "2024-11-01T13:12:19.376Z",
+                "dir": "",
+                "ext": ".json",
+                "full_path": "metadata.json",
+                "id": 1,
+                "mimetype": "application/json",
+                "name": "metadata",
+                "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
+                "size_formatted": "0.26KB",
+                "size_of_content": "259",
+                "updated_at": "2022-09-05T13:12:19.376Z",
+              },
+              {
+                "created_at": "2024-11-01T13:12:19.376Z",
+                "dir": "",
+                "ext": ".py",
+                "full_path": "__init__.py",
+                "id": 2,
+                "mimetype": "text/x-python-script",
+                "name": "__init__",
+                "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
+                "size_formatted": "0.04KB",
+                "size_of_content": "43",
+                "updated_at": "2022-09-05T13:12:19.376Z",
+              },
+            ],
             "git_commit_id": null,
-            "id": 88,
+            "id": 1,
             "project_slug": "codecraft",
-            "published_at": null,
-            "revision": 1,
+            "published_at": "2024-06-10T14:18:04.636Z",
+            "revision": 0,
             "semantic_version": null,
             "size_of_zip": null,
-            "updated_at": "2025-04-12T21:34:14.407Z",
+            "updated_at": "2022-09-05T13:12:19.376Z",
             "zip": null,
           },
         }
@@ -245,7 +273,7 @@ describe(
               "semantic_version": null,
             },
             "app_metadata_json_id": 1,
-            "created_at": "2025-04-12T21:34:14.407Z",
+            "created_at": "2024-06-10T14:18:04.636Z",
             "download_count": "0",
             "files": [],
             "git_commit_id": null,
@@ -255,12 +283,16 @@ describe(
             "revision": 1,
             "semantic_version": null,
             "size_of_zip": null,
-            "updated_at": "2025-04-12T21:34:14.407Z",
+            "updated_at": "2024-06-10T14:18:04.636Z",
             "zip": null,
           },
         }
       `);
     });
   },
-  { timeout: 3600_000 }
+  { timeout: isInDebugMode() ? 3600_000 : undefined }
 );
+
+function isInDebugMode() {
+  return inspector.url() !== undefined;
+}

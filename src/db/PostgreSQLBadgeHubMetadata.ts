@@ -68,7 +68,8 @@ function getUpdateAssignmentsSql(changes: Object) {
   }
   return join(
     changeEntries.map(
-      ([key, value]) => sql`${raw(assertValidColumKey(key))} = ${value}`
+      ([key, value]) => sql`${raw(assertValidColumKey(key))} =
+            ${value}`
     )
   );
 }
@@ -89,9 +90,15 @@ const getVersionQuery = (
   }
   switch (versionRevision) {
     case "draft":
-      return sql`(select id from versions where revision = (select draft_revision from projects where slug = ${projectSlug}) and project_slug = ${projectSlug})`;
+      return sql`(select id
+                        from versions
+                        where revision = (select draft_revision from projects where slug = ${projectSlug})
+                          and project_slug = ${projectSlug})`;
     case "latest":
-      return sql`(select id from versions where revision = (select draft_revision from projects where slug = ${projectSlug}) and project_slug = ${projectSlug})`;
+      return sql`(select id
+                        from versions
+                        where revision = (select latest_revision from projects where slug = ${projectSlug})
+                          and project_slug = ${projectSlug})`;
   }
 };
 
@@ -105,13 +112,12 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     versionRevision: "draft" | "latest",
     filePath: string
   ): Promise<FileMetadata> {
-    const versionQuery = getVersionQuery(projectSlug, versionRevision);
     const { dir, name, ext } = parsePath(filePath.split("/"));
     const {
       rows: [metadata],
     } = await this.pool.query<DBFileMetadata>(sql`select *
                                                       from files
-                                                      where version_id = ${versionQuery}
+                                                      where version_id = ${getVersionQuery(projectSlug, versionRevision)}
                                                         and dir = ${dir}
                                                         and name = ${name}
                                                         and ext = ${ext}`);
@@ -181,10 +187,10 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                          into versions (project_slug, app_metadata_json_id, created_at, updated_at)
                              values (${project.slug}, (select id from inserted_app_metadata),
                                      (select created_at from inserted_app_metadata),
-                                     (select updated_at from inserted_app_metadata)) returning id)
+                                     (select updated_at from inserted_app_metadata)) returning revision)
             insert
             into projects (${keys}, draft_revision)
-            values (${values}, (select id from inserted_version))`);
+            values (${values}, (select revision from inserted_version))`);
   }
 
   async updateProject(
@@ -215,17 +221,17 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                 update versions v
                     set published_at = (${mockDate ?? raw("now()")})
                     where v.id = (${getVersionQuery(projectSlug, "draft")})
-                    returning id),
+                    returning revision, id),
                  new_draft_version as (
-                     insert into versions (project_slug, app_metadata_json_id, revision)
-                         select project_slug, app_metadata_json_id, revision + 1
+                     insert into versions (project_slug, app_metadata_json_id, revision, created_at, updated_at)
+                         select project_slug, app_metadata_json_id, revision + 1, (${mockDate ?? raw("now()")}), (${mockDate ?? raw("now()")})
                          from versions
                          where id = ${getVersionQuery(projectSlug, "draft")}
-                         returning id),
+                         returning revision, id),
                  updated_projects as (
                      update projects
-                         set latest_revision = (select id from published_version),
-                             draft_revision = (select id from new_draft_version)
+                         set latest_revision = (select revision from published_version),
+                             draft_revision = (select revision from new_draft_version)
                          where slug = ${projectSlug}
                          returning 1),
                  copied_files as (
@@ -358,24 +364,27 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     let query = getBaseSelectProjectQuery();
     if (filter?.badgeSlug) {
       query = sql`${query}
-      inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug = ${filter.badgeSlug}`;
+      inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug =
+            ${filter.badgeSlug}`;
     }
     query = sql`${query} where p.deleted_at is null`;
 
     if (filter?.categorySlug) {
-      query = sql`${query} and c.slug = ${filter.categorySlug}`;
+      query = sql`${query} and c.slug =
+            ${filter.categorySlug}`;
     }
 
     if (filter?.projectSlug) {
-      query = sql`${query} and p.slug = ${filter.projectSlug}`;
+      query = sql`${query} and p.slug =
+            ${filter.projectSlug}`;
     }
 
     if (filter?.pageLength) {
       query = sql`${query}
       limit
-      ${filter.pageLength}
-      offset
-      ${filter?.pageStart ?? 0}`;
+            ${filter.pageLength}
+            offset
+            ${filter?.pageStart ?? 0}`;
     }
 
     const projects: ProjectQueryResponse[] = await this.pool
@@ -390,9 +399,13 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async updateDraftMetadata(
     projectSlug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>
+    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    mockDates?: DBDatedData
   ): Promise<void> {
-    const setters = getUpdateAssignmentsSql(appMetadataChanges);
+    const setters = getUpdateAssignmentsSql({
+      ...appMetadataChanges,
+      ...mockDates,
+    });
     if (!setters) {
       return;
     }
@@ -401,10 +414,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                            set ${setters}
                                            where id = (select app_metadata_json_id
                                                        from versions v
-                                                       where v.id =
-                                                             (select projects.draft_revision
-                                                              from projects
-                                                              where slug = ${projectSlug}))`;
+                                                       where v.id = (${getVersionQuery(projectSlug, "draft")}))`;
     await this.pool.query(appMetadataUpdateQuery);
   }
 
