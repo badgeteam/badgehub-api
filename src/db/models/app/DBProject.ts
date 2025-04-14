@@ -9,16 +9,20 @@ interface DBProjectBase {
   allow_team_fixes?: boolean;
 }
 
+type ProjectToVersionRelation = VersionRelation<
+  "latest_revision" | "draft_revision"
+>;
+
 export interface DBInsertProject
   extends DBProjectBase,
-    Partial<VersionRelation>,
+    Partial<ProjectToVersionRelation>,
     UserRelation,
     Partial<DBDatedData> {}
 
 // table name: projects
 export interface DBProject
   extends DBProjectBase,
-    VersionRelation,
+    ProjectToVersionRelation,
     UserRelation,
     DBDatedData {}
 

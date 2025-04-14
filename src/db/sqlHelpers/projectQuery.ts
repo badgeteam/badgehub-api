@@ -10,28 +10,28 @@ import { Category } from "@domain/readModels/app/Category";
 
 export function getBaseSelectProjectQuery() {
   return sql`select p.slug,
-                           p.git,
-                           p.allow_team_fixes,
-                           p.user_id,
-                           p.created_at,
-                           p.updated_at,
-                           p.deleted_at,
-                           v.semantic_version,
-                           v.git_commit_id,
-                           v.published_at,
-                           v.revision,
-                           v.size_of_zip,
-                           m.category,
-                           m.description,
-                           m.interpreter,
-                           m.license_file,
-                           m.name,
-                           u.name as author_name
-                    from projects p
-                             left join users u on p.user_id = u.id and u.deleted_at is null
-                             left join versions v on p.version_id = v.id
-                             left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
-                             left join categories c on m.category = c.name and c.deleted_at is null
+                      p.git,
+                      p.allow_team_fixes,
+                      p.user_id,
+                      p.created_at,
+                      p.updated_at,
+                      p.deleted_at,
+                      v.semantic_version,
+                      v.git_commit_id,
+                      v.published_at,
+                      v.revision,
+                      v.size_of_zip,
+                      m.category,
+                      m.description,
+                      m.interpreter,
+                      m.license_file,
+                      m.name,
+                      u.name as author_name
+               from projects p
+                        left join users u on p.user_id = u.id and u.deleted_at is null
+                        left join versions v on p.latest_revision = v.revision and p.slug = v.project_slug and v.deleted_at is null
+                        left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
+                        left join categories c on m.category = c.name and c.deleted_at is null
     `;
 }
 

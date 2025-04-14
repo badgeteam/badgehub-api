@@ -81,6 +81,11 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  RevisionNumber: {
+    dataType: "refAlias",
+    type: { dataType: "double", validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   FileMetadata: {
     dataType: "refObject",
     properties: {
@@ -94,7 +99,6 @@ const models: TsoaRoute.Models = {
       mimetype: { dataType: "string", required: true },
       size_of_content: { dataType: "double", required: true },
       sha256: { dataType: "string", required: true },
-      confirmed_in_sync_with_file_data: { dataType: "boolean", required: true },
       size_formatted: { dataType: "string", required: true },
       full_path: { dataType: "string", required: true },
     },
@@ -168,7 +172,7 @@ const models: TsoaRoute.Models = {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
       deleted_at: { dataType: "datetime" },
-      revision: { dataType: "double", required: true },
+      revision: { ref: "RevisionNumber", required: true },
       semantic_version: { dataType: "string" },
       zip: { dataType: "string" },
       size_of_zip: { dataType: "double" },
@@ -370,7 +374,8 @@ const models: TsoaRoute.Models = {
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
-        version_id: { dataType: "double" },
+        latest_revision: { dataType: "double" },
+        draft_revision: { dataType: "double" },
         created_at: { dataType: "string" },
         updated_at: { dataType: "string" },
         deleted_at: { dataType: "string" },
@@ -385,7 +390,8 @@ const models: TsoaRoute.Models = {
   ProjectProps: {
     dataType: "refObject",
     properties: {
-      version_id: { dataType: "double" },
+      latest_revision: { dataType: "double" },
+      draft_revision: { dataType: "double" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
       deleted_at: { dataType: "string" },
@@ -399,7 +405,8 @@ const models: TsoaRoute.Models = {
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      version_id: { dataType: "double" },
+      latest_revision: { dataType: "double" },
+      draft_revision: { dataType: "double" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
       deleted_at: { dataType: "string" },
@@ -620,6 +627,61 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
+    "/api/v3/apps/:slug/rev:revision",
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getAppVersion
+    ),
+
+    async function PublicRestController_getAppVersion(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        revision: {
+          in: "path",
+          name: "revision",
+          required: true,
+          ref: "RevisionNumber",
+        },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getAppVersion",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
     "/api/v3/apps/:slug",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApp),
@@ -739,7 +801,7 @@ export function RegisterRoutes(
           in: "path",
           name: "revision",
           required: true,
-          dataType: "double",
+          ref: "RevisionNumber",
         },
         filePath: {
           in: "path",
@@ -1209,6 +1271,55 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "getDraftFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/apps/:slug/draft",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.getDraftApp
+    ),
+
+    async function PrivateRestController_getDraftApp(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        notFoundResponse: {
+          in: "res",
+          name: "404",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "getDraftApp",
           controller,
           response,
           next,

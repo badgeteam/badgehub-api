@@ -1,9 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { calcSha256, stringToNumberDigest } from "@util/digests";
 import { UploadedFile } from "@domain/UploadedFile";
 
 describe("digests", () => {
-  describe("stringToNumberDigest in case of getLockIdU usage", () => {
+  describe("stringToNumberDigest in case of getLockId usage", () => {
     it("lock id should be deterministic", async () => {
       const result = await stringToNumberDigest(
         ["test", "a", "b", "c"].join(",")

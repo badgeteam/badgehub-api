@@ -8,6 +8,10 @@ import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
+import type {
+  RevisionNumber,
+  RevisionNumberOrAlias,
+} from "@domain/readModels/app/Version";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -66,17 +70,35 @@ export class PublicRestController {
   }
 
   /**
-   * Get app details
+   * Get app details for a specific published revision of the app
+   */
+  @Get("/apps/{slug}/rev{revision}")
+  public async getAppVersion(
+    @Path() slug: string,
+    @Path() revision: RevisionNumber,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Project | undefined> {
+    const details = await this.badgeHubData.getPublishedProject(slug, revision);
+    if (!details) {
+      return notFoundResponse(404, {
+        reason: `No public app with slug '${slug}' found`,
+      });
+    }
+    return details;
+  }
+
+  /**
+   * Get app details of the latest published version
    */
   @Get("/apps/{slug}")
   public async getApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getProject(slug);
+    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
     if (!details) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No public app with slug '${slug}' found`,
       });
     }
     return details;
@@ -110,7 +132,7 @@ export class PublicRestController {
   @Get(`/apps/{slug}/files/rev{revision}/{filePath}`)
   public async getFileForVersion(
     @Path() slug: string,
-    @Path() revision: number,
+    @Path() revision: RevisionNumber,
     @Path() filePath: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Readable> {
