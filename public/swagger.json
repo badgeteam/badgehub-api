@@ -70,6 +70,10 @@
         "type": "string",
         "enum": ["working", "in_progress", "broken", "unknown"]
       },
+      "RevisionNumber": {
+        "type": "number",
+        "format": "double"
+      },
       "FileMetadata": {
         "properties": {
           "created_at": {
@@ -106,9 +110,6 @@
           "sha256": {
             "type": "string"
           },
-          "confirmed_in_sync_with_file_data": {
-            "type": "boolean"
-          },
           "size_formatted": {
             "type": "string"
           },
@@ -126,7 +127,6 @@
           "mimetype",
           "size_of_content",
           "sha256",
-          "confirmed_in_sync_with_file_data",
           "size_formatted",
           "full_path"
         ],
@@ -236,8 +236,7 @@
             "format": "date-time"
           },
           "revision": {
-            "type": "number",
-            "format": "double"
+            "$ref": "#/components/schemas/RevisionNumber"
           },
           "semantic_version": {
             "type": "string"
@@ -648,7 +647,11 @@
       },
       "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
         "properties": {
-          "version_id": {
+          "latest_revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -678,7 +681,11 @@
       },
       "ProjectProps": {
         "properties": {
-          "version_id": {
+          "latest_revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -708,7 +715,11 @@
       },
       "ProjectPropsPartial": {
         "properties": {
-          "version_id": {
+          "latest_revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "draft_revision": {
             "type": "number",
             "format": "double"
           },
@@ -949,6 +960,60 @@
         ]
       }
     },
+    "/api/v3/apps/{slug}/rev{revision}": {
+      "get": {
+        "operationId": "GetAppVersion",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get app details for a specific published revision of the app",
+        "tags": ["public"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RevisionNumber"
+            }
+          }
+        ]
+      }
+    },
     "/api/v3/apps/{slug}": {
       "get": {
         "operationId": "GetApp",
@@ -980,7 +1045,7 @@
             }
           }
         },
-        "description": "Get app details",
+        "description": "Get app details of the latest published version",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1182,8 +1247,7 @@
             "name": "revision",
             "required": true,
             "schema": {
-              "format": "double",
-              "type": "number"
+              "$ref": "#/components/schemas/RevisionNumber"
             }
           },
           {
@@ -1436,6 +1500,52 @@
         }
       }
     },
+    "/api/v3/apps/{slug}/draft": {
+      "get": {
+        "operationId": "GetDraftApp",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get App details of the draft version of the app",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
     "/api/v3/apps/{slug}/draft/zip": {
       "get": {
         "operationId": "GetLatestPublishedZip",
@@ -1505,7 +1615,7 @@
             "description": "No content"
           }
         },
-        "description": "Publish the latest draft version",
+        "description": "Publish the current draft as a new version",
         "tags": ["private"],
         "security": [],
         "parameters": [

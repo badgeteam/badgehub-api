@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
+import { RevisionNumberOrAlias } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -19,6 +19,7 @@ import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { calcSha256 } from "@util/digests";
+import { TimestampTZ } from "@db/DBTypes";
 
 export class BadgeHubData {
   constructor(
@@ -46,17 +47,25 @@ export class BadgeHubData {
   }
 
   // Publishes the current state of the app as a version
-  publishVersion(projectSlug: ProjectSlug): Promise<void> {
-    // TODO file management: move files from draft to latest and save all files by hash as well
-    return this.badgeHubMetadata.publishVersion(projectSlug);
+  publishVersion(
+    projectSlug: ProjectSlug,
+    mockDate?: TimestampTZ
+  ): Promise<void> {
+    return this.badgeHubMetadata.publishVersion(projectSlug, mockDate);
   }
 
-  getProject(projectSlug: ProjectSlug): Promise<Project> {
-    return this.badgeHubMetadata.getProject(projectSlug);
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project> {
+    return this.badgeHubMetadata.getDraftProject(projectSlug);
   }
 
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version> {
-    return this.badgeHubMetadata.getDraftVersion(projectSlug);
+  getPublishedProject(
+    projectSlug: ProjectSlug,
+    versionRevision: RevisionNumberOrAlias
+  ): Promise<undefined | Project> {
+    return this.badgeHubMetadata.getPublishedProject(
+      projectSlug,
+      versionRevision
+    );
   }
 
   getUser(userId: User["id"]): Promise<User> {
@@ -69,7 +78,7 @@ export class BadgeHubData {
 
   async getFileContents(
     projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: FileMetadata["name"]
   ): Promise<Uint8Array | undefined> {
     const fileMetadata = await this.getFileMetadata(
@@ -87,7 +96,7 @@ export class BadgeHubData {
 
   getVersionZipContents(
     projectSlug: Project["slug"],
-    versionRevision: number | "draft" | "latest"
+    versionRevision: RevisionNumberOrAlias
   ): Promise<Uint8Array> {
     // TODO here we should get the file path from the DB in order to fetch the correct file
     throw new Error("Method not implemented.");
@@ -145,7 +154,11 @@ export class BadgeHubData {
     appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
     mockDates?: DBDatedData
   ): Promise<void> {
-    await this.badgeHubMetadata.updateDraftMetadata(slug, appMetadataChanges);
+    await this.badgeHubMetadata.updateDraftMetadata(
+      slug,
+      appMetadataChanges,
+      mockDates
+    );
     const updatedDraftVersion =
       await this.badgeHubMetadata.getDraftVersion(slug);
     const updatedAppMetadata = updatedDraftVersion.app_metadata;
@@ -166,6 +179,18 @@ export class BadgeHubData {
     );
   }
 
+  getFileMetadata(
+    projectSlug: string,
+    versionRevision: RevisionNumberOrAlias,
+    filePath: string
+  ): Promise<FileMetadata> {
+    return this.badgeHubMetadata.getFileMetadata(
+      projectSlug,
+      versionRevision,
+      filePath
+    );
+  }
+
   private async _writeDraftFile(
     slug: string,
     pathParts: string[],
@@ -180,18 +205,6 @@ export class BadgeHubData {
       uploadedFile,
       sha256,
       mockDates
-    );
-  }
-
-  getFileMetadata(
-    projectSlug: string,
-    versionRevision: number | "draft" | "latest",
-    filePath: string
-  ): Promise<FileMetadata> {
-    return this.badgeHubMetadata.getFileMetadata(
-      projectSlug,
-      versionRevision,
-      filePath
     );
   }
 }

@@ -13,12 +13,22 @@ export function extractDatedDataConverted(dbDatedData: DBDatedData): DatedData {
   return datedData;
 }
 
-export function timestampTZToDate<T extends string | undefined>(
+type DateIfPossible<T extends string | undefined | null> = T extends undefined
+  ? undefined
+  : T extends null
+    ? null
+    : Date;
+
+export function timestampTZToDate<T extends string | undefined | null>(
   dbDate: T
-): T extends undefined ? undefined : Date {
+): DateIfPossible<T> {
   return (
-    dbDate !== undefined ? moment(dbDate).toDate() : undefined
-  ) as T extends undefined ? undefined : Date;
+    dbDate === undefined
+      ? undefined
+      : dbDate === null
+        ? null
+        : moment(dbDate).toDate()
+  ) as DateIfPossible<T>;
 }
 
 export type OmitDatedData<T extends DBDatedData> = Omit<

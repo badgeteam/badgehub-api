@@ -12,6 +12,7 @@ export interface AppMetadataJSONRelation {
 
 // table name: app_metadata_json
 export interface DBInsertAppMetadataJSON extends AppMetadataJSON {}
+
 export interface DBAppMetadataJSON
   extends DBDatedData,
     DBInsertAppMetadataJSON {
