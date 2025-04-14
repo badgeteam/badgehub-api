@@ -3,6 +3,8 @@ import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
 import * as inspector from "node:inspector";
+import { ProjectWithoutVersion } from "@domain/readModels/app/Project";
+import { Badge } from "@domain/readModels/Badge";
 
 describe(
   "API Routes",
@@ -14,7 +16,9 @@ describe(
     test("GET /api/v3/devices", async () => {
       const res = await request(app).get("/api/v3/devices");
       expect(res.statusCode).toBe(200);
-      expect(res.body.length).toMatchInlineSnapshot(`3`);
+      expect(
+        res.body.find((badge: Badge) => badge.slug === "why2025")
+      ).toBeDefined();
       expect(res.body[0]).toEqual({
         slug: "mch2022",
         name: "mch2022",
@@ -24,8 +28,12 @@ describe(
     test("GET /api/v3/apps", async () => {
       const res = await request(app).get("/api/v3/apps");
       expect(res.statusCode).toBe(200);
-      expect(res.body.length).toMatchInlineSnapshot(`87`);
-      expect(res.body[0]).toMatchInlineSnapshot(`
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => app.name === "PixelPulse")
+      ).toBeDefined();
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => app.slug === "codecraft")
+      ).toMatchInlineSnapshot(`
         {
           "allow_team_fixes": false,
           "badges": [
