@@ -1,7 +1,7 @@
 import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
-import { VersionRelation } from "./DBVersion";
 import { ProjectSlug } from "@domain/readModels/app/Project";
+import { VersionRelation } from "@db/models/app/DBVersion";
 
 interface DBProjectBase {
   slug: ProjectSlug; // The directory name of this app
@@ -10,7 +10,8 @@ interface DBProjectBase {
 }
 
 type ProjectToVersionRelation = VersionRelation<
-  "latest_revision" | "draft_revision"
+  "latest_revision" | "draft_revision",
+  "revision"
 >;
 
 export interface DBInsertProject
