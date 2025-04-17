@@ -5,12 +5,23 @@ export function expressAuthentication(
   securityName: string,
   scopes?: string[]
 ): Promise<any> {
-  console.log("request", request.headers);
   console.log("authorization", request.header("authorization"));
   console.log("securityName", securityName);
   console.log("scopes", scopes);
 
-  return new Promise((resolve, reject) => {
-    resolve({ status: "okay" });
-  });
+  const authHeader = request.header("authorization");
+
+  if (!authHeader) {
+    throw new Error("Authorization header is missing");
+  }
+
+  const [bearer, token] = authHeader.split(" ");
+
+  if (bearer != "Bearer" || !token || token == "undefined") {
+    throw new Error("Not authenticated");
+  }
+
+  console.log("token", token);
+
+  return Promise.resolve({ status: "okay" });
 }
