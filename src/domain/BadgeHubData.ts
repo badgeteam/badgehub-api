@@ -207,4 +207,8 @@ export class BadgeHubData {
       mockDates
     );
   }
+
+  async deleteDraftFile(slug: string, filePath: string) {
+    await this.badgeHubMetadata.deleteDraftFile(slug, filePath);
+  }
 }
