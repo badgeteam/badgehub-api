@@ -107,7 +107,7 @@ export class PublicRestController {
   /**
    * get the latest published version of a file in the project
    */
-  @Get("/apps/{slug}/files/latest/{filePath}")
+  @Get("/apps/{slug}/latest/files/{filePath}")
   public async getLatestPublishedFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -129,7 +129,7 @@ export class PublicRestController {
   /**
    * get a file for a specific version of the project
    */
-  @Get(`/apps/{slug}/files/rev{revision}/{filePath}`)
+  @Get(`/apps/{slug}/rev{revision}/files/{filePath}`)
   public async getFileForVersion(
     @Path() slug: string,
     @Path() revision: RevisionNumber,
