@@ -86,6 +86,9 @@ export class BadgeHubData {
       versionRevision,
       filePath
     );
+    if (!fileMetadata) {
+      return undefined;
+    }
     const sha256 = fileMetadata.sha256;
     return this.getFileContentsBySha256(sha256);
   }
@@ -183,7 +186,7 @@ export class BadgeHubData {
     projectSlug: string,
     versionRevision: RevisionNumberOrAlias,
     filePath: string
-  ): Promise<FileMetadata> {
+  ): Promise<FileMetadata | undefined> {
     return this.badgeHubMetadata.getFileMetadata(
       projectSlug,
       versionRevision,
