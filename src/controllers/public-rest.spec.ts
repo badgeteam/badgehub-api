@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
-import * as inspector from "node:inspector";
 import { ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import { Badge } from "@domain/readModels/Badge";
+import { isInDebugMode } from "@util/debug";
 
 describe(
-  "API Routes",
+  "Public API Routes",
   () => {
     let app: ReturnType<typeof express>;
     beforeEach(() => {
@@ -300,7 +300,3 @@ describe(
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
 );
-
-function isInDebugMode() {
-  return inspector.url() !== undefined;
-}
