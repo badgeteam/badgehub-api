@@ -80,4 +80,6 @@ export interface BadgeHubMetadata {
     versionRevision: RevisionNumberOrAlias,
     filePath: string
   ): Promise<FileMetadata>;
+
+  deleteDraftFile(slug: string, filePath: string): Promise<void>;
 }

@@ -107,6 +107,15 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   constructor() {}
 
+  async deleteDraftFile(slug: string, filePath: string): Promise<void> {
+    const { dir, name, ext } = parsePath(filePath.split("/"));
+    await this.pool.query(sql`delete from files
+                                  where version_id = (${getVersionQuery(slug, "draft")})
+                                    and dir = ${dir}
+                                    and name = ${name}
+                                    and ext = ${ext}`);
+  }
+
   async getFileMetadata(
     projectSlug: string,
     versionRevision: "draft" | "latest",

@@ -101,6 +101,17 @@ export class PrivateRestController {
   }
 
   /**
+   * Upload a file to the latest draft version of the project.
+   */
+  @Delete("/apps/{slug}/draft/files/{filePath}")
+  public async deleteDraftFile(
+    @Path() slug: string,
+    @Path() filePath: string
+  ): Promise<void> {
+    await this.badgeHubData.deleteDraftFile(slug, filePath);
+  }
+
+  /**
    * Change the metadata of the latest draft version of the project.
    */
   @Patch("/apps/{slug}/draft/metadata")
