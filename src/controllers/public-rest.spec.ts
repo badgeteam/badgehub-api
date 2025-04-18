@@ -5,6 +5,7 @@ import { createExpressServer } from "@createExpressServer";
 import { ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import { Badge } from "@domain/readModels/Badge";
 import { isInDebugMode } from "@util/debug";
+import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
 
 describe(
   "Public API Routes",
@@ -13,6 +14,7 @@ describe(
     beforeEach(() => {
       app = createExpressServer();
     });
+
     test("GET /api/v3/devices", async () => {
       const res = await request(app).get("/api/v3/devices");
       expect(res.statusCode).toBe(200);
@@ -283,7 +285,34 @@ describe(
             "app_metadata_json_id": 1,
             "created_at": "2024-06-10T14:18:04.636Z",
             "download_count": "0",
-            "files": [],
+            "files": [
+              {
+                "created_at": "2024-11-01T13:12:19.376Z",
+                "dir": "",
+                "ext": ".json",
+                "full_path": "metadata.json",
+                "id": 175,
+                "mimetype": "application/json",
+                "name": "metadata",
+                "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
+                "size_formatted": "0.26KB",
+                "size_of_content": "259",
+                "updated_at": "2022-09-05T13:12:19.376Z",
+              },
+              {
+                "created_at": "2024-11-01T13:12:19.376Z",
+                "dir": "",
+                "ext": ".py",
+                "full_path": "__init__.py",
+                "id": 176,
+                "mimetype": "text/x-python-script",
+                "name": "__init__",
+                "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
+                "size_formatted": "0.04KB",
+                "size_of_content": "43",
+                "updated_at": "2022-09-05T13:12:19.376Z",
+              },
+            ],
             "git_commit_id": null,
             "id": 88,
             "project_slug": "codecraft",
@@ -297,6 +326,31 @@ describe(
         }
       `);
     });
+
+    test.each(["draft", "latest", "rev0", "rev1"])(
+      "GET /apps/{slug}/%s/files/metadata.json",
+      async (revision) => {
+        const getRes = await request(app).get(
+          `/api/v3/apps/codecraft/${revision}/files/metadata.json`
+        );
+        expect(getRes.statusCode).toBe(200);
+        const metadata = JSON.parse(getRes.text) as AppMetadataJSON;
+        expect(metadata.name).toEqual("CodeCraft");
+      }
+    );
+
+    test.each(["draft", "latest", "rev0", "rev1"])(
+      "GET /apps/{slug}/%s/files/__init__.py",
+      async (revision) => {
+        const getRes = await request(app).get(
+          `/api/v3/apps/codecraft/${revision}/files/__init__.py`
+        );
+        expect(getRes.statusCode).toBe(200);
+        expect(getRes.text).toEqual(
+          "print('Hello world from the CodeCraft app')"
+        );
+      }
+    );
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
 );

@@ -255,7 +255,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
              insert into files
                (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at,
                 deleted_at)
-               select (select id from published_version),
+               select (select id from new_draft_version),
                       dir,
                       name,
                       ext,
@@ -266,7 +266,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                       updated_at,
                       deleted_at
                from files
-               where version_id = (select id from new_draft_version)
+               where version_id = (select id from published_version)
                returning 1)
       select 1;
     `);
