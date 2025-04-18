@@ -4,6 +4,8 @@ import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import openapi from "@openapi";
 import { RegisterRoutes } from "@generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
+import multer from "multer";
+import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 
 export const createExpressServer = () => {
   const app = express();
@@ -16,7 +18,9 @@ export const createExpressServer = () => {
 
   openapi(app);
 
-  RegisterRoutes(app);
+  RegisterRoutes(app, {
+    multer: multer({ limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES } }),
+  });
 
   addTsoaValidationFailureLogging(app);
   return app;
