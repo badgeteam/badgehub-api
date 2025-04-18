@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
-import { ProjectWithoutVersion } from "@domain/readModels/app/Project";
+import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import { Badge } from "@domain/readModels/Badge";
 import { isInDebugMode } from "@util/debug";
 import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
@@ -64,7 +64,11 @@ describe(
     test("GET /api/v3/apps/codecraft", async () => {
       const res = await request(app).get("/api/v3/apps/codecraft");
       expect(res.statusCode).toBe(200);
-      expect(res.body).toMatchInlineSnapshot(`
+
+      const project = res.body as Project;
+
+      const { version, ...restProject } = project;
+      expect(restProject).toMatchInlineSnapshot(`
         {
           "allow_team_fixes": false,
           "badges": [
@@ -86,64 +90,77 @@ describe(
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
           "user_name": "NanoNavigator",
-          "version": {
-            "app_metadata": {
-              "author": "NanoNavigator",
-              "category": "Uncategorised",
-              "description": "Use CodeCraft for some cool graphical effects.",
-              "file_mappings": null,
-              "file_mappings_overrides": null,
-              "icon": null,
-              "interpreter": "python",
-              "is_hidden": null,
-              "is_library": null,
-              "license_file": "MIT",
-              "main_executable": null,
-              "main_executable_overrides": null,
-              "name": "CodeCraft",
-              "semantic_version": null,
-            },
-            "app_metadata_json_id": 1,
+        }
+      `);
+
+      const { app_metadata, files, ...restVersion } = version!;
+      expect(app_metadata).toMatchInlineSnapshot(`
+        {
+          "author": "NanoNavigator",
+          "category": "Uncategorised",
+          "description": "Use CodeCraft for some cool graphical effects.",
+          "file_mappings": null,
+          "file_mappings_overrides": null,
+          "icon": null,
+          "interpreter": "python",
+          "is_hidden": null,
+          "is_library": null,
+          "license_file": "MIT",
+          "main_executable": null,
+          "main_executable_overrides": null,
+          "name": "CodeCraft",
+          "semantic_version": null,
+        }
+      `);
+      const sortedFiles = files
+        .map((f) => f.sha256)
+        .sort()
+        .map((sha) => files.find((f) => f.sha256 === sha));
+      expect(sortedFiles).toMatchInlineSnapshot(`
+        [
+          {
             "created_at": "2024-11-01T13:12:19.376Z",
-            "download_count": "0",
-            "files": [
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".json",
-                "full_path": "metadata.json",
-                "id": 1,
-                "mimetype": "application/json",
-                "name": "metadata",
-                "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
-                "size_formatted": "0.26KB",
-                "size_of_content": "259",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".py",
-                "full_path": "__init__.py",
-                "id": 2,
-                "mimetype": "text/x-python-script",
-                "name": "__init__",
-                "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
-                "size_formatted": "0.04KB",
-                "size_of_content": "43",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-            ],
-            "git_commit_id": null,
-            "id": 1,
-            "project_slug": "codecraft",
-            "published_at": "2024-06-10T14:18:04.636Z",
-            "revision": 0,
-            "semantic_version": null,
-            "size_of_zip": null,
+            "dir": "",
+            "ext": ".py",
+            "full_path": "__init__.py",
+            "id": 2,
+            "mimetype": "text/x-python-script",
+            "name": "__init__",
+            "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
+            "size_formatted": "0.04KB",
+            "size_of_content": "43",
             "updated_at": "2022-09-05T13:12:19.376Z",
-            "zip": null,
           },
+          {
+            "created_at": "2024-11-01T13:12:19.376Z",
+            "dir": "",
+            "ext": ".json",
+            "full_path": "metadata.json",
+            "id": 1,
+            "mimetype": "application/json",
+            "name": "metadata",
+            "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
+            "size_formatted": "0.26KB",
+            "size_of_content": "259",
+            "updated_at": "2022-09-05T13:12:19.376Z",
+          },
+        ]
+      `);
+
+      expect(restVersion).toMatchInlineSnapshot(`
+        {
+          "app_metadata_json_id": 1,
+          "created_at": "2024-11-01T13:12:19.376Z",
+          "download_count": "0",
+          "git_commit_id": null,
+          "id": 1,
+          "project_slug": "codecraft",
+          "published_at": "2024-06-10T14:18:04.636Z",
+          "revision": 0,
+          "semantic_version": null,
+          "size_of_zip": null,
+          "updated_at": "2022-09-05T13:12:19.376Z",
+          "zip": null,
         }
       `);
     });
@@ -151,7 +168,10 @@ describe(
     test("GET /api/v3/apps/codecraft/rev0", async () => {
       const res = await request(app).get("/api/v3/apps/codecraft/rev0");
       expect(res.statusCode).toBe(200);
-      expect(res.body).toMatchInlineSnapshot(`
+      const project = res.body as Project;
+
+      const { version, ...restProject } = project;
+      expect(restProject).toMatchInlineSnapshot(`
         {
           "allow_team_fixes": false,
           "badges": [
@@ -173,64 +193,77 @@ describe(
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
           "user_name": "NanoNavigator",
-          "version": {
-            "app_metadata": {
-              "author": "NanoNavigator",
-              "category": "Uncategorised",
-              "description": "Use CodeCraft for some cool graphical effects.",
-              "file_mappings": null,
-              "file_mappings_overrides": null,
-              "icon": null,
-              "interpreter": "python",
-              "is_hidden": null,
-              "is_library": null,
-              "license_file": "MIT",
-              "main_executable": null,
-              "main_executable_overrides": null,
-              "name": "CodeCraft",
-              "semantic_version": null,
-            },
-            "app_metadata_json_id": 1,
+        }
+      `);
+
+      const { app_metadata, files, ...restVersion } = version!;
+      expect(app_metadata).toMatchInlineSnapshot(`
+        {
+          "author": "NanoNavigator",
+          "category": "Uncategorised",
+          "description": "Use CodeCraft for some cool graphical effects.",
+          "file_mappings": null,
+          "file_mappings_overrides": null,
+          "icon": null,
+          "interpreter": "python",
+          "is_hidden": null,
+          "is_library": null,
+          "license_file": "MIT",
+          "main_executable": null,
+          "main_executable_overrides": null,
+          "name": "CodeCraft",
+          "semantic_version": null,
+        }
+      `);
+      const sortedFiles = files
+        .map((f) => f.sha256)
+        .sort()
+        .map((sha) => files.find((f) => f.sha256 === sha));
+      expect(sortedFiles).toMatchInlineSnapshot(`
+        [
+          {
             "created_at": "2024-11-01T13:12:19.376Z",
-            "download_count": "0",
-            "files": [
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".json",
-                "full_path": "metadata.json",
-                "id": 1,
-                "mimetype": "application/json",
-                "name": "metadata",
-                "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
-                "size_formatted": "0.26KB",
-                "size_of_content": "259",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".py",
-                "full_path": "__init__.py",
-                "id": 2,
-                "mimetype": "text/x-python-script",
-                "name": "__init__",
-                "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
-                "size_formatted": "0.04KB",
-                "size_of_content": "43",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-            ],
-            "git_commit_id": null,
-            "id": 1,
-            "project_slug": "codecraft",
-            "published_at": "2024-06-10T14:18:04.636Z",
-            "revision": 0,
-            "semantic_version": null,
-            "size_of_zip": null,
+            "dir": "",
+            "ext": ".py",
+            "full_path": "__init__.py",
+            "id": 2,
+            "mimetype": "text/x-python-script",
+            "name": "__init__",
+            "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
+            "size_formatted": "0.04KB",
+            "size_of_content": "43",
             "updated_at": "2022-09-05T13:12:19.376Z",
-            "zip": null,
           },
+          {
+            "created_at": "2024-11-01T13:12:19.376Z",
+            "dir": "",
+            "ext": ".json",
+            "full_path": "metadata.json",
+            "id": 1,
+            "mimetype": "application/json",
+            "name": "metadata",
+            "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
+            "size_formatted": "0.26KB",
+            "size_of_content": "259",
+            "updated_at": "2022-09-05T13:12:19.376Z",
+          },
+        ]
+      `);
+
+      expect(restVersion).toMatchInlineSnapshot(`
+        {
+          "app_metadata_json_id": 1,
+          "created_at": "2024-11-01T13:12:19.376Z",
+          "download_count": "0",
+          "git_commit_id": null,
+          "id": 1,
+          "project_slug": "codecraft",
+          "published_at": "2024-06-10T14:18:04.636Z",
+          "revision": 0,
+          "semantic_version": null,
+          "size_of_zip": null,
+          "updated_at": "2022-09-05T13:12:19.376Z",
+          "zip": null,
         }
       `);
     });
@@ -243,7 +276,10 @@ describe(
     test("GET /api/v3/apps/codecraft/draft", async () => {
       const res = await request(app).get("/api/v3/apps/codecraft/draft");
       expect(res.statusCode).toBe(200);
-      expect(res.body).toMatchInlineSnapshot(`
+      const project = res.body as Project;
+
+      const { version, ...restProject } = project;
+      expect(restProject).toMatchInlineSnapshot(`
         {
           "allow_team_fixes": false,
           "badges": [
@@ -265,64 +301,77 @@ describe(
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
           "user_name": "NanoNavigator",
-          "version": {
-            "app_metadata": {
-              "author": "NanoNavigator",
-              "category": "Uncategorised",
-              "description": "Use CodeCraft for some cool graphical effects.",
-              "file_mappings": null,
-              "file_mappings_overrides": null,
-              "icon": null,
-              "interpreter": "python",
-              "is_hidden": null,
-              "is_library": null,
-              "license_file": "MIT",
-              "main_executable": null,
-              "main_executable_overrides": null,
-              "name": "CodeCraft",
-              "semantic_version": null,
-            },
-            "app_metadata_json_id": 1,
-            "created_at": "2024-06-10T14:18:04.636Z",
-            "download_count": "0",
-            "files": [
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".json",
-                "full_path": "metadata.json",
-                "id": 175,
-                "mimetype": "application/json",
-                "name": "metadata",
-                "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
-                "size_formatted": "0.26KB",
-                "size_of_content": "259",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-              {
-                "created_at": "2024-11-01T13:12:19.376Z",
-                "dir": "",
-                "ext": ".py",
-                "full_path": "__init__.py",
-                "id": 176,
-                "mimetype": "text/x-python-script",
-                "name": "__init__",
-                "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
-                "size_formatted": "0.04KB",
-                "size_of_content": "43",
-                "updated_at": "2022-09-05T13:12:19.376Z",
-              },
-            ],
-            "git_commit_id": null,
-            "id": 88,
-            "project_slug": "codecraft",
-            "published_at": null,
-            "revision": 1,
-            "semantic_version": null,
-            "size_of_zip": null,
-            "updated_at": "2024-06-10T14:18:04.636Z",
-            "zip": null,
+        }
+      `);
+
+      const { app_metadata, files, ...restVersion } = version!;
+      expect(app_metadata).toMatchInlineSnapshot(`
+        {
+          "author": "NanoNavigator",
+          "category": "Uncategorised",
+          "description": "Use CodeCraft for some cool graphical effects.",
+          "file_mappings": null,
+          "file_mappings_overrides": null,
+          "icon": null,
+          "interpreter": "python",
+          "is_hidden": null,
+          "is_library": null,
+          "license_file": "MIT",
+          "main_executable": null,
+          "main_executable_overrides": null,
+          "name": "CodeCraft",
+          "semantic_version": null,
+        }
+      `);
+      const sortedFiles = files
+        .map((f) => f.sha256)
+        .sort()
+        .map((sha) => files.find((f) => f.sha256 === sha));
+      expect(sortedFiles).toMatchInlineSnapshot(`
+        [
+          {
+            "created_at": "2024-11-01T13:12:19.376Z",
+            "dir": "",
+            "ext": ".py",
+            "full_path": "__init__.py",
+            "id": 176,
+            "mimetype": "text/x-python-script",
+            "name": "__init__",
+            "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
+            "size_formatted": "0.04KB",
+            "size_of_content": "43",
+            "updated_at": "2022-09-05T13:12:19.376Z",
           },
+          {
+            "created_at": "2024-11-01T13:12:19.376Z",
+            "dir": "",
+            "ext": ".json",
+            "full_path": "metadata.json",
+            "id": 175,
+            "mimetype": "application/json",
+            "name": "metadata",
+            "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
+            "size_formatted": "0.26KB",
+            "size_of_content": "259",
+            "updated_at": "2022-09-05T13:12:19.376Z",
+          },
+        ]
+      `);
+
+      expect(restVersion).toMatchInlineSnapshot(`
+        {
+          "app_metadata_json_id": 1,
+          "created_at": "2024-06-10T14:18:04.636Z",
+          "download_count": "0",
+          "git_commit_id": null,
+          "id": 88,
+          "project_slug": "codecraft",
+          "published_at": null,
+          "revision": 1,
+          "semantic_version": null,
+          "size_of_zip": null,
+          "updated_at": "2024-06-10T14:18:04.636Z",
+          "zip": null,
         }
       `);
     });
