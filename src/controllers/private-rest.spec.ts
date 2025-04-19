@@ -30,6 +30,27 @@ describe(
       );
       expect(getRes2.statusCode).toBe(404);
     });
+
+    test("Overwrite deleted file", async () => {
+      const postRes1 = await request(app)
+        .post("/api/v3/apps/codecraft/draft/files/test.txt")
+        .attach("file", Buffer.from("test file content"), "test.txt");
+      expect(postRes1.statusCode.toString()).toMatch(/2\d\d/);
+
+      const deleteRes = await request(app).delete(
+        "/api/v3/apps/codecraft/draft/files/test.txt"
+      );
+      expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
+      const postRes2 = await request(app)
+        .post("/api/v3/apps/codecraft/draft/files/test.txt")
+        .attach("file", Buffer.from("test file content"), "test.txt");
+      expect(postRes2.statusCode.toString()).toMatch(/2\d\d/);
+      const getRes = await request(app).get(
+        "/api/v3/apps/codecraft/draft/files/test.txt"
+      );
+      expect(getRes.statusCode).toBe(200);
+      expect(getRes.text).toBe("test file content");
+    });
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
 );
