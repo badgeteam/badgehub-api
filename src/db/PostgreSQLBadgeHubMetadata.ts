@@ -192,8 +192,8 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async insertProject(
-    project: Exclude<DBInsertProject, keyof DBDatedData>,
-    mockDates?: Exclude<DBDatedData, "deleted_at">
+    project: Omit<DBInsertProject, keyof DBDatedData>,
+    mockDates?: Omit<DBDatedData, "deleted_at">
   ): Promise<void> {
     const createdAt = mockDates?.created_at ?? raw("now()");
     const updatedAt = mockDates?.updated_at ?? raw("now()");
