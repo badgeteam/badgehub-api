@@ -403,14 +403,12 @@ async function insertProjects(badgeHubData: BadgeHubData, userCount: number) {
     const categoryId = semiRandomNumber % CATEGORIES_COUNT;
     const { created_at, updated_at } = await getSemiRandomDates(projectSlug);
 
-    const inserted: DBInsertProject & DBDatedData = {
+    const inserted: DBInsertProject = {
       slug,
       user_id: userId,
-      created_at,
-      updated_at,
     };
 
-    await badgeHubData.insertProject(inserted);
+    await badgeHubData.insertProject(inserted, { created_at, updated_at });
     const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
       name: projectSlug,
       description,

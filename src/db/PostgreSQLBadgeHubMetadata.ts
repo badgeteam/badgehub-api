@@ -191,10 +191,17 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     return dbCategoryNames;
   }
 
-  async insertProject(project: DBInsertProject): Promise<void> {
-    const { keys, values } = getInsertKeysAndValuesSql(project);
-    const createdAt = project.created_at ?? raw("now()");
-    const updatedAt = project.updated_at ?? raw("now()");
+  async insertProject(
+    project: Exclude<DBInsertProject, keyof DBDatedData>,
+    mockDates?: Exclude<DBDatedData, "deleted_at">
+  ): Promise<void> {
+    const createdAt = mockDates?.created_at ?? raw("now()");
+    const updatedAt = mockDates?.updated_at ?? raw("now()");
+    const { keys, values } = getInsertKeysAndValuesSql({
+      ...project,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    });
     const insertAppMetadataSql = sql`insert into app_metadata_jsons (name, created_at, updated_at)
                                      values (${project.slug}, ${createdAt}, ${updatedAt})`;
 
