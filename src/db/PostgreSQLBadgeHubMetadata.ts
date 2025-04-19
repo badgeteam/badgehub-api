@@ -50,7 +50,7 @@ import { DBDatedData } from "@db/models/app/DBDatedData";
 import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 
-const ONE_KILO = 1000;
+const ONE_KILO = 1024;
 
 function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
