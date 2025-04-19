@@ -729,7 +729,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/files/latest/:filePath",
+    "/api/v3/apps/:slug/latest/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getLatestPublishedFile
@@ -784,7 +784,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/files/rev:revision/:filePath",
+    "/api/v3/apps/:slug/rev:revision/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getFileForVersion
@@ -1168,6 +1168,54 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "writeDraftFile",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.delete(
+    "/api/v3/apps/:slug/draft/files/:filePath",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.deleteDraftFile
+    ),
+
+    async function PrivateRestController_deleteDraftFile(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        filePath: {
+          in: "path",
+          name: "filePath",
+          required: true,
+          dataType: "string",
+        },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "deleteDraftFile",
           controller,
           response,
           next,
