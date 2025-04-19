@@ -645,76 +645,42 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
+      "CreateProjectProps": {
         "properties": {
-          "latest_revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "draft_revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "created_at": {
-            "type": "string"
-          },
-          "updated_at": {
-            "type": "string"
-          },
-          "deleted_at": {
-            "type": "string"
-          },
-          "git": {
+          "slug": {
             "type": "string"
           },
           "allow_team_fixes": {
             "type": "boolean"
+          },
+          "git": {
+            "type": "string"
           },
           "user_id": {
             "type": "number",
             "format": "double"
           }
         },
-        "required": ["user_id"],
-        "type": "object",
-        "description": "From T, pick a set of properties whose keys are in the union K"
-      },
-      "ProjectProps": {
-        "properties": {
-          "latest_revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "draft_revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "created_at": {
-            "type": "string"
-          },
-          "updated_at": {
-            "type": "string"
-          },
-          "deleted_at": {
-            "type": "string"
-          },
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
-          },
-          "user_id": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": ["user_id"],
+        "required": ["slug", "user_id"],
         "type": "object",
         "additionalProperties": false
       },
+      "Exclude_CreateProjectProps.slug_": {
+        "$ref": "#/components/schemas/CreateProjectProps",
+        "description": "Exclude from T those types that are assignable to U"
+      },
       "ProjectPropsPartial": {
         "properties": {
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "git": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "number",
+            "format": "double"
+          },
           "latest_revision": {
             "type": "number",
             "format": "double"
@@ -731,16 +697,6 @@
           },
           "deleted_at": {
             "type": "string"
-          },
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
-          },
-          "user_id": {
-            "type": "number",
-            "format": "double"
           }
         },
         "type": "object",
@@ -1084,7 +1040,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProjectProps"
+                "$ref": "#/components/schemas/Exclude_CreateProjectProps.slug_"
               }
             }
           }

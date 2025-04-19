@@ -19,6 +19,7 @@ import type { DBInsertProject } from "@db/models/app/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { Readable } from "node:stream";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import type { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -58,7 +59,7 @@ export class PrivateRestController {
   @Post("/apps/{slug}")
   public async createApp(
     @Path() slug: ProjectSlug,
-    @Body() props: ProjectProps
+    @Body() props: Exclude<CreateProjectProps, "slug">
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
   }

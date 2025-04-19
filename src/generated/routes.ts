@@ -369,50 +369,33 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
-    dataType: "refAlias",
-    type: {
-      dataType: "nestedObjectLiteral",
-      nestedProperties: {
-        latest_revision: { dataType: "double" },
-        draft_revision: { dataType: "double" },
-        created_at: { dataType: "string" },
-        updated_at: { dataType: "string" },
-        deleted_at: { dataType: "string" },
-        git: { dataType: "string" },
-        allow_team_fixes: { dataType: "boolean" },
-        user_id: { dataType: "double", required: true },
-      },
-      validators: {},
-    },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectProps: {
+  CreateProjectProps: {
     dataType: "refObject",
     properties: {
-      latest_revision: { dataType: "double" },
-      draft_revision: { dataType: "double" },
-      created_at: { dataType: "string" },
-      updated_at: { dataType: "string" },
-      deleted_at: { dataType: "string" },
-      git: { dataType: "string" },
+      slug: { dataType: "string", required: true },
       allow_team_fixes: { dataType: "boolean" },
+      git: { dataType: "string" },
       user_id: { dataType: "double", required: true },
     },
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Exclude_CreateProjectProps.slug_": {
+    dataType: "refAlias",
+    type: { ref: "CreateProjectProps", validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
+      allow_team_fixes: { dataType: "boolean" },
+      git: { dataType: "string" },
+      user_id: { dataType: "double" },
       latest_revision: { dataType: "double" },
       draft_revision: { dataType: "double" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
       deleted_at: { dataType: "string" },
-      git: { dataType: "string" },
-      allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "double" },
     },
     additionalProperties: false,
   },
@@ -1000,7 +983,7 @@ export function RegisterRoutes(
           in: "body",
           name: "props",
           required: true,
-          ref: "ProjectProps",
+          ref: "Exclude_CreateProjectProps.slug_",
         },
       };
 
