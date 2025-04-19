@@ -3,7 +3,7 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/app/Project";
-import { Version, RevisionNumberOrAlias } from "@domain/readModels/app/Version";
+import { RevisionNumberOrAlias, Version } from "@domain/readModels/app/Version";
 import { User } from "@domain/readModels/app/User";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
@@ -79,5 +79,7 @@ export interface BadgeHubMetadata {
     projectSlug: string,
     versionRevision: RevisionNumberOrAlias,
     filePath: string
-  ): Promise<FileMetadata>;
+  ): Promise<FileMetadata | undefined>;
+
+  deleteDraftFile(slug: string, filePath: string): Promise<void>;
 }

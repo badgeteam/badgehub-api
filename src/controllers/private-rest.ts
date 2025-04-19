@@ -101,6 +101,17 @@ export class PrivateRestController {
   }
 
   /**
+   * Upload a file to the latest draft version of the project.
+   */
+  @Delete("/apps/{slug}/draft/files/{filePath}")
+  public async deleteDraftFile(
+    @Path() slug: string,
+    @Path() filePath: string
+  ): Promise<void> {
+    await this.badgeHubData.deleteDraftFile(slug, filePath);
+  }
+
+  /**
    * Change the metadata of the latest draft version of the project.
    */
   @Patch("/apps/{slug}/draft/metadata")
@@ -153,7 +164,7 @@ export class PrivateRestController {
   /**
    * get the latest draft version of the app in zip format
    */
-  @Get("/apps/{slug}/draft/zip")
+  @Get("/apps/{slug}/draft/zip") // TODO disable until implemented
   public async getLatestPublishedZip(
     @Path() slug: string
   ): Promise<Uint8Array> {
@@ -163,7 +174,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/draft/zip")
+  @Post("/apps/{slug}/draft/zip") // TODO disable until implemented
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array

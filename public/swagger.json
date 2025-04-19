@@ -1143,7 +1143,7 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/files/latest/{filePath}": {
+    "/api/v3/apps/{slug}/latest/files/{filePath}": {
       "get": {
         "operationId": "GetLatestPublishedFile",
         "responses": {
@@ -1198,7 +1198,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/files/rev{revision}/{filePath}": {
+    "/api/v3/apps/{slug}/rev{revision}/files/{filePath}": {
       "get": {
         "operationId": "GetFileForVersion",
         "responses": {
@@ -1412,6 +1412,35 @@
             }
           }
         }
+      },
+      "delete": {
+        "operationId": "DeleteDraftFile",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Upload a file to the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       },
       "get": {
         "operationId": "GetDraftFile",
