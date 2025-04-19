@@ -91,14 +91,16 @@ const getVersionQuery = (
   switch (versionRevision) {
     case "draft":
       return sql`(select id
-                  from versions
-                  where revision = (select draft_revision from projects where slug = ${projectSlug})
-                    and project_slug = ${projectSlug})`;
+                        from versions
+                        where revision =
+                              (select draft_revision from projects where slug = ${projectSlug} and deleted_at is null)
+                          and project_slug = ${projectSlug})`;
     case "latest":
       return sql`(select id
-                  from versions
-                  where revision = (select latest_revision from projects where slug = ${projectSlug})
-                    and project_slug = ${projectSlug})`;
+                        from versions
+                        where revision =
+                              (select latest_revision from projects where slug = ${projectSlug} and deleted_at is null)
+                          and project_slug = ${projectSlug})`;
   }
 };
 
@@ -215,14 +217,16 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       return;
     }
     await this.pool.query(sql`update projects
-                              set ${setters}
-                              where slug = ${projectSlug}`);
+                                  set ${setters}
+                                  where slug = ${projectSlug}
+                                    and deleted_at is null`);
   }
 
   async deleteProject(projectSlug: ProjectSlug): Promise<void> {
     await this.pool.query(sql`update projects
-                              set deleted_at = now()
-                              where slug = ${projectSlug}`);
+                                  set deleted_at = now()
+                                  where slug = ${projectSlug}
+                                    and deleted_at is null`);
   }
 
   async publishVersion(
@@ -249,7 +253,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
              update projects
                set latest_revision = (select revision from published_version),
                  draft_revision = (select revision from new_draft_version)
-               where slug = ${projectSlug}
+               where slug = ${projectSlug} and deleted_at is null
                returning 1),
            copied_files as (
              insert into files
