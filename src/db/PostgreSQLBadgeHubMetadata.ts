@@ -111,12 +111,13 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async deleteDraftFile(slug: string, filePath: string): Promise<void> {
     const { dir, name, ext } = parsePath(filePath.split("/"));
-    await this.pool.query(sql`delete
-                              from files
+    await this.pool.query(sql`update files
+                              set deleted_at = now()
                               where version_id = (${getVersionQuery(slug, "draft")})
                                 and dir = ${dir}
                                 and name = ${name}
-                                and ext = ${ext}`);
+                                and ext = ${ext}
+                                and deleted_at is null`);
   }
 
   async getFileMetadata(
@@ -132,7 +133,8 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                                   where version_id = ${getVersionQuery(projectSlug, versionRevision)}
                                                     and dir = ${dir}
                                                     and name = ${name}
-                                                    and ext = ${ext}`);
+                                                    and ext = ${ext}
+                                                    and deleted_at is null`);
     if (!metadata) {
       return undefined;
     }
@@ -154,10 +156,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       sql`insert into files (version_id, dir, name, ext, mimetype, size_of_content, sha256)
           values (${getVersionQuery(projectSlug, "draft")}, ${dir}, ${name}, ${ext}, ${mimetype},
                   ${size}, ${sha256})
-          on conflict (version_id, dir, name, ext) do update set mimetype=${mimetype},
-                                                                 size_of_content=${size},
-                                                                 sha256=${sha256},
-                                                                 updated_at=now()`
+          on conflict (version_id, dir, name, ext) do update set mimetype = ${mimetype},
+                                                                 size_of_content = ${size},
+                                                                 sha256 = ${sha256},
+                                                                 updated_at = now(),
+                                                                 deleted_at = null`
     );
     if (mockDates) {
       await this.pool.query(sql`update files
