@@ -47,7 +47,7 @@ export interface BadgeHubMetadata {
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Version>;
 
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
+  getDraftVersion(projectSlug: ProjectSlug): Promise<Version | undefined>;
 
   getUser(userId: User["id"]): Promise<User>;
 

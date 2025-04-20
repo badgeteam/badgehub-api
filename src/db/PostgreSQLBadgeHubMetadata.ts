@@ -312,7 +312,9 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     };
   }
 
-  async getDraftVersion(projectSlug: ProjectSlug): Promise<Version> {
+  async getDraftVersion(
+    projectSlug: ProjectSlug
+  ): Promise<Version | undefined> {
     return this.getVersion(projectSlug, "draft");
   }
 
@@ -330,11 +332,12 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   async getVersion(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
-  ): Promise<Version> {
-    const dbVersion: DBVersion & { app_metadata: DBAppMetadataJSON } =
-      await this.pool
-        .query(
-          sql`select v.id,
+  ): Promise<Version | undefined> {
+    const dbVersion:
+      | undefined
+      | (DBVersion & { app_metadata: DBAppMetadataJSON }) = await this.pool
+      .query(
+        sql`select v.id,
                      v.revision,
                      v.semantic_version,
                      v.zip,
@@ -352,8 +355,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                      left join app_metadata_jsons m on v.app_metadata_json_id = m.id
               where v.id = (${getVersionQuery(projectSlug, versionRevision)})
           `
-        )
-        .then((res) => res.rows[0]);
+      )
+      .then((res) => res.rows[0]);
+    if (!dbVersion) {
+      return undefined;
+    }
     const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),

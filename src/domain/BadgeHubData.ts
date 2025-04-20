@@ -168,6 +168,9 @@ export class BadgeHubData {
     );
     const updatedDraftVersion =
       await this.badgeHubMetadata.getDraftVersion(slug);
+    if (!updatedDraftVersion) {
+      throw new Error(`Draft version not found for slug: ${slug}`);
+    }
     const updatedAppMetadata = updatedDraftVersion.app_metadata;
     const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
