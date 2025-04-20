@@ -127,6 +127,66 @@ describe(
       const getRes2 = await request(app).get(`/api/v3/apps/${Test_APP_ID}`);
       expect(getRes2.statusCode).toBe(404);
     });
+
+    test("publish version and change metadata", async () => {
+      // Create a new app
+      const TEST_APP_ID = `test_app_publish_${Date.now()}`;
+      const postRes = await request(app)
+        .post(`/api/v3/apps/${TEST_APP_ID}`)
+        .send({ user_id: TEST_USER_ID });
+      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+
+      // Add metadata to the app
+      const updateAppRes = await request(app)
+        .patch(`/api/v3/apps/${TEST_APP_ID}/draft/metadata`)
+        .send({
+          description: "Test App Description Before Publish",
+        });
+      expect(updateAppRes.status.toString()).toMatch(/2\d\d/);
+
+      // Verify the metadata was added
+      const getRes1 = await request(app).get(
+        `/api/v3/apps/${TEST_APP_ID}/draft`
+      );
+      expect(getRes1.statusCode).toBe(200);
+      expect(getRes1.body.version.app_metadata.description).toBe(
+        "Test App Description Before Publish"
+      );
+
+      // Publish the app to create a new version
+      const publishRes = await request(app).patch(
+        `/api/v3/apps/${TEST_APP_ID}/publish`
+      );
+      expect(publishRes.statusCode.toString()).toMatch(/2\d\d/);
+
+      // Update the metadata of the draft version after publishing
+      const updateAppRes2 = await request(app)
+        .patch(`/api/v3/apps/${TEST_APP_ID}/draft/metadata`)
+        .send({
+          description: "Test App Description After Publish",
+        });
+      expect(updateAppRes2.status.toString()).toMatch(/2\d\d/);
+
+      // Verify the metadata was updated on the draft version
+      const getDraftRes = await request(app).get(
+        `/api/v3/apps/${TEST_APP_ID}/draft`
+      );
+      expect(getDraftRes.statusCode).toBe(200);
+      expect(getDraftRes.body.name).toBe(TEST_APP_ID);
+      expect(getDraftRes.body.version.app_metadata.description).toBe(
+        "Test App Description After Publish"
+      );
+
+      // Verify the metadata of the published version remains unchanged
+      const getLatestRes = await request(app).get(
+        `/api/v3/apps/${TEST_APP_ID}`
+      );
+      expect(getLatestRes.statusCode).toBe(200);
+      expect(getLatestRes.body.name).toBe(TEST_APP_ID);
+      expect(getLatestRes.body.version.app_metadata.description).toBe(
+        "Test App Description Before Publish"
+      );
+    });
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
 );
