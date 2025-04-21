@@ -6,6 +6,33 @@
 import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 
+type CopyableAppMetadata = Omit<Required<DBAppMetadataJSON>, "id">;
+
+// Helper object so that we can have a type-safe way to create an array of all columns of the app app_metadata_json
+// The caveat here is that this is given that we have correctly specified DBAppMetadataJSON to match the app_metadata_json table
+const allAppMetadataRowsAsKeysObject: CopyableAppMetadata = {
+  author: undefined as never,
+  category: undefined as never,
+  description: undefined as never,
+  file_mappings: undefined as never,
+  file_mappings_overrides: undefined as never,
+  icon: undefined as never,
+  interpreter: undefined as never,
+  is_hidden: undefined as never,
+  is_library: undefined as never,
+  license_file: undefined as never,
+  main_executable: undefined as never,
+  main_executable_overrides: undefined as never,
+  name: undefined as never,
+  semantic_version: undefined as never,
+  created_at: undefined as never,
+  updated_at: undefined as never,
+} as const;
+
+export const APP_METADATA_ROWS = Object.keys(
+  allAppMetadataRowsAsKeysObject
+) as (keyof CopyableAppMetadata)[];
+
 export interface AppMetadataJSONRelation {
   app_metadata_json_id: DBAppMetadataJSON["id"];
 }

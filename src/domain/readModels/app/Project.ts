@@ -21,7 +21,7 @@ export interface ProjectCore {
   allow_team_fixes?: boolean;
 }
 
-export type ProjectWithoutVersion = Exclude<Project, "version">;
+export type ProjectWithoutVersion = Omit<Project, "version">;
 
 export interface Project extends ProjectCore, DatedData {
   // Computed
