@@ -9,7 +9,7 @@ import { FileMetadata } from "@domain/readModels/app/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/app/Category";
 import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
+import { DBProject } from "@db/models/app/DBProject";
 import {
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
@@ -20,6 +20,7 @@ import { UploadedFile } from "@domain/UploadedFile";
 import { DBDatedData } from "@db/models/app/DBDatedData";
 import { calcSha256 } from "@util/digests";
 import { TimestampTZ } from "@db/DBTypes";
+import { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
 
 export class BadgeHubData {
   constructor(
@@ -31,8 +32,11 @@ export class BadgeHubData {
     return this.badgeHubMetadata.insertUser(user);
   }
 
-  insertProject(project: DBInsertProject): Promise<void> {
-    return this.badgeHubMetadata.insertProject(project);
+  insertProject(
+    project: CreateProjectProps,
+    mockDates?: DBDatedData
+  ): Promise<void> {
+    return this.badgeHubMetadata.insertProject(project, mockDates);
   }
 
   updateProject(
@@ -164,10 +168,14 @@ export class BadgeHubData {
     );
     const updatedDraftVersion =
       await this.badgeHubMetadata.getDraftVersion(slug);
+    if (!updatedDraftVersion) {
+      throw new Error(`Draft version not found for slug: ${slug}`);
+    }
     const updatedAppMetadata = updatedDraftVersion.app_metadata;
     const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
     );
+    // TODO handle inconsistency caused by case of code aborting at this point
     await this._writeDraftFile(
       slug,
       ["metadata.json"],

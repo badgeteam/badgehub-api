@@ -81,6 +81,32 @@ const models: TsoaRoute.Models = {
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectSlug: {
+    dataType: "refAlias",
+    type: { dataType: "string", validators: {} },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  Dependency: {
+    dataType: "refObject",
+    properties: {
+      project_slug: { ref: "ProjectSlug", required: true },
+      semantic_version_range: { dataType: "string", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectStatusOnBadge: {
+    dataType: "refObject",
+    properties: {
+      badge: { ref: "Badge", required: true },
+      created_at: { dataType: "datetime", required: true },
+      updated_at: { dataType: "datetime", required: true },
+      deleted_at: { dataType: "datetime" },
+      status: { ref: "ProjectStatusName", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   RevisionNumber: {
     dataType: "refAlias",
     type: { dataType: "double", validators: {} },
@@ -190,32 +216,6 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectSlug: {
-    dataType: "refAlias",
-    type: { dataType: "string", validators: {} },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Dependency: {
-    dataType: "refObject",
-    properties: {
-      project_slug: { ref: "ProjectSlug", required: true },
-      semantic_version_range: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectStatusOnBadge: {
-    dataType: "refObject",
-    properties: {
-      badge: { ref: "Badge", required: true },
-      created_at: { dataType: "datetime", required: true },
-      updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
-      status: { ref: "ProjectStatusName", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   User: {
     dataType: "refObject",
     properties: {
@@ -267,6 +267,76 @@ const models: TsoaRoute.Models = {
       deleted_at: { dataType: "datetime" },
     },
     additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Pick_Project.Exclude_keyofProject.version__": {
+    dataType: "refAlias",
+    type: {
+      dataType: "nestedObjectLiteral",
+      nestedProperties: {
+        name: { dataType: "string" },
+        min_firmware: { dataType: "double" },
+        max_firmware: { dataType: "double" },
+        git_commit_id: { dataType: "string" },
+        published_at: { dataType: "datetime" },
+        download_counter: { dataType: "double" },
+        license: { dataType: "string" },
+        size_of_zip: { dataType: "double" },
+        size_of_content: { dataType: "double" },
+        category: { ref: "AppCategoryName", required: true },
+        description: { dataType: "string" },
+        revision: { dataType: "double" },
+        status: { ref: "ProjectStatusName" },
+        user_name: { dataType: "string" },
+        interpreter: { dataType: "string" },
+        badges: { dataType: "array", array: { dataType: "string" } },
+        dependencies: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "Dependency" },
+        },
+        states: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "ProjectStatusOnBadge" },
+        },
+        versions: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "Version" },
+        },
+        votes: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "VoteFromUser" },
+        },
+        warnings: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "WarningFromUser" },
+        },
+        collaborators: {
+          dataType: "array",
+          array: { dataType: "refObject", ref: "User" },
+        },
+        slug: { dataType: "string", required: true },
+        user_id: { dataType: "double", required: true },
+        git: { dataType: "string" },
+        allow_team_fixes: { dataType: "boolean" },
+        created_at: { dataType: "datetime", required: true },
+        updated_at: { dataType: "datetime", required: true },
+        deleted_at: { dataType: "datetime" },
+      },
+      validators: {},
+    },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  "Omit_Project.version_": {
+    dataType: "refAlias",
+    type: {
+      ref: "Pick_Project.Exclude_keyofProject.version__",
+      validators: {},
+    },
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  ProjectWithoutVersion: {
+    dataType: "refAlias",
+    type: { ref: "Omit_Project.version_", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Project: {
@@ -324,24 +394,14 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Exclude_Project.version_": {
-    dataType: "refAlias",
-    type: { ref: "Project", validators: {} },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectWithoutVersion: {
-    dataType: "refAlias",
-    type: { ref: "Exclude_Project.version_", validators: {} },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
+        name: { dataType: "string", required: true },
         email: { dataType: "string", required: true },
         admin: { dataType: "boolean" },
-        name: { dataType: "string", required: true },
         password: { dataType: "string", required: true },
         remember_token: { dataType: "string" },
         editor: { dataType: "string" },
@@ -356,9 +416,9 @@ const models: TsoaRoute.Models = {
   UserProps: {
     dataType: "refObject",
     properties: {
+      name: { dataType: "string", required: true },
       email: { dataType: "string", required: true },
       admin: { dataType: "boolean" },
-      name: { dataType: "string", required: true },
       password: { dataType: "string", required: true },
       remember_token: { dataType: "string" },
       editor: { dataType: "string" },
@@ -369,50 +429,37 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Pick_DBInsertProject.Exclude_keyofDBInsertProject.slug__": {
+  "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
     dataType: "refAlias",
     type: {
       dataType: "nestedObjectLiteral",
       nestedProperties: {
-        latest_revision: { dataType: "double" },
-        draft_revision: { dataType: "double" },
-        created_at: { dataType: "string" },
-        updated_at: { dataType: "string" },
-        deleted_at: { dataType: "string" },
+        user_id: { dataType: "double", required: true },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
-        user_id: { dataType: "double", required: true },
       },
       validators: {},
     },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  ProjectProps: {
-    dataType: "refObject",
-    properties: {
-      latest_revision: { dataType: "double" },
-      draft_revision: { dataType: "double" },
-      created_at: { dataType: "string" },
-      updated_at: { dataType: "string" },
-      deleted_at: { dataType: "string" },
-      git: { dataType: "string" },
-      allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "double", required: true },
+  "Omit_CreateProjectProps.slug_": {
+    dataType: "refAlias",
+    type: {
+      ref: "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__",
+      validators: {},
     },
-    additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      latest_revision: { dataType: "double" },
-      draft_revision: { dataType: "double" },
-      created_at: { dataType: "string" },
-      updated_at: { dataType: "string" },
-      deleted_at: { dataType: "string" },
+      user_id: { dataType: "double" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
-      user_id: { dataType: "double" },
+      created_at: { dataType: "string" },
+      updated_at: { dataType: "string" },
+      latest_revision: { dataType: "double" },
+      draft_revision: { dataType: "double" },
     },
     additionalProperties: false,
   },
@@ -1000,7 +1047,7 @@ export function RegisterRoutes(
           in: "body",
           name: "props",
           required: true,
-          ref: "ProjectProps",
+          ref: "Omit_CreateProjectProps.slug_",
         },
       };
 

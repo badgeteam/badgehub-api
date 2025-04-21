@@ -18,7 +18,10 @@ import { TimestampTZ } from "@db/DBTypes";
 export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;
 
-  insertProject(project: DBInsertProject): Promise<void>;
+  insertProject(
+    project: DBInsertProject,
+    mockDates?: DBDatedData
+  ): Promise<void>;
 
   updateProject(
     projectSlug: ProjectSlug,
@@ -44,7 +47,7 @@ export interface BadgeHubMetadata {
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Version>;
 
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
+  getDraftVersion(projectSlug: ProjectSlug): Promise<Version | undefined>;
 
   getUser(userId: User["id"]): Promise<User>;
 

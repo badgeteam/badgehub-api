@@ -40,10 +40,7 @@ export const assertDefinedAndNotNull: AssertDefinedAndNotNull = (
   assertNotNull(item, errorMessage);
 };
 
-export type WithRequiredProp<T, K extends keyof T> = Exclude<
-  T,
-  "published_at"
-> &
+export type WithRequiredProp<T, K extends keyof T> = Omit<T, "published_at"> &
   Required<Pick<T, K>>;
 
 type AssertDefinedProp = <T extends object, K extends keyof T>(
