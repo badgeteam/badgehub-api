@@ -33,6 +33,7 @@ import {
 } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@db/models/app/DBVersion";
 import {
+  APP_METADATA_ROWS,
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
 } from "@db/models/app/DBAppMetadataJSON";
@@ -46,7 +47,7 @@ import { UploadedFile } from "@domain/UploadedFile";
 import path from "node:path";
 import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/app/FileMetadata";
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData, DBSoftDeletable } from "@db/models/app/DBDatedData";
 import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 
@@ -146,7 +147,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     pathParts: string[],
     uploadedFile: UploadedFile,
     sha256: string,
-    mockDates?: DBDatedData
+    mockDates?: DBDatedData & DBSoftDeletable
   ): Promise<void> {
     const { dir, name, ext } = parsePath(pathParts);
     const mimetype = uploadedFile.mimetype;
@@ -193,7 +194,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async insertProject(
     project: Omit<DBInsertProject, keyof DBDatedData>,
-    mockDates?: Omit<DBDatedData, "deleted_at">
+    mockDates?: DBDatedData
   ): Promise<void> {
     const createdAt = mockDates?.created_at ?? raw("now()");
     const updatedAt = mockDates?.updated_at ?? raw("now()");
@@ -243,25 +244,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: string,
     mockDate?: TimestampTZ
   ): Promise<void> {
-    const metadataRows: (keyof DBAppMetadataJSON)[] = [
-      "category",
-      "name",
-      "description",
-      "author",
-      "icon",
-      "license_file",
-      "is_library",
-      "is_hidden",
-      "semantic_version",
-      "interpreter",
-      "main_executable",
-      "main_executable_overrides",
-      "file_mappings",
-      "file_mappings_overrides",
-      "created_at",
-      "updated_at",
-      "deleted_at",
-    ];
     await this.pool.query(sql`
             with published_version as (
                 update versions v
@@ -269,20 +251,20 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                     where v.id = (${getVersionQuery(projectSlug, "draft")})
                     returning revision, id, app_metadata_json_id),
                  copied_app_metadata as (
-                   insert into app_metadata_jsons (${join(metadataRows.map(raw))})
-                     (select ${join(metadataRows.map(raw))}
-                      from app_metadata_jsons
-                      where id = (select app_metadata_json_id from published_version))
-                     returning id),
+                     insert into app_metadata_jsons (${join(APP_METADATA_ROWS.map(raw))})
+                         (select ${join(APP_METADATA_ROWS.map(raw))}
+                          from app_metadata_jsons
+                          where id = (select app_metadata_json_id from published_version))
+                         returning id),
                  new_draft_version as (
                      insert into versions (project_slug, app_metadata_json_id, revision, created_at, updated_at)
                          (select project_slug,
-                                (select id from copied_app_metadata),
-                                revision + 1,
-                                (${mockDate ?? raw("now()")}),
-                                (${mockDate ?? raw("now()")})
-                         from versions
-                         where id = ${getVersionQuery(projectSlug, "draft")})
+                                 (select id from copied_app_metadata),
+                                 revision + 1,
+                                 (${mockDate ?? raw("now()")}),
+                                 (${mockDate ?? raw("now()")})
+                          from versions
+                          where id = ${getVersionQuery(projectSlug, "draft")})
                          returning revision, id),
                  updated_projects as (
                      update projects
@@ -307,7 +289,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                          from files
                          where version_id = (select id from published_version)
                          returning 1)
-        select 1
+            select 1
         `);
   }
 
@@ -374,7 +356,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                            v.app_metadata_json_id,
                            v.created_at,
                            v.updated_at,
-                           v.deleted_at,
                            to_jsonb(m) as app_metadata
                     from versions v
                              left join app_metadata_jsons m on v.app_metadata_json_id = m.id

@@ -29,9 +29,9 @@ export function getBaseSelectProjectQuery() {
                       u.name as author_name
                from projects p
                         left join users u on p.user_id = u.id and u.deleted_at is null
-                        left join versions v on p.latest_revision = v.revision and p.slug = v.project_slug and v.deleted_at is null
-                        left join app_metadata_jsons m on v.app_metadata_json_id = m.id and v.deleted_at is null
-                        left join categories c on m.category = c.name and c.deleted_at is null
+                        left join versions v on p.latest_revision = v.revision and p.slug = v.project_slug
+                        left join app_metadata_jsons m on v.app_metadata_json_id = m.id
+                        left join categories c on m.category = c.name
     `;
 }
 
@@ -39,7 +39,6 @@ export const projectQueryResponseToReadModel = (
   enrichedDBProject: ProjectQueryResponse
 ): ProjectWithoutVersion => {
   return {
-    version: undefined, // TODO
     allow_team_fixes: false,
     user_id: enrichedDBProject.user_id,
     user_name: enrichedDBProject.author_name, // todo maybe change to email, full id or object with multiple fields
@@ -59,7 +58,6 @@ export const projectQueryResponseToReadModel = (
     slug: enrichedDBProject.slug,
     states: undefined,
     status: undefined, // TODO
-    versions: undefined, // TODO
     dependencies: undefined, // TODO
     votes: undefined, // TODO
     warnings: undefined, // TODO

@@ -1,8 +1,10 @@
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData, DBSoftDeletable } from "@db/models/app/DBDatedData";
 import { DatedData } from "@domain/readModels/app/DatedData";
 import moment from "moment";
 
-export function extractDatedDataConverted(dbDatedData: DBDatedData): DatedData {
+export function extractDatedDataConverted(
+  dbDatedData: DBDatedData & DBSoftDeletable
+): DatedData {
   const datedData: DatedData = {
     created_at: timestampTZToDate(dbDatedData.created_at),
     updated_at: timestampTZToDate(dbDatedData.updated_at),
@@ -31,9 +33,9 @@ export function timestampTZToDate<T extends string | undefined | null>(
   ) as DateIfPossible<T>;
 }
 
-export type OmitDatedData<T extends DBDatedData> = Omit<
+export type OmitDatedData<T extends DBDatedData & DBSoftDeletable> = Omit<
   T,
-  "deleted_at" | "updated_at" | "created_at"
+  keyof DBDatedData | keyof DBSoftDeletable
 >;
 
 export function convertDatedData<T extends DBDatedData>(
@@ -45,7 +47,7 @@ export function convertDatedData<T extends DBDatedData>(
   };
 }
 
-export function stripDatedData<T extends DBDatedData>(
+export function stripDatedData<T extends DBDatedData & DBSoftDeletable>(
   datedData: T
 ): OmitDatedData<T> {
   const { deleted_at, updated_at, created_at, ...dataWithoutDatedData } =
