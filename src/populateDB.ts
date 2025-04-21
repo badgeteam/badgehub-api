@@ -9,7 +9,6 @@ import {
 import sql, { raw } from "sql-template-tag";
 import { DBInsertUser } from "@db/models/app/DBUser";
 import { DBDatedData } from "@db/models/app/DBDatedData";
-import { DBInsertProject } from "@db/models/app/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
@@ -150,16 +149,16 @@ const get1DayAfterSemiRandomUpdatedAt = async (projectSlug: string) => {
 
 async function publishSomeProjects(
   badgeHubData: BadgeHubData,
-  projectSlugs: string[]
+  projectNames: string[]
 ) {
-  const halfOfProjectSlugs = projectSlugs.slice(0, projectSlugs.length >> 1);
+  const halfOfProjectNames = projectNames.slice(0, projectNames.length >> 1);
   await Promise.all(
-    halfOfProjectSlugs.map(async (projectSlug) => {
+    halfOfProjectNames.map(async (projectName) => {
       await badgeHubData.publishVersion(
-        projectSlug,
-        await get1DayAfterSemiRandomUpdatedAt(projectSlug)
+        projectName.toLowerCase(),
+        await get1DayAfterSemiRandomUpdatedAt(projectName)
       );
-      await writeDraftAppFiles(badgeHubData, projectSlug, "0.0.1");
+      await writeDraftAppFiles(badgeHubData, projectName, "0.0.1");
     })
   );
 }
@@ -171,9 +170,12 @@ async function populateDatabases(
   await insertBadges(client);
   await insertCategories(client);
   await insertUsers(badgeHubData);
-  const projectSlugs = await insertProjects(badgeHubData);
-  await publishSomeProjects(badgeHubData, projectSlugs);
-  await badgeProjectCrossTable(client, projectSlugs);
+  const projectNames = await insertProjects(badgeHubData);
+  await publishSomeProjects(badgeHubData, projectNames);
+  await badgeProjectCrossTable(
+    client,
+    projectNames.map((s) => s.toLowerCase())
+  );
 }
 
 function date(millisBackFrom2025: number) {
@@ -462,7 +464,7 @@ async function insertProjects(badgeHubData: BadgeHubData) {
     await writeDraftAppFiles(badgeHubData, projectName);
   }
 
-  return projectNames.map((slug) => slug.toLowerCase());
+  return projectNames;
 }
 
 async function badgeProjectCrossTable(

@@ -458,7 +458,6 @@ const models: TsoaRoute.Models = {
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "string" },
       updated_at: { dataType: "string" },
-      deleted_at: { dataType: "string" },
       latest_revision: { dataType: "double" },
       draft_revision: { dataType: "double" },
     },

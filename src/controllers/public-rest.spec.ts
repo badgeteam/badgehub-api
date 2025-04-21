@@ -6,6 +6,14 @@ import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
 import { Badge } from "@domain/readModels/Badge";
 import { isInDebugMode } from "@util/debug";
 import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
+import { stripDatedData } from "@db/sqlHelpers/dbDates";
+
+function stripId<T extends { id?: unknown } | object>(
+  stripDatedData1: T
+): Omit<T, "id"> {
+  const { id, ...rest } = stripDatedData1 as { id?: unknown };
+  return rest as Omit<T, "id">;
+}
 
 describe(
   "Public API Routes",
@@ -50,7 +58,7 @@ describe(
           "interpreter": "python",
           "license": "MIT",
           "name": "CodeCraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "size_of_zip": null,
           "slug": "codecraft",
@@ -83,7 +91,7 @@ describe(
           "interpreter": "python",
           "license": "MIT",
           "name": "CodeCraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "size_of_zip": null,
           "slug": "codecraft",
@@ -155,7 +163,7 @@ describe(
           "git_commit_id": null,
           "id": 1,
           "project_slug": "codecraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "semantic_version": null,
           "size_of_zip": null,
@@ -186,7 +194,7 @@ describe(
           "interpreter": "python",
           "license": "MIT",
           "name": "CodeCraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "size_of_zip": null,
           "slug": "codecraft",
@@ -258,7 +266,7 @@ describe(
           "git_commit_id": null,
           "id": 1,
           "project_slug": "codecraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "semantic_version": null,
           "size_of_zip": null,
@@ -294,7 +302,7 @@ describe(
           "interpreter": "python",
           "license": "MIT",
           "name": "CodeCraft",
-          "published_at": "2024-06-10T14:18:04.636Z",
+          "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
           "size_of_zip": null,
           "slug": "codecraft",
@@ -320,48 +328,56 @@ describe(
           "main_executable": null,
           "main_executable_overrides": null,
           "name": "CodeCraft",
-          "semantic_version": null,
+          "semantic_version": "0.0.1",
         }
       `);
       const sortedFiles = files
         .map((f) => f.sha256)
         .sort()
         .map((sha) => files.find((f) => f.sha256 === sha));
-      expect(sortedFiles).toMatchInlineSnapshot(`
+      expect(
+        sortedFiles
+          .filter((f) => f !== undefined)
+          .map((f) => stripId(stripDatedData(f)))
+      ).toMatchInlineSnapshot(`
         [
           {
-            "created_at": "2024-11-01T13:12:19.376Z",
-            "dir": "",
-            "ext": ".py",
-            "full_path": "__init__.py",
-            "id": 176,
-            "mimetype": "text/x-python-script",
-            "name": "__init__",
-            "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
-            "size_formatted": "0.04KB",
-            "size_of_content": "43",
-            "updated_at": "2022-09-05T13:12:19.376Z",
-          },
-          {
-            "created_at": "2024-11-01T13:12:19.376Z",
             "dir": "",
             "ext": ".json",
             "full_path": "metadata.json",
-            "id": 175,
             "mimetype": "application/json",
             "name": "metadata",
-            "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
-            "size_formatted": "0.25KB",
-            "size_of_content": "259",
-            "updated_at": "2022-09-05T13:12:19.376Z",
+            "sha256": "1f4d5b318a2139beec2517700780dc8c22ece9dda55a3f0b1a7dc0761d14dce4",
+            "size_formatted": "0.28KB",
+            "size_of_content": "286",
+          },
+          {
+            "dir": "",
+            "ext": ".txt",
+            "full_path": "test.txt",
+            "mimetype": "text/plain",
+            "name": "test",
+            "sha256": "60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3",
+            "size_formatted": "0.02KB",
+            "size_of_content": "17",
+          },
+          {
+            "dir": "",
+            "ext": ".py",
+            "full_path": "__init__.py",
+            "mimetype": "text/x-python-script",
+            "name": "__init__",
+            "sha256": "8a0f66fd92bb888c9fca54ad993b083dcf046587dfc392b51e02966fb6eb4527",
+            "size_formatted": "0.05KB",
+            "size_of_content": "48",
           },
         ]
       `);
 
       expect(restVersion).toMatchInlineSnapshot(`
         {
-          "app_metadata_json_id": 1,
-          "created_at": "2024-06-10T14:18:04.636Z",
+          "app_metadata_json_id": 88,
+          "created_at": "2022-09-06T13:12:19.376Z",
           "download_count": "0",
           "git_commit_id": null,
           "id": 88,
@@ -370,7 +386,7 @@ describe(
           "revision": 1,
           "semantic_version": null,
           "size_of_zip": null,
-          "updated_at": "2024-06-10T14:18:04.636Z",
+          "updated_at": "2022-09-06T13:12:19.376Z",
           "zip": null,
         }
       `);
@@ -383,12 +399,12 @@ describe(
           `/api/v3/apps/codecraft/${revision}/files/metadata.json`
         );
         expect(getRes.statusCode).toBe(200);
-        const metadata = JSON.parse(getRes.text) as AppMetadataJSON;
+        const metadata = JSON.parse(getRes.text) as AppMetadataJSON; // TODO, seems like we are returning the wrong content-type since we need to use .text here.
         expect(metadata.name).toEqual("CodeCraft");
       }
     );
 
-    test.each(["draft", "latest", "rev0", "rev1"])(
+    test.each(["latest", "rev0"])(
       "GET /apps/{slug}/%s/files/__init__.py",
       async (revision) => {
         const getRes = await request(app).get(
@@ -397,6 +413,19 @@ describe(
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toEqual(
           "print('Hello world from the CodeCraft app')"
+        );
+      }
+    );
+
+    test.each(["draft", "rev1"])(
+      "GET /apps/{slug}/%s/files/__init__.py",
+      async (revision) => {
+        const getRes = await request(app).get(
+          `/api/v3/apps/codecraft/${revision}/files/__init__.py`
+        );
+        expect(getRes.statusCode).toBe(200);
+        expect(getRes.text).toEqual(
+          "print('Hello world from the CodeCraft app0.0.1')"
         );
       }
     );

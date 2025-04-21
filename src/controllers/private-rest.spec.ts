@@ -4,6 +4,7 @@ import express from "express";
 import { createExpressServer } from "@createExpressServer";
 import { isInDebugMode } from "@util/debug";
 import { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
+import { stripDatedData } from "@db/sqlHelpers/dbDates";
 
 const TEST_USER_ID = 0;
 describe(
@@ -58,73 +59,72 @@ describe(
       const createProjectProps: Omit<CreateProjectProps, "slug"> = {
         user_id: TEST_USER_ID,
       };
-
-      const Test_APP_ID = `test_app_${Date.now()}`;
+      // Reason that we make the test app id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
+      const dynamicTestAppId = `test_app_${Date.now()}`;
       const postRes = await request(app)
-        .post(`/api/v3/apps/${Test_APP_ID}`)
+        .post(`/api/v3/apps/${dynamicTestAppId}`)
         .send(createProjectProps);
       expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
       const getRes = await request(app).get(
-        `/api/v3/apps/${Test_APP_ID}/draft`
+        `/api/v3/apps/${dynamicTestAppId}/draft`
       );
       expect(getRes.statusCode).toBe(200);
-      expect(getRes.body).toMatchInlineSnapshot(`
-        {
-          "allow_team_fixes": false,
-          "category": "Uncategorised",
-          "collaborators": [],
-          "created_at": "2025-04-20T07:20:43.803Z",
-          "description": null,
-          "git": null,
-          "git_commit_id": null,
-          "interpreter": null,
-          "license": null,
-          "name": null,
-          "published_at": null,
-          "revision": null,
-          "size_of_zip": null,
-          "slug": "test_app_1745133846421",
-          "updated_at": "2025-04-20T07:20:43.803Z",
-          "user_id": 0,
-          "user_name": "TechTinkerer",
-          "version": {
-            "app_metadata": {
-              "author": null,
-              "category": null,
-              "description": null,
-              "file_mappings": null,
-              "file_mappings_overrides": null,
-              "icon": null,
-              "interpreter": null,
-              "is_hidden": null,
-              "is_library": null,
-              "license_file": null,
-              "main_executable": null,
-              "main_executable_overrides": null,
-              "name": "test_app_1745133846421",
-              "semantic_version": null,
-            },
-            "app_metadata_json_id": 93,
-            "created_at": "2025-04-20T07:20:43.803Z",
-            "download_count": "0",
-            "files": [],
-            "git_commit_id": null,
-            "id": 136,
-            "project_slug": "test_app_1745133846421",
-            "published_at": null,
-            "revision": 0,
-            "semantic_version": null,
-            "size_of_zip": null,
-            "updated_at": "2025-04-20T07:20:43.803Z",
-            "zip": null,
+      expect({
+        ...stripDatedData(getRes.body),
+        version: stripDatedData(getRes.body.version),
+      }).toMatchObject({
+        allow_team_fixes: false,
+        category: "Uncategorised",
+        collaborators: [],
+        description: null,
+        git: null,
+        git_commit_id: null,
+        interpreter: null,
+        license: null,
+        name: null,
+        published_at: null,
+        revision: null,
+        size_of_zip: null,
+        slug: dynamicTestAppId,
+        user_id: 0,
+        user_name: "TechTinkerer",
+        version: {
+          app_metadata: {
+            author: null,
+            category: null,
+            description: null,
+            file_mappings: null,
+            file_mappings_overrides: null,
+            icon: null,
+            interpreter: null,
+            is_hidden: null,
+            is_library: null,
+            license_file: null,
+            main_executable: null,
+            main_executable_overrides: null,
+            name: dynamicTestAppId,
+            semantic_version: null,
           },
-        }
-      `);
+          app_metadata_json_id: expect.any(Number),
+          download_count: "0",
+          files: [],
+          git_commit_id: null,
+          id: expect.any(Number),
+          project_slug: dynamicTestAppId,
+          published_at: null,
+          revision: 0,
+          semantic_version: null,
+          size_of_zip: null,
+          zip: null,
+        },
+      });
       const deleteRes = await request(app).delete(
-        `/api/v3/apps/${Test_APP_ID}`
+        `/api/v3/apps/${dynamicTestAppId}`
       );
       expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes2 = await request(app).get(`/api/v3/apps/${Test_APP_ID}`);
+      const getRes2 = await request(app).get(
+        `/api/v3/apps/${dynamicTestAppId}`
+      );
       expect(getRes2.statusCode).toBe(404);
     });
 
