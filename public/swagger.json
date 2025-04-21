@@ -810,9 +810,6 @@
           "updated_at": {
             "type": "string"
           },
-          "deleted_at": {
-            "type": "string"
-          },
           "latest_revision": {
             "type": "number",
             "format": "double"
