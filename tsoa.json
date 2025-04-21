@@ -10,18 +10,18 @@
   "spec": {
     "outputDirectory": "public",
     "version": "3",
-    "specVersion": 3
+    "specVersion": 3,
+    "securityDefinitions": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "routes": {
     "routesDir": "src/generated",
     "esm": true,
     "authenticationModule": "./authentication.ts"
-  },
-  "securityDefinitions": {
-    "bearer": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
-    }
   }
 }

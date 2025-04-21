@@ -29,6 +29,15 @@ const expressAuthenticationRecasted = expressAuthentication as (
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+  ForbiddenError: {
+    dataType: "refObject",
+    properties: {
+      status: { dataType: "enum", enums: ["Unauthorized"], required: true },
+      details: { dataType: "string", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Badge: {
     dataType: "refObject",
     properties: {
@@ -507,7 +516,7 @@ export function RegisterRoutes(
 
   app.get(
     "/api/v3/private",
-    authenticateMiddleware([{ bearer: [] }]),
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getPrivate

@@ -1,12 +1,12 @@
 import { RegisterRoutes } from "./generated/routes";
-import { addTsoaValidationFailureLogging } from "@util/logging";
 import { EXPRESS_PORT, NODE_ENV } from "@config";
 import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
-import express from "express";
+import express, { NextFunction } from "express";
 import openapi from "./openapi";
 import { pinoHttp } from "pino-http";
-import { testJwtMiddleware } from "@auth/jwt";
+import { ForbiddenError } from "@controllers/public-rest";
+import { JOSEError, JWTExpired } from "jose/dist/types/util/errors";
 
 async function startServer() {
   const app = express();
@@ -28,7 +28,9 @@ async function startServer() {
 
   RegisterRoutes(app);
 
-  addTsoaValidationFailureLogging(app);
+  app.use(errorHandler);
+
+  // addTsoaValidationFailureLogging(app);
 
   await runMigrations();
   app.listen(EXPRESS_PORT, () => {
@@ -40,3 +42,22 @@ async function startServer() {
 
 // noinspection JSIgnoredPromiseFromCall
 startServer();
+
+// Handle TSOA errors
+export function errorHandler(
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: NextFunction
+) {
+  const jwtError = err as JOSEError & { status: number };
+
+  if (jwtError.status !== 200) {
+    return res.status(401).json({
+      status: jwtError.status,
+      message: "Please login first",
+    } as ForbiddenError);
+  } else {
+    next();
+  }
+}
