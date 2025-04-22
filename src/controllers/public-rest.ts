@@ -22,7 +22,7 @@ import { Readable } from "node:stream";
  * npm run swagger
  */
 
-export interface ForbiddenError {
+export interface JwtError extends Error {
   status: number;
   message: string;
 }
@@ -40,7 +40,7 @@ export class PublicRestController {
   /**
    * Only for testing auth endpoint
    */
-  @Response<ForbiddenError>(403, "Forbidden") // Doesn't work
+  @Response<JwtError>(403, "Forbidden") // Doesn't work
   @Security("bearer", ["hacker"])
   @Get("/private")
   public async getPrivate() {
