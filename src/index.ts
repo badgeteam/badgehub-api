@@ -5,8 +5,7 @@ import { runMigrations } from "@db/migrations";
 import express, { NextFunction } from "express";
 import openapi from "./openapi";
 import { pinoHttp } from "pino-http";
-import { ForbiddenError } from "@controllers/public-rest";
-import { JOSEError, JWTExpired } from "jose/dist/types/util/errors";
+import { jwtErrorHandler } from "@auth/jwt-error";
 
 async function startServer() {
   const app = express();
@@ -28,7 +27,7 @@ async function startServer() {
 
   RegisterRoutes(app);
 
-  app.use(errorHandler);
+  app.use(jwtErrorHandler);
 
   // addTsoaValidationFailureLogging(app);
 
@@ -42,22 +41,3 @@ async function startServer() {
 
 // noinspection JSIgnoredPromiseFromCall
 startServer();
-
-// Handle TSOA errors
-export function errorHandler(
-  err: Error,
-  req: express.Request,
-  res: express.Response,
-  next: NextFunction
-) {
-  const jwtError = err as JOSEError & { status: number };
-
-  if (jwtError.status !== 200) {
-    return res.status(401).json({
-      status: jwtError.status,
-      message: "Please login first",
-    } as ForbiddenError);
-  } else {
-    next();
-  }
-}

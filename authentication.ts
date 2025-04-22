@@ -1,5 +1,7 @@
 import * as express from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
+import { JOSEError } from "jose/dist/types/util/errors";
+import { JwtError } from "@controllers/public-rest";
 
 export function expressAuthentication(
   request: express.Request,
@@ -25,7 +27,7 @@ export function expressAuthentication(
       return;
     }
 
-    console.log("token", token);
+    // console.log("token", token);
 
     // Create a JWKS client using Keycloak's JWKS endpoint
     const JWKS = createRemoteJWKSet(
@@ -42,10 +44,14 @@ export function expressAuthentication(
       console.log("payload", payload);
       console.log("protectedHeader", protectedHeader);
 
-      resolve(`{"status": 200}`);
+      resolve(0);
     } catch (error) {
-      console.error(error);
-      reject(error);
+      console.error("error", error);
+      reject({
+        status: 401,
+        name: "Unauthorized",
+        message: "Authentication failed",
+      } satisfies JwtError);
     }
   });
 }
