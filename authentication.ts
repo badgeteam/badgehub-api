@@ -1,9 +1,15 @@
 import * as express from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { JOSEError } from "jose/dist/types/util/errors";
 import { JwtError } from "@controllers/public-rest";
 
-export function expressAuthentication(
+// Create a JWKS client using Keycloak's JWKS endpoint
+const JWKS = createRemoteJWKSet(
+  new URL(
+    "https://lemur-11.cloud-iam.com/auth/realms/badgehub/protocol/openid-connect/certs"
+  )
+);
+
+export async function expressAuthentication(
   request: express.Request,
   securityName: string,
   scopes?: string[]
@@ -12,46 +18,52 @@ export function expressAuthentication(
   console.log("securityName", securityName);
   console.log("scopes", scopes);
 
-  return new Promise(async (resolve, reject) => {
-    const authHeader = request.header("authorization");
+  if (securityName !== "bearer") {
+    throw new Error(`Unsupported security scheme: ${securityName}`);
+  }
 
-    if (!authHeader) {
-      reject(new Error("Authorization header is missing"));
-      return;
-    }
+  const authHeader = request.header("authorization");
 
-    const [bearer, token] = authHeader.split(" ");
+  if (!authHeader) {
+    throw new Error("Authorization header is missing");
+  }
 
-    if (bearer != "Bearer" || !token || token == "undefined") {
-      reject(new Error("Not authenticated"));
-      return;
-    }
+  const [bearer, token] = authHeader.split(" ");
 
-    // console.log("token", token);
+  if (bearer != "Bearer" || !token || token == "undefined") {
+    throw new Error("Not authenticated");
+  }
 
-    // Create a JWKS client using Keycloak's JWKS endpoint
-    const JWKS = createRemoteJWKSet(
-      new URL(
-        "https://lemur-11.cloud-iam.com/auth/realms/badgehub/protocol/openid-connect/certs"
-      )
-    );
+  try {
+    // Verify the JWT
+    const { payload } = await jwtVerify(token, JWKS, {
+      issuer: "https://lemur-11.cloud-iam.com/auth/realms/badgehub",
+      // audience: AUDIENCE,
+      // Add other validation options as needed
+    });
 
-    try {
-      // Verify the JWT
-      const { payload, protectedHeader } = await jwtVerify(token, JWKS, {
-        issuer: "https://lemur-11.cloud-iam.com/auth/realms/badgehub",
-      });
-      console.log("payload", payload);
-      console.log("protectedHeader", protectedHeader);
+    // Check if token has the required scopes/roles
+    // if (scopes && scopes.length > 0) {
+    //   const tokenScopes: string[] = payload.scope?.split(' ') || [];
+    //   const hasRequiredScopes = scopes.every(scope => tokenScopes.includes(scope));
+    //
+    //   if (!hasRequiredScopes) {
+    //     throw createJwtError("Insufficient permissions", 403);
+    //   }
+    // }
 
-      resolve(0);
-    } catch (error) {
-      console.error("error", error);
-      reject({
-        status: 401,
-        name: "Unauthorized",
-        message: "Authentication failed",
-      } satisfies JwtError);
-    }
-  });
+    // Return the payload as the authenticated user
+    return Promise.resolve(payload);
+  } catch (error) {
+    console.error("Authentication error:", error);
+    throw createJwtError("Authentication failed");
+  }
+}
+
+function createJwtError(message: string, status = 401): JwtError {
+  return {
+    status,
+    name: status === 401 ? "Unauthorized" : "Forbidden",
+    message,
+  };
 }
