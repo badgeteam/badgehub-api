@@ -5,6 +5,7 @@ import {
   Patch,
   Path,
   Post,
+  Query,
   Res,
   Route,
   Tags,
@@ -40,6 +41,21 @@ export class PrivateRestController {
       new PostgreSQLBadgeHubFiles()
     )
   ) {}
+
+  /**
+   * Get all draft projects that the given user has access to.
+   */
+  @Get("/users/{userId}/drafts")
+  public async getUserDraftProjects(
+    @Path() userId: DBUser["id"],
+    @Query() pageStart?: number,
+    @Query() pageLength?: number
+  ): Promise<void> {
+    return this.badgeHubData.getProjects(
+      { pageStart, pageLength, userId },
+      "draft"
+    );
+  }
 
   /**
    * Create a new project

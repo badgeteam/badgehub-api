@@ -8,7 +8,9 @@ import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 import { Category } from "@domain/readModels/project/Category";
 
-export function getBaseSelectProjectQuery() {
+export function getBaseSelectProjectQuery(
+  revision: LatestOrDraftAlias = "latest"
+) {
   return sql`select p.slug,
                       p.git,
                       p.allow_team_fixes,
@@ -29,7 +31,7 @@ export function getBaseSelectProjectQuery() {
                       u.name as author_name
                from projects p
                         left join users u on p.user_id = u.id and u.deleted_at is null
-                        left join versions v on p.latest_revision = v.revision and p.slug = v.project_slug
+                        left join versions v on ${revision === "draft" ? sql`p.draft_revision` : sql`p.latest_revision`} = v.revision and p.slug = v.project_slug
                         left join app_metadata_jsons m on v.app_metadata_json_id = m.id
                         left join categories c on m.category = c.name
     `;

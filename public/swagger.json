@@ -1227,6 +1227,48 @@
         ]
       }
     },
+    "/api/v3/users/{userId}/drafts": {
+      "get": {
+        "operationId": "GetUserDraftProjects",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Get all draft projects that the given user has access to.",
+        "tags": ["private"],
+        "security": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageStart",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageLength",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
     "/api/v3/projects/{slug}/draft/files/{filePath}": {
       "post": {
         "operationId": "WriteDraftFile",
