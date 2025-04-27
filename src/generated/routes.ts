@@ -385,41 +385,6 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
-    dataType: "refAlias",
-    type: {
-      dataType: "nestedObjectLiteral",
-      nestedProperties: {
-        name: { dataType: "string", required: true },
-        email: { dataType: "string", required: true },
-        admin: { dataType: "boolean" },
-        password: { dataType: "string", required: true },
-        remember_token: { dataType: "string" },
-        editor: { dataType: "string" },
-        public: { dataType: "boolean" },
-        show_projects: { dataType: "boolean" },
-        email_verified_at: { dataType: "string" },
-      },
-      validators: {},
-    },
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  UserProps: {
-    dataType: "refObject",
-    properties: {
-      name: { dataType: "string", required: true },
-      email: { dataType: "string", required: true },
-      admin: { dataType: "boolean" },
-      password: { dataType: "string", required: true },
-      remember_token: { dataType: "string" },
-      editor: { dataType: "string" },
-      public: { dataType: "boolean" },
-      show_projects: { dataType: "boolean" },
-      email_verified_at: { dataType: "string" },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
     dataType: "refAlias",
     type: {
@@ -868,54 +833,6 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "getFileForVersion",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.post(
-    "/api/v3/users/:userId",
-    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.insertUser
-    ),
-
-    async function PrivateRestController_insertUser(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {
-        userId: {
-          in: "path",
-          name: "userId",
-          required: true,
-          dataType: "double",
-        },
-        props: { in: "body", name: "props", required: true, ref: "UserProps" },
-      };
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PrivateRestController();
-
-        await templateService.apiHandler({
-          methodName: "insertUser",
           controller,
           response,
           next,
