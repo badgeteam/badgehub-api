@@ -516,12 +516,6 @@ const models: TsoaRoute.Models = {
     additionalProperties: false,
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  Uint8Array: {
-    dataType: "refObject",
-    properties: {},
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {
   noImplicitAdditionalProperties: "throw-on-extras",
@@ -874,96 +868,6 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "getFileForVersion",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.get(
-    "/api/v3/projects/:slug/zip/latest",
-    ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getLatestPublishedZip
-    ),
-
-    async function PublicRestController_getLatestPublishedZip(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {
-        slug: { in: "path", name: "slug", required: true, dataType: "string" },
-      };
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PublicRestController();
-
-        await templateService.apiHandler({
-          methodName: "getLatestPublishedZip",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.get(
-    "/api/v3/projects/:slug/zip/rev:revision",
-    ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getZipForVersion
-    ),
-
-    async function PublicRestController_getZipForVersion(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {
-        slug: { in: "path", name: "slug", required: true, dataType: "string" },
-        revision: {
-          in: "path",
-          name: "revision",
-          required: true,
-          dataType: "double",
-        },
-      };
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PublicRestController();
-
-        await templateService.apiHandler({
-          methodName: "getZipForVersion",
           controller,
           response,
           next,
@@ -1410,96 +1314,6 @@ export function RegisterRoutes(
 
         await templateService.apiHandler({
           methodName: "getDraftProject",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.get(
-    "/api/v3/projects/:slug/draft/zip",
-    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.getLatestPublishedZip
-    ),
-
-    async function PrivateRestController_getLatestPublishedZip(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {
-        slug: { in: "path", name: "slug", required: true, dataType: "string" },
-      };
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PrivateRestController();
-
-        await templateService.apiHandler({
-          methodName: "getLatestPublishedZip",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  app.post(
-    "/api/v3/projects/:slug/draft/zip",
-    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.writeZip
-    ),
-
-    async function PrivateRestController_writeZip(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {
-        slug: { in: "path", name: "slug", required: true, dataType: "string" },
-        zipContent: {
-          in: "body",
-          name: "zipContent",
-          required: true,
-          ref: "Uint8Array",
-        },
-      };
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PrivateRestController();
-
-        await templateService.apiHandler({
-          methodName: "writeZip",
           controller,
           response,
           next,

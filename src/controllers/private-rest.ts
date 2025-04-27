@@ -163,27 +163,6 @@ export class PrivateRestController {
   }
 
   /**
-   * get the latest draft version of the project in zip format
-   */
-  @Get("/projects/{slug}/draft/zip") // TODO disable until implemented
-  public async getLatestPublishedZip(
-    @Path() slug: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, "draft");
-  }
-
-  /**
-   * Upload a file to the latest draft version of the project.
-   */
-  @Post("/projects/{slug}/draft/zip") // TODO disable until implemented
-  public async writeZip(
-    @Path() slug: string,
-    @Body() zipContent: Uint8Array
-  ): Promise<void> {
-    await this.badgeHubData.writeDraftProjectZip(slug, zipContent);
-  }
-
-  /**
    * Publish the current draft as a new version
    */
   @Patch("/projects/{slug}/publish")
