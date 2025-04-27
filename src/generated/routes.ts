@@ -845,6 +845,55 @@ export function RegisterRoutes(
     }
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+  app.get(
+    "/api/v3/users/:userId/drafts",
+    ...fetchMiddlewares<RequestHandler>(PrivateRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PrivateRestController.prototype.getUserDraftProjects
+    ),
+
+    async function PrivateRestController_getUserDraftProjects(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {
+        userId: {
+          in: "path",
+          name: "userId",
+          required: true,
+          dataType: "double",
+        },
+        pageStart: { in: "query", name: "pageStart", dataType: "double" },
+        pageLength: { in: "query", name: "pageLength", dataType: "double" },
+      };
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PrivateRestController();
+
+        await templateService.apiHandler({
+          methodName: "getUserDraftProjects",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
     "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),

@@ -64,12 +64,15 @@ export class PublicRestController {
     @Query() category?: Category["slug"],
     @Query() device?: string
   ): Promise<ProjectWithoutVersion[]> {
-    return await this.badgeHubData.getProjects({
-      pageStart,
-      pageLength,
-      badgeSlug: device,
-      categorySlug: category,
-    });
+    return await this.badgeHubData.getProjects(
+      {
+        pageStart,
+        pageLength,
+        badgeSlug: device,
+        categorySlug: category,
+      },
+      "latest"
+    );
   }
 
   /**

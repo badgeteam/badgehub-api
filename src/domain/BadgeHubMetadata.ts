@@ -60,12 +60,16 @@ export interface BadgeHubMetadata {
 
   getCategories(): Promise<Category[]>;
 
-  getProjects(filter?: {
-    pageStart?: number;
-    pageLength?: number;
-    badgeSlug?: Badge["slug"];
-    categorySlug?: Category["slug"];
-  }): Promise<ProjectWithoutVersion[]>;
+  getProjects(
+    filter?: {
+      pageStart?: number;
+      pageLength?: number;
+      badgeSlug?: Badge["slug"];
+      categorySlug?: Category["slug"];
+      user?: User["id"];
+    },
+    version?: LatestOrDraftAlias
+  ): Promise<ProjectWithoutVersion[]>;
 
   updateDraftMetadata(
     slug: string,
