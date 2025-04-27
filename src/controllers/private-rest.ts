@@ -42,18 +42,6 @@ export class PrivateRestController {
   ) {}
 
   /**
-   * Create a new user
-   */
-  @Post("/users/{userId}")
-  public async insertUser(
-    @Path() userId: DBUser["id"],
-    @Body() props: UserProps
-  ): Promise<void> {
-    // TODO implement with proper password handling (salting, hashing, ...)
-    throw new Error("Not implemented");
-  }
-
-  /**
    * Create a new project
    */
   @Post("/projects/{slug}")
