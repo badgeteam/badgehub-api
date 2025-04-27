@@ -624,9 +624,11 @@ export function RegisterRoutes(
   app.get(
     "/api/v3/projects",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApps),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getProjects
+    ),
 
-    async function PublicRestController_getApps(
+    async function PublicRestController_getProjects(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -651,7 +653,7 @@ export function RegisterRoutes(
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getApps",
+          methodName: "getProjects",
           controller,
           response,
           next,
@@ -668,10 +670,10 @@ export function RegisterRoutes(
     "/api/v3/projects/:slug/rev:revision",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getAppVersion
+      PublicRestController.prototype.getProjectVersion
     ),
 
-    async function PublicRestController_getAppVersion(
+    async function PublicRestController_getProjectVersion(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -706,7 +708,7 @@ export function RegisterRoutes(
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getAppVersion",
+          methodName: "getProjectVersion",
           controller,
           response,
           next,
@@ -722,9 +724,11 @@ export function RegisterRoutes(
   app.get(
     "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApp),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getProject
+    ),
 
-    async function PublicRestController_getApp(
+    async function PublicRestController_getProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -753,7 +757,7 @@ export function RegisterRoutes(
         const controller = new PublicRestController();
 
         await templateService.apiHandler({
-          methodName: "getApp",
+          methodName: "getProject",
           controller,
           response,
           next,
@@ -1024,10 +1028,10 @@ export function RegisterRoutes(
     "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.createApp
+      PrivateRestController.prototype.createProject
     ),
 
-    async function PrivateRestController_createApp(
+    async function PrivateRestController_createProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1055,7 +1059,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "createApp",
+          methodName: "createProject",
           controller,
           response,
           next,
@@ -1072,10 +1076,10 @@ export function RegisterRoutes(
     "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.deleteApp
+      PrivateRestController.prototype.deleteProject
     ),
 
-    async function PrivateRestController_deleteApp(
+    async function PrivateRestController_deleteProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1097,7 +1101,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "deleteApp",
+          methodName: "deleteProject",
           controller,
           response,
           next,
@@ -1114,10 +1118,10 @@ export function RegisterRoutes(
     "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.updateApp
+      PrivateRestController.prototype.updateProject
     ),
 
-    async function PrivateRestController_updateApp(
+    async function PrivateRestController_updateProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1145,7 +1149,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "updateApp",
+          methodName: "updateProject",
           controller,
           response,
           next,
@@ -1373,10 +1377,10 @@ export function RegisterRoutes(
     "/api/v3/projects/:slug/draft",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
-      PrivateRestController.prototype.getDraftApp
+      PrivateRestController.prototype.getDraftProject
     ),
 
-    async function PrivateRestController_getDraftApp(
+    async function PrivateRestController_getDraftProject(
       request: ExRequest,
       response: ExResponse,
       next: any
@@ -1405,7 +1409,7 @@ export function RegisterRoutes(
         const controller = new PrivateRestController();
 
         await templateService.apiHandler({
-          methodName: "getDraftApp",
+          methodName: "getDraftProject",
           controller,
           response,
           next,

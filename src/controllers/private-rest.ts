@@ -57,7 +57,7 @@ export class PrivateRestController {
    * Create a new project
    */
   @Post("/projects/{slug}")
-  public async createApp(
+  public async createProject(
     @Path() slug: ProjectSlug,
     @Body() props: Omit<CreateProjectProps, "slug">
   ): Promise<void> {
@@ -68,7 +68,7 @@ export class PrivateRestController {
    * Create a new project
    */
   @Delete("/projects/{slug}")
-  public async deleteApp(@Path() slug: ProjectSlug): Promise<void> {
+  public async deleteProject(@Path() slug: ProjectSlug): Promise<void> {
     await this.badgeHubData.deleteProject(slug);
   }
 
@@ -76,7 +76,7 @@ export class PrivateRestController {
    * Create a new project
    */
   @Patch("/projects/{slug}")
-  public async updateApp(
+  public async updateProject(
     @Path() slug: ProjectSlug,
     @Body() changes: ProjectPropsPartial
   ): Promise<void> {
@@ -146,10 +146,10 @@ export class PrivateRestController {
   }
 
   /**
-   * Get App details of the draft version of the project
+   * Get Project details of the draft version of the project
    */
   @Get("/projects/{slug}/draft")
-  public async getDraftApp(
+  public async getDraftProject(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
