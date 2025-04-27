@@ -1,4 +1,4 @@
-import { DatedData } from "@domain/readModels/app/DatedData";
+import { DatedData } from "@domain/readModels/project/DatedData";
 
 export interface BadgeRelation {
   badge: Badge;

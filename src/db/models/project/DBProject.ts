@@ -1,10 +1,10 @@
 import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
-import { ProjectSlug } from "@domain/readModels/app/Project";
-import { VersionRelation } from "@db/models/app/DBVersion";
+import { ProjectSlug } from "@domain/readModels/project/Project";
+import { VersionRelation } from "@db/models/project/DBVersion";
 
 interface DBProjectBase {
-  slug: ProjectSlug; // The directory name of this app
+  slug: ProjectSlug; // The directory name of this project
   git?: string; // repository url
   allow_team_fixes?: boolean;
 }

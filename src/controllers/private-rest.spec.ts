@@ -3,7 +3,7 @@ import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
 import { isInDebugMode } from "@util/debug";
-import { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
+import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 
 const TEST_USER_ID = 0;
@@ -55,11 +55,11 @@ describe(
       expect(getRes.text).toBe("test file content");
     });
 
-    test("CREATE/READ/DELETE app", async () => {
+    test("CREATE/READ/DELETE project", async () => {
       const createProjectProps: Omit<CreateProjectProps, "slug"> = {
         user_id: TEST_USER_ID,
       };
-      // Reason that we make the test app id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
+      // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
       const dynamicTestAppId = `test_app_${Date.now()}`;
       const postRes = await request(app)
         .post(`/api/v3/apps/${dynamicTestAppId}`)
@@ -129,14 +129,14 @@ describe(
     });
 
     test("publish version and change metadata", async () => {
-      // Create a new app
+      // Create a new project
       const TEST_APP_ID = `test_app_publish_${Date.now()}`;
       const postRes = await request(app)
         .post(`/api/v3/apps/${TEST_APP_ID}`)
         .send({ user_id: TEST_USER_ID });
       expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
 
-      // Add metadata to the app
+      // Add metadata to the project
       const updateAppRes = await request(app)
         .patch(`/api/v3/apps/${TEST_APP_ID}/draft/metadata`)
         .send({
@@ -153,7 +153,7 @@ describe(
         "Test App Description Before Publish"
       );
 
-      // Publish the app to create a new version
+      // Publish the project to create a new version
       const publishRes = await request(app).patch(
         `/api/v3/apps/${TEST_APP_ID}/publish`
       );

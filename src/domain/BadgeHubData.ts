@@ -2,25 +2,25 @@ import {
   Project,
   ProjectSlug,
   ProjectWithoutVersion,
-} from "@domain/readModels/app/Project";
-import { RevisionNumberOrAlias } from "@domain/readModels/app/Version";
-import { User } from "@domain/readModels/app/User";
-import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+} from "@domain/readModels/project/Project";
+import { RevisionNumberOrAlias } from "@domain/readModels/project/Version";
+import { User } from "@domain/readModels/project/User";
+import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
-import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBProject } from "@db/models/app/DBProject";
+import { Category } from "@domain/readModels/project/Category";
+import { DBInsertUser } from "@db/models/project/DBUser";
+import { DBProject } from "@db/models/project/DBProject";
 import {
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
-} from "@db/models/app/DBAppMetadataJSON";
+} from "@db/models/project/DBAppMetadataJSON";
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@domain/BadgeHubFiles";
 import { UploadedFile } from "@domain/UploadedFile";
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData } from "@db/models/project/DBDatedData";
 import { calcSha256 } from "@util/digests";
 import { TimestampTZ } from "@db/DBTypes";
-import { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
+import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 
 export class BadgeHubData {
   constructor(
@@ -50,7 +50,7 @@ export class BadgeHubData {
     return this.badgeHubMetadata.deleteProject(projectSlug);
   }
 
-  // Publishes the current state of the app as a version
+  // Publishes the current state of the project as a version
   publishVersion(
     projectSlug: ProjectSlug,
     mockDate?: TimestampTZ
@@ -153,7 +153,7 @@ export class BadgeHubData {
   async writeDraftProjectZip(projectSlug: string, zipContent: Uint8Array) {
     throw new Error("Method not implemented.");
     // TODO when implementing file management, we should still decide whether we want to delete here, then get all files and save them with updateDraftFile, or better let the file management handle this more.
-    // TODO database management: app metadata in db should be updated with the metadata.json from the zip file
+    // TODO database management: project metadata in db should be updated with the metadata.json from the zip file
   }
 
   async updateDraftMetadata(

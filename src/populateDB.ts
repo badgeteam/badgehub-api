@@ -7,9 +7,9 @@ import {
   POSTGRES_USER,
 } from "@config";
 import sql, { raw } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBDatedData } from "@db/models/app/DBDatedData";
-import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { DBInsertUser } from "@db/models/project/DBUser";
+import { DBDatedData } from "@db/models/project/DBDatedData";
+import { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
 import { BadgeHubData } from "@domain/BadgeHubData";

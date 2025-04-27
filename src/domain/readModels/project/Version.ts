@@ -1,7 +1,7 @@
 import { AppMetadataJSON } from "./AppMetadataJSON";
 import { DatedData } from "./DatedData";
 import { FileMetadata } from "./FileMetadata";
-import { Project } from "@domain/readModels/app/Project";
+import { Project } from "@domain/readModels/project/Project";
 
 export type LatestVersionAlias = "latest";
 type DraftVersionAlias = "draft";
@@ -20,7 +20,7 @@ export interface Version extends DatedData {
   size_of_zip?: number;
   git_commit_id?: string;
   files: Array<FileMetadata>;
-  app_metadata: AppMetadataJSON; // Changed! New property that has the content of the metadata.json file that is installed on the app.
+  app_metadata: AppMetadataJSON; // Changed! New property that has the content of the metadata.json file that is installed on the project.
   published_at?: Date;
   download_count: number;
   project_slug: Project["slug"];

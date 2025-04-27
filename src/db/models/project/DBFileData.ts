@@ -1,4 +1,4 @@
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData } from "@db/models/project/DBDatedData";
 
 export interface DBFileData extends DBDatedData {
   id: number;
