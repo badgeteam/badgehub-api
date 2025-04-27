@@ -30,26 +30,26 @@ export interface Project extends ProjectCore, DatedData {
   max_firmware?: number; // Biggest revision number that exists
   git_commit_id?: string;
   published_at?: Date; // Last publish date
-  download_counter?: number; // Sum of all version download count
+  // download_counter?: number; // Sum of all version download count
   license?: string; // Eg. MIT
-  size_of_zip?: number;
-  size_of_content?: number;
+  // size_of_zip?: number;
+  // size_of_content?: number;
   category: Category["name"];
   description?: string; // description in metadata of latest version of the project
   revision?: number; // latest revsion number of the project
-  status?: ProjectStatusName; // Status of newest version with a non-empty status
+  // status?: ProjectStatusName; // Status of newest version with a non-empty status
   user_name?: string; // user->name
   interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of project
 
   // Relations
   version?: Version;
   badges?: Array<Badge["slug"]>;
-  dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
-  states?: Array<ProjectStatusOnBadge>;
-  versions?: Array<Version>;
-  votes?: Array<VoteFromUser>;
-  warnings?: Array<WarningFromUser>;
-  collaborators?: Array<User>;
+  // dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
+  // states?: Array<ProjectStatusOnBadge>;
+  // versions?: Array<Version>;
+  // votes?: Array<VoteFromUser>;
+  // warnings?: Array<WarningFromUser>;
+  // collaborators?: Array<User>;
 }
 
 export type ProjectSlug = Project["slug"];
