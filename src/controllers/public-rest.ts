@@ -58,7 +58,7 @@ export class PublicRestController {
    * Get list of projects, optionally limited by page start/length and/or filtered by categorySlug
    */
   @Get("/projects")
-  public async getApps(
+  public async getProjects(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
     @Query() category?: Category["slug"],
@@ -76,7 +76,7 @@ export class PublicRestController {
    * Get project details for a specific published revision of the project
    */
   @Get("/projects/{slug}/rev{revision}")
-  public async getAppVersion(
+  public async getProjectVersion(
     @Path() slug: string,
     @Path() revision: RevisionNumber,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
@@ -94,7 +94,7 @@ export class PublicRestController {
    * Get project details of the latest published version
    */
   @Get("/projects/{slug}")
-  public async getApp(
+  public async getProject(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {

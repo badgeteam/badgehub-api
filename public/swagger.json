@@ -943,7 +943,7 @@
     },
     "/api/v3/projects": {
       "get": {
-        "operationId": "GetApps",
+        "operationId": "GetProjects",
         "responses": {
           "200": {
             "description": "Ok",
@@ -1002,7 +1002,7 @@
     },
     "/api/v3/projects/{slug}/rev{revision}": {
       "get": {
-        "operationId": "GetAppVersion",
+        "operationId": "GetProjectVersion",
         "responses": {
           "200": {
             "description": "Ok",
@@ -1056,7 +1056,7 @@
     },
     "/api/v3/projects/{slug}": {
       "get": {
-        "operationId": "GetApp",
+        "operationId": "GetProject",
         "responses": {
           "200": {
             "description": "Ok",
@@ -1100,7 +1100,7 @@
         ]
       },
       "post": {
-        "operationId": "CreateApp",
+        "operationId": "CreateProject",
         "responses": {
           "204": {
             "description": "No content"
@@ -1131,7 +1131,7 @@
         }
       },
       "delete": {
-        "operationId": "DeleteApp",
+        "operationId": "DeleteProject",
         "responses": {
           "204": {
             "description": "No content"
@@ -1152,7 +1152,7 @@
         ]
       },
       "patch": {
-        "operationId": "UpdateApp",
+        "operationId": "UpdateProject",
         "responses": {
           "204": {
             "description": "No content"
@@ -1571,7 +1571,7 @@
     },
     "/api/v3/projects/{slug}/draft": {
       "get": {
-        "operationId": "GetDraftApp",
+        "operationId": "GetDraftProject",
         "responses": {
           "200": {
             "description": "Ok",
@@ -1600,7 +1600,7 @@
             }
           }
         },
-        "description": "Get App details of the draft version of the project",
+        "description": "Get Project details of the draft version of the project",
         "tags": ["private"],
         "security": [],
         "parameters": [
