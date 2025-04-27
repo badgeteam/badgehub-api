@@ -1231,8 +1231,18 @@
       "get": {
         "operationId": "GetUserDraftProjects",
         "responses": {
-          "204": {
-            "description": "No content"
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWithoutVersion"
+                  },
+                  "type": "array"
+                }
+              }
+            }
           }
         },
         "description": "Get all draft projects that the given user has access to.",
