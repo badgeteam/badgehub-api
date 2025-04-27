@@ -5,6 +5,7 @@ import {
   Patch,
   Path,
   Post,
+  Query,
   Res,
   Route,
   Tags,
@@ -42,15 +43,18 @@ export class PrivateRestController {
   ) {}
 
   /**
-   * Create a new user
+   * Get all draft projects that the given user has access to.
    */
-  @Post("/users/{userId}")
-  public async insertUser(
+  @Get("/users/{userId}/drafts")
+  public async getUserDraftProjects(
     @Path() userId: DBUser["id"],
-    @Body() props: UserProps
+    @Query() pageStart?: number,
+    @Query() pageLength?: number
   ): Promise<void> {
-    // TODO implement with proper password handling (salting, hashing, ...)
-    throw new Error("Not implemented");
+    return this.badgeHubData.getProjects(
+      { pageStart, pageLength, userId },
+      "draft"
+    );
   }
 
   /**

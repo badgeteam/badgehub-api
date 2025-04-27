@@ -14,42 +14,42 @@ describe(
     beforeEach(() => {
       app = createExpressServer(true);
     });
-    test("CREATE/READ/DELETE /apps/{slug}/draft/files/{filePath}", async () => {
+    test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
       const postRes = await request(app)
-        .post("/api/v3/apps/codecraft/draft/files/test.txt")
+        .post("/api/v3/projects/codecraft/draft/files/test.txt")
         .attach("file", Buffer.from("test file content"), "test.txt");
       expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
       const getRes = await request(app).get(
-        "/api/v3/apps/codecraft/draft/files/test.txt"
+        "/api/v3/projects/codecraft/draft/files/test.txt"
       );
       expect(getRes.statusCode).toBe(200);
       expect(getRes.text).toBe("test file content");
       const deleteRes = await request(app).delete(
-        "/api/v3/apps/codecraft/draft/files/test.txt"
+        "/api/v3/projects/codecraft/draft/files/test.txt"
       );
       expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
       const getRes2 = await request(app).get(
-        "/api/v3/apps/codecraft/draft/files/test.txt"
+        "/api/v3/projects/codecraft/draft/files/test.txt"
       );
       expect(getRes2.statusCode).toBe(404);
     });
 
     test("Overwrite deleted file", async () => {
       const postRes1 = await request(app)
-        .post("/api/v3/apps/codecraft/draft/files/test.txt")
+        .post("/api/v3/projects/codecraft/draft/files/test.txt")
         .attach("file", Buffer.from("test file content"), "test.txt");
       expect(postRes1.statusCode.toString()).toMatch(/2\d\d/);
 
       const deleteRes = await request(app).delete(
-        "/api/v3/apps/codecraft/draft/files/test.txt"
+        "/api/v3/projects/codecraft/draft/files/test.txt"
       );
       expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
       const postRes2 = await request(app)
-        .post("/api/v3/apps/codecraft/draft/files/test.txt")
+        .post("/api/v3/projects/codecraft/draft/files/test.txt")
         .attach("file", Buffer.from("test file content"), "test.txt");
       expect(postRes2.statusCode.toString()).toMatch(/2\d\d/);
       const getRes = await request(app).get(
-        "/api/v3/apps/codecraft/draft/files/test.txt"
+        "/api/v3/projects/codecraft/draft/files/test.txt"
       );
       expect(getRes.statusCode).toBe(200);
       expect(getRes.text).toBe("test file content");
@@ -62,11 +62,11 @@ describe(
       // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
       const dynamicTestAppId = `test_app_${Date.now()}`;
       const postRes = await request(app)
-        .post(`/api/v3/apps/${dynamicTestAppId}`)
+        .post(`/api/v3/projects/${dynamicTestAppId}`)
         .send(createProjectProps);
       expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
       const getRes = await request(app).get(
-        `/api/v3/apps/${dynamicTestAppId}/draft`
+        `/api/v3/projects/${dynamicTestAppId}/draft`
       );
       expect(getRes.statusCode).toBe(200);
       expect({
@@ -119,11 +119,11 @@ describe(
         },
       });
       const deleteRes = await request(app).delete(
-        `/api/v3/apps/${dynamicTestAppId}`
+        `/api/v3/projects/${dynamicTestAppId}`
       );
       expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
       const getRes2 = await request(app).get(
-        `/api/v3/apps/${dynamicTestAppId}`
+        `/api/v3/projects/${dynamicTestAppId}`
       );
       expect(getRes2.statusCode).toBe(404);
     });
@@ -132,13 +132,13 @@ describe(
       // Create a new project
       const TEST_APP_ID = `test_app_publish_${Date.now()}`;
       const postRes = await request(app)
-        .post(`/api/v3/apps/${TEST_APP_ID}`)
+        .post(`/api/v3/projects/${TEST_APP_ID}`)
         .send({ user_id: TEST_USER_ID });
       expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
 
       // Add metadata to the project
       const updateAppRes = await request(app)
-        .patch(`/api/v3/apps/${TEST_APP_ID}/draft/metadata`)
+        .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
         .send({
           description: "Test App Description Before Publish",
         });
@@ -146,7 +146,7 @@ describe(
 
       // Verify the metadata was added
       const getRes1 = await request(app).get(
-        `/api/v3/apps/${TEST_APP_ID}/draft`
+        `/api/v3/projects/${TEST_APP_ID}/draft`
       );
       expect(getRes1.statusCode).toBe(200);
       expect(getRes1.body.version.app_metadata.description).toBe(
@@ -155,13 +155,13 @@ describe(
 
       // Publish the project to create a new version
       const publishRes = await request(app).patch(
-        `/api/v3/apps/${TEST_APP_ID}/publish`
+        `/api/v3/projects/${TEST_APP_ID}/publish`
       );
       expect(publishRes.statusCode.toString()).toMatch(/2\d\d/);
 
       // Update the metadata of the draft version after publishing
       const updateAppRes2 = await request(app)
-        .patch(`/api/v3/apps/${TEST_APP_ID}/draft/metadata`)
+        .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
         .send({
           description: "Test App Description After Publish",
         });
@@ -169,7 +169,7 @@ describe(
 
       // Verify the metadata was updated on the draft version
       const getDraftRes = await request(app).get(
-        `/api/v3/apps/${TEST_APP_ID}/draft`
+        `/api/v3/projects/${TEST_APP_ID}/draft`
       );
       expect(getDraftRes.statusCode).toBe(200);
       expect(getDraftRes.body.name).toBe(TEST_APP_ID);
@@ -179,7 +179,7 @@ describe(
 
       // Verify the metadata of the published version remains unchanged
       const getLatestRes = await request(app).get(
-        `/api/v3/apps/${TEST_APP_ID}`
+        `/api/v3/projects/${TEST_APP_ID}`
       );
       expect(getLatestRes.statusCode).toBe(200);
       expect(getLatestRes.body.name).toBe(TEST_APP_ID);
