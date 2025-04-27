@@ -151,27 +151,4 @@ export class PublicRestController {
     }
     return Readable.from(file);
   }
-
-  /**
-   * get the latest published version of the project in zip format
-   */
-  @Get("/projects/{slug}/zip/latest")
-  public async getLatestPublishedZip(@Path() slug: string): Promise<Readable> {
-    return Readable.from(
-      await this.badgeHubData.getVersionZipContents(slug, "latest")
-    );
-  }
-
-  /**
-   * get the project zip for a specific version of the project
-   */
-  @Get(`/projects/{slug}/zip/rev{revision}`)
-  public async getZipForVersion(
-    @Path() slug: string,
-    @Path() revision: number
-  ): Promise<Readable> {
-    return Readable.from(
-      await this.badgeHubData.getVersionZipContents(slug, revision)
-    );
-  }
 }

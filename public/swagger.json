@@ -873,12 +873,6 @@
         },
         "type": "object",
         "additionalProperties": false
-      },
-      "Uint8Array": {
-        "description": "A typed array of 8-bit unsigned integer values. The contents are initialized to 0. If the\nrequested number of bytes could not be allocated an exception is raised.",
-        "properties": {},
-        "type": "object",
-        "additionalProperties": false
       }
     },
     "securitySchemes": {}
@@ -1301,77 +1295,6 @@
         ]
       }
     },
-    "/api/v3/projects/{slug}/zip/latest": {
-      "get": {
-        "operationId": "GetLatestPublishedZip",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "byte"
-                }
-              }
-            }
-          }
-        },
-        "description": "get the latest published version of the project in zip format",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/api/v3/projects/{slug}/zip/rev{revision}": {
-      "get": {
-        "operationId": "GetZipForVersion",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "byte"
-                }
-              }
-            }
-          }
-        },
-        "description": "get the project zip for a specific version of the project",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "revision",
-            "required": true,
-            "schema": {
-              "format": "double",
-              "type": "number"
-            }
-          }
-        ]
-      }
-    },
     "/api/v3/users/{userId}": {
       "post": {
         "operationId": "InsertUser",
@@ -1613,67 +1536,6 @@
             }
           }
         ]
-      }
-    },
-    "/api/v3/projects/{slug}/draft/zip": {
-      "get": {
-        "operationId": "GetLatestPublishedZip",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Uint8Array"
-                }
-              }
-            }
-          }
-        },
-        "description": "get the latest draft version of the project in zip format",
-        "tags": ["private"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "WriteZip",
-        "responses": {
-          "204": {
-            "description": "No content"
-          }
-        },
-        "description": "Upload a file to the latest draft version of the project.",
-        "tags": ["private"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Uint8Array"
-              }
-            }
-          }
-        }
       }
     },
     "/api/v3/projects/{slug}/publish": {
