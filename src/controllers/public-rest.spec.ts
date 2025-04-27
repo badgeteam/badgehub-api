@@ -2,10 +2,13 @@ import { beforeEach, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
-import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectWithoutVersion,
+} from "@domain/readModels/project/Project";
 import { Badge } from "@domain/readModels/Badge";
 import { isInDebugMode } from "@util/debug";
-import { AppMetadataJSON } from "@domain/readModels/app/AppMetadataJSON";
+import { AppMetadataJSON } from "@domain/readModels/project/AppMetadataJSON";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 
 function stripId<T extends { id?: unknown } | object>(
@@ -412,7 +415,7 @@ describe(
         );
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toEqual(
-          "print('Hello world from the CodeCraft app')"
+          "print('Hello world from the CodeCraft project')"
         );
       }
     );

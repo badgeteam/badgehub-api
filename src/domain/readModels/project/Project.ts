@@ -6,7 +6,7 @@ import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { AppMetadataJSON } from "./AppMetadataJSON";
 import { VoteFromUser } from "./VoteFromUser";
 import { WarningFromUser } from "./WarningFromUser";
-import { Category } from "@domain/readModels/app/Category";
+import { Category } from "@domain/readModels/project/Category";
 
 export type ProjectStatusName =
   | "working"
@@ -35,11 +35,11 @@ export interface Project extends ProjectCore, DatedData {
   size_of_zip?: number;
   size_of_content?: number;
   category: Category["name"];
-  description?: string; // description in metadata of latest version of the app
-  revision?: number; // latest revsion number of the app
+  description?: string; // description in metadata of latest version of the project
+  revision?: number; // latest revsion number of the project
   status?: ProjectStatusName; // Status of newest version with a non-empty status
   user_name?: string; // user->name
-  interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of app
+  interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of project
 
   // Relations
   version?: Version;

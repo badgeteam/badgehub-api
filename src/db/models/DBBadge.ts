@@ -1,4 +1,4 @@
-import { DBDatedData } from "./app/DBDatedData";
+import { DBDatedData } from "@db/models/project/DBDatedData";
 
 export interface BadgeSlugRelation {
   badge_slug: DBBadge["slug"];

@@ -3,7 +3,7 @@ import { UploadedFile } from "@domain/UploadedFile";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import sql from "sql-template-tag";
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData } from "@db/models/project/DBDatedData";
 
 export class PostgreSQLBadgeHubFiles implements BadgeHubFiles {
   private readonly pool: Pool = getPool();

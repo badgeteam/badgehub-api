@@ -13,13 +13,13 @@ import {
 } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { Project, type ProjectSlug } from "@domain/readModels/app/Project";
-import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
-import type { DBInsertProject } from "@db/models/app/DBProject";
-import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { Project, type ProjectSlug } from "@domain/readModels/project/Project";
+import type { DBInsertUser, DBUser } from "@db/models/project/DBUser";
+import type { DBInsertProject } from "@db/models/project/DBProject";
+import type { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { Readable } from "node:stream";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
-import type { CreateProjectProps } from "@domain/writeModels/app/WriteProject";
+import type { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -54,9 +54,9 @@ export class PrivateRestController {
   }
 
   /**
-   * Create a new app
+   * Create a new project
    */
-  @Post("/apps/{slug}")
+  @Post("/projects/{slug}")
   public async createApp(
     @Path() slug: ProjectSlug,
     @Body() props: Omit<CreateProjectProps, "slug">
@@ -65,17 +65,17 @@ export class PrivateRestController {
   }
 
   /**
-   * Create a new app
+   * Create a new project
    */
-  @Delete("/apps/{slug}")
+  @Delete("/projects/{slug}")
   public async deleteApp(@Path() slug: ProjectSlug): Promise<void> {
     await this.badgeHubData.deleteProject(slug);
   }
 
   /**
-   * Create a new app
+   * Create a new project
    */
-  @Patch("/apps/{slug}")
+  @Patch("/projects/{slug}")
   public async updateApp(
     @Path() slug: ProjectSlug,
     @Body() changes: ProjectPropsPartial
@@ -86,7 +86,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/draft/files/{filePath}")
+  @Post("/projects/{slug}/draft/files/{filePath}")
   public async writeDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -104,7 +104,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Delete("/apps/{slug}/draft/files/{filePath}")
+  @Delete("/projects/{slug}/draft/files/{filePath}")
   public async deleteDraftFile(
     @Path() slug: string,
     @Path() filePath: string
@@ -115,7 +115,7 @@ export class PrivateRestController {
   /**
    * Change the metadata of the latest draft version of the project.
    */
-  @Patch("/apps/{slug}/draft/metadata")
+  @Patch("/projects/{slug}/draft/metadata")
   public async changeDraftAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
@@ -126,7 +126,7 @@ export class PrivateRestController {
   /**
    * get the latest draft version of the project.
    */
-  @Get("/apps/{slug}/draft/files/{filePath}")
+  @Get("/projects/{slug}/draft/files/{filePath}")
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -139,16 +139,16 @@ export class PrivateRestController {
     );
     if (!fileContents) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No project with slug '${slug}' found`,
       });
     }
     return Readable.from(fileContents);
   }
 
   /**
-   * Get App details of the draft version of the app
+   * Get App details of the draft version of the project
    */
-  @Get("/apps/{slug}/draft")
+  @Get("/projects/{slug}/draft")
   public async getDraftApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
@@ -156,16 +156,16 @@ export class PrivateRestController {
     const details = await this.badgeHubData.getDraftProject(slug);
     if (!details) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No project with slug '${slug}' found`,
       });
     }
     return details;
   }
 
   /**
-   * get the latest draft version of the app in zip format
+   * get the latest draft version of the project in zip format
    */
-  @Get("/apps/{slug}/draft/zip") // TODO disable until implemented
+  @Get("/projects/{slug}/draft/zip") // TODO disable until implemented
   public async getLatestPublishedZip(
     @Path() slug: string
   ): Promise<Uint8Array> {
@@ -175,7 +175,7 @@ export class PrivateRestController {
   /**
    * Upload a file to the latest draft version of the project.
    */
-  @Post("/apps/{slug}/draft/zip") // TODO disable until implemented
+  @Post("/projects/{slug}/draft/zip") // TODO disable until implemented
   public async writeZip(
     @Path() slug: string,
     @Body() zipContent: Uint8Array
@@ -186,7 +186,7 @@ export class PrivateRestController {
   /**
    * Publish the current draft as a new version
    */
-  @Patch("/apps/{slug}/publish")
+  @Patch("/projects/{slug}/publish")
   public async publishVersion(@Path() slug: string): Promise<void> {
     await this.badgeHubData.publishVersion(slug);
   }

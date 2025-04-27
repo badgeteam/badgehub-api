@@ -1,4 +1,4 @@
-import { DBInsertProject } from "@db/models/app/DBProject";
+import { DBInsertProject } from "@db/models/project/DBProject";
 
 export interface CreateProjectProps
   extends Pick<

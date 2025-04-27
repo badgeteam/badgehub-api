@@ -17,10 +17,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
           "name": {
             "type": "string"
           },
@@ -99,10 +95,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
           "status": {
             "$ref": "#/components/schemas/ProjectStatusName"
           }
@@ -122,10 +114,6 @@
             "format": "date-time"
           },
           "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
             "type": "string",
             "format": "date-time"
           },
@@ -272,10 +260,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
-          },
           "revision": {
             "$ref": "#/components/schemas/RevisionNumber"
           },
@@ -332,10 +316,6 @@
             "format": "date-time"
           },
           "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
             "type": "string",
             "format": "date-time"
           },
@@ -406,10 +386,6 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
           }
         },
         "required": ["type", "user", "created_at", "updated_at"],
@@ -429,10 +405,6 @@
             "format": "date-time"
           },
           "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
             "type": "string",
             "format": "date-time"
           }
@@ -557,10 +529,6 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "deleted_at": {
-            "type": "string",
-            "format": "date-time"
           }
         },
         "required": ["category", "slug", "user_id", "created_at", "updated_at"],
@@ -594,10 +562,6 @@
             "format": "date-time"
           },
           "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "deleted_at": {
             "type": "string",
             "format": "date-time"
           },
@@ -977,7 +941,7 @@
         "parameters": []
       }
     },
-    "/api/v3/apps": {
+    "/api/v3/projects": {
       "get": {
         "operationId": "GetApps",
         "responses": {
@@ -995,7 +959,7 @@
             }
           }
         },
-        "description": "Get list of apps, optionally limited by page start/length and/or filtered by categorySlug",
+        "description": "Get list of projects, optionally limited by page start/length and/or filtered by categorySlug",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1036,7 +1000,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/rev{revision}": {
+    "/api/v3/projects/{slug}/rev{revision}": {
       "get": {
         "operationId": "GetAppVersion",
         "responses": {
@@ -1067,7 +1031,7 @@
             }
           }
         },
-        "description": "Get app details for a specific published revision of the app",
+        "description": "Get project details for a specific published revision of the project",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1090,7 +1054,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}": {
+    "/api/v3/projects/{slug}": {
       "get": {
         "operationId": "GetApp",
         "responses": {
@@ -1121,7 +1085,7 @@
             }
           }
         },
-        "description": "Get app details of the latest published version",
+        "description": "Get project details of the latest published version",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1142,7 +1106,7 @@
             "description": "No content"
           }
         },
-        "description": "Create a new app",
+        "description": "Create a new project",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1173,7 +1137,7 @@
             "description": "No content"
           }
         },
-        "description": "Create a new app",
+        "description": "Create a new project",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1194,7 +1158,7 @@
             "description": "No content"
           }
         },
-        "description": "Create a new app",
+        "description": "Create a new project",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1219,7 +1183,7 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/latest/files/{filePath}": {
+    "/api/v3/projects/{slug}/latest/files/{filePath}": {
       "get": {
         "operationId": "GetLatestPublishedFile",
         "responses": {
@@ -1274,7 +1238,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/rev{revision}/files/{filePath}": {
+    "/api/v3/projects/{slug}/rev{revision}/files/{filePath}": {
       "get": {
         "operationId": "GetFileForVersion",
         "responses": {
@@ -1337,7 +1301,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/zip/latest": {
+    "/api/v3/projects/{slug}/zip/latest": {
       "get": {
         "operationId": "GetLatestPublishedZip",
         "responses": {
@@ -1353,7 +1317,7 @@
             }
           }
         },
-        "description": "get the latest published version of the app in zip format",
+        "description": "get the latest published version of the project in zip format",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1368,7 +1332,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/zip/rev{revision}": {
+    "/api/v3/projects/{slug}/zip/rev{revision}": {
       "get": {
         "operationId": "GetZipForVersion",
         "responses": {
@@ -1384,7 +1348,7 @@
             }
           }
         },
-        "description": "get the app zip for a specific version of the project",
+        "description": "get the project zip for a specific version of the project",
         "tags": ["public"],
         "security": [],
         "parameters": [
@@ -1442,7 +1406,7 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/draft/files/{filePath}": {
+    "/api/v3/projects/{slug}/draft/files/{filePath}": {
       "post": {
         "operationId": "WriteDraftFile",
         "responses": {
@@ -1572,7 +1536,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/draft/metadata": {
+    "/api/v3/projects/{slug}/draft/metadata": {
       "patch": {
         "operationId": "ChangeDraftAppMetadata",
         "responses": {
@@ -1605,7 +1569,7 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/draft": {
+    "/api/v3/projects/{slug}/draft": {
       "get": {
         "operationId": "GetDraftApp",
         "responses": {
@@ -1636,7 +1600,7 @@
             }
           }
         },
-        "description": "Get App details of the draft version of the app",
+        "description": "Get App details of the draft version of the project",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1651,7 +1615,7 @@
         ]
       }
     },
-    "/api/v3/apps/{slug}/draft/zip": {
+    "/api/v3/projects/{slug}/draft/zip": {
       "get": {
         "operationId": "GetLatestPublishedZip",
         "responses": {
@@ -1666,7 +1630,7 @@
             }
           }
         },
-        "description": "get the latest draft version of the app in zip format",
+        "description": "get the latest draft version of the project in zip format",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1712,7 +1676,7 @@
         }
       }
     },
-    "/api/v3/apps/{slug}/publish": {
+    "/api/v3/projects/{slug}/publish": {
       "patch": {
         "operationId": "PublishVersion",
         "responses": {

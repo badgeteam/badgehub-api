@@ -1,17 +1,20 @@
 import type { TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
-import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectWithoutVersion,
+} from "@domain/readModels/project/Project";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
+import { Category } from "@domain/readModels/project/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
 import type {
   RevisionNumber,
   RevisionNumberOrAlias,
-} from "@domain/readModels/app/Version";
+} from "@domain/readModels/project/Version";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -52,9 +55,9 @@ export class PublicRestController {
   }
 
   /**
-   * Get list of apps, optionally limited by page start/length and/or filtered by categorySlug
+   * Get list of projects, optionally limited by page start/length and/or filtered by categorySlug
    */
-  @Get("/apps")
+  @Get("/projects")
   public async getApps(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
@@ -70,9 +73,9 @@ export class PublicRestController {
   }
 
   /**
-   * Get app details for a specific published revision of the app
+   * Get project details for a specific published revision of the project
    */
-  @Get("/apps/{slug}/rev{revision}")
+  @Get("/projects/{slug}/rev{revision}")
   public async getAppVersion(
     @Path() slug: string,
     @Path() revision: RevisionNumber,
@@ -88,9 +91,9 @@ export class PublicRestController {
   }
 
   /**
-   * Get app details of the latest published version
+   * Get project details of the latest published version
    */
-  @Get("/apps/{slug}")
+  @Get("/projects/{slug}")
   public async getApp(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
@@ -107,7 +110,7 @@ export class PublicRestController {
   /**
    * get the latest published version of a file in the project
    */
-  @Get("/apps/{slug}/latest/files/{filePath}")
+  @Get("/projects/{slug}/latest/files/{filePath}")
   public async getLatestPublishedFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -129,7 +132,7 @@ export class PublicRestController {
   /**
    * get a file for a specific version of the project
    */
-  @Get(`/apps/{slug}/rev{revision}/files/{filePath}`)
+  @Get(`/projects/{slug}/rev{revision}/files/{filePath}`)
   public async getFileForVersion(
     @Path() slug: string,
     @Path() revision: RevisionNumber,
@@ -143,16 +146,16 @@ export class PublicRestController {
     );
     if (!file) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No project with slug '${slug}' found`,
       });
     }
     return Readable.from(file);
   }
 
   /**
-   * get the latest published version of the app in zip format
+   * get the latest published version of the project in zip format
    */
-  @Get("/apps/{slug}/zip/latest")
+  @Get("/projects/{slug}/zip/latest")
   public async getLatestPublishedZip(@Path() slug: string): Promise<Readable> {
     return Readable.from(
       await this.badgeHubData.getVersionZipContents(slug, "latest")
@@ -160,9 +163,9 @@ export class PublicRestController {
   }
 
   /**
-   * get the app zip for a specific version of the project
+   * get the project zip for a specific version of the project
    */
-  @Get(`/apps/{slug}/zip/rev{revision}`)
+  @Get(`/projects/{slug}/zip/rev{revision}`)
   public async getZipForVersion(
     @Path() slug: string,
     @Path() revision: number

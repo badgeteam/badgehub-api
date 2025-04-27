@@ -4,19 +4,19 @@ import {
   ProjectCore,
   ProjectSlug,
   ProjectWithoutVersion,
-} from "@domain/readModels/app/Project";
-import { User } from "@domain/readModels/app/User";
+} from "@domain/readModels/project/Project";
+import { User } from "@domain/readModels/project/User";
 import {
   type LatestVersionAlias,
   RevisionNumberOrAlias,
   Version,
-} from "@domain/readModels/app/Version";
-import { Category } from "@domain/readModels/app/Category";
+} from "@domain/readModels/project/Version";
+import { Category } from "@domain/readModels/project/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBInsertProject } from "@db/models/app/DBProject";
+import { DBInsertProject } from "@db/models/project/DBProject";
 import sql, { join, raw, Sql } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/app/DBUser";
+import { DBInsertUser } from "@db/models/project/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
 import { DBBadge } from "@db/models/DBBadge";
 import {
@@ -31,13 +31,13 @@ import {
   stripDatedData,
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
-import { DBVersion } from "@db/models/app/DBVersion";
+import { DBVersion } from "@db/models/project/DBVersion";
 import {
   APP_METADATA_ROWS,
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
-} from "@db/models/app/DBAppMetadataJSON";
-import { DBCategory } from "@db/models/app/DBCategory";
+} from "@db/models/project/DBAppMetadataJSON";
+import { DBCategory } from "@db/models/project/DBCategory";
 import {
   assertValidColumKey,
   getInsertKeysAndValuesSql,
@@ -45,9 +45,9 @@ import {
 import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
 import { UploadedFile } from "@domain/UploadedFile";
 import path from "node:path";
-import { DBFileMetadata } from "@db/models/app/DBFileMetadata";
-import { FileMetadata } from "@domain/readModels/app/FileMetadata";
-import { DBDatedData, DBSoftDeletable } from "@db/models/app/DBDatedData";
+import { DBFileMetadata } from "@db/models/project/DBFileMetadata";
+import { FileMetadata } from "@domain/readModels/project/FileMetadata";
+import { DBDatedData, DBSoftDeletable } from "@db/models/project/DBDatedData";
 import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 

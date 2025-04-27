@@ -25,7 +25,6 @@ const models: TsoaRoute.Models = {
     properties: {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       name: { dataType: "string", required: true },
       slug: { dataType: "string", required: true },
     },
@@ -101,7 +100,6 @@ const models: TsoaRoute.Models = {
       badge: { ref: "Badge", required: true },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       status: { ref: "ProjectStatusName", required: true },
     },
     additionalProperties: false,
@@ -117,7 +115,6 @@ const models: TsoaRoute.Models = {
     properties: {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       extension: { dataType: "string", required: true },
       dir: { dataType: "string", required: true },
       name: { dataType: "string", required: true },
@@ -197,7 +194,6 @@ const models: TsoaRoute.Models = {
     properties: {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       revision: { ref: "RevisionNumber", required: true },
       semantic_version: { dataType: "string" },
       zip: { dataType: "string" },
@@ -221,7 +217,6 @@ const models: TsoaRoute.Models = {
     properties: {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       id: { dataType: "double", required: true },
       email: { dataType: "string", required: true },
       admin: { dataType: "boolean", required: true },
@@ -252,7 +247,6 @@ const models: TsoaRoute.Models = {
       user: { ref: "User", required: true },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
     },
     additionalProperties: false,
   },
@@ -264,7 +258,6 @@ const models: TsoaRoute.Models = {
       user: { ref: "User", required: true },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
     },
     additionalProperties: false,
   },
@@ -320,7 +313,6 @@ const models: TsoaRoute.Models = {
         allow_team_fixes: { dataType: "boolean" },
         created_at: { dataType: "datetime", required: true },
         updated_at: { dataType: "datetime", required: true },
-        deleted_at: { dataType: "datetime" },
       },
       validators: {},
     },
@@ -348,7 +340,6 @@ const models: TsoaRoute.Models = {
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      deleted_at: { dataType: "datetime" },
       name: { dataType: "string" },
       min_firmware: { dataType: "double" },
       max_firmware: { dataType: "double" },
@@ -631,7 +622,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps",
+    "/api/v3/projects",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApps),
 
@@ -674,7 +665,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/rev:revision",
+    "/api/v3/projects/:slug/rev:revision",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getAppVersion
@@ -729,7 +720,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug",
+    "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(PublicRestController.prototype.getApp),
 
@@ -776,7 +767,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/latest/files/:filePath",
+    "/api/v3/projects/:slug/latest/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getLatestPublishedFile
@@ -831,7 +822,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/rev:revision/files/:filePath",
+    "/api/v3/projects/:slug/rev:revision/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getFileForVersion
@@ -892,7 +883,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/zip/latest",
+    "/api/v3/projects/:slug/zip/latest",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getLatestPublishedZip
@@ -934,7 +925,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/zip/rev:revision",
+    "/api/v3/projects/:slug/zip/rev:revision",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
     ...fetchMiddlewares<RequestHandler>(
       PublicRestController.prototype.getZipForVersion
@@ -1030,7 +1021,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug",
+    "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.createApp
@@ -1078,7 +1069,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.delete(
-    "/api/v3/apps/:slug",
+    "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.deleteApp
@@ -1120,7 +1111,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
-    "/api/v3/apps/:slug",
+    "/api/v3/projects/:slug",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.updateApp
@@ -1168,7 +1159,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/draft/files/:filePath",
+    "/api/v3/projects/:slug/draft/files/:filePath",
     upload.fields([
       {
         name: "file",
@@ -1228,7 +1219,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.delete(
-    "/api/v3/apps/:slug/draft/files/:filePath",
+    "/api/v3/projects/:slug/draft/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.deleteDraftFile
@@ -1276,7 +1267,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
-    "/api/v3/apps/:slug/draft/metadata",
+    "/api/v3/projects/:slug/draft/metadata",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.changeDraftAppMetadata
@@ -1324,7 +1315,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/draft/files/:filePath",
+    "/api/v3/projects/:slug/draft/files/:filePath",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getDraftFile
@@ -1379,7 +1370,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/draft",
+    "/api/v3/projects/:slug/draft",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getDraftApp
@@ -1428,7 +1419,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
-    "/api/v3/apps/:slug/draft/zip",
+    "/api/v3/projects/:slug/draft/zip",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getLatestPublishedZip
@@ -1470,7 +1461,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
-    "/api/v3/apps/:slug/draft/zip",
+    "/api/v3/projects/:slug/draft/zip",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.writeZip
@@ -1518,7 +1509,7 @@ export function RegisterRoutes(
   );
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
-    "/api/v3/apps/:slug/publish",
+    "/api/v3/projects/:slug/publish",
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.publishVersion

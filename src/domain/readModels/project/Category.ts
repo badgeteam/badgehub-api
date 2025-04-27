@@ -1,4 +1,4 @@
-import { DBCategory } from "@db/models/app/DBCategory";
+import { DBCategory } from "@db/models/project/DBCategory";
 
 export type AppCategoryName =
   | "Uncategorised"
