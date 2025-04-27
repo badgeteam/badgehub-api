@@ -9,7 +9,6 @@ export interface User extends DatedData {
   email: string; // TODO probably delete, should probably also be managed by keycloak
   admin: boolean; // TODO probably delete, this is a role and should probably be managed by keycloak
   name: string; // TODO probably delete, should probably also be managed by keycloak
-  password: string; // TODO delete, should be managed by keycloak
   remember_token?: string; // TODO probably delete, should probably also be managed by keycloak
   editor: string; // TODO probably delete, this is a role and should probably be managed by keycloak
   public: boolean; // TODO check if we want to manage this in keycloack or not

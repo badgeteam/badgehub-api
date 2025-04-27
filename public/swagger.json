@@ -62,30 +62,63 @@
         "type": "object",
         "additionalProperties": false
       },
-      "ProjectStatusName": {
-        "type": "string",
-        "enum": ["working", "in_progress", "broken", "unknown"]
-      },
-      "ProjectSlug": {
-        "type": "string"
-      },
-      "Dependency": {
+      "Pick_Project.Exclude_keyofProject.version__": {
         "properties": {
-          "project_slug": {
-            "$ref": "#/components/schemas/ProjectSlug"
-          },
-          "semantic_version_range": {
+          "name": {
             "type": "string"
-          }
-        },
-        "required": ["project_slug", "semantic_version_range"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "ProjectStatusOnBadge": {
-        "properties": {
-          "badge": {
-            "$ref": "#/components/schemas/Badge"
+          },
+          "min_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "max_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "license": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "description": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "badges": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "number",
+            "format": "double"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
           },
           "created_at": {
             "type": "string",
@@ -94,14 +127,18 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ProjectStatusName"
           }
         },
-        "required": ["badge", "created_at", "updated_at", "status"],
+        "required": ["category", "slug", "user_id", "created_at", "updated_at"],
         "type": "object",
-        "additionalProperties": false
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_Project.version_": {
+        "$ref": "#/components/schemas/Pick_Project.Exclude_keyofProject.version__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "ProjectWithoutVersion": {
+        "$ref": "#/components/schemas/Omit_Project.version_"
       },
       "RevisionNumber": {
         "type": "number",
@@ -309,239 +346,6 @@
         "type": "object",
         "additionalProperties": false
       },
-      "User": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "id": {
-            "type": "number",
-            "format": "double"
-          },
-          "email": {
-            "type": "string"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "name": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "remember_token": {
-            "type": "string"
-          },
-          "editor": {
-            "type": "string"
-          },
-          "public": {
-            "type": "boolean"
-          },
-          "show_projects": {
-            "type": "boolean"
-          },
-          "email_verified_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "created_at",
-          "updated_at",
-          "id",
-          "email",
-          "admin",
-          "name",
-          "password",
-          "editor",
-          "public",
-          "show_projects"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "VoteFromUser": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": ["up", "down", "pig"]
-          },
-          "comment": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": ["type", "user", "created_at", "updated_at"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "WarningFromUser": {
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/components/schemas/User"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": ["description", "user", "created_at", "updated_at"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Pick_Project.Exclude_keyofProject.version__": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "min_firmware": {
-            "type": "number",
-            "format": "double"
-          },
-          "max_firmware": {
-            "type": "number",
-            "format": "double"
-          },
-          "git_commit_id": {
-            "type": "string"
-          },
-          "published_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "download_counter": {
-            "type": "number",
-            "format": "double"
-          },
-          "license": {
-            "type": "string"
-          },
-          "size_of_zip": {
-            "type": "number",
-            "format": "double"
-          },
-          "size_of_content": {
-            "type": "number",
-            "format": "double"
-          },
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
-          "description": {
-            "type": "string"
-          },
-          "revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ProjectStatusName"
-          },
-          "user_name": {
-            "type": "string"
-          },
-          "interpreter": {
-            "type": "string"
-          },
-          "badges": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "dependencies": {
-            "items": {
-              "$ref": "#/components/schemas/Dependency"
-            },
-            "type": "array"
-          },
-          "states": {
-            "items": {
-              "$ref": "#/components/schemas/ProjectStatusOnBadge"
-            },
-            "type": "array"
-          },
-          "versions": {
-            "items": {
-              "$ref": "#/components/schemas/Version"
-            },
-            "type": "array"
-          },
-          "votes": {
-            "items": {
-              "$ref": "#/components/schemas/VoteFromUser"
-            },
-            "type": "array"
-          },
-          "warnings": {
-            "items": {
-              "$ref": "#/components/schemas/WarningFromUser"
-            },
-            "type": "array"
-          },
-          "collaborators": {
-            "items": {
-              "$ref": "#/components/schemas/User"
-            },
-            "type": "array"
-          },
-          "slug": {
-            "type": "string"
-          },
-          "user_id": {
-            "type": "number",
-            "format": "double"
-          },
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          }
-        },
-        "required": ["category", "slug", "user_id", "created_at", "updated_at"],
-        "type": "object",
-        "description": "From T, pick a set of properties whose keys are in the union K"
-      },
-      "Omit_Project.version_": {
-        "$ref": "#/components/schemas/Pick_Project.Exclude_keyofProject.version__",
-        "description": "Construct a type with the properties of T except for those in type K."
-      },
-      "ProjectWithoutVersion": {
-        "$ref": "#/components/schemas/Omit_Project.version_"
-      },
       "Project": {
         "properties": {
           "slug": {
@@ -583,20 +387,8 @@
             "type": "string",
             "format": "date-time"
           },
-          "download_counter": {
-            "type": "number",
-            "format": "double"
-          },
           "license": {
             "type": "string"
-          },
-          "size_of_zip": {
-            "type": "number",
-            "format": "double"
-          },
-          "size_of_content": {
-            "type": "number",
-            "format": "double"
           },
           "category": {
             "$ref": "#/components/schemas/AppCategoryName"
@@ -607,9 +399,6 @@
           "revision": {
             "type": "number",
             "format": "double"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ProjectStatusName"
           },
           "user_name": {
             "type": "string"
@@ -625,47 +414,14 @@
               "type": "string"
             },
             "type": "array"
-          },
-          "dependencies": {
-            "items": {
-              "$ref": "#/components/schemas/Dependency"
-            },
-            "type": "array"
-          },
-          "states": {
-            "items": {
-              "$ref": "#/components/schemas/ProjectStatusOnBadge"
-            },
-            "type": "array"
-          },
-          "versions": {
-            "items": {
-              "$ref": "#/components/schemas/Version"
-            },
-            "type": "array"
-          },
-          "votes": {
-            "items": {
-              "$ref": "#/components/schemas/VoteFromUser"
-            },
-            "type": "array"
-          },
-          "warnings": {
-            "items": {
-              "$ref": "#/components/schemas/WarningFromUser"
-            },
-            "type": "array"
-          },
-          "collaborators": {
-            "items": {
-              "$ref": "#/components/schemas/User"
-            },
-            "type": "array"
           }
         },
         "required": ["slug", "user_id", "created_at", "updated_at", "category"],
         "type": "object",
         "additionalProperties": false
+      },
+      "ProjectSlug": {
+        "type": "string"
       },
       "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
         "properties": {

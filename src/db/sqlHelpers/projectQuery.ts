@@ -45,9 +45,9 @@ export const projectQueryResponseToReadModel = (
     user_id: enrichedDBProject.user_id,
     user_name: enrichedDBProject.author_name, // todo maybe change to email, full id or object with multiple fields
     category: enrichedDBProject.category || "Uncategorised",
-    collaborators: [], // TODO
+    // collaborators: [], // TODO
     description: enrichedDBProject.description,
-    download_counter: undefined, // TODO
+    // download_counter: undefined, // TODO
     git: enrichedDBProject.git,
     git_commit_id: enrichedDBProject.git_commit_id,
     interpreter: enrichedDBProject.interpreter,
@@ -55,14 +55,14 @@ export const projectQueryResponseToReadModel = (
     name: enrichedDBProject.name,
     published_at: moment(enrichedDBProject.published_at).toDate(),
     revision: enrichedDBProject.revision,
-    size_of_content: undefined, // TODO
-    size_of_zip: enrichedDBProject.size_of_zip,
+    // size_of_content: undefined, // TODO
+    // size_of_zip: enrichedDBProject.size_of_zip, // TODO
     slug: enrichedDBProject.slug,
-    states: undefined,
-    status: undefined, // TODO
-    dependencies: undefined, // TODO
-    votes: undefined, // TODO
-    warnings: undefined, // TODO
+    // states: undefined,
+    // status: undefined, // TODO
+    // dependencies: undefined, // TODO
+    // votes: undefined, // TODO
+    // warnings: undefined, // TODO
     ...extractDatedDataConverted(enrichedDBProject),
   };
 };
