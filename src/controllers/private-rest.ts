@@ -14,7 +14,11 @@ import {
 } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { Project, type ProjectSlug } from "@domain/readModels/project/Project";
+import {
+  Project,
+  type ProjectSlug,
+  ProjectWithoutVersion,
+} from "@domain/readModels/project/Project";
 import type { DBInsertUser, DBUser } from "@db/models/project/DBUser";
 import type { DBInsertProject } from "@db/models/project/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
@@ -50,7 +54,7 @@ export class PrivateRestController {
     @Path() userId: DBUser["id"],
     @Query() pageStart?: number,
     @Query() pageLength?: number
-  ): Promise<void> {
+  ): Promise<ProjectWithoutVersion[]> {
     return this.badgeHubData.getProjects(
       { pageStart, pageLength, userId },
       "draft"
