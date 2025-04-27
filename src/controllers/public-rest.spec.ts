@@ -38,8 +38,8 @@ describe(
       });
     });
 
-    test("GET /api/v3/apps", async () => {
-      const res = await request(app).get("/api/v3/apps");
+    test("GET /api/v3/projects", async () => {
+      const res = await request(app).get("/api/v3/projects");
       expect(res.statusCode).toBe(200);
       expect(
         res.body.find((app: ProjectWithoutVersion) => app.name === "PixelPulse")
@@ -72,8 +72,8 @@ describe(
       `);
     });
 
-    test("GET /api/v3/apps/codecraft", async () => {
-      const res = await request(app).get("/api/v3/apps/codecraft");
+    test("GET /api/v3/projects/codecraft", async () => {
+      const res = await request(app).get("/api/v3/projects/codecraft");
       expect(res.statusCode).toBe(200);
 
       const project = res.body as Project;
@@ -176,8 +176,8 @@ describe(
       `);
     });
 
-    test("GET /api/v3/apps/codecraft/rev0", async () => {
-      const res = await request(app).get("/api/v3/apps/codecraft/rev0");
+    test("GET /api/v3/projects/codecraft/rev0", async () => {
+      const res = await request(app).get("/api/v3/projects/codecraft/rev0");
       expect(res.statusCode).toBe(200);
       const project = res.body as Project;
 
@@ -279,13 +279,13 @@ describe(
       `);
     });
 
-    test("GET /api/v3/apps/codecraft/rev1 (unpublished version)", async () => {
-      const res = await request(app).get("/api/v3/apps/codecraft/rev1");
+    test("GET /api/v3/projects/codecraft/rev1 (unpublished version)", async () => {
+      const res = await request(app).get("/api/v3/projects/codecraft/rev1");
       expect(res.statusCode).toBe(404);
     });
 
-    test("GET /api/v3/apps/codecraft/draft", async () => {
-      const res = await request(app).get("/api/v3/apps/codecraft/draft");
+    test("GET /api/v3/projects/codecraft/draft", async () => {
+      const res = await request(app).get("/api/v3/projects/codecraft/draft");
       expect(res.statusCode).toBe(200);
       const project = res.body as Project;
 
@@ -396,10 +396,10 @@ describe(
     });
 
     test.each(["draft", "latest", "rev0", "rev1"])(
-      "GET /apps/{slug}/%s/files/metadata.json",
+      "GET /projects/{slug}/%s/files/metadata.json",
       async (revision) => {
         const getRes = await request(app).get(
-          `/api/v3/apps/codecraft/${revision}/files/metadata.json`
+          `/api/v3/projects/codecraft/${revision}/files/metadata.json`
         );
         expect(getRes.statusCode).toBe(200);
         const metadata = JSON.parse(getRes.text) as AppMetadataJSON; // TODO, seems like we are returning the wrong content-type since we need to use .text here.
@@ -408,23 +408,23 @@ describe(
     );
 
     test.each(["latest", "rev0"])(
-      "GET /apps/{slug}/%s/files/__init__.py",
+      "GET /projects/{slug}/%s/files/__init__.py",
       async (revision) => {
         const getRes = await request(app).get(
-          `/api/v3/apps/codecraft/${revision}/files/__init__.py`
+          `/api/v3/projects/codecraft/${revision}/files/__init__.py`
         );
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toEqual(
-          "print('Hello world from the CodeCraft project')"
+          "print('Hello world from the CodeCraft app')"
         );
       }
     );
 
     test.each(["draft", "rev1"])(
-      "GET /apps/{slug}/%s/files/__init__.py",
+      "GET /projects/{slug}/%s/files/__init__.py",
       async (revision) => {
         const getRes = await request(app).get(
-          `/api/v3/apps/codecraft/${revision}/files/__init__.py`
+          `/api/v3/projects/codecraft/${revision}/files/__init__.py`
         );
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toEqual(
