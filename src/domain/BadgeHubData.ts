@@ -117,13 +117,17 @@ export class BadgeHubData {
     return this.badgeHubMetadata.getCategories();
   }
 
-  getProjects(filter?: {
-    pageStart?: number;
-    pageLength?: number;
-    badgeSlug?: Badge["slug"];
-    categorySlug?: Category["slug"];
-  }): Promise<ProjectWithoutVersion[]> {
-    return this.badgeHubMetadata.getProjects(filter);
+  getProjects(
+    filter: {
+      pageStart?: number;
+      pageLength?: number;
+      badgeSlug?: Badge["slug"];
+      categorySlug?: Category["slug"];
+      userId?: User["id"];
+    },
+    revision: LatestOrDraftAlias
+  ): Promise<ProjectWithoutVersion[]> {
+    return this.badgeHubMetadata.getProjects(filter, revision);
   }
 
   async writeDraftFile(

@@ -667,74 +667,6 @@
         "type": "object",
         "additionalProperties": false
       },
-      "Pick_DBInsertUser.Exclude_keyofDBInsertUser.id__": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "password": {
-            "type": "string"
-          },
-          "remember_token": {
-            "type": "string"
-          },
-          "editor": {
-            "type": "string"
-          },
-          "public": {
-            "type": "boolean"
-          },
-          "show_projects": {
-            "type": "boolean"
-          },
-          "email_verified_at": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "email", "password"],
-        "type": "object",
-        "description": "From T, pick a set of properties whose keys are in the union K"
-      },
-      "UserProps": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "admin": {
-            "type": "boolean"
-          },
-          "password": {
-            "type": "string"
-          },
-          "remember_token": {
-            "type": "string"
-          },
-          "editor": {
-            "type": "string"
-          },
-          "public": {
-            "type": "boolean"
-          },
-          "show_projects": {
-            "type": "boolean"
-          },
-          "email_verified_at": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "email", "password"],
-        "type": "object",
-        "additionalProperties": false
-      },
       "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
         "properties": {
           "user_id": {
@@ -1295,15 +1227,15 @@
         ]
       }
     },
-    "/api/v3/users/{userId}": {
-      "post": {
-        "operationId": "InsertUser",
+    "/api/v3/users/{userId}/drafts": {
+      "get": {
+        "operationId": "GetUserDraftProjects",
         "responses": {
           "204": {
             "description": "No content"
           }
         },
-        "description": "Create a new user",
+        "description": "Get all draft projects that the given user has access to.",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1315,18 +1247,26 @@
               "format": "double",
               "type": "number"
             }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UserProps"
-              }
+          },
+          {
+            "in": "query",
+            "name": "pageStart",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageLength",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
             }
           }
-        }
+        ]
       }
     },
     "/api/v3/projects/{slug}/draft/files/{filePath}": {
