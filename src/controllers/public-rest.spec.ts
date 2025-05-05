@@ -53,7 +53,6 @@ describe(
             "why2025",
           ],
           "category": "Uncategorised",
-          "collaborators": [],
           "created_at": "2024-11-01T13:12:19.376Z",
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
@@ -63,13 +62,17 @@ describe(
           "name": "CodeCraft",
           "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
-          "size_of_zip": null,
           "slug": "codecraft",
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
           "user_name": "NanoNavigator",
         }
       `);
+    });
+
+    test("GET /api/v3/projects/non-existent should return 404", async () => {
+      const res = await request(app).get("/api/v3/projects/non-existent");
+      expect(res.statusCode).toBe(404);
     });
 
     test("GET /api/v3/projects/codecraft", async () => {
@@ -86,7 +89,6 @@ describe(
             "why2025",
           ],
           "category": "Uncategorised",
-          "collaborators": [],
           "created_at": "2024-11-01T13:12:19.376Z",
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
@@ -96,7 +98,6 @@ describe(
           "name": "CodeCraft",
           "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
-          "size_of_zip": null,
           "slug": "codecraft",
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
@@ -189,7 +190,6 @@ describe(
             "why2025",
           ],
           "category": "Uncategorised",
-          "collaborators": [],
           "created_at": "2024-11-01T13:12:19.376Z",
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
@@ -199,7 +199,6 @@ describe(
           "name": "CodeCraft",
           "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
-          "size_of_zip": null,
           "slug": "codecraft",
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,
@@ -297,7 +296,6 @@ describe(
             "why2025",
           ],
           "category": "Uncategorised",
-          "collaborators": [],
           "created_at": "2024-11-01T13:12:19.376Z",
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
@@ -307,7 +305,6 @@ describe(
           "name": "CodeCraft",
           "published_at": "2022-09-06T13:12:19.376Z",
           "revision": 0,
-          "size_of_zip": null,
           "slug": "codecraft",
           "updated_at": "2022-09-05T13:12:19.376Z",
           "user_id": 24,

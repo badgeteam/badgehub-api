@@ -7,6 +7,7 @@ import { DBUser } from "@db/models/project/DBUser";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 import { Category } from "@domain/readModels/project/Category";
+import { LatestOrDraftAlias } from "@domain/readModels/project/Version";
 
 export function getBaseSelectProjectQuery(
   revision: LatestOrDraftAlias = "latest"

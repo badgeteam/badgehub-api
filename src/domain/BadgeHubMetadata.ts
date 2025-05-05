@@ -4,6 +4,7 @@ import {
   ProjectWithoutVersion,
 } from "@domain/readModels/project/Project";
 import {
+  LatestOrDraftAlias,
   RevisionNumberOrAlias,
   Version,
 } from "@domain/readModels/project/Version";
@@ -38,7 +39,7 @@ export interface BadgeHubMetadata {
     mockDate?: TimestampTZ
   ): Promise<void>; // Publishes the current state of the project as a version
 
-  getDraftProject(projectSlug: ProjectSlug): Promise<Project>;
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project | undefined>;
 
   getPublishedProject(
     projectSlug: ProjectSlug,
