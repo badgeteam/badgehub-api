@@ -132,6 +132,22 @@ describe(
       expect(getRes2.statusCode).toBe(404);
     });
 
+    test("create draft project with slug only", async () => {
+      // Create a new project with only a slug
+      const TEST_APP_ID = `test_app_${Date.now()}`;
+      const postRes = await request(app)
+        .post(`/api/v3/projects/${TEST_APP_ID}`)
+        .send({ user_id: TEST_USER_ID });
+      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+
+      // Verify the project was created with the correct slug
+      const getRes = await request(app).get(
+        `/api/v3/projects/${TEST_APP_ID}/draft`
+      );
+      expect(getRes.statusCode).toBe(200);
+      expect(getRes.body.slug).toBe(TEST_APP_ID);
+    });
+
     test("publish version and change metadata", async () => {
       // Create a new project
       const TEST_APP_ID = `test_app_publish_${Date.now()}`;
