@@ -3,7 +3,10 @@ import {
   ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/project/Project";
-import { RevisionNumberOrAlias } from "@domain/readModels/project/Version";
+import {
+  LatestOrDraftAlias,
+  RevisionNumberOrAlias,
+} from "@domain/readModels/project/Version";
 import { User } from "@domain/readModels/project/User";
 import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
@@ -58,7 +61,7 @@ export class BadgeHubData {
     return this.badgeHubMetadata.publishVersion(projectSlug, mockDate);
   }
 
-  getDraftProject(projectSlug: ProjectSlug): Promise<Project> {
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project | undefined> {
     return this.badgeHubMetadata.getDraftProject(projectSlug);
   }
 

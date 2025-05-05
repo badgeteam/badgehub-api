@@ -5,7 +5,7 @@ import { Project } from "@domain/readModels/project/Project";
 
 export type LatestVersionAlias = "latest";
 type DraftVersionAlias = "draft";
-type LatestOrDraftAlias = LatestVersionAlias | DraftVersionAlias;
+export type LatestOrDraftAlias = LatestVersionAlias | DraftVersionAlias;
 export type RevisionNumber = number;
 export type RevisionNumberOrAlias = LatestOrDraftAlias | RevisionNumber;
 

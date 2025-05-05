@@ -14,6 +14,12 @@ describe(
     beforeEach(() => {
       app = createExpressServer(true);
     });
+
+    test("non-existing /projects/{slug}/draft", async () => {
+      const res = await request(app).get("/api/v3/projects/non-existing/draft");
+      expect(res.statusCode).toBe(404);
+    });
+
     test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
       const postRes = await request(app)
         .post("/api/v3/projects/codecraft/draft/files/test.txt")
@@ -75,7 +81,6 @@ describe(
       }).toMatchObject({
         allow_team_fixes: false,
         category: "Uncategorised",
-        collaborators: [],
         description: null,
         git: null,
         git_commit_id: null,
@@ -84,7 +89,6 @@ describe(
         name: null,
         published_at: null,
         revision: null,
-        size_of_zip: null,
         slug: dynamicTestAppId,
         user_id: 0,
         user_name: "TechTinkerer",

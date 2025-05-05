@@ -7,6 +7,7 @@ import {
 } from "@domain/readModels/project/Project";
 import { User } from "@domain/readModels/project/User";
 import {
+  LatestOrDraftAlias,
   type LatestVersionAlias,
   RevisionNumberOrAlias,
   Version,
@@ -311,8 +312,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     };
   }
 
-  async getDraftProject(projectSlug: string): Promise<Project> {
+  async getDraftProject(projectSlug: string): Promise<Project | undefined> {
     const projectWithoutVersion = (await this.getProjects({ projectSlug }))[0]!;
+    if (!projectWithoutVersion) {
+      return undefined;
+    }
     return {
       ...projectWithoutVersion,
       version: await this.getDraftVersion(projectSlug),
@@ -406,7 +410,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       categorySlug?: Category["slug"];
       userId?: User["id"];
     },
-    revision: LatestOrDraftAlias
+    revision?: LatestOrDraftAlias
   ): Promise<ProjectWithoutVersion[]> {
     let query = getBaseSelectProjectQuery(revision);
     if (filter?.badgeSlug) {
