@@ -305,7 +305,9 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     if (!version) {
       return undefined;
     }
-    const projectWithoutVersion = (await this.getProjects({ projectSlug }))[0]!;
+    const projectWithoutVersion = (
+      await this.getProjects({ projectSlug }, "latest")
+    )[0]!;
     return {
       ...projectWithoutVersion,
       version: version,
@@ -313,7 +315,9 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async getDraftProject(projectSlug: string): Promise<Project | undefined> {
-    const projectWithoutVersion = (await this.getProjects({ projectSlug }))[0]!;
+    const projectWithoutVersion = (
+      await this.getProjects({ projectSlug }, "draft")
+    )[0]!;
     if (!projectWithoutVersion) {
       return undefined;
     }
