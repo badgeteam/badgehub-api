@@ -182,7 +182,6 @@ export class BadgeHubData {
     const fileContent = new TextEncoder().encode(
       JSON.stringify(updatedAppMetadata)
     );
-    // TODO handle inconsistency caused by case of code aborting at this point
     await this._writeDraftFile(
       slug,
       ["metadata.json"],
