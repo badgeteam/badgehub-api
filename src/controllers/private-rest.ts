@@ -93,6 +93,7 @@ export class PrivateRestController {
 
   /**
    * Upload a file to the latest draft version of the project.
+   * Note that the filePath needs to be url encoded.
    */
   @Post("/projects/{slug}/draft/files/{filePath}")
   public async writeDraftFile(
@@ -110,7 +111,8 @@ export class PrivateRestController {
   }
 
   /**
-   * Upload a file to the latest draft version of the project.
+   * Delete the given file from the latest draft version of the project.
+   * Note that the filePath needs to be url encoded.
    */
   @Delete("/projects/{slug}/draft/files/{filePath}")
   public async deleteDraftFile(
