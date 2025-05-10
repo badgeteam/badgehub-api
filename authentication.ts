@@ -3,11 +3,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 import { JwtError } from "@controllers/public-rest";
 
 // Create a JWKS client using Keycloak's JWKS endpoint
-const JWKS = createRemoteJWKSet(
-  new URL(
-    "https://lemur-11.cloud-iam.com/auth/realms/badgehub/protocol/openid-connect/certs"
-  )
-);
+const JWKS = createRemoteJWKSet(new URL(process.env.KEYCLOAK_CERTS!));
 
 export async function expressAuthentication(
   request: express.Request,
@@ -37,7 +33,7 @@ export async function expressAuthentication(
   try {
     // Verify the JWT
     const { payload } = await jwtVerify(token, JWKS, {
-      issuer: "https://lemur-11.cloud-iam.com/auth/realms/badgehub",
+      issuer: process.env.KEYCLOAK_ISSUER,
       // audience: AUDIENCE,
       // Add other validation options as needed
     });
