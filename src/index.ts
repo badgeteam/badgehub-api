@@ -1,6 +1,7 @@
 import { RegisterRoutes } from "./generated/routes";
 import { EXPRESS_PORT, NODE_ENV } from "@config";
-import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
+// TODO: enable when disableWriteWhenNotDev is available
+// import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
 import express, { NextFunction } from "express";
 import openapi from "./openapi";
@@ -23,7 +24,7 @@ async function startServer() {
 
   openapi(app);
 
-  disableWriteWhenNotDev(app);
+  // disableWriteWhenNotDev(app);
 
   RegisterRoutes(app);
 
