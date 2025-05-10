@@ -113,6 +113,7 @@ export class PrivateRestController {
   /**
    * Delete the given file from the latest draft version of the project.
    * Note that the filePath needs to be url encoded.
+   * Note that the metadata.json file cannot be deleted
    */
   @Delete("/projects/{slug}/draft/files/{filePath}")
   public async deleteDraftFile(
