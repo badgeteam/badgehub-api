@@ -227,6 +227,11 @@ export class BadgeHubData {
   }
 
   async deleteDraftFile(slug: string, filePath: string) {
+    if (filePath === "metadata.json") {
+      throw new Error(
+        `[project: ${slug}] Cannot delete metadata.json because it is required.`
+      );
+    }
     await this.badgeHubMetadata.deleteDraftFile(slug, filePath);
   }
 }
