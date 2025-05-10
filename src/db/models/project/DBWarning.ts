@@ -1,4 +1,4 @@
-import { Warning } from "@domain/readModels/app/WarningFromUser";
+import { Warning } from "@domain/readModels/project/WarningFromUser";
 
 export interface WarningRelation {
   warning_id: DBWarning["id"];

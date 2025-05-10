@@ -1,14 +1,18 @@
-import type { TsoaResponse } from "tsoa";
 import { Security, Response } from "tsoa";
+import { Controller, type TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
-import { Project, ProjectWithoutVersion } from "@domain/readModels/app/Project";
+import {
+  Project,
+  ProjectWithoutVersion,
+} from "@domain/readModels/project/Project";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 
 import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
+import { Category } from "@domain/readModels/project/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
+import type { RevisionNumber } from "@domain/readModels/project/Version";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -29,13 +33,15 @@ export interface JwtError extends Error {
 
 @Route("/api/v3")
 @Tags("public")
-export class PublicRestController {
+export class PublicRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
       new PostgreSQLBadgeHubFiles()
     )
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Only for testing auth endpoint
@@ -67,35 +73,56 @@ export class PublicRestController {
   }
 
   /**
-   * Get list of apps, optionally limited by page start/length and/or filtered by categorySlug
+   * Get list of projects, optionally limited by page start/length and/or filtered by categorySlug
    */
-  @Get("/apps")
-  public async getApps(
+  @Get("/projects")
+  public async getProjects(
     @Query() pageStart?: number,
     @Query() pageLength?: number,
     @Query() category?: Category["slug"],
     @Query() device?: string
   ): Promise<ProjectWithoutVersion[]> {
-    return await this.badgeHubData.getProjects({
-      pageStart,
-      pageLength,
-      badgeSlug: device,
-      categorySlug: category,
-    });
+    return await this.badgeHubData.getProjects(
+      {
+        pageStart,
+        pageLength,
+        badgeSlug: device,
+        categorySlug: category,
+      },
+      "latest"
+    );
   }
 
   /**
-   * Get app details
+   * Get project details for a specific published revision of the project
    */
-  @Get("/apps/{slug}")
-  public async getApp(
+  @Get("/projects/{slug}/rev{revision}")
+  public async getProjectVersion(
+    @Path() slug: string,
+    @Path() revision: RevisionNumber,
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Project | undefined> {
+    const details = await this.badgeHubData.getPublishedProject(slug, revision);
+    if (!details) {
+      return notFoundResponse(404, {
+        reason: `No public app with slug '${slug}' found`,
+      });
+    }
+    return details;
+  }
+
+  /**
+   * Get project details of the latest published version
+   */
+  @Get("/projects/{slug}")
+  public async getProject(
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getProject(slug);
+    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
     if (!details) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No public app with slug '${slug}' found`,
       });
     }
     return details;
@@ -104,7 +131,7 @@ export class PublicRestController {
   /**
    * get the latest published version of a file in the project
    */
-  @Get("/apps/{slug}/files/latest/{filePath}")
+  @Get("/projects/{slug}/latest/files/{filePath}")
   public async getLatestPublishedFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -120,16 +147,20 @@ export class PublicRestController {
         reason: `No app with slug '${slug}' found`,
       });
     }
+    this.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${filePath.split("/").at(-1)}`
+    );
     return Readable.from(file);
   }
 
   /**
    * get a file for a specific version of the project
    */
-  @Get(`/apps/{slug}/files/rev{revision}/{filePath}`)
+  @Get(`/projects/{slug}/rev{revision}/files/{filePath}`)
   public async getFileForVersion(
     @Path() slug: string,
-    @Path() revision: number,
+    @Path() revision: RevisionNumber,
     @Path() filePath: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Readable> {
@@ -140,32 +171,9 @@ export class PublicRestController {
     );
     if (!file) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No project with slug '${slug}' found`,
       });
     }
     return Readable.from(file);
-  }
-
-  /**
-   * get the latest published version of the app in zip format
-   */
-  @Get("/apps/{slug}/zip/latest")
-  public async getLatestPublishedZip(@Path() slug: string): Promise<Readable> {
-    return Readable.from(
-      await this.badgeHubData.getVersionZipContents(slug, "latest")
-    );
-  }
-
-  /**
-   * get the app zip for a specific version of the project
-   */
-  @Get(`/apps/{slug}/zip/rev{revision}`)
-  public async getZipForVersion(
-    @Path() slug: string,
-    @Path() revision: number
-  ): Promise<Readable> {
-    return Readable.from(
-      await this.badgeHubData.getVersionZipContents(slug, revision)
-    );
   }
 }

@@ -9,6 +9,8 @@ export function addTsoaValidationFailureLogging(app: Express) {
           "Validation Error fields:",
           JSON.stringify(err.fields, null, 2)
         );
+      } else if (err) {
+        console.error("Unexpected error", err);
       }
       next(err);
     }

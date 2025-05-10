@@ -1,7 +1,5 @@
 import { UploadedFile } from "@domain/UploadedFile";
-import { ProjectSlug } from "@domain/readModels/app/Project";
-import { VersionRevision } from "@domain/readModels/app/Version";
-import { DBDatedData } from "@db/models/app/DBDatedData";
+import { DBDatedData } from "@db/models/project/DBDatedData";
 
 export interface BadgeHubFiles {
   // Using path parts instead of a string to make it easier to work with paths in a cross-platform way
