@@ -76,13 +76,13 @@ create table app_metadata_jsons
 (
     id                        serial primary key,          -- unique identifier
     category                  text,                        -- fk to categories slug
-    name                      text,                        -- app name
+    name                      text,                        -- project name
     description               text,                        -- optional description
     author                    text,                        -- optional user_name name
     icon                      text,                        -- optional relative path for the icon
     license_file              text,                        -- optional license file path or type name
-    is_library                boolean,                     -- whether the app is a library
-    is_hidden                 boolean,                     -- whether the app is hidden in the launcher
+    is_library                boolean,                     -- whether the project is a library
+    is_hidden                 boolean,                     -- whether the project is hidden in the launcher
     semantic_version          text,                        -- semantic version
     interpreter               text,                        -- interpreter (e.g., 'python')
     main_executable           text,                        -- main executable path

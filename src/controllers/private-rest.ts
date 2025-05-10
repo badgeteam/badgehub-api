@@ -1,10 +1,12 @@
 import {
   Body,
+  Controller,
   Delete,
   Get,
   Patch,
   Path,
   Post,
+  Query,
   Res,
   Route,
   Tags,
@@ -13,12 +15,17 @@ import {
 } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import type { ProjectSlug } from "@domain/readModels/app/Project";
-import type { DBInsertUser, DBUser } from "@db/models/app/DBUser";
-import type { DBInsertProject } from "@db/models/app/DBProject";
-import type { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import {
+  Project,
+  type ProjectSlug,
+  ProjectWithoutVersion,
+} from "@domain/readModels/project/Project";
+import type { DBInsertUser, DBUser } from "@db/models/project/DBUser";
+import type { DBInsertProject } from "@db/models/project/DBProject";
+import type { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { Readable } from "node:stream";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
+import type { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -32,50 +39,55 @@ interface DbInsertAppMetadataJSONPartial
 // TODO verify user_name against logged in user
 @Route("/api/v3")
 @Tags("private")
-export class PrivateRestController {
+export class PrivateRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
       new PostgreSQLBadgeHubFiles()
     )
-  ) {}
-
-  /**
-   * Create a new user
-   */
-  @Post("/users/{userId}")
-  public async insertUser(
-    @Path() userId: DBUser["id"],
-    @Body() props: UserProps
-  ): Promise<void> {
-    // TODO implement with proper password handling (salting, hashing, ...)
-    throw new Error("Not implemented");
+  ) {
+    super();
   }
 
   /**
-   * Create a new app
+   * Get all draft projects that the given user has access to.
    */
-  @Post("/apps/{slug}")
-  public async createApp(
+  @Get("/users/{userId}/drafts")
+  public async getUserDraftProjects(
+    @Path() userId: DBUser["id"],
+    @Query() pageStart?: number,
+    @Query() pageLength?: number
+  ): Promise<ProjectWithoutVersion[]> {
+    return this.badgeHubData.getProjects(
+      { pageStart, pageLength, userId },
+      "draft"
+    );
+  }
+
+  /**
+   * Create a new project
+   */
+  @Post("/projects/{slug}")
+  public async createProject(
     @Path() slug: ProjectSlug,
-    @Body() props: ProjectProps
+    @Body() props: Omit<CreateProjectProps, "slug">
   ): Promise<void> {
     await this.badgeHubData.insertProject({ ...props, slug });
   }
 
   /**
-   * Create a new app
+   * Create a new project
    */
-  @Delete("/apps/{slug}")
-  public async deleteApp(@Path() slug: ProjectSlug): Promise<void> {
+  @Delete("/projects/{slug}")
+  public async deleteProject(@Path() slug: ProjectSlug): Promise<void> {
     await this.badgeHubData.deleteProject(slug);
   }
 
   /**
-   * Create a new app
+   * Create a new project
    */
-  @Patch("/apps/{slug}")
-  public async updateApp(
+  @Patch("/projects/{slug}")
+  public async updateProject(
     @Path() slug: ProjectSlug,
     @Body() changes: ProjectPropsPartial
   ): Promise<void> {
@@ -84,8 +96,9 @@ export class PrivateRestController {
 
   /**
    * Upload a file to the latest draft version of the project.
+   * Note that the filePath needs to be url encoded.
    */
-  @Post("/apps/{slug}/draft/files/{filePath}")
+  @Post("/projects/{slug}/draft/files/{filePath}")
   public async writeDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -101,9 +114,22 @@ export class PrivateRestController {
   }
 
   /**
+   * Delete the given file from the latest draft version of the project.
+   * Note that the filePath needs to be url encoded.
+   * Note that the metadata.json file cannot be deleted
+   */
+  @Delete("/projects/{slug}/draft/files/{filePath}")
+  public async deleteDraftFile(
+    @Path() slug: string,
+    @Path() filePath: string
+  ): Promise<void> {
+    await this.badgeHubData.deleteDraftFile(slug, filePath);
+  }
+
+  /**
    * Change the metadata of the latest draft version of the project.
    */
-  @Patch("/apps/{slug}/draft/metadata")
+  @Patch("/projects/{slug}/draft/metadata")
   public async changeDraftAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
@@ -114,7 +140,7 @@ export class PrivateRestController {
   /**
    * get the latest draft version of the project.
    */
-  @Get("/apps/{slug}/draft/files/{filePath}")
+  @Get("/projects/{slug}/draft/files/{filePath}")
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
@@ -127,37 +153,37 @@ export class PrivateRestController {
     );
     if (!fileContents) {
       return notFoundResponse(404, {
-        reason: `No app with slug '${slug}' found`,
+        reason: `No project with slug '${slug}' found`,
       });
     }
+    this.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${filePath.split("/").at(-1)}`
+    );
     return Readable.from(fileContents);
   }
 
   /**
-   * get the latest draft version of the app in zip format
+   * Get Project details of the draft version of the project
    */
-  @Get("/apps/{slug}/draft/zip")
-  public async getLatestPublishedZip(
-    @Path() slug: string
-  ): Promise<Uint8Array> {
-    return await this.badgeHubData.getVersionZipContents(slug, "draft");
-  }
-
-  /**
-   * Upload a file to the latest draft version of the project.
-   */
-  @Post("/apps/{slug}/draft/zip")
-  public async writeZip(
+  @Get("/projects/{slug}/draft")
+  public async getDraftProject(
     @Path() slug: string,
-    @Body() zipContent: Uint8Array
-  ): Promise<void> {
-    await this.badgeHubData.writeDraftProjectZip(slug, zipContent);
+    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+  ): Promise<Project | undefined> {
+    const details = await this.badgeHubData.getDraftProject(slug);
+    if (!details) {
+      return notFoundResponse(404, {
+        reason: `No project with slug '${slug}' found`,
+      });
+    }
+    return details;
   }
 
   /**
-   * Publish the latest draft version
+   * Publish the current draft as a new version
    */
-  @Patch("/apps/{slug}/publish")
+  @Patch("/projects/{slug}/publish")
   public async publishVersion(@Path() slug: string): Promise<void> {
     await this.badgeHubData.publishVersion(slug);
   }

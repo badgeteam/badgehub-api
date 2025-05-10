@@ -2,22 +2,30 @@ import {
   Project,
   ProjectSlug,
   ProjectWithoutVersion,
-} from "@domain/readModels/app/Project";
-import { Version } from "@domain/readModels/app/Version";
-import { User } from "@domain/readModels/app/User";
+} from "@domain/readModels/project/Project";
+import {
+  LatestOrDraftAlias,
+  RevisionNumberOrAlias,
+  Version,
+} from "@domain/readModels/project/Version";
+import { User } from "@domain/readModels/project/User";
 import { Badge } from "@domain/readModels/Badge";
-import { Category } from "@domain/readModels/app/Category";
-import { DBInsertUser } from "@db/models/app/DBUser";
-import { DBInsertProject, DBProject } from "@db/models/app/DBProject";
-import { DBInsertAppMetadataJSON } from "@db/models/app/DBAppMetadataJSON";
+import { Category } from "@domain/readModels/project/Category";
+import { DBInsertUser } from "@db/models/project/DBUser";
+import { DBInsertProject, DBProject } from "@db/models/project/DBProject";
+import { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { UploadedFile } from "@domain/UploadedFile";
-import { DBDatedData } from "@db/models/app/DBDatedData";
-import { FileMetadata } from "@domain/readModels/app/FileMetadata";
+import { DBDatedData } from "@db/models/project/DBDatedData";
+import { FileMetadata } from "@domain/readModels/project/FileMetadata";
+import { TimestampTZ } from "@db/DBTypes";
 
 export interface BadgeHubMetadata {
   insertUser(user: DBInsertUser): Promise<void>;
 
-  insertProject(project: DBInsertProject): Promise<void>;
+  insertProject(
+    project: DBInsertProject,
+    mockDates?: DBDatedData
+  ): Promise<void>;
 
   updateProject(
     projectSlug: ProjectSlug,
@@ -26,11 +34,24 @@ export interface BadgeHubMetadata {
 
   deleteProject(projectSlug: ProjectSlug): Promise<void>;
 
-  publishVersion(projectSlug: ProjectSlug): Promise<void>; // Publishes the current state of the app as a version
+  publishVersion(
+    projectSlug: ProjectSlug,
+    mockDate?: TimestampTZ
+  ): Promise<void>; // Publishes the current state of the project as a version
 
-  getProject(projectSlug: ProjectSlug): Promise<Project>;
+  getDraftProject(projectSlug: ProjectSlug): Promise<Project | undefined>;
 
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version>;
+  getPublishedProject(
+    projectSlug: ProjectSlug,
+    versionRevision: RevisionNumberOrAlias
+  ): Promise<undefined | Project>;
+
+  getPublishedVersion(
+    projectSlug: ProjectSlug,
+    versionRevision: RevisionNumberOrAlias
+  ): Promise<undefined | Version>;
+
+  getDraftVersion(projectSlug: ProjectSlug): Promise<Version | undefined>;
 
   getUser(userId: User["id"]): Promise<User>;
 
@@ -40,12 +61,16 @@ export interface BadgeHubMetadata {
 
   getCategories(): Promise<Category[]>;
 
-  getProjects(filter?: {
-    pageStart?: number;
-    pageLength?: number;
-    badgeSlug?: Badge["slug"];
-    categorySlug?: Category["slug"];
-  }): Promise<ProjectWithoutVersion[]>;
+  getProjects(
+    filter?: {
+      pageStart?: number;
+      pageLength?: number;
+      badgeSlug?: Badge["slug"];
+      categorySlug?: Category["slug"];
+      user?: User["id"];
+    },
+    version?: LatestOrDraftAlias
+  ): Promise<ProjectWithoutVersion[]>;
 
   updateDraftMetadata(
     slug: string,
@@ -58,12 +83,14 @@ export interface BadgeHubMetadata {
     pathParts: string[],
     uploadedFile: UploadedFile,
     sha256: string,
-    dates?: DBDatedData
+    mockDates?: DBDatedData
   ): Promise<void>;
 
   getFileMetadata(
     projectSlug: string,
-    versionRevision: number | "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: string
-  ): Promise<FileMetadata>;
+  ): Promise<FileMetadata | undefined>;
+
+  deleteDraftFile(slug: string, filePath: string): Promise<void>;
 }

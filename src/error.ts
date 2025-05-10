@@ -2,6 +2,7 @@ enum ErrorType {
   NotAuthorized = "ERROR_NOT_AUTHORIZED",
   NotAuthenticated = "ERROR_NOT_AUTHENTICATED",
 }
+
 class BadgeHubApiError extends Error {
   override name: ErrorType;
   override message: string;
@@ -22,6 +23,7 @@ class BadgeHubApiError extends Error {
     this.cause = cause;
   }
 }
+
 const NotAuthenticatedError = (
   message: string = "You are not authenticated"
 ): BadgeHubApiError => {
