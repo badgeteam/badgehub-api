@@ -7,6 +7,7 @@ import express, { NextFunction } from "express";
 import openapi from "./openapi";
 import { pinoHttp } from "pino-http";
 import { jwtErrorHandler } from "@auth/jwt-error";
+import rateLimit from "express-rate-limit";
 
 async function startServer() {
   const app = express();
@@ -14,9 +15,15 @@ async function startServer() {
 
   console.log(">>> Starting server...");
 
+  const rateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 500, // Limit each IP to 100 requests per windowMs
+  });
+
   app.use(express.json());
   app.use(express.static("public"));
   // app.use(pino);
+  app.use(rateLimiter);
 
   // TODO: correct middleware
   // https://expressjs.com/en/guide/using-middleware.html
