@@ -113,6 +113,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async deleteDraftFile(slug: string, filePath: string): Promise<void> {
     const { dir, name, ext } = parsePath(filePath.split("/"));
+    if (dir === "" && name === "metadata" && ext === ".json") {
+      throw new Error(
+        `[project: ${slug}] Cannot delete metadata.json because it is required`
+      );
+    }
     await this.pool.query(sql`update files
                               set deleted_at = now()
                               where version_id = (${getVersionQuery(slug, "draft")})
@@ -483,7 +488,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const dbFiles = await this.pool.query<DBFileMetadata>(
       sql`select *
           from files
-          where version_id = ${id}`
+          where version_id = ${id} and deleted_at is null`
     );
     return dbFiles.rows.map(dbFileToFileMetadata);
   }
