@@ -480,7 +480,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   }
 
   async _getFilesMetadataForVersion(id: DBVersion["id"]) {
-    const dbFiles = await this.pool.query(
+    const dbFiles = await this.pool.query<DBFileMetadata>(
       sql`select *
           from files
           where version_id = ${id}`
