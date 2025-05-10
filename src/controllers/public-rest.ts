@@ -1,4 +1,4 @@
-import type { TsoaResponse } from "tsoa";
+import { Controller, type TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import {
@@ -11,10 +11,7 @@ import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/project/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
-import type {
-  RevisionNumber,
-  RevisionNumberOrAlias,
-} from "@domain/readModels/project/Version";
+import type { RevisionNumber } from "@domain/readModels/project/Version";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -30,13 +27,15 @@ import type {
 
 @Route("/api/v3")
 @Tags("public")
-export class PublicRestController {
+export class PublicRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
       new PostgreSQLBadgeHubFiles()
     )
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Get list of devices (badges)
@@ -129,6 +128,10 @@ export class PublicRestController {
         reason: `No app with slug '${slug}' found`,
       });
     }
+    this.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${filePath.split("/").at(-1)}`
+    );
     return Readable.from(file);
   }
 

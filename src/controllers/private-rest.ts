@@ -1,5 +1,6 @@
 import {
   Body,
+  Controller,
   Delete,
   Get,
   Patch,
@@ -38,13 +39,15 @@ interface DbInsertAppMetadataJSONPartial
 // TODO verify user_name against logged in user
 @Route("/api/v3")
 @Tags("private")
-export class PrivateRestController {
+export class PrivateRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
       new PostgreSQLBadgeHubMetadata(),
       new PostgreSQLBadgeHubFiles()
     )
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Get all draft projects that the given user has access to.
@@ -153,6 +156,10 @@ export class PrivateRestController {
         reason: `No project with slug '${slug}' found`,
       });
     }
+    this.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${filePath.split("/").at(-1)}`
+    );
     return Readable.from(fileContents);
   }
 
