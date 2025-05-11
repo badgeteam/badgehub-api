@@ -11,9 +11,10 @@ export async function expressAuthentication(
   securityName: string,
   scopes?: string[]
 ): Promise<any> {
-  console.log("authorization", request.header("authorization"));
-  console.log("securityName", securityName);
-  console.log("scopes", scopes);
+  // Enable logging for debugging:
+  // console.log("authorization", request.header("authorization"));
+  // console.log("securityName", securityName);
+  // console.log("scopes", scopes);
 
   if (securityName !== "bearer") {
     throw new Error(`Unsupported security scheme: ${securityName}`);
@@ -50,7 +51,7 @@ export async function expressAuthentication(
     // }
 
     // Return the payload as the authenticated user
-    return Promise.resolve(payload);
+    return payload;
   } catch (error) {
     console.error("Authentication error:", error);
     throw createJwtError("Authentication failed");
