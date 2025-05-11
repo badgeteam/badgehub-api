@@ -10,21 +10,19 @@ import { NODE_ENV, MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 // import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { jwtErrorHandler } from "@auth/jwt-error";
 import rateLimit from "express-rate-limit";
+import { ensureContributorRouteMiddleware } from "@auth/jwt";
 
-export const createExpressServer = (
-  enableMutation = NODE_ENV === "development"
-) => {
+export const createExpressServer = () => {
   const app = express();
+  app.use((req, res, next) => {
+    next(); // for inspection during development
+  });
 
   const rateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 500, // Limit each IP to 100 requests per windowMs
   });
   app.use(rateLimiter);
-
-  if (!enableMutation) {
-    disableMutatingRest(app);
-  }
 
   app.use(express.json());
   app.use(express.static("public"));

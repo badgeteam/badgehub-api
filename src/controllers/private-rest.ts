@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Middlewares,
   Patch,
   Path,
   Post,
@@ -26,6 +27,8 @@ import type { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJS
 import { Readable } from "node:stream";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import type { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
+import { ensureContributorRouteMiddleware } from "@auth/jwt";
+import { DISABLE_AUTH } from "@config";
 
 interface UserProps extends Omit<DBInsertUser, "id"> {}
 
@@ -39,6 +42,7 @@ interface DbInsertAppMetadataJSONPartial
 // TODO verify user_name against logged in user
 @Route("/api/v3")
 @Tags("private")
+@Middlewares(...(DISABLE_AUTH ? [] : [ensureContributorRouteMiddleware]))
 export class PrivateRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(
