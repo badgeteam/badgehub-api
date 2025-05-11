@@ -25,6 +25,16 @@ describe(
       expect(res.statusCode).toBe(404);
     });
 
+    test.each(["non-existing", "codecraft"])(
+      "should respond with 401 for [%s] if there is no valid jwt token in the request",
+      async (projectName) => {
+        const res = await request(app).get(
+          `/api/v3/projects/${projectName}/draft`
+        );
+        expect(res.statusCode).toBe(401);
+      }
+    );
+
     test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
       const postRes = await request(app)
         .post("/api/v3/projects/codecraft/draft/files/test.txt")
