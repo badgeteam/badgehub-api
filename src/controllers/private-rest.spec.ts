@@ -12,7 +12,7 @@ describe(
   () => {
     let app: ReturnType<typeof express>;
     beforeEach(() => {
-      app = createExpressServer(true);
+      app = createExpressServer();
     });
 
     test("non-existing /projects/{slug}/draft", async () => {
