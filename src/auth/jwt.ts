@@ -9,9 +9,7 @@ const ensureAdminRouteMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  await handleMiddlewareCheck(req, res, ensureAdmin);
-
-  next();
+  return handleMiddlewareCheck(req, res, ensureAdmin, next);
 };
 
 type RequestWithUser = {
@@ -23,20 +21,23 @@ const addUserSubMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  let token = req.headers.authorization;
-  if (!token) {
-    throw NotAuthenticatedError("missing authorization header");
+  try {
+    let token = req.headers.authorization;
+    if (!token) {
+      throw NotAuthenticatedError("missing authorization header");
+    }
+    if (token.toLowerCase().startsWith("bearer ")) {
+      token = token.substring("Bearer ".length);
+    }
+    const payload = decodeJwt(token);
+    if (!("sub" in payload) || !payload.sub) {
+      throw NotAuthenticatedError("JWT does not contain user sub");
+    }
+    (req as RequestWithUser).keycloakUserSub = payload.sub;
+    next();
+  } catch (e: unknown) {
+    return handleError(e, res);
   }
-  if (token.toLowerCase().startsWith("bearer ")) {
-    token = token.substring("Bearer ".length);
-  }
-  const payload = decodeJwt(token);
-  if (!("sub" in payload) || !payload.sub) {
-    throw NotAuthenticatedError("JWT does not contain user sub");
-  }
-  (req as RequestWithUser).keycloakUserSub = payload.sub;
-
-  next();
 };
 // Middleware for routes that require a contributor role
 const ensureContributorRouteMiddleware = (
@@ -44,13 +45,14 @@ const ensureContributorRouteMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  handleMiddlewareCheck(req, res, ensureContributor).then(next);
+  return handleMiddlewareCheck(req, res, ensureContributor, next);
 };
 
 const handleMiddlewareCheck = async (
   req: Request,
   res: Response,
-  assertion: Function
+  assertion: Function,
+  next: NextFunction
 ) => {
   try {
     const token = await decodeJwtFromRequest(req);
@@ -61,19 +63,23 @@ const handleMiddlewareCheck = async (
       throw NotAuthorizedError();
     }
     assertion(roles);
+    next();
   } catch (e: any) {
     handleError(e, res);
   }
 };
 
-const handleError = (err: Error, res: Response) => {
-  if (err.name == ErrorType.NotAuthenticated) {
-    res.status(403).json({ error: err.message });
+const handleError = (err: unknown, res: Response) => {
+  if (err && typeof err === "object" && "name" in err && "message" in err) {
+    if (err.name == ErrorType.NotAuthorized) {
+      res.status(403).json({ error: err.message });
+      return;
+    }
+    if (err.name == ErrorType.NotAuthenticated) {
+      res.status(401).json({ error: err.message });
+      return;
+    }
   }
-  if (err.name == ErrorType.NotAuthorized) {
-    res.status(401).json({ error: err.message });
-  }
-
   console.debug(err);
   res.status(500).json({ error: "Internal server error" });
 };
