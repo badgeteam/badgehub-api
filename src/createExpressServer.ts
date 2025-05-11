@@ -7,23 +7,18 @@ import { addTsoaValidationFailureLogging } from "@util/logging";
 import { NODE_ENV } from "@config";
 import multer from "multer";
 import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
+import { ensureContributorRouteMiddleware } from "@auth/jwt";
 
-export const createExpressServer = (
-  enableMutation = NODE_ENV === "development"
-) => {
+export const createExpressServer = () => {
   const app = express();
   app.use((req, res, next) => {
     next(); // for inspection during development
   });
   const pino = pinoHttp();
-  if (!enableMutation) {
-    disableMutatingRest(app);
-  }
 
   app.use(express.json());
   app.use(express.static("public"));
   app.use(pino);
-
   openapi(app);
 
   RegisterRoutes(app, {
