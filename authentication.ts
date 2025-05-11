@@ -1,9 +1,10 @@
 import * as express from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { JwtError } from "@controllers/public-rest";
+import { KEYCLOAK_CERTS, KEYCLOAK_ISSUER } from "@config";
 
 // Create a JWKS client using Keycloak's JWKS endpoint
-const JWKS = createRemoteJWKSet(new URL(process.env.KEYCLOAK_CERTS!));
+const JWKS = createRemoteJWKSet(new URL(KEYCLOAK_CERTS!));
 
 export async function expressAuthentication(
   request: express.Request,
@@ -33,7 +34,7 @@ export async function expressAuthentication(
   try {
     // Verify the JWT
     const { payload } = await jwtVerify(token, JWKS, {
-      issuer: process.env.KEYCLOAK_ISSUER,
+      issuer: KEYCLOAK_ISSUER,
       // audience: AUDIENCE,
       // Add other validation options as needed
     });
