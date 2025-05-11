@@ -4,15 +4,13 @@ import { NODE_ENV } from "@config";
 
 @Route("/api/dev")
 @Tags("dev")
-@Middlewares([
-  async (req: any, res: any, next: any) => {
-    if (NODE_ENV !== "development") {
-      next(new Error("Dev API is disabled in non-development environments"));
-    } else {
-      next();
-    }
-  },
-])
+@Middlewares(async (req: any, res: any, next: any) => {
+  if (NODE_ENV !== "development") {
+    next(new Error("Dev API is disabled in non-development environments"));
+  } else {
+    next();
+  }
+})
 export class DevRestController {
   public constructor() {}
 
