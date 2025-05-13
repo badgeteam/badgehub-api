@@ -1,3 +1,4 @@
+import { Security, Response } from "tsoa";
 import { Controller, type TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
@@ -25,6 +26,11 @@ import type { RevisionNumber } from "@domain/readModels/project/Version";
  * npm run swagger
  */
 
+export interface JwtError extends Error {
+  status: number;
+  message: string;
+}
+
 @Route("/api/v3")
 @Tags("public")
 export class PublicRestController extends Controller {
@@ -35,6 +41,19 @@ export class PublicRestController extends Controller {
     )
   ) {
     super();
+  }
+
+  /**
+   * Only for testing auth endpoint
+   */
+  @Response<JwtError>(403, "Forbidden") // Doesn't work
+  @Security("bearer", ["hacker"])
+  @Get("/private")
+  public async getPrivate() {
+    return Promise.resolve({
+      status: 200,
+      message: "You're visiting a private api",
+    });
   }
 
   /**
