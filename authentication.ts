@@ -1,7 +1,7 @@
 import * as express from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { JwtError } from "@controllers/public-rest";
-import { KEYCLOAK_CERTS, KEYCLOAK_ISSUER } from "@config";
+import { KEYCLOAK_CERTS, KEYCLOAK_ISSUER } from "./src/config";
 
 // Create a JWKS client using Keycloak's JWKS endpoint
 const JWKS = createRemoteJWKSet(new URL(KEYCLOAK_CERTS!));
