@@ -7,6 +7,22 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
+      "ForbiddenError": {
+        "description": "The code is annotated so that OpenAPI documentation can be generated with tsoa\n\nhttps://tsoa-community.github.io/docs/introduction.html\nhttps://node-postgres.com/\nhttps://www.postgresql.org/docs/16/index.html\n\nAfter changing this file, don't forget to generate the OpenPI spec en the routes:\n\nnpm run swagger",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["Unauthorized"],
+            "nullable": false
+          },
+          "details": {
+            "type": "string"
+          }
+        },
+        "required": ["status", "details"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "Badge": {
         "properties": {
           "created_at": {
@@ -563,7 +579,13 @@
         "additionalProperties": false
       }
     },
-    "securitySchemes": {}
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "info": {
     "title": "badgehub-api",
@@ -575,6 +597,41 @@
     "contact": {}
   },
   "paths": {
+    "/api/v3/private": {
+      "get": {
+        "operationId": "GetPrivate",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenError"
+                }
+              }
+            }
+          }
+        },
+        "description": "Only for testing auth endpoint",
+        "tags": ["public"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": []
+      }
+    },
     "/api/v3/devices": {
       "get": {
         "operationId": "GetDevices",
