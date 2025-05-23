@@ -7,22 +7,6 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
-      "ForbiddenError": {
-        "description": "The code is annotated so that OpenAPI documentation can be generated with tsoa\n\nhttps://tsoa-community.github.io/docs/introduction.html\nhttps://node-postgres.com/\nhttps://www.postgresql.org/docs/16/index.html\n\nAfter changing this file, don't forget to generate the OpenPI spec en the routes:\n\nnpm run swagger",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["Unauthorized"],
-            "nullable": false
-          },
-          "details": {
-            "type": "string"
-          }
-        },
-        "required": ["status", "details"],
-        "type": "object",
-        "additionalProperties": false
-      },
       "Badge": {
         "properties": {
           "created_at": {
@@ -170,9 +154,6 @@
             "type": "string",
             "format": "date-time"
           },
-          "extension": {
-            "type": "string"
-          },
           "dir": {
             "type": "string"
           },
@@ -202,7 +183,6 @@
         "required": [
           "created_at",
           "updated_at",
-          "extension",
           "dir",
           "name",
           "ext",
@@ -579,13 +559,7 @@
         "additionalProperties": false
       }
     },
-    "securitySchemes": {
-      "bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    }
+    "securitySchemes": {}
   },
   "info": {
     "title": "badgehub-api",
@@ -597,41 +571,6 @@
     "contact": {}
   },
   "paths": {
-    "/api/v3/private": {
-      "get": {
-        "operationId": "GetPrivate",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenError"
-                }
-              }
-            }
-          }
-        },
-        "description": "Only for testing auth endpoint",
-        "tags": ["public"],
-        "security": [
-          {
-            "bearer": ["hacker"]
-          }
-        ],
-        "parameters": []
-      }
-    },
     "/api/v3/devices": {
       "get": {
         "operationId": "GetDevices",
@@ -650,7 +589,7 @@
             }
           }
         },
-        "description": "Get list of devices (badges)",
+        "description": "Only for testing auth endpoint",
         "tags": ["public"],
         "security": [],
         "parameters": []
@@ -1100,7 +1039,7 @@
             "description": "No content"
           }
         },
-        "description": "Upload a file to the latest draft version of the project.",
+        "description": "Upload a file to the latest draft version of the project.\nNote that the filePath needs to be url encoded.",
         "tags": ["private"],
         "security": [],
         "parameters": [
@@ -1146,7 +1085,7 @@
             "description": "No content"
           }
         },
-        "description": "Upload a file to the latest draft version of the project.",
+        "description": "Delete the given file from the latest draft version of the project.\nNote that the filePath needs to be url encoded.\nNote that the metadata.json file cannot be deleted",
         "tags": ["private"],
         "security": [],
         "parameters": [
