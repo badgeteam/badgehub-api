@@ -10,14 +10,7 @@
   "spec": {
     "outputDirectory": "public",
     "version": "3",
-    "specVersion": 3,
-    "securityDefinitions": {
-      "bearer": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    }
+    "specVersion": 3
   },
   "routes": {
     "routesDir": "src/generated",
