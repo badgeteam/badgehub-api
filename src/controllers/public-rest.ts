@@ -46,15 +46,15 @@ export class PublicRestController extends Controller {
   /**
    * Only for testing auth endpoint
    */
-  @Response<JwtError>(403, "Forbidden") // Doesn't work
-  @Security("bearer", ["hacker"])
-  @Get("/private")
-  public async getPrivate() {
-    return Promise.resolve({
-      status: 200,
-      message: "You're visiting a private api",
-    });
-  }
+  // @Response<JwtError>(403, "Forbidden") // Doesn't work
+  // @Security("bearer", ["hacker"])
+  // @Get("/private")
+  // public async getPrivate() {
+  //   return Promise.resolve({
+  //     status: 200,
+  //     message: "You're visiting a private api",
+  //   });
+  // }
 
   /**
    * Get list of devices (badges)

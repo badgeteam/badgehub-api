@@ -16,11 +16,11 @@ export const createExpressServer = (
 ) => {
   const app = express();
 
-  const rateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500, // Limit each IP to 100 requests per windowMs
-  });
-  app.use(rateLimiter);
+  // const rateLimiter = rateLimit({
+  //   windowMs: 15 * 60 * 1000, // 15 minutes
+  //   max: 500, // Limit each IP to 100 requests per windowMs
+  // });
+  // app.use(rateLimiter);
 
   if (!enableMutation) {
     disableMutatingRest(app);
@@ -38,7 +38,7 @@ export const createExpressServer = (
     multer: multer({ limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES } }),
   });
 
-  app.use(jwtErrorHandler);
+  // app.use(jwtErrorHandler);
 
   addTsoaValidationFailureLogging(app);
 
