@@ -29,15 +29,6 @@ const expressAuthenticationRecasted = expressAuthentication as (
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-  ForbiddenError: {
-    dataType: "refObject",
-    properties: {
-      status: { dataType: "enum", enums: ["Unauthorized"], required: true },
-      details: { dataType: "string", required: true },
-    },
-    additionalProperties: false,
-  },
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Badge: {
     dataType: "refObject",
     properties: {
@@ -135,7 +126,6 @@ const models: TsoaRoute.Models = {
     properties: {
       created_at: { dataType: "datetime", required: true },
       updated_at: { dataType: "datetime", required: true },
-      extension: { dataType: "string", required: true },
       dir: { dataType: "string", required: true },
       name: { dataType: "string", required: true },
       ext: { dataType: "string", required: true },
@@ -378,47 +368,6 @@ export function RegisterRoutes(
 
   const upload = opts?.multer || multer({ limits: { fileSize: 8388608 } });
 
-  app.get(
-    "/api/v3/private",
-    authenticateMiddleware([{ bearer: ["hacker"] }]),
-    ...fetchMiddlewares<RequestHandler>(PublicRestController),
-    ...fetchMiddlewares<RequestHandler>(
-      PublicRestController.prototype.getPrivate
-    ),
-
-    async function PublicRestController_getPrivate(
-      request: ExRequest,
-      response: ExResponse,
-      next: any
-    ) {
-      const args: Record<string, TsoaRoute.ParameterSchema> = {};
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      let validatedArgs: any[] = [];
-      try {
-        validatedArgs = templateService.getValidatedArgs({
-          args,
-          request,
-          response,
-        });
-
-        const controller = new PublicRestController();
-
-        await templateService.apiHandler({
-          methodName: "getPrivate",
-          controller,
-          response,
-          next,
-          validatedArgs,
-          successStatus: undefined,
-        });
-      } catch (err) {
-        return next(err);
-      }
-    }
-  );
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
@@ -1295,89 +1244,6 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-  function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
-    return async function runAuthenticationMiddleware(
-      request: any,
-      response: any,
-      next: any
-    ) {
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      // keep track of failed auth attempts so we can hand back the most
-      // recent one.  This behavior was previously existing so preserving it
-      // here
-      const failedAttempts: any[] = [];
-      const pushAndRethrow = (error: any) => {
-        failedAttempts.push(error);
-        throw error;
-      };
-
-      const secMethodOrPromises: Promise<any>[] = [];
-      for (const secMethod of security) {
-        if (Object.keys(secMethod).length > 1) {
-          const secMethodAndPromises: Promise<any>[] = [];
-
-          for (const name in secMethod) {
-            secMethodAndPromises.push(
-              expressAuthenticationRecasted(
-                request,
-                name,
-                secMethod[name],
-                response
-              ).catch(pushAndRethrow)
-            );
-          }
-
-          // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-          secMethodOrPromises.push(
-            Promise.all(secMethodAndPromises).then((users) => {
-              return users[0];
-            })
-          );
-        } else {
-          for (const name in secMethod) {
-            secMethodOrPromises.push(
-              expressAuthenticationRecasted(
-                request,
-                name,
-                secMethod[name],
-                response
-              ).catch(pushAndRethrow)
-            );
-          }
-        }
-      }
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-
-      try {
-        request["user"] = await Promise.any(secMethodOrPromises);
-
-        // Response was sent in middleware, abort
-        if (response.writableEnded) {
-          return;
-        }
-
-        next();
-      } catch (err) {
-        // Show most recent error as response
-        const error = failedAttempts.pop();
-        error.status = error.status || 401;
-
-        // Response was sent in middleware, abort
-        if (response.writableEnded) {
-          return;
-        }
-        next(error);
-      }
-
-      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    };
-  }
 
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 }
