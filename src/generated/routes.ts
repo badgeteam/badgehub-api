@@ -732,6 +732,13 @@ export function RegisterRoutes(
           required: true,
           dataType: "double",
         },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
         pageStart: { in: "query", name: "pageStart", dataType: "double" },
         pageLength: { in: "query", name: "pageLength", dataType: "double" },
       };
@@ -824,6 +831,13 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, ref: "ProjectSlug" },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -871,6 +885,13 @@ export function RegisterRoutes(
           name: "changes",
           required: true,
           ref: "ProjectPropsPartial",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -932,6 +953,13 @@ export function RegisterRoutes(
           required: true,
           dataType: "file",
         },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -979,6 +1007,13 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -1028,6 +1063,13 @@ export function RegisterRoutes(
           required: true,
           ref: "DbInsertAppMetadataJSONPartial",
         },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1076,9 +1118,9 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
-        notFoundResponse: {
+        badRequestCallback: {
           in: "res",
-          name: "404",
+          name: "403",
           required: true,
           dataType: "nestedObjectLiteral",
           nestedProperties: { reason: { dataType: "string", required: true } },
@@ -1125,9 +1167,9 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
-        notFoundResponse: {
+        badRequestCallback: {
           in: "res",
-          name: "404",
+          name: "403",
           required: true,
           dataType: "nestedObjectLiteral",
           nestedProperties: { reason: { dataType: "string", required: true } },
@@ -1174,6 +1216,13 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
