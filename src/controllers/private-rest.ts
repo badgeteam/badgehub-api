@@ -42,7 +42,11 @@ interface ProjectPropsPartial extends Partial<ProjectProps> {}
 interface DbInsertAppMetadataJSONPartial
   extends Partial<DBInsertAppMetadataJSON> {}
 
-// TODO verify user_name against logged in user
+const HTTP_NOT_FOUND = 404;
+const HTTP_FORBIDDEN = 403;
+
+type BadRequestCallback = TsoaResponse<404 | 403, { reason: string }>;
+
 @Route("/api/v3")
 @Tags("private")
 @Middlewares(
@@ -65,9 +69,17 @@ export class PrivateRestController extends Controller {
   @Get("/users/{userId}/drafts")
   public async getUserDraftProjects(
     @Path() userId: DBUser["id"],
+    @Res() badRequestCallback: TsoaResponse<403, { reason: string }>,
     @Query() pageStart?: number,
     @Query() pageLength?: number
-  ): Promise<ProjectWithoutVersion[]> {
+  ): Promise<ProjectWithoutVersion[] | unknown> {
+    const badRequestResponse = this.checkUserAuthorization(
+      userId,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     return this.badgeHubData.getProjects(
       { pageStart, pageLength, userId },
       "draft"
@@ -89,7 +101,17 @@ export class PrivateRestController extends Controller {
    * Create a new project
    */
   @Delete("/projects/{slug}")
-  public async deleteProject(@Path() slug: ProjectSlug): Promise<void> {
+  public async deleteProject(
+    @Path() slug: ProjectSlug,
+    @Res() badRequestCallback: BadRequestCallback
+  ): Promise<void> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.deleteProject(slug);
   }
 
@@ -99,8 +121,16 @@ export class PrivateRestController extends Controller {
   @Patch("/projects/{slug}")
   public async updateProject(
     @Path() slug: ProjectSlug,
-    @Body() changes: ProjectPropsPartial
+    @Body() changes: ProjectPropsPartial,
+    @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.updateProject(slug, changes);
   }
 
@@ -112,8 +142,16 @@ export class PrivateRestController extends Controller {
   public async writeDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
-    @UploadedFile() file: Express.Multer.File
-  ): Promise<void> {
+    @UploadedFile() file: Express.Multer.File,
+    @Res() badRequestCallback: BadRequestCallback
+  ): Promise<undefined> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.writeDraftFile(slug, filePath, {
       mimetype: file.mimetype,
       fileContent: file.buffer,
@@ -131,8 +169,16 @@ export class PrivateRestController extends Controller {
   @Delete("/projects/{slug}/draft/files/{filePath}")
   public async deleteDraftFile(
     @Path() slug: string,
-    @Path() filePath: string
+    @Path() filePath: string,
+    @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.deleteDraftFile(slug, filePath);
   }
 
@@ -142,8 +188,16 @@ export class PrivateRestController extends Controller {
   @Patch("/projects/{slug}/draft/metadata")
   public async changeDraftAppMetadata(
     @Path() slug: string,
-    @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial
+    @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial,
+    @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.updateDraftMetadata(slug, appMetadataChanges);
   }
 
@@ -154,15 +208,22 @@ export class PrivateRestController extends Controller {
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
-    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+    @Res() badRequestCallback: BadRequestCallback
   ): Promise<Readable> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     const fileContents = await this.badgeHubData.getFileContents(
       slug,
       "draft",
       filePath
     );
     if (!fileContents) {
-      return notFoundResponse(404, {
+      return badRequestCallback(HTTP_NOT_FOUND, {
         reason: `No project with slug '${slug}' found`,
       });
     }
@@ -179,11 +240,19 @@ export class PrivateRestController extends Controller {
   @Get("/projects/{slug}/draft")
   public async getDraftProject(
     @Path() slug: string,
-    @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
+    @Res() badRequestCallback: BadRequestCallback
   ): Promise<Project | undefined> {
     const details = await this.badgeHubData.getDraftProject(slug);
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback,
+      details
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     if (!details) {
-      return notFoundResponse(404, {
+      return badRequestCallback(HTTP_NOT_FOUND, {
         reason: `No project with slug '${slug}' found`,
       });
     }
@@ -194,7 +263,55 @@ export class PrivateRestController extends Controller {
    * Publish the current draft as a new version
    */
   @Patch("/projects/{slug}/publish")
-  public async publishVersion(@Path() slug: string): Promise<void> {
+  public async publishVersion(
+    @Path() slug: string,
+    @Res() badRequestCallback: BadRequestCallback
+  ): Promise<void> {
+    const badRequestResponse = await this.checkProjectAuthorization(
+      slug,
+      badRequestCallback
+    );
+    if (badRequestResponse !== "OK") {
+      return badRequestResponse;
+    }
     await this.badgeHubData.publishVersion(slug);
+  }
+
+  private requestIsFromAllowedUser(param: { allowedUsers: number[] }) {
+    const headers: Headers = this.getHeaders();
+    // TODO check that user in JWT token in an allowed user
+    // In case false is returned, make a log on the server with the user who did it
+    return true;
+  }
+
+  private async checkProjectAuthorization(
+    slug: ProjectSlug,
+    badRequestCallback: BadRequestCallback,
+    project?: Project
+  ) {
+    project = project ?? (await this.badgeHubData.getDraftProject(slug));
+    if (!project) {
+      return badRequestCallback(HTTP_NOT_FOUND, {
+        reason: `No project with slug '${slug}' found`,
+      });
+    }
+    if (!this.requestIsFromAllowedUser({ allowedUsers: [project?.user_id] })) {
+      return badRequestCallback(HTTP_FORBIDDEN, {
+        reason: `The user in the JWT token is not authorized for project with slug '${slug}'`,
+      });
+    }
+    return "OK";
+  }
+
+  private checkUserAuthorization(
+    userId: number,
+    badRequestCallback: TsoaResponse<403, { reason: string }>
+  ): "OK" | unknown {
+    if (!this.requestIsFromAllowedUser({ allowedUsers: [userId] })) {
+      return badRequestCallback(HTTP_FORBIDDEN, {
+        reason: `You are not allowed to access the draft projects of user with id '${userId}'`,
+      });
+    }
+    return "OK";
   }
 }
