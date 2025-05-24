@@ -17,218 +17,225 @@ describe(
     beforeEach(() => {
       app = createExpressServer();
     });
+    describe("/projects/{slug}/draft", () => {
+      test("non-existing /projects/{slug}/draft", async () => {
+        const res = await request(app)
+          .get("/api/v3/projects/non-existing/draft")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(res.statusCode).toBe(404);
+      });
 
-    test("non-existing /projects/{slug}/draft", async () => {
-      const res = await request(app)
-        .get("/api/v3/projects/non-existing/draft")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(res.statusCode).toBe(404);
+      test.each(["non-existing", "codecraft"])(
+        "should respond with 401 for [%s] if there is no valid jwt token in the request",
+        async (projectName) => {
+          const res = await request(app).get(
+            `/api/v3/projects/${projectName}/draft`
+          );
+          expect(res.statusCode).toBe(401);
+        }
+      );
     });
 
-    test.each(["non-existing", "codecraft"])(
-      "should respond with 401 for [%s] if there is no valid jwt token in the request",
-      async (projectName) => {
-        const res = await request(app).get(
-          `/api/v3/projects/${projectName}/draft`
-        );
-        expect(res.statusCode).toBe(401);
-      }
-    );
+    describe("/projects/{slug}/draft/files/{filePath}", () => {
+      test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
+        const postRes = await request(app)
+          .post("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .attach("file", Buffer.from("test file content"), "test.txt");
+        expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+        const getRes = await request(app)
+          .get("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes.statusCode).toBe(200);
+        expect(getRes.text).toBe("test file content");
+        const deleteRes = await request(app)
+          .delete("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
+        const getRes2 = await request(app)
+          .get("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes2.statusCode).toBe(404);
+      });
 
-    test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
-      const postRes = await request(app)
-        .post("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .attach("file", Buffer.from("test file content"), "test.txt");
-      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes = await request(app)
-        .get("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes.statusCode).toBe(200);
-      expect(getRes.text).toBe("test file content");
-      const deleteRes = await request(app)
-        .delete("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes2 = await request(app)
-        .get("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes2.statusCode).toBe(404);
+      test("Overwrite deleted file", async () => {
+        const postRes1 = await request(app)
+          .post("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .attach("file", Buffer.from("test file content"), "test.txt");
+        expect(postRes1.statusCode.toString()).toMatch(/2\d\d/);
+
+        const deleteRes = await request(app)
+          .delete("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
+        const postRes2 = await request(app)
+          .post("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .attach("file", Buffer.from("test file content"), "test.txt");
+        expect(postRes2.statusCode.toString()).toMatch(/2\d\d/);
+        const getRes = await request(app)
+          .get("/api/v3/projects/codecraft/draft/files/test.txt")
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes.statusCode).toBe(200);
+        expect(getRes.text).toBe("test file content");
+      });
     });
 
-    test("Overwrite deleted file", async () => {
-      const postRes1 = await request(app)
-        .post("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .attach("file", Buffer.from("test file content"), "test.txt");
-      expect(postRes1.statusCode.toString()).toMatch(/2\d\d/);
-
-      const deleteRes = await request(app)
-        .delete("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
-      const postRes2 = await request(app)
-        .post("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .attach("file", Buffer.from("test file content"), "test.txt");
-      expect(postRes2.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes = await request(app)
-        .get("/api/v3/projects/codecraft/draft/files/test.txt")
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes.statusCode).toBe(200);
-      expect(getRes.text).toBe("test file content");
-    });
-
-    test("CREATE/READ/DELETE project", async () => {
-      const createProjectProps: Omit<CreateProjectProps, "slug"> = {
-        user_id: TEST_USER_ID,
-      };
-      // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
-      const dynamicTestAppId = `test_app_${Date.now()}`;
-      const postRes = await request(app)
-        .post(`/api/v3/projects/${dynamicTestAppId}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .send(createProjectProps);
-      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes = await request(app)
-        .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes.statusCode).toBe(200);
-      expect({
-        ...stripDatedData(getRes.body),
-        version: stripDatedData(getRes.body.version),
-      }).toMatchObject({
-        allow_team_fixes: false,
-        category: "Uncategorised",
-        description: null,
-        git: null,
-        git_commit_id: null,
-        interpreter: null,
-        license: null,
-        name: dynamicTestAppId,
-        published_at: null,
-        revision: 0,
-        slug: dynamicTestAppId,
-        user_id: 0,
-        user_name: "TechTinkerer",
-        version: {
-          app_metadata: {
-            author: null,
-            category: null,
-            description: null,
-            file_mappings: null,
-            file_mappings_overrides: null,
-            icon: null,
-            interpreter: null,
-            is_hidden: null,
-            is_library: null,
-            license_file: null,
-            main_executable: null,
-            main_executable_overrides: null,
-            name: dynamicTestAppId,
-            semantic_version: null,
-          },
-          app_metadata_json_id: expect.any(Number),
-          download_count: "0",
-          files: [],
+    describe("/projects/{slug}", () => {
+      test("CREATE/READ/DELETE project", async () => {
+        const createProjectProps: Omit<CreateProjectProps, "slug"> = {
+          user_id: TEST_USER_ID,
+        };
+        // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
+        const dynamicTestAppId = `test_app_${Date.now()}`;
+        const postRes = await request(app)
+          .post(`/api/v3/projects/${dynamicTestAppId}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .send(createProjectProps);
+        expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+        const getRes = await request(app)
+          .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes.statusCode).toBe(200);
+        expect({
+          ...stripDatedData(getRes.body),
+          version: stripDatedData(getRes.body.version),
+        }).toMatchObject({
+          allow_team_fixes: false,
+          category: "Uncategorised",
+          description: null,
+          git: null,
           git_commit_id: null,
-          id: expect.any(Number),
-          project_slug: dynamicTestAppId,
+          interpreter: null,
+          license: null,
+          name: dynamicTestAppId,
           published_at: null,
           revision: 0,
-          semantic_version: null,
-          size_of_zip: null,
-          zip: null,
-        },
+          slug: dynamicTestAppId,
+          user_id: 0,
+          user_name: "TechTinkerer",
+          version: {
+            app_metadata: {
+              author: null,
+              category: null,
+              description: null,
+              file_mappings: null,
+              file_mappings_overrides: null,
+              icon: null,
+              interpreter: null,
+              is_hidden: null,
+              is_library: null,
+              license_file: null,
+              main_executable: null,
+              main_executable_overrides: null,
+              name: dynamicTestAppId,
+              semantic_version: null,
+            },
+            app_metadata_json_id: expect.any(Number),
+            download_count: "0",
+            files: [],
+            git_commit_id: null,
+            id: expect.any(Number),
+            project_slug: dynamicTestAppId,
+            published_at: null,
+            revision: 0,
+            semantic_version: null,
+            size_of_zip: null,
+            zip: null,
+          },
+        });
+        const deleteRes = await request(app)
+          .delete(`/api/v3/projects/${dynamicTestAppId}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
+        const getRes2 = await request(app)
+          .get(`/api/v3/projects/${dynamicTestAppId}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes2.statusCode).toBe(404);
       });
-      const deleteRes = await request(app)
-        .delete(`/api/v3/projects/${dynamicTestAppId}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
-      const getRes2 = await request(app)
-        .get(`/api/v3/projects/${dynamicTestAppId}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes2.statusCode).toBe(404);
+
+      test("create draft project with slug only", async () => {
+        // Create a new project with only a slug
+        const TEST_APP_ID = `test_app_${Date.now()}`;
+        const postRes = await request(app)
+          .post(`/api/v3/projects/${TEST_APP_ID}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .send({ user_id: TEST_USER_ID });
+        expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+
+        // Verify the project was created with the correct slug
+        const getRes = await request(app)
+          .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes.statusCode).toBe(200);
+        expect(getRes.body.slug).toBe(TEST_APP_ID);
+      });
     });
 
-    test("create draft project with slug only", async () => {
-      // Create a new project with only a slug
-      const TEST_APP_ID = `test_app_${Date.now()}`;
-      const postRes = await request(app)
-        .post(`/api/v3/projects/${TEST_APP_ID}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .send({ user_id: TEST_USER_ID });
-      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+    describe("/api/v3/projects/{slug}/publish", () => {
+      test("publish version and change metadata", async () => {
+        // Create a new project
+        const TEST_APP_ID = `test_app_publish_${Date.now()}`;
+        const postRes = await request(app)
+          .post(`/api/v3/projects/${TEST_APP_ID}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .send({ user_id: TEST_USER_ID });
+        expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
 
-      // Verify the project was created with the correct slug
-      const getRes = await request(app)
-        .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes.statusCode).toBe(200);
-      expect(getRes.body.slug).toBe(TEST_APP_ID);
-    });
+        // Add metadata to the project
+        const updateAppRes = await request(app)
+          .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .send({
+            description: "Test App Description Before Publish",
+          });
+        expect(updateAppRes.status.toString()).toMatch(/2\d\d/);
 
-    test("publish version and change metadata", async () => {
-      // Create a new project
-      const TEST_APP_ID = `test_app_publish_${Date.now()}`;
-      const postRes = await request(app)
-        .post(`/api/v3/projects/${TEST_APP_ID}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .send({ user_id: TEST_USER_ID });
-      expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
+        // Verify the metadata was added
+        const getRes1 = await request(app)
+          .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getRes1.statusCode).toBe(200);
+        expect(getRes1.body.version.app_metadata.description).toBe(
+          "Test App Description Before Publish"
+        );
 
-      // Add metadata to the project
-      const updateAppRes = await request(app)
-        .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .send({
-          description: "Test App Description Before Publish",
-        });
-      expect(updateAppRes.status.toString()).toMatch(/2\d\d/);
+        // Publish the project to create a new version
+        const publishRes = await request(app)
+          .patch(`/api/v3/projects/${TEST_APP_ID}/publish`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(publishRes.statusCode.toString()).toMatch(/2\d\d/);
 
-      // Verify the metadata was added
-      const getRes1 = await request(app)
-        .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getRes1.statusCode).toBe(200);
-      expect(getRes1.body.version.app_metadata.description).toBe(
-        "Test App Description Before Publish"
-      );
+        // Update the metadata of the draft version after publishing
+        const updateAppRes2 = await request(app)
+          .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
+          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .send({
+            description: "Test App Description After Publish",
+          });
+        expect(updateAppRes2.status.toString()).toMatch(/2\d\d/);
 
-      // Publish the project to create a new version
-      const publishRes = await request(app)
-        .patch(`/api/v3/projects/${TEST_APP_ID}/publish`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(publishRes.statusCode.toString()).toMatch(/2\d\d/);
+        // Verify the metadata was updated on the draft version
+        const getDraftRes = await request(app)
+          .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getDraftRes.statusCode).toBe(200);
+        expect(getDraftRes.body.name).toBe(TEST_APP_ID);
+        expect(getDraftRes.body.version.app_metadata.description).toBe(
+          "Test App Description After Publish"
+        );
 
-      // Update the metadata of the draft version after publishing
-      const updateAppRes2 = await request(app)
-        .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
-        .auth(ADMIN_TOKEN, { type: "bearer" })
-        .send({
-          description: "Test App Description After Publish",
-        });
-      expect(updateAppRes2.status.toString()).toMatch(/2\d\d/);
-
-      // Verify the metadata was updated on the draft version
-      const getDraftRes = await request(app)
-        .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getDraftRes.statusCode).toBe(200);
-      expect(getDraftRes.body.name).toBe(TEST_APP_ID);
-      expect(getDraftRes.body.version.app_metadata.description).toBe(
-        "Test App Description After Publish"
-      );
-
-      // Verify the metadata of the published version remains unchanged
-      const getLatestRes = await request(app)
-        .get(`/api/v3/projects/${TEST_APP_ID}`)
-        .auth(ADMIN_TOKEN, { type: "bearer" });
-      expect(getLatestRes.statusCode).toBe(200);
-      expect(getLatestRes.body.name).toBe(TEST_APP_ID);
-      expect(getLatestRes.body.version.app_metadata.description).toBe(
-        "Test App Description Before Publish"
-      );
+        // Verify the metadata of the published version remains unchanged
+        const getLatestRes = await request(app)
+          .get(`/api/v3/projects/${TEST_APP_ID}`)
+          .auth(ADMIN_TOKEN, { type: "bearer" });
+        expect(getLatestRes.statusCode).toBe(200);
+        expect(getLatestRes.body.name).toBe(TEST_APP_ID);
+        expect(getLatestRes.body.version.app_metadata.description).toBe(
+          "Test App Description Before Publish"
+        );
+      });
     });
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
