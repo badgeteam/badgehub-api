@@ -11,7 +11,6 @@ import { User } from "@domain/readModels/project/User";
 import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/project/Category";
-import { DBInsertUser } from "@db/models/project/DBUser";
 import { DBProject } from "@db/models/project/DBProject";
 import {
   DBAppMetadataJSON,
@@ -30,10 +29,6 @@ export class BadgeHubData {
     private badgeHubMetadata: BadgeHubMetadata,
     private badgeHubFiles: BadgeHubFiles
   ) {}
-
-  insertUser(user: DBInsertUser): Promise<void> {
-    return this.badgeHubMetadata.insertUser(user);
-  }
 
   insertProject(
     project: CreateProjectProps,
@@ -73,14 +68,6 @@ export class BadgeHubData {
       projectSlug,
       versionRevision
     );
-  }
-
-  getUser(userId: User["id"]): Promise<User> {
-    return this.badgeHubMetadata.getUser(userId);
-  }
-
-  updateUser(updatedUser: User): Promise<void> {
-    return this.badgeHubMetadata.updateUser(updatedUser);
   }
 
   async getFileContents(
@@ -126,7 +113,7 @@ export class BadgeHubData {
       pageLength?: number;
       badgeSlug?: Badge["slug"];
       categorySlug?: Category["slug"];
-      userId?: User["id"];
+      userId?: User["idp_user_id"];
     },
     revision: LatestOrDraftAlias
   ): Promise<ProjectWithoutVersion[]> {

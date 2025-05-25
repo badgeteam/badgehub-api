@@ -6,7 +6,7 @@ import { isInDebugMode } from "@util/debug";
 import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 
-const TEST_USER_ID = 0;
+const TEST_USER_ID = "test-user-id";
 const ADMIN_TOKEN =
   "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDY5NTkxNzQsImlhdCI6MTc0Njk1OTExNCwiYXV0aF90aW1lIjoxNzQ2OTU5MTEzLCJqdGkiOiI2ZWExM2I5YS1mMWY2LTRmMTAtYjg4OC1mZmQwYTY0NTRkOWUiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiMmRkZDg0MmItNDQ4MS00ZTUwLThmOTQtNTYxYmFhY2VjNmEzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFkZ2VodWJfbG9jYWwiLCJzZXNzaW9uX3N0YXRlIjoiN2U1MzZjMDgtZTE3OS00MDVkLThiZTctNTgxZmRmNTE5Nzk2IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMwMDAvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJjcmVhdGUtcmVhbG0iLCJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwiYWRtaW4iLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Im1hc3Rlci1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6IjdlNTM2YzA4LWUxNzktNDA1ZC04YmU3LTU4MWZkZjUxOTc5NiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.qF1uhnElHNBRAj4ZsPQn2UWnA_TqMMyNeQHiR6IBrZ-GtjkBGy0CYvLyfbLbhFElqFACW58JEbrDUF8J0PpQWSCqEuRCU9fkadtJHV9ALh-XSLJHgK0Q3saMubHiOYne0q8IhxQgK4m1JxY57CHkExUQcoLS50uLbzqbZrIaQvYrP80wb3nXsCTz9oUD1mkgOxCmhYwkrXji7aWbfe5Mw_46gONDRoXPql72c-xqUh7NdAKyPemcUv2fT8tl7zN3nBui4PQCf3J0g0Pq9gbJSFBgVAXfJewKCe-V0akPEMSrxT3Aq7YtmigFqZ-a0lIMYPsvae6xXY7Fu8rOIRGNPQ";
 
@@ -85,7 +85,7 @@ describe(
     describe("/projects/{slug}", () => {
       test("CREATE/READ/DELETE project", async () => {
         const createProjectProps: Omit<CreateProjectProps, "slug"> = {
-          user_id: TEST_USER_ID,
+          idp_user_id: TEST_USER_ID,
         };
         // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
         const dynamicTestAppId = `test_app_${Date.now()}`;

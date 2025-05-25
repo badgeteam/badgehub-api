@@ -8,6 +8,7 @@ import {
   Path,
   Post,
   Query,
+  Request,
   Res,
   Route,
   Tags,
@@ -21,7 +22,6 @@ import {
   type ProjectSlug,
   ProjectWithoutVersion,
 } from "@domain/readModels/project/Project";
-import type { DBInsertUser, DBUser } from "@db/models/project/DBUser";
 import type { DBInsertProject } from "@db/models/project/DBProject";
 import type { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { Readable } from "node:stream";
@@ -30,10 +30,11 @@ import type { CreateProjectProps } from "@domain/writeModels/project/WriteProjec
 import {
   addUserSubMiddleware,
   ensureContributorRouteMiddleware,
+  getUser,
+  type RequestWithUser,
 } from "@auth/jwt";
 import { DISABLE_AUTH } from "@config";
-
-interface UserProps extends Omit<DBInsertUser, "id"> {}
+import { User } from "@domain/readModels/project/User";
 
 interface ProjectProps extends Omit<DBInsertProject, "slug"> {}
 
@@ -68,14 +69,16 @@ export class PrivateRestController extends Controller {
    */
   @Get("/users/{userId}/drafts")
   public async getUserDraftProjects(
-    @Path() userId: DBUser["id"],
+    @Path() userId: User["idp_user_id"],
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: TsoaResponse<403, { reason: string }>,
     @Query() pageStart?: number,
     @Query() pageLength?: number
-  ): Promise<ProjectWithoutVersion[] | unknown> {
+  ): Promise<ProjectWithoutVersion[]> {
     const badRequestResponse = this.checkUserAuthorization(
       userId,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -92,9 +95,15 @@ export class PrivateRestController extends Controller {
   @Post("/projects/{slug}")
   public async createProject(
     @Path() slug: ProjectSlug,
-    @Body() props: Omit<CreateProjectProps, "slug">
+    @Body() props: Omit<CreateProjectProps, "slug" | "idp_user_id">,
+    @Request() request: RequestWithUser
   ): Promise<void> {
-    await this.badgeHubData.insertProject({ ...props, slug });
+    const user = getUser(request);
+    await this.badgeHubData.insertProject({
+      ...props,
+      slug,
+      idp_user_id: user.idp_user_id,
+    });
   }
 
   /**
@@ -103,11 +112,13 @@ export class PrivateRestController extends Controller {
   @Delete("/projects/{slug}")
   public async deleteProject(
     @Path() slug: ProjectSlug,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -122,11 +133,13 @@ export class PrivateRestController extends Controller {
   public async updateProject(
     @Path() slug: ProjectSlug,
     @Body() changes: ProjectPropsPartial,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -143,11 +156,13 @@ export class PrivateRestController extends Controller {
     @Path() slug: string,
     @Path() filePath: string,
     @UploadedFile() file: Express.Multer.File,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<undefined> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -170,11 +185,13 @@ export class PrivateRestController extends Controller {
   public async deleteDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -189,11 +206,13 @@ export class PrivateRestController extends Controller {
   public async changeDraftAppMetadata(
     @Path() slug: string,
     @Body() appMetadataChanges: DbInsertAppMetadataJSONPartial,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -208,11 +227,13 @@ export class PrivateRestController extends Controller {
   public async getDraftFile(
     @Path() slug: string,
     @Path() filePath: string,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<Readable> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -240,12 +261,14 @@ export class PrivateRestController extends Controller {
   @Get("/projects/{slug}/draft")
   public async getDraftProject(
     @Path() slug: string,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<Project | undefined> {
     const details = await this.badgeHubData.getDraftProject(slug);
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
       badRequestCallback,
+      request,
       details
     );
     if (badRequestResponse !== "OK") {
@@ -265,11 +288,13 @@ export class PrivateRestController extends Controller {
   @Patch("/projects/{slug}/publish")
   public async publishVersion(
     @Path() slug: string,
+    @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<void> {
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
-      badRequestCallback
+      badRequestCallback,
+      request
     );
     if (badRequestResponse !== "OK") {
       return badRequestResponse;
@@ -277,16 +302,17 @@ export class PrivateRestController extends Controller {
     await this.badgeHubData.publishVersion(slug);
   }
 
-  private requestIsFromAllowedUser(param: { allowedUsers: number[] }) {
-    const headers: Headers = this.getHeaders();
-    // TODO check that user in JWT token in an allowed user
-    // In case false is returned, make a log on the server with the user who did it
-    return true;
+  private requestIsFromAllowedUser(
+    request: RequestWithUser,
+    { allowedUsers }: { allowedUsers: string[] }
+  ) {
+    return allowedUsers.includes(getUser(request).idp_user_id);
   }
 
   private async checkProjectAuthorization(
     slug: ProjectSlug,
     badRequestCallback: BadRequestCallback,
+    request: RequestWithUser,
     project?: Project
   ) {
     project = project ?? (await this.badgeHubData.getDraftProject(slug));
@@ -295,7 +321,11 @@ export class PrivateRestController extends Controller {
         reason: `No project with slug '${slug}' found`,
       });
     }
-    if (!this.requestIsFromAllowedUser({ allowedUsers: [project?.user_id] })) {
+    if (
+      !this.requestIsFromAllowedUser(request, {
+        allowedUsers: [project?.idp_user_id],
+      })
+    ) {
       return badRequestCallback(HTTP_FORBIDDEN, {
         reason: `The user in the JWT token is not authorized for project with slug '${slug}'`,
       });
@@ -304,10 +334,11 @@ export class PrivateRestController extends Controller {
   }
 
   private checkUserAuthorization(
-    userId: number,
-    badRequestCallback: TsoaResponse<403, { reason: string }>
-  ): "OK" | unknown {
-    if (!this.requestIsFromAllowedUser({ allowedUsers: [userId] })) {
+    userId: string,
+    badRequestCallback: TsoaResponse<403, { reason: string }>,
+    request: RequestWithUser
+  ) {
+    if (!this.requestIsFromAllowedUser(request, { allowedUsers: [userId] })) {
       return badRequestCallback(HTTP_FORBIDDEN, {
         reason: `You are not allowed to access the draft projects of user with id '${userId}'`,
       });

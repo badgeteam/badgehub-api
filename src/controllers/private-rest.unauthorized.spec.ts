@@ -88,13 +88,14 @@ describe(
       });
     });
 
-    describe("/projects/${TEST_APP_ID}", () => {
+    describe("/projects/{slug}", () => {
       let dynamicTestAppId: string;
       let originalProject: string;
       beforeEach(async () => {
-        const createProjectProps: Omit<CreateProjectProps, "slug"> = {
-          user_id: TEST_USER_ID,
-        };
+        const createProjectProps: Omit<
+          CreateProjectProps,
+          "slug" | "idp_user_id"
+        > = {};
         // Reason that we make the test project id dynamic is to avoid that the test fails if you run it multiple times locally and possibly stop halfware through the test.
         dynamicTestAppId = `test_app_${crypto.randomUUID()}`;
         const postRes = await request(app)

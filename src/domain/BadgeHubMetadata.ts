@@ -11,7 +11,6 @@ import {
 import { User } from "@domain/readModels/project/User";
 import { Badge } from "@domain/readModels/Badge";
 import { Category } from "@domain/readModels/project/Category";
-import { DBInsertUser } from "@db/models/project/DBUser";
 import { DBInsertProject, DBProject } from "@db/models/project/DBProject";
 import { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { UploadedFile } from "@domain/UploadedFile";
@@ -20,8 +19,6 @@ import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { TimestampTZ } from "@db/DBTypes";
 
 export interface BadgeHubMetadata {
-  insertUser(user: DBInsertUser): Promise<void>;
-
   insertProject(
     project: DBInsertProject,
     mockDates?: DBDatedData
@@ -53,10 +50,6 @@ export interface BadgeHubMetadata {
 
   getDraftVersion(projectSlug: ProjectSlug): Promise<Version | undefined>;
 
-  getUser(userId: User["id"]): Promise<User>;
-
-  updateUser(updatedUser: User): Promise<void>;
-
   getBadges(): Promise<Badge[]>;
 
   getCategories(): Promise<Category[]>;
@@ -67,7 +60,7 @@ export interface BadgeHubMetadata {
       pageLength?: number;
       badgeSlug?: Badge["slug"];
       categorySlug?: Category["slug"];
-      user?: User["id"];
+      user?: User["idp_user_id"];
     },
     version?: LatestOrDraftAlias
   ): Promise<ProjectWithoutVersion[]>;

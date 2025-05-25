@@ -3,7 +3,6 @@ import moment from "moment";
 import { DBProject } from "@db/models/project/DBProject";
 import { DBVersion } from "@db/models/project/DBVersion";
 import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/project/DBAppMetadataJSON";
-import { DBUser } from "@db/models/project/DBUser";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 import { Category } from "@domain/readModels/project/Category";
@@ -15,7 +14,7 @@ export function getBaseSelectProjectQuery(
   return sql`select p.slug,
                       p.git,
                       p.allow_team_fixes,
-                      p.user_id,
+                      p.idp_user_id,
                       p.created_at,
                       p.updated_at,
                       p.deleted_at,
@@ -28,14 +27,12 @@ export function getBaseSelectProjectQuery(
                       m.description,
                       m.interpreter,
                       m.license_file,
-                      m.name,
-                      u.name as author_name
+                      m.name
                from projects p
-                        left join users u on p.user_id = u.id and u.deleted_at is null
                         left join versions v on ${revision === "draft" ? sql`p.draft_revision` : sql`p.latest_revision`} = v.revision and p.slug = v.project_slug
                         left join app_metadata_jsons m on v.app_metadata_json_id = m.id
                         left join categories c on m.category = c.name
-    `;
+    `; // TODO extract revision === "draft" ? sql`p.draft_revision` : sql`p.latest_revision` to revision_column
 }
 
 export const projectQueryResponseToReadModel = (
@@ -43,8 +40,7 @@ export const projectQueryResponseToReadModel = (
 ): ProjectWithoutVersion => {
   return {
     allow_team_fixes: false,
-    user_id: enrichedDBProject.user_id,
-    user_name: enrichedDBProject.author_name, // todo maybe change to email, full id or object with multiple fields
+    idp_user_id: enrichedDBProject.idp_user_id,
     category: enrichedDBProject.category || "Uncategorised",
     // collaborators: [], // TODO
     description: enrichedDBProject.description,
@@ -70,6 +66,5 @@ export const projectQueryResponseToReadModel = (
 export type ProjectQueryResponse = DBProject &
   DBVersion &
   DBMetadataFileContents & {
-    author_name: DBUser["name"];
     category_slug: Category["slug"];
   };
