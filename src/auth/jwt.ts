@@ -29,13 +29,17 @@ const addUserSubMiddleware = (
   try {
     let token = req.headers.authorization;
     if (!token) {
-      throw NotAuthenticatedError("missing authorization header");
+      console.warn("JWT:addUserSubMiddleware: Missing authorization header");
+      throw NotAuthenticatedError("Missing authorization header");
     }
     if (token.toLowerCase().startsWith("bearer ")) {
       token = token.substring("Bearer ".length);
     }
     const payload = decodeJwt(token);
     if (!("sub" in payload) || !payload.sub) {
+      console.warn(
+        "JWT:addUserSubMiddleware: payload does not contain user sub"
+      );
       throw NotAuthenticatedError("JWT does not contain user sub");
     }
     (req as RequestWithUser).user = { idp_user_id: payload.sub };
@@ -63,8 +67,13 @@ const handleMiddlewareCheck = async (
     const token = await decodeJwtFromRequest(req);
     const roles: UserRole[] = rolesFromJwtPayload(token);
 
-    console.debug("Roles:", roles);
+    console.debug("JWT:handleMiddlewareCheck: " + "Roles:", roles);
     if (roles.length == 0) {
+      console.warn(
+        "JWT:handleMiddlewareCheck: " +
+          "No roles found in JWT payload, token" +
+          token
+      );
       throw NotAuthorizedError();
     }
     assertion(roles);
@@ -85,24 +94,26 @@ const handleError = (err: unknown, res: Response) => {
       return;
     }
   }
-  console.debug(err);
+  console.warn("JWT:handleError:", err);
   res.status(500).json({ error: "Internal server error" });
 };
 
 const ensureAdmin = (roles: UserRole[]) => {
-  roles.forEach((role) => {
-    if (!isAdmin(role)) {
-      throw NotAuthorizedError();
-    }
-  });
+  if (roles.find(isAdmin)) {
+    console.warn(
+      `JWT:ensureAdmin: No Admin role found for user, roles: ${roles.join(",")}`
+    );
+    throw NotAuthorizedError("No Admin role found for user");
+  }
 };
 
 const ensureContributor = (roles: UserRole[]) => {
-  roles.forEach((role) => {
-    if (!isContributor(role)) {
-      throw NotAuthorizedError();
-    }
-  });
+  if (roles.find(isContributor)) {
+    console.warn(
+      `JWT:ensureContributor: No Contributor role found for user, roles: ${roles.join(",")}`
+    );
+    throw NotAuthorizedError("No Contributor role found for user");
+  }
 };
 
 const rolesFromJwtPayload = (payload: JWTPayload): UserRole[] => {
@@ -125,7 +136,10 @@ const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
   const token = req.headers.authorization;
 
   if (!token) {
-    throw NotAuthenticatedError("missing API token");
+    console.warn(
+      "JWT:decodeJwtFromRequest: " + "No authorization header found in request"
+    );
+    throw NotAuthenticatedError("No authorization header found in request");
   }
 
   try {
@@ -135,12 +149,18 @@ const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
     );
     const payload = result.payload;
     if (!Object.hasOwn(payload, "aud")) {
-      throw NotAuthenticatedError("API token invalid");
+      console.warn(
+        "JWT:decodeJwtFromRequest: " + "API token invalid, no 'aud' in payload"
+      );
+      throw NotAuthenticatedError("API token invalid, no 'aud' in jwt payload");
     }
 
     return payload;
   } catch (err) {
-    throw NotAuthenticatedError("API token invalid");
+    console.warn("JWT:decodeJwtFromRequest: catch error", err);
+    throw NotAuthenticatedError(
+      "API token invalid, could not verify JWT token"
+    );
   }
 };
 
