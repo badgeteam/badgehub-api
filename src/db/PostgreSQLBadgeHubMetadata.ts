@@ -17,7 +17,6 @@ import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBInsertProject } from "@db/models/project/DBProject";
 import sql, { join, raw, Sql } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/project/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
 import { DBBadge } from "@db/models/DBBadge";
 import {
@@ -175,13 +174,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                   and name = ${name}
                                   and ext = ${ext}`);
     }
-  }
-
-  async insertUser(user: DBInsertUser): Promise<void> {
-    const { keys, values } = getInsertKeysAndValuesSql(user);
-    const insertQuery = sql`insert into users (${keys})
-                            values (${values})`;
-    await this.pool.query(insertQuery);
   }
 
   async getCategories(): Promise<Category[]> {
@@ -384,14 +376,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     };
   }
 
-  getUser(userId: User["id"]): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-
-  updateUser(updatedUser: User): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-
   async getBadges(): Promise<Badge[]> {
     const dbBadges: DBBadge[] = await this.pool
       .query(
@@ -413,7 +397,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       pageLength?: number;
       badgeSlug?: Badge["slug"];
       categorySlug?: Category["slug"];
-      userId?: User["id"];
+      userId?: User["idp_user_id"];
     },
     revision?: LatestOrDraftAlias
   ): Promise<ProjectWithoutVersion[]> {
@@ -436,7 +420,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     }
 
     if (filter?.userId !== undefined) {
-      query = sql`${query} and p.user_id =
+      query = sql`${query} and p.idp_user_id =
       ${filter.userId}`;
     }
 

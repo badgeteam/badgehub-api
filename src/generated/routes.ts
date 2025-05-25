@@ -89,11 +89,10 @@ const models: TsoaRoute.Models = {
         category: { ref: "AppCategoryName", required: true },
         description: { dataType: "string" },
         revision: { dataType: "double" },
-        user_name: { dataType: "string" },
         interpreter: { dataType: "string" },
         badges: { dataType: "array", array: { dataType: "string" } },
         slug: { dataType: "string", required: true },
-        user_id: { dataType: "double", required: true },
+        idp_user_id: { dataType: "string", required: true },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
         created_at: { dataType: "datetime", required: true },
@@ -226,7 +225,7 @@ const models: TsoaRoute.Models = {
     dataType: "refObject",
     properties: {
       slug: { dataType: "string", required: true },
-      user_id: { dataType: "double", required: true },
+      idp_user_id: { dataType: "string", required: true },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
@@ -240,7 +239,6 @@ const models: TsoaRoute.Models = {
       category: { ref: "AppCategoryName", required: true },
       description: { dataType: "string" },
       revision: { dataType: "double" },
-      user_name: { dataType: "string" },
       interpreter: { dataType: "string" },
       version: { ref: "Version" },
       badges: { dataType: "array", array: { dataType: "string" } },
@@ -253,23 +251,23 @@ const models: TsoaRoute.Models = {
     type: { dataType: "string", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
-    dataType: "refAlias",
-    type: {
-      dataType: "nestedObjectLiteral",
-      nestedProperties: {
-        user_id: { dataType: "double", required: true },
-        git: { dataType: "string" },
-        allow_team_fixes: { dataType: "boolean" },
+  "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__":
+    {
+      dataType: "refAlias",
+      type: {
+        dataType: "nestedObjectLiteral",
+        nestedProperties: {
+          git: { dataType: "string" },
+          allow_team_fixes: { dataType: "boolean" },
+        },
+        validators: {},
       },
-      validators: {},
     },
-  },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Omit_CreateProjectProps.slug_": {
+  "Omit_CreateProjectProps.slug-or-idp_user_id_": {
     dataType: "refAlias",
     type: {
-      ref: "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__",
+      ref: "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
       validators: {},
     },
   },
@@ -277,7 +275,7 @@ const models: TsoaRoute.Models = {
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      user_id: { dataType: "double" },
+      idp_user_id: { dataType: "string" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "string" },
@@ -730,7 +728,13 @@ export function RegisterRoutes(
           in: "path",
           name: "userId",
           required: true,
-          dataType: "double",
+          dataType: "string",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
         },
         badRequestCallback: {
           in: "res",
@@ -787,7 +791,13 @@ export function RegisterRoutes(
           in: "body",
           name: "props",
           required: true,
-          ref: "Omit_CreateProjectProps.slug_",
+          ref: "Omit_CreateProjectProps.slug-or-idp_user_id_",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
         },
       };
 
@@ -831,6 +841,12 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, ref: "ProjectSlug" },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",
@@ -885,6 +901,12 @@ export function RegisterRoutes(
           name: "changes",
           required: true,
           ref: "ProjectPropsPartial",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
         },
         badRequestCallback: {
           in: "res",
@@ -953,6 +975,12 @@ export function RegisterRoutes(
           required: true,
           dataType: "file",
         },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",
@@ -1007,6 +1035,12 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
         },
         badRequestCallback: {
           in: "res",
@@ -1063,6 +1097,12 @@ export function RegisterRoutes(
           required: true,
           ref: "DbInsertAppMetadataJSONPartial",
         },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",
@@ -1118,6 +1158,12 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",
@@ -1167,6 +1213,12 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",
@@ -1216,6 +1268,12 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
         badRequestCallback: {
           in: "res",
           name: "403",

@@ -16,7 +16,7 @@ export type ProjectStatusName =
 
 export interface ProjectCore {
   slug: string;
-  user_id: User["id"];
+  idp_user_id: User["idp_user_id"];
   git?: string;
   allow_team_fixes?: boolean;
 }
@@ -38,7 +38,7 @@ export interface Project extends ProjectCore, DatedData {
   description?: string; // description in metadata of latest version of the project
   revision?: number; // latest revsion number of the project
   // status?: ProjectStatusName; // Status of newest version with a non-empty status
-  user_name?: string; // user->name
+  // user_name?: string; // user->name
   interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of project
 
   // Relations

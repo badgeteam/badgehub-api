@@ -1,7 +1,8 @@
-import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "../error";
-import { isAdmin, isContributor, UserRole } from "./role";
+import { ErrorType, NotAuthenticatedError, NotAuthorizedError } from "@error";
+import { isAdmin, isContributor, UserRole } from "@auth/role";
 import { decodeJwt, JWTPayload, jwtVerify } from "jose";
 import { NextFunction, Request, Response } from "express";
+import { User } from "@domain/readModels/project/User";
 
 // Middleware for routes that require a contributor role
 const ensureAdminRouteMiddleware = async (
@@ -12,9 +13,13 @@ const ensureAdminRouteMiddleware = async (
   return handleMiddlewareCheck(req, res, ensureAdmin, next);
 };
 
-type RequestWithUser = {
-  keycloakUserSub: string;
+export type RequestWithUser = {
+  user: Pick<User, "idp_user_id">;
 } & Request;
+
+export function getUser(req: RequestWithUser): Pick<User, "idp_user_id"> {
+  return req.user;
+}
 
 const addUserSubMiddleware = (
   req: Request,
@@ -33,7 +38,7 @@ const addUserSubMiddleware = (
     if (!("sub" in payload) || !payload.sub) {
       throw NotAuthenticatedError("JWT does not contain user sub");
     }
-    (req as RequestWithUser).keycloakUserSub = payload.sub;
+    (req as RequestWithUser).user = { idp_user_id: payload.sub };
     next();
   } catch (e: unknown) {
     return handleError(e, res);
