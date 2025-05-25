@@ -15,6 +15,7 @@ describe(
   () => {
     let app: ReturnType<typeof express>;
     beforeEach(() => {
+      console.warn = () => {}; // Suppress console.warn messages during tests
       app = createExpressServer();
     });
     describe("/projects/{slug}/draft", () => {
@@ -26,11 +27,21 @@ describe(
       });
 
       test.each(["non-existing", "codecraft"])(
-        "should respond with 401 for [%s] if there is no valid jwt token in the request",
+        "should respond with 401 for [%s] if there is no jwt token in the request",
         async (projectName) => {
           const res = await request(app).get(
             `/api/v3/projects/${projectName}/draft`
           );
+          expect(res.statusCode).toBe(401);
+        }
+      );
+
+      test.each(["non-existing", "codecraft"])(
+        "should respond with 401 for [%s] if the valid jwt token in the request cannot be decoded",
+        async (projectName) => {
+          const res = await request(app)
+            .get(`/api/v3/projects/${projectName}/draft`)
+            .auth("some random string", { type: "bearer" });
           expect(res.statusCode).toBe(401);
         }
       );
