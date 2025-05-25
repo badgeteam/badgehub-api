@@ -21,6 +21,18 @@ export function getUser(req: RequestWithUser): Pick<User, "idp_user_id"> {
   return req.user;
 }
 
+const decodeTokenWithErrorHandling = (token: string) => {
+  try {
+    return decodeJwt(token);
+  } catch (e) {
+    console.warn(
+      "JWT:decodeTokenWithErrorHandling: Unable to decodeJwt JWT token, error:",
+      e
+    );
+    throw NotAuthenticatedError("Unable to decode JWT token: " + e);
+  }
+};
+
 const addUserSubMiddleware = (
   req: Request,
   res: Response,
@@ -35,7 +47,7 @@ const addUserSubMiddleware = (
     if (token.toLowerCase().startsWith("bearer ")) {
       token = token.substring("Bearer ".length);
     }
-    const payload = decodeJwt(token);
+    const payload = decodeTokenWithErrorHandling(token);
     if (!("sub" in payload) || !payload.sub) {
       console.warn(
         "JWT:addUserSubMiddleware: payload does not contain user sub"
@@ -94,7 +106,7 @@ const handleError = (err: unknown, res: Response) => {
       return;
     }
   }
-  console.warn("JWT:handleError:", err);
+  console.warn("JWT:handleError: Internal server error", err);
   res.status(500).json({ error: "Internal server error" });
 };
 
