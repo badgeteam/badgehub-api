@@ -7,8 +7,8 @@ import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 
 const TEST_USER_ID = "test-user-id";
-const ADMIN_TOKEN =
-  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDY5NTkxNzQsImlhdCI6MTc0Njk1OTExNCwiYXV0aF90aW1lIjoxNzQ2OTU5MTEzLCJqdGkiOiI2ZWExM2I5YS1mMWY2LTRmMTAtYjg4OC1mZmQwYTY0NTRkOWUiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiMmRkZDg0MmItNDQ4MS00ZTUwLThmOTQtNTYxYmFhY2VjNmEzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFkZ2VodWJfbG9jYWwiLCJzZXNzaW9uX3N0YXRlIjoiN2U1MzZjMDgtZTE3OS00MDVkLThiZTctNTgxZmRmNTE5Nzk2IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMwMDAvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJjcmVhdGUtcmVhbG0iLCJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwiYWRtaW4iLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Im1hc3Rlci1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6IjdlNTM2YzA4LWUxNzktNDA1ZC04YmU3LTU4MWZkZjUxOTc5NiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.qF1uhnElHNBRAj4ZsPQn2UWnA_TqMMyNeQHiR6IBrZ-GtjkBGy0CYvLyfbLbhFElqFACW58JEbrDUF8J0PpQWSCqEuRCU9fkadtJHV9ALh-XSLJHgK0Q3saMubHiOYne0q8IhxQgK4m1JxY57CHkExUQcoLS50uLbzqbZrIaQvYrP80wb3nXsCTz9oUD1mkgOxCmhYwkrXji7aWbfe5Mw_46gONDRoXPql72c-xqUh7NdAKyPemcUv2fT8tl7zN3nBui4PQCf3J0g0Pq9gbJSFBgVAXfJewKCe-V0akPEMSrxT3Aq7YtmigFqZ-a0lIMYPsvae6xXY7Fu8rOIRGNPQ";
+const USER1_TOKEN =
+  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyOTA4NzMsImlhdCI6MTc0ODI5MDgxMywiYXV0aF90aW1lIjoxNzQ4MjkwODEzLCJqdGkiOiI1NmIzOTUwNS0yYjJmLTQ1MDgtOTY0NC03NTFmN2FjMzI0ZGQiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ4MDc1MzM3LTBmMTAtNGNkYi04YjQ4LWJlMWRjMTg3NDdhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjIzMWFkYmRkLTE1NDctNDRjYi1hNjI3LTI2MjJmNzI2YzcxMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMjMxYWRiZGQtMTU0Ny00NGNiLWE2MjctMjYyMmY3MjZjNzEwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVzdCB1c2VyIDEgVGVzdGVyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdHVzZXIxIiwiZ2l2ZW5fbmFtZSI6InRlc3QgdXNlciAxIiwiZmFtaWx5X25hbWUiOiJUZXN0ZXIiLCJlbWFpbCI6ImZkdXZpdmllcit0ZXN0dXNlcjFAZ21haWwuY29tIn0.h9R3nkDZ4C1LMAHKY-iBr24vW2tZMDwNgkA-6S1GQ2KNdnCjaOnROGB0bOCD5vaJO09YqItduM2gBD-oWGX0WuX57p5r5h3lCJi12NEV1YUdc0Z_pqB5ZvmXnJcquejqnnIiia8utcsOUQOsvhDZI4E0afyNl4J0JzcTwwIeOsP_oxkaFCb1aIMOVEIVwyOQYUfIcXsyFNJm356zgMQbD3WNI3eNCi2bDs-KfKaasCdgrMYjEM7gfXetgkJVbgT0v0AXyo9pzVGFDjzNPkoNNo0P5in8AA0qh2C3F-EXFsj3Xmagb_K1un94q4wW4IEMUqbhHbuR2bdePzg6219-Kg";
 
 describe(
   "Authenticated API Routes",
@@ -22,7 +22,7 @@ describe(
       test("non-existing /projects/{slug}/draft", async () => {
         const res = await request(app)
           .get("/api/v3/projects/non-existing/draft")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(res.statusCode).toBe(404);
       });
 
@@ -51,43 +51,43 @@ describe(
       test("CREATE/READ/DELETE /projects/{slug}/draft/files/{filePath}", async () => {
         const postRes = await request(app)
           .post("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .attach("file", Buffer.from("test file content"), "test.txt");
         expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
         const getRes = await request(app)
           .get("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toBe("test file content");
         const deleteRes = await request(app)
           .delete("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
         const getRes2 = await request(app)
           .get("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes2.statusCode).toBe(404);
       });
 
       test("Overwrite deleted file", async () => {
         const postRes1 = await request(app)
           .post("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .attach("file", Buffer.from("test file content"), "test.txt");
         expect(postRes1.statusCode.toString()).toMatch(/2\d\d/);
 
         const deleteRes = await request(app)
           .delete("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
         const postRes2 = await request(app)
           .post("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .attach("file", Buffer.from("test file content"), "test.txt");
         expect(postRes2.statusCode.toString()).toMatch(/2\d\d/);
         const getRes = await request(app)
           .get("/api/v3/projects/codecraft/draft/files/test.txt")
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200);
         expect(getRes.text).toBe("test file content");
       });
@@ -102,12 +102,12 @@ describe(
         const dynamicTestAppId = `test_app_${Date.now()}`;
         const postRes = await request(app)
           .post(`/api/v3/projects/${dynamicTestAppId}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send(createProjectProps);
         expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
         const getRes = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200);
         expect({
           ...stripDatedData(getRes.body),
@@ -158,11 +158,11 @@ describe(
         });
         const deleteRes = await request(app)
           .delete(`/api/v3/projects/${dynamicTestAppId}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(deleteRes.statusCode.toString()).toMatch(/2\d\d/);
         const getRes2 = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes2.statusCode).toBe(404);
       });
 
@@ -171,14 +171,14 @@ describe(
         const TEST_APP_ID = `test_app_${Date.now()}`;
         const postRes = await request(app)
           .post(`/api/v3/projects/${TEST_APP_ID}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send({ user_id: TEST_USER_ID });
         expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
 
         // Verify the project was created with the correct slug
         const getRes = await request(app)
           .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200);
         expect(getRes.body.slug).toBe(TEST_APP_ID);
       });
@@ -190,14 +190,14 @@ describe(
         const TEST_APP_ID = `test_app_publish_${Date.now()}`;
         const postRes = await request(app)
           .post(`/api/v3/projects/${TEST_APP_ID}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send({ user_id: TEST_USER_ID });
         expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
 
         // Add metadata to the project
         const updateAppRes = await request(app)
           .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send({
             description: "Test App Description Before Publish",
           });
@@ -206,7 +206,7 @@ describe(
         // Verify the metadata was added
         const getRes1 = await request(app)
           .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes1.statusCode).toBe(200);
         expect(getRes1.body.version.app_metadata.description).toBe(
           "Test App Description Before Publish"
@@ -215,13 +215,13 @@ describe(
         // Publish the project to create a new version
         const publishRes = await request(app)
           .patch(`/api/v3/projects/${TEST_APP_ID}/publish`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(publishRes.statusCode.toString()).toMatch(/2\d\d/);
 
         // Update the metadata of the draft version after publishing
         const updateAppRes2 = await request(app)
           .patch(`/api/v3/projects/${TEST_APP_ID}/draft/metadata`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send({
             description: "Test App Description After Publish",
           });
@@ -230,7 +230,7 @@ describe(
         // Verify the metadata was updated on the draft version
         const getDraftRes = await request(app)
           .get(`/api/v3/projects/${TEST_APP_ID}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getDraftRes.statusCode).toBe(200);
         expect(getDraftRes.body.name).toBe(TEST_APP_ID);
         expect(getDraftRes.body.version.app_metadata.description).toBe(
@@ -240,7 +240,7 @@ describe(
         // Verify the metadata of the published version remains unchanged
         const getLatestRes = await request(app)
           .get(`/api/v3/projects/${TEST_APP_ID}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getLatestRes.statusCode).toBe(200);
         expect(getLatestRes.body.name).toBe(TEST_APP_ID);
         expect(getLatestRes.body.version.app_metadata.description).toBe(
