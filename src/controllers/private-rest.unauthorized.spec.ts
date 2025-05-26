@@ -6,10 +6,10 @@ import { isInDebugMode } from "@util/debug";
 import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 
 const TEST_USER_ID = 0;
-const ADMIN_TOKEN =
-  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDY5NTkxNzQsImlhdCI6MTc0Njk1OTExNCwiYXV0aF90aW1lIjoxNzQ2OTU5MTEzLCJqdGkiOiI2ZWExM2I5YS1mMWY2LTRmMTAtYjg4OC1mZmQwYTY0NTRkOWUiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiMmRkZDg0MmItNDQ4MS00ZTUwLThmOTQtNTYxYmFhY2VjNmEzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFkZ2VodWJfbG9jYWwiLCJzZXNzaW9uX3N0YXRlIjoiN2U1MzZjMDgtZTE3OS00MDVkLThiZTctNTgxZmRmNTE5Nzk2IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMwMDAvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJjcmVhdGUtcmVhbG0iLCJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwiYWRtaW4iLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Im1hc3Rlci1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6IjdlNTM2YzA4LWUxNzktNDA1ZC04YmU3LTU4MWZkZjUxOTc5NiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.qF1uhnElHNBRAj4ZsPQn2UWnA_TqMMyNeQHiR6IBrZ-GtjkBGy0CYvLyfbLbhFElqFACW58JEbrDUF8J0PpQWSCqEuRCU9fkadtJHV9ALh-XSLJHgK0Q3saMubHiOYne0q8IhxQgK4m1JxY57CHkExUQcoLS50uLbzqbZrIaQvYrP80wb3nXsCTz9oUD1mkgOxCmhYwkrXji7aWbfe5Mw_46gONDRoXPql72c-xqUh7NdAKyPemcUv2fT8tl7zN3nBui4PQCf3J0g0Pq9gbJSFBgVAXfJewKCe-V0akPEMSrxT3Aq7YtmigFqZ-a0lIMYPsvae6xXY7Fu8rOIRGNPQ";
+const USER1_TOKEN =
+  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyOTA4NzMsImlhdCI6MTc0ODI5MDgxMywiYXV0aF90aW1lIjoxNzQ4MjkwODEzLCJqdGkiOiI1NmIzOTUwNS0yYjJmLTQ1MDgtOTY0NC03NTFmN2FjMzI0ZGQiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ4MDc1MzM3LTBmMTAtNGNkYi04YjQ4LWJlMWRjMTg3NDdhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjIzMWFkYmRkLTE1NDctNDRjYi1hNjI3LTI2MjJmNzI2YzcxMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMjMxYWRiZGQtMTU0Ny00NGNiLWE2MjctMjYyMmY3MjZjNzEwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVzdCB1c2VyIDEgVGVzdGVyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdHVzZXIxIiwiZ2l2ZW5fbmFtZSI6InRlc3QgdXNlciAxIiwiZmFtaWx5X25hbWUiOiJUZXN0ZXIiLCJlbWFpbCI6ImZkdXZpdmllcit0ZXN0dXNlcjFAZ21haWwuY29tIn0.h9R3nkDZ4C1LMAHKY-iBr24vW2tZMDwNgkA-6S1GQ2KNdnCjaOnROGB0bOCD5vaJO09YqItduM2gBD-oWGX0WuX57p5r5h3lCJi12NEV1YUdc0Z_pqB5ZvmXnJcquejqnnIiia8utcsOUQOsvhDZI4E0afyNl4J0JzcTwwIeOsP_oxkaFCb1aIMOVEIVwyOQYUfIcXsyFNJm356zgMQbD3WNI3eNCi2bDs-KfKaasCdgrMYjEM7gfXetgkJVbgT0v0AXyo9pzVGFDjzNPkoNNo0P5in8AA0qh2C3F-EXFsj3Xmagb_K1un94q4wW4IEMUqbhHbuR2bdePzg6219-Kg";
 const USER2_TOKEN =
-  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDY5NTkxNzQsImlhdCI6MTc0Njk1OTExNCwiYXV0aF90aW1lIjoxNzQ2OTU5MTEzLCJqdGkiOiI2ZWExM2I5YS1mMWY2LTRmMTAtYjg4OC1mZmQwYTY0NTRkOWUiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjpbIm1hc3Rlci1yZWFsbSIsImFjY291bnQiXSwic3ViIjoiMmRkZDg0MmItNDQ4MS00ZTUwLThmOTQtNTYxYmFhY2VjNmEzIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFkZ2VodWJfbG9jYWwiLCJzZXNzaW9uX3N0YXRlIjoiN2U1MzZjMDgtZTE3OS00MDVkLThiZTctNTgxZmRmNTE5Nzk2IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMwMDAvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJjcmVhdGUtcmVhbG0iLCJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwiYWRtaW4iLCJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Im1hc3Rlci1yZWFsbSI6eyJyb2xlcyI6WyJ2aWV3LXJlYWxtIiwidmlldy1pZGVudGl0eS1wcm92aWRlcnMiLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsImNyZWF0ZS1jbGllbnQiLCJtYW5hZ2UtdXNlcnMiLCJxdWVyeS1yZWFsbXMiLCJ2aWV3LWF1dGhvcml6YXRpb24iLCJxdWVyeS1jbGllbnRzIiwicXVlcnktdXNlcnMiLCJtYW5hZ2UtZXZlbnRzIiwibWFuYWdlLXJlYWxtIiwidmlldy1ldmVudHMiLCJ2aWV3LXVzZXJzIiwidmlldy1jbGllbnRzIiwibWFuYWdlLWF1dGhvcml6YXRpb24iLCJtYW5hZ2UtY2xpZW50cyIsInF1ZXJ5LWdyb3VwcyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6IjdlNTM2YzA4LWUxNzktNDA1ZC04YmU3LTU4MWZkZjUxOTc5NiIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.qF1uhnElHNBRAj4ZsPQn2UWnA_TqMMyNeQHiR6IBrZ-GtjkBGy0CYvLyfbLbhFElqFACW58JEbrDUF8J0PpQWSCqEuRCU9fkadtJHV9ALh-XSLJHgK0Q3saMubHiOYne0q8IhxQgK4m1JxY57CHkExUQcoLS50uLbzqbZrIaQvYrP80wb3nXsCTz9oUD1mkgOxCmhYwkrXji7aWbfe5Mw_46gONDRoXPql72c-xqUh7NdAKyPemcUv2fT8tl7zN3nBui4PQCf3J0g0Pq9gbJSFBgVAXfJewKCe-V0akPEMSrxT3Aq7YtmigFqZ-a0lIMYPsvae6xXY7Fu8rOIRGNPQ";
+  "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyMzk0OTksImlhdCI6MTc0ODIzOTQzOSwiYXV0aF90aW1lIjoxNzQ4MjM5NDM5LCJqdGkiOiJjYzYzYzAzZS1mNDAxLTQ0OGQtOGM3NS0zOWI5ZDEzY2M1ODAiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjdjNTJhZDk3LTBhODYtNDQwYy05NDVlLWNmMzhlNDc5MzNjZiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjEzNmUxYmIzLWYzOWUtNGFlZC1hMjI5LTc3OTM1M2NiMjEwNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMTM2ZTFiYjMtZjM5ZS00YWVkLWEyMjktNzc5MzUzY2IyMTA0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidG9tIGdhZ2EiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0b21nYWdhIiwiZ2l2ZW5fbmFtZSI6InRvbSIsImZhbWlseV9uYW1lIjoiZ2FnYSIsImVtYWlsIjoidG9tZ2FnYUBnbWFpbC5jb20ifQ.fLWOhYDJUhfqqffVBM-mH3A96SIch8sKJbFc_W2sot7jq-5cTyyeJr4hLETFgZmfUZaKvVFnMT_hyDuYCvbb3VVdDcF4KTt1p-6ZmdfJs6A5FJVN56iYLj0QQKIV7HJ_RDpzl1eCfteO5IgNAecqKcbGXhDDjPwu2PYpVaAcVNopHXaQh1JQtIEUXAFzmWiFuVIt1UJO44vTM8f3Fvha9GfQG7IuQiCEGp_esEH2dS50gqkiJGl0WfJVGG4NvIh1EdrMlMo6YkfkqYkNLmZTnt_3q6x6ObNGX02JUEeaFYNf5XuW0M-70iIwzPpdlnc6EKOrdWOz9srTBRx2wz9f0A";
 
 describe(
   "The API should return a 403 if the user is not authorized of the project or operation",
@@ -47,7 +47,7 @@ describe(
             .post(
               `/api/v3/projects/codecraft/draft/files/test_${randomUUID}.txt`
             )
-            .auth(ADMIN_TOKEN, { type: "bearer" })
+            .auth(USER1_TOKEN, { type: "bearer" })
             .attach("file", Buffer.from(ORIGINAL_FILE_CONTENT), "test.txt");
           expect(res.statusCode).toBe(403);
         });
@@ -56,7 +56,7 @@ describe(
             .get(
               `/api/v3/projects/codecraft/draft/files/test_${randomUUID}.txt`
             )
-            .auth(ADMIN_TOKEN, { type: "bearer" });
+            .auth(USER1_TOKEN, { type: "bearer" });
           expect(getRes2.statusCode).toBe(200);
           expect(getRes2.text).toBe(ORIGINAL_FILE_CONTENT);
         });
@@ -100,19 +100,19 @@ describe(
         dynamicTestAppId = `test_app_${crypto.randomUUID()}`;
         const postRes = await request(app)
           .post(`/api/v3/projects/${dynamicTestAppId}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send(createProjectProps);
         expect(postRes.statusCode.toString()).toMatch(/2\d\d/);
         const getRes = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200); // Sanity check
         originalProject = getRes.body;
       });
       afterEach(async () => {
         const getRes = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200); // Sanity check
         expect(getRes.body).toEqual(originalProject);
       });
@@ -126,13 +126,13 @@ describe(
       test("DELETE project", async () => {
         const delRes = await request(app)
           .delete(`/api/v3/projects/${dynamicTestAppId}`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(delRes.status).toBe(403);
       });
       test("PATCH project", async () => {
         const updateAppRes = await request(app)
           .patch(`/api/v3/projects/${dynamicTestAppId}/draft/metadata`)
-          .auth(ADMIN_TOKEN, { type: "bearer" })
+          .auth(USER1_TOKEN, { type: "bearer" })
           .send({
             description: "Test App Description Before Publish",
           });
@@ -153,7 +153,7 @@ describe(
         // Verify the metadata was added
         const getRes1 = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes1.statusCode).toBe(200);
 
         // Try Publish the project to create a new version
@@ -164,7 +164,7 @@ describe(
 
         const getRes2 = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
-          .auth(ADMIN_TOKEN, { type: "bearer" });
+          .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes2.statusCode).toBe(200);
         expect(getRes2.body).toEqual(getRes1.body);
       });
