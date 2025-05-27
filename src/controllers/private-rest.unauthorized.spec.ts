@@ -44,6 +44,15 @@ describe(
       });
     });
 
+    describe("/users/{userId}/drafts", () => {
+      test("GET /users/{userId}/drafts", async () => {
+        const res = await request(app)
+          .get(`/api/v3/users/${USER1_ID}/drafts`)
+          .auth(USER2_TOKEN, { type: "bearer" });
+        expect(res.statusCode).toBe(403);
+      });
+    });
+
     describe("/projects/{slug}/draft/files/{filePath}", () => {
       test("POST /projects/{slug}/draft/files/{filePath}", async () => {
         const res = await request(app)
