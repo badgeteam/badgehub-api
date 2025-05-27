@@ -264,7 +264,7 @@ export class PrivateRestController extends Controller {
     @Request() request: RequestWithUser,
     @Res() badRequestCallback: BadRequestCallback
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getDraftProject(slug);
+    const details = await this.badgeHubData.getProject(slug, "draft");
     const badRequestResponse = await this.checkProjectAuthorization(
       slug,
       badRequestCallback,
@@ -315,7 +315,7 @@ export class PrivateRestController extends Controller {
     request: RequestWithUser,
     project?: Project
   ) {
-    project = project ?? (await this.badgeHubData.getDraftProject(slug));
+    project = project ?? (await this.badgeHubData.getProject(slug, "draft"));
     if (!project) {
       return badRequestCallback(HTTP_NOT_FOUND, {
         reason: `No project with slug '${slug}' found`,

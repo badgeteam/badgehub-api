@@ -87,7 +87,7 @@ const getVersionQuery = (
   versionRevision: RevisionNumberOrAlias
 ): Sql => {
   if (typeof versionRevision === "number") {
-    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug})`;
+    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug} and published_at is not null)`;
   }
   switch (versionRevision) {
     case "draft":
@@ -287,54 +287,21 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     `);
   }
 
-  async getPublishedProject(
+  async getProject(
     projectSlug: string,
     versionRevision: LatestVersionAlias
   ): Promise<undefined | Project> {
-    const version = await this.getPublishedVersion(
-      projectSlug,
-      versionRevision
-    );
+    const version = await this.getVersion(projectSlug, versionRevision);
     if (!version) {
       return undefined;
     }
     const projectWithoutVersion = (
-      await this.getProjects({ projectSlug }, "latest")
+      await this.getProjects({ projectSlug }, versionRevision)
     )[0]!;
     return {
       ...projectWithoutVersion,
       version: version,
     };
-  }
-
-  async getDraftProject(projectSlug: string): Promise<Project | undefined> {
-    const projectWithoutVersion = (
-      await this.getProjects({ projectSlug }, "draft")
-    )[0]!;
-    if (!projectWithoutVersion) {
-      return undefined;
-    }
-    return {
-      ...projectWithoutVersion,
-      version: await this.getDraftVersion(projectSlug),
-    };
-  }
-
-  async getDraftVersion(
-    projectSlug: ProjectSlug
-  ): Promise<Version | undefined> {
-    return this.getVersion(projectSlug, "draft");
-  }
-
-  async getPublishedVersion(
-    projectSlug: ProjectSlug,
-    versionRevision: RevisionNumberOrAlias
-  ): Promise<undefined | WithRequiredProp<Version, "published_at">> {
-    const version = await this.getVersion(projectSlug, versionRevision);
-    if (!propIsDefinedAndNotNull(version, "published_at")) {
-      return;
-    }
-    return version;
   }
 
   async getVersion(

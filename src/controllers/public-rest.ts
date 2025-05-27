@@ -102,7 +102,7 @@ export class PublicRestController extends Controller {
     @Path() revision: RevisionNumber,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getPublishedProject(slug, revision);
+    const details = await this.badgeHubData.getProject(slug, revision);
     if (!details) {
       return notFoundResponse(404, {
         reason: `No public app with slug '${slug}' found`,
@@ -119,7 +119,7 @@ export class PublicRestController extends Controller {
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
+    const details = await this.badgeHubData.getProject(slug, "latest");
     if (!details) {
       return notFoundResponse(404, {
         reason: `No public app with slug '${slug}' found`,

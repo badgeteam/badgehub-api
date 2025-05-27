@@ -272,7 +272,7 @@ describe(
       expect(res.statusCode).toBe(404);
     });
 
-    test.each(["latest", "rev0", "rev1"])(
+    test.each(["latest", "rev0"])(
       "GET /projects/{slug}/%s/files/metadata.json",
       async (revision) => {
         const getRes = await request(app).get(
@@ -296,6 +296,27 @@ describe(
         );
       }
     );
+    describe("unpublished versions should be be requestable", () => {
+      test.each(["rev1", "rev2"])(
+        "GET /projects/{slug}/%s/files/metadata.json",
+        async (revision) => {
+          const getRes = await request(app).get(
+            `/api/v3/projects/codecraft/${revision}/files/metadata.json`
+          );
+          expect(getRes.statusCode).toBe(404);
+        }
+      );
+
+      test.each(["rev1", "rev2"])(
+        "GET /projects/{slug}/%s",
+        async (revision) => {
+          const getRes = await request(app).get(
+            `/api/v3/projects/codecraft/${revision}`
+          );
+          expect(getRes.statusCode).toBe(404);
+        }
+      );
+    });
   },
   { timeout: isInDebugMode() ? 3600_000 : undefined }
 );

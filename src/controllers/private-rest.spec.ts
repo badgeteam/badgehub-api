@@ -119,7 +119,7 @@ describe(
 
         expect({
           ...stripDatedData(getRes.body),
-          version: stripDatedData(getRes.body.version),
+          version: { ...stripDatedData(getRes.body.version), files: undefined },
         }).toMatchObject({
           allow_team_fixes: false,
           category: "Uncategorised",
@@ -151,7 +151,7 @@ describe(
             },
             app_metadata_json_id: expect.any(Number),
             download_count: "0",
-            files: [],
+            files: undefined,
             git_commit_id: null,
             id: expect.any(Number),
             project_slug: dynamicTestAppId,
@@ -162,6 +162,17 @@ describe(
             zip: null,
           },
         });
+
+        expect(getRes.body.version.files.length).toEqual(1);
+        expect(getRes.body.version.files).toMatchObject([
+          {
+            full_path: "metadata.json",
+            id: expect.any(Number),
+            size: 0,
+            type: "application/json",
+          },
+        ]);
+
         const deleteRes = await request(app)
           .delete(`/api/v3/projects/${dynamicTestAppId}`)
           .auth(USER1_TOKEN, { type: "bearer" });
