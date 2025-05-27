@@ -32,6 +32,7 @@ import {
   ensureContributorRouteMiddleware,
   getUser,
   type RequestWithUser,
+  verifyJwtTokenMiddleware,
 } from "@auth/jwt";
 import { DISABLE_AUTH } from "@config";
 import { User } from "@domain/readModels/project/User";
@@ -51,7 +52,7 @@ type BadRequestCallback = TsoaResponse<404 | 403, { reason: string }>;
 @Route("/api/v3")
 @Tags("private")
 @Middlewares(
-  ...(DISABLE_AUTH ? [] : [ensureContributorRouteMiddleware]),
+  ...(DISABLE_AUTH ? [] : [verifyJwtTokenMiddleware]),
   addUserSubMiddleware
 )
 export class PrivateRestController extends Controller {
