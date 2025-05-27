@@ -60,6 +60,7 @@ const addUserSubMiddleware = (
     return handleError(e, res);
   }
 };
+
 // Middleware for routes that require a contributor role
 const ensureContributorRouteMiddleware = (
   req: Request,
@@ -69,6 +70,15 @@ const ensureContributorRouteMiddleware = (
   return handleMiddlewareCheck(req, res, ensureContributor, next);
 };
 
+// Middleware for routes that require a contributor role
+const verifyJwtTokenMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  return handleMiddlewareCheck(req, res, () => {}, next);
+};
+
 const handleMiddlewareCheck = async (
   req: Request,
   res: Response,
@@ -76,7 +86,7 @@ const handleMiddlewareCheck = async (
   next: NextFunction
 ) => {
   try {
-    const token = await decodeJwtFromRequest(req);
+    const token = await decodeAndVerifyJwtFromRequest(req);
     const roles: UserRole[] = rolesFromJwtPayload(token);
 
     console.debug("JWT:handleMiddlewareCheck: " + "Roles:", roles);
@@ -144,12 +154,15 @@ const rolesFromJwtPayload = (payload: JWTPayload): UserRole[] => {
   });
 };
 
-const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
+const decodeAndVerifyJwtFromRequest = async (
+  req: Request
+): Promise<JWTPayload> => {
   const token = req.headers.authorization;
 
   if (!token) {
     console.warn(
-      "JWT:decodeJwtFromRequest: " + "No authorization header found in request"
+      "JWT:decodeAndVerifyJwtFromRequest: " +
+        "No authorization header found in request"
     );
     throw NotAuthenticatedError("No authorization header found in request");
   }
@@ -162,14 +175,15 @@ const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
     const payload = result.payload;
     if (!Object.hasOwn(payload, "aud")) {
       console.warn(
-        "JWT:decodeJwtFromRequest: " + "API token invalid, no 'aud' in payload"
+        "JWT:decodeAndVerifyJwtFromRequest: " +
+          "API token invalid, no 'aud' in payload"
       );
       throw NotAuthenticatedError("API token invalid, no 'aud' in jwt payload");
     }
 
     return payload;
   } catch (err) {
-    console.warn("JWT:decodeJwtFromRequest: catch error", err);
+    console.warn("JWT:decodeAndVerifyJwtFromRequest: catch error", err);
     throw NotAuthenticatedError(
       "API token invalid, could not verify JWT token"
     );
@@ -177,6 +191,7 @@ const decodeJwtFromRequest = async (req: Request): Promise<JWTPayload> => {
 };
 
 export {
+  verifyJwtTokenMiddleware,
   ensureAdminRouteMiddleware,
   ensureContributorRouteMiddleware,
   addUserSubMiddleware,
