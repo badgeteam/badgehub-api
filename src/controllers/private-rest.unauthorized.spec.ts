@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
@@ -11,7 +18,6 @@ const USER1_TOKEN =
 const USER1_ID = decodeJwt(USER1_TOKEN).sub;
 const USER2_TOKEN =
   "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyMzk0OTksImlhdCI6MTc0ODIzOTQzOSwiYXV0aF90aW1lIjoxNzQ4MjM5NDM5LCJqdGkiOiJjYzYzYzAzZS1mNDAxLTQ0OGQtOGM3NS0zOWI5ZDEzY2M1ODAiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjdjNTJhZDk3LTBhODYtNDQwYy05NDVlLWNmMzhlNDc5MzNjZiIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjEzNmUxYmIzLWYzOWUtNGFlZC1hMjI5LTc3OTM1M2NiMjEwNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMTM2ZTFiYjMtZjM5ZS00YWVkLWEyMjktNzc5MzUzY2IyMTA0IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidG9tIGdhZ2EiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ0b21nYWdhIiwiZ2l2ZW5fbmFtZSI6InRvbSIsImZhbWlseV9uYW1lIjoiZ2FnYSIsImVtYWlsIjoidG9tZ2FnYUBnbWFpbC5jb20ifQ.fLWOhYDJUhfqqffVBM-mH3A96SIch8sKJbFc_W2sot7jq-5cTyyeJr4hLETFgZmfUZaKvVFnMT_hyDuYCvbb3VVdDcF4KTt1p-6ZmdfJs6A5FJVN56iYLj0QQKIV7HJ_RDpzl1eCfteO5IgNAecqKcbGXhDDjPwu2PYpVaAcVNopHXaQh1JQtIEUXAFzmWiFuVIt1UJO44vTM8f3Fvha9GfQG7IuQiCEGp_esEH2dS50gqkiJGl0WfJVGG4NvIh1EdrMlMo6YkfkqYkNLmZTnt_3q6x6ObNGX02JUEeaFYNf5XuW0M-70iIwzPpdlnc6EKOrdWOz9srTBRx2wz9f0A";
-const USER2_ID = decodeJwt(USER2_TOKEN).sub;
 
 describe(
   "The API should return a 403 if the user is not authorized of the project or operation",
@@ -28,7 +34,7 @@ describe(
       expect(res1.statusCode).toBeLessThan(300); // Sanity check
     };
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       randomUUID = crypto.randomUUID();
       user1AppId = "auth_test_user_1_" + crypto.randomUUID();
       app = createExpressServer();
