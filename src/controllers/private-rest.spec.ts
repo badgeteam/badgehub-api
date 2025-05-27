@@ -1,11 +1,11 @@
-import { beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { beforeAll, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
 import { isInDebugMode } from "@util/debug";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 import { decodeJwt } from "jose";
-import { Project } from "@domain/readModels/project/Project";
+import { Version } from "@domain/readModels/project/Version";
 
 const USER1_TOKEN =
   "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyOTA4NzMsImlhdCI6MTc0ODI5MDgxMywiYXV0aF90aW1lIjoxNzQ4MjkwODEzLCJqdGkiOiI1NmIzOTUwNS0yYjJmLTQ1MDgtOTY0NC03NTFmN2FjMzI0ZGQiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ4MDc1MzM3LTBmMTAtNGNkYi04YjQ4LWJlMWRjMTg3NDdhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjIzMWFkYmRkLTE1NDctNDRjYi1hNjI3LTI2MjJmNzI2YzcxMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMjMxYWRiZGQtMTU0Ny00NGNiLWE2MjctMjYyMmY3MjZjNzEwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVzdCB1c2VyIDEgVGVzdGVyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdHVzZXIxIiwiZ2l2ZW5fbmFtZSI6InRlc3QgdXNlciAxIiwiZmFtaWx5X25hbWUiOiJUZXN0ZXIiLCJlbWFpbCI6ImZkdXZpdmllcit0ZXN0dXNlcjFAZ21haWwuY29tIn0.h9R3nkDZ4C1LMAHKY-iBr24vW2tZMDwNgkA-6S1GQ2KNdnCjaOnROGB0bOCD5vaJO09YqItduM2gBD-oWGX0WuX57p5r5h3lCJi12NEV1YUdc0Z_pqB5ZvmXnJcquejqnnIiia8utcsOUQOsvhDZI4E0afyNl4J0JzcTwwIeOsP_oxkaFCb1aIMOVEIVwyOQYUfIcXsyFNJm356zgMQbD3WNI3eNCi2bDs-KfKaasCdgrMYjEM7gfXetgkJVbgT0v0AXyo9pzVGFDjzNPkoNNo0P5in8AA0qh2C3F-EXFsj3Xmagb_K1un94q4wW4IEMUqbhHbuR2bdePzg6219-Kg";
@@ -110,25 +110,35 @@ describe(
           .post(`/api/v3/projects/${dynamicTestAppId}`)
           .auth(USER1_TOKEN, { type: "bearer" })
           .send();
-        expect(postRes.statusCode).toBe(204);
+        const patchRes = await request(app)
+          .patch(`/api/v3/projects/${dynamicTestAppId}`)
+          .auth(USER1_TOKEN, { type: "bearer" })
+          .send({ git: "https://github.com" });
+        expect(patchRes.statusCode).toBe(204);
+        const patchMetadataRes = await request(app)
+          .patch(`/api/v3/projects/${dynamicTestAppId}/draft/metadata`)
+          .auth(USER1_TOKEN, { type: "bearer" })
+          .send({ name: "Test App Name", description: "Test App Description" });
+        expect(patchMetadataRes.statusCode).toBe(204);
 
         const getRes = await request(app)
           .get(`/api/v3/projects/${dynamicTestAppId}/draft`)
           .auth(USER1_TOKEN, { type: "bearer" });
         expect(getRes.statusCode).toBe(200);
 
+        const versionInResponse = getRes.body.version as Version;
         expect({
           ...stripDatedData(getRes.body),
-          version: { ...stripDatedData(getRes.body.version), files: undefined },
+          version: { ...stripDatedData(versionInResponse), files: undefined },
         }).toMatchObject({
           allow_team_fixes: false,
           category: "Uncategorised",
-          description: null,
-          git: null,
+          description: "Test App Description",
+          git: "https://github.com",
           git_commit_id: null,
           interpreter: null,
           license: null,
-          name: dynamicTestAppId,
+          name: "Test App Name",
           published_at: null,
           revision: 0,
           slug: dynamicTestAppId,
@@ -136,7 +146,7 @@ describe(
             app_metadata: {
               author: null,
               category: null,
-              description: null,
+              description: "Test App Description",
               file_mappings: null,
               file_mappings_overrides: null,
               icon: null,
@@ -146,7 +156,7 @@ describe(
               license_file: null,
               main_executable: null,
               main_executable_overrides: null,
-              name: dynamicTestAppId,
+              name: "Test App Name",
               semantic_version: null,
             },
             app_metadata_json_id: expect.any(Number),
@@ -163,15 +173,12 @@ describe(
           },
         });
 
-        expect(getRes.body.version.files.length).toEqual(1);
-        expect(getRes.body.version.files).toMatchObject([
-          {
-            full_path: "metadata.json",
-            id: expect.any(Number),
-            size: 0,
-            type: "application/json",
-          },
-        ]);
+        expect(versionInResponse.files.length).toEqual(1);
+        expect(versionInResponse.files[0]).toMatchObject({
+          full_path: "metadata.json",
+          id: expect.any(Number),
+          size_of_content: expect.any(Number),
+        });
 
         const deleteRes = await request(app)
           .delete(`/api/v3/projects/${dynamicTestAppId}`)

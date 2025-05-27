@@ -130,7 +130,7 @@ describe(
             "name": "__init__",
             "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
             "size_formatted": "0.04KB",
-            "size_of_content": "43",
+            "size_of_content": 43,
             "updated_at": "2022-09-05T13:12:19.376Z",
           },
           {
@@ -143,7 +143,7 @@ describe(
             "name": "metadata",
             "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
             "size_formatted": "0.25KB",
-            "size_of_content": "259",
+            "size_of_content": 259,
             "updated_at": "2022-09-05T13:12:19.376Z",
           },
         ]
@@ -230,7 +230,7 @@ describe(
             "name": "__init__",
             "sha256": "4028201b6ebf876b3ee30462c4d170146a2d3d92c5aca9fefc5e3d1a0508f5df",
             "size_formatted": "0.04KB",
-            "size_of_content": "43",
+            "size_of_content": 43,
             "updated_at": "2022-09-05T13:12:19.376Z",
           },
           {
@@ -243,7 +243,7 @@ describe(
             "name": "metadata",
             "sha256": "d1010a609b51931a168bd38aedbdb952ca51b3f05505f3a4f5fd2ad604f66a23",
             "size_formatted": "0.25KB",
-            "size_of_content": "259",
+            "size_of_content": 259,
             "updated_at": "2022-09-05T13:12:19.376Z",
           },
         ]

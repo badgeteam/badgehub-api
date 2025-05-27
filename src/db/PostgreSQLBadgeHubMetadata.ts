@@ -1,3 +1,5 @@
+// noinspection SqlResolve
+
 import { Badge } from "@domain/readModels/Badge";
 import {
   Project,
@@ -48,17 +50,18 @@ import path from "node:path";
 import { DBFileMetadata } from "@db/models/project/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { DBDatedData, DBSoftDeletable } from "@db/models/project/DBDatedData";
-import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 
 const ONE_KILO = 1024;
 
 function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
+  const size_of_content = Number.parseInt(dbFile.size_of_content);
   return {
     ...convertDatedData(dbFileWithoutVersionId),
+    size_of_content,
     full_path: path.join(dbFile.dir, dbFile.name + dbFile.ext),
-    size_formatted: (dbFile.size_of_content / ONE_KILO).toFixed(2) + "KB",
+    size_formatted: (size_of_content / ONE_KILO).toFixed(2) + "KB",
   };
 }
 
@@ -337,8 +340,8 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),
-      files: await this._getFilesMetadataForVersion(dbVersion.id), // TODO
-      app_metadata: stripDatedData(appMetadataWithoutId), // TODO
+      files: await this._getFilesMetadataForVersion(dbVersion.id),
+      app_metadata: stripDatedData(appMetadataWithoutId),
       published_at: timestampTZToDate(dbVersion.published_at),
     };
   }
