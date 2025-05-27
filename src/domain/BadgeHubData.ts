@@ -56,18 +56,11 @@ export class BadgeHubData {
     return this.badgeHubMetadata.publishVersion(projectSlug, mockDate);
   }
 
-  getDraftProject(projectSlug: ProjectSlug): Promise<Project | undefined> {
-    return this.badgeHubMetadata.getDraftProject(projectSlug);
-  }
-
-  getPublishedProject(
+  getProject(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Project> {
-    return this.badgeHubMetadata.getPublishedProject(
-      projectSlug,
-      versionRevision
-    );
+    return this.badgeHubMetadata.getProject(projectSlug, versionRevision);
   }
 
   async getFileContents(
@@ -160,8 +153,10 @@ export class BadgeHubData {
       appMetadataChanges,
       mockDates
     );
-    const updatedDraftVersion =
-      await this.badgeHubMetadata.getDraftVersion(slug);
+    const updatedDraftVersion = await this.badgeHubMetadata.getVersion(
+      slug,
+      "draft"
+    );
     if (!updatedDraftVersion) {
       throw new Error(`Draft version not found for slug: ${slug}`);
     }

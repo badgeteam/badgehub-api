@@ -36,19 +36,15 @@ export interface BadgeHubMetadata {
     mockDate?: TimestampTZ
   ): Promise<void>; // Publishes the current state of the project as a version
 
-  getDraftProject(projectSlug: ProjectSlug): Promise<Project | undefined>;
-
-  getPublishedProject(
+  getProject(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Project>;
 
-  getPublishedVersion(
+  getVersion(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Version>;
-
-  getDraftVersion(projectSlug: ProjectSlug): Promise<Version | undefined>;
 
   getBadges(): Promise<Badge[]>;
 
