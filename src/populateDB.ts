@@ -80,10 +80,14 @@ export async function repopulateDB() {
 }
 
 async function cleanDatabases(client: pg.PoolClient) {
+  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
+  for (const table of tablesWithoutIdSeq) {
+    await client.query(sql`delete
+                           from ${raw(table)}`);
+  }
   const tablesWithIdSeq = [
     "files",
     "file_data",
-    "users",
     "app_metadata_jsons",
     "versions",
     "versioned_dependencies",
@@ -93,11 +97,6 @@ async function cleanDatabases(client: pg.PoolClient) {
     await client.query(sql`delete
                            from ${raw(table)}`);
     await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
-  }
-  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
-  for (const table of tablesWithoutIdSeq) {
-    await client.query(sql`delete
-                           from ${raw(table)}`);
   }
 }
 
