@@ -1,3 +1,4 @@
+import { Security, Response } from "tsoa";
 import { Controller, type TsoaResponse } from "tsoa";
 import { Get, Path, Query, Res, Route, Tags } from "tsoa";
 import { BadgeHubData } from "@domain/BadgeHubData";
@@ -12,6 +13,7 @@ import { Category } from "@domain/readModels/project/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
 import type { RevisionNumber } from "@domain/readModels/project/Version";
+import { JwtError } from "@auth/jwt-error";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -35,6 +37,19 @@ export class PublicRestController extends Controller {
     )
   ) {
     super();
+  }
+
+  /**
+   * Only for testing auth endpoint
+   */
+  @Response<JwtError>(403, "Forbidden") // Doesn't work
+  @Security("bearer", ["hacker"])
+  @Get("/private")
+  public async getPrivate() {
+    return Promise.resolve({
+      status: 200,
+      message: "You're visiting a private api",
+    });
   }
 
   /**

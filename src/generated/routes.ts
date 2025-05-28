@@ -29,6 +29,17 @@ const expressAuthenticationRecasted = expressAuthentication as (
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+  JwtError: {
+    dataType: "refObject",
+    properties: {
+      name: { dataType: "string", required: true },
+      message: { dataType: "string", required: true },
+      stack: { dataType: "string" },
+      status: { dataType: "double", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Badge: {
     dataType: "refObject",
     properties: {
@@ -366,6 +377,47 @@ export function RegisterRoutes(
 
   const upload = opts?.multer || multer({ limits: { fileSize: 8388608 } });
 
+  app.get(
+    "/api/v3/private",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getPrivate
+    ),
+
+    async function PublicRestController_getPrivate(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {};
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getPrivate",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
