@@ -1,16 +1,11 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
-import { disableMutatingRest } from "@disableMutatingRest";
 import openapi from "@openapi";
 import { RegisterRoutes } from "@generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
 import multer from "multer";
-import { NODE_ENV, MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
-// TODO: enable when disableWriteWhenNotDev is available
-// import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
-import { jwtErrorHandler } from "@auth/jwt-error";
+import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 import rateLimit from "express-rate-limit";
-import { ensureContributorRouteMiddleware } from "@auth/jwt";
 
 export const createExpressServer = () => {
   const app = express();
@@ -35,8 +30,6 @@ export const createExpressServer = () => {
   RegisterRoutes(app, {
     multer: multer({ limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES } }),
   });
-
-  app.use(jwtErrorHandler);
 
   addTsoaValidationFailureLogging(app);
 

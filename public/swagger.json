@@ -557,7 +557,13 @@
         "additionalProperties": false
       }
     },
-    "securitySchemes": {}
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "info": {
     "title": "badgehub-api",
@@ -587,7 +593,7 @@
             }
           }
         },
-        "description": "Only for testing auth endpoint",
+        "description": "Get list of devices (badges)",
         "tags": ["public"],
         "security": [],
         "parameters": []
@@ -784,7 +790,11 @@
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -847,7 +857,11 @@
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -900,7 +914,11 @@
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1077,7 +1095,11 @@
         },
         "description": "Get all draft projects that the given user has access to.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1150,7 +1172,11 @@
         },
         "description": "Upload a file to the latest draft version of the project.\nNote that the filePath needs to be url encoded.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1228,7 +1254,11 @@
         },
         "description": "Delete the given file from the latest draft version of the project.\nNote that the filePath needs to be url encoded.\nNote that the metadata.json file cannot be deleted",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1297,7 +1327,11 @@
         },
         "description": "get the latest draft version of the project.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1360,7 +1394,11 @@
         },
         "description": "Change the metadata of the latest draft version of the project.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1432,7 +1470,11 @@
         },
         "description": "Get Project details of the draft version of the project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1487,7 +1529,11 @@
         },
         "description": "Publish the current draft as a new version",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",

@@ -1,7 +1,7 @@
 import * as express from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { JwtError } from "@controllers/public-rest";
-import { KEYCLOAK_CERTS, KEYCLOAK_ISSUER } from "./src/config";
+import { DISABLE_AUTH, KEYCLOAK_CERTS, KEYCLOAK_ISSUER } from "./src/config";
+import { JwtError } from "./src/auth/jwt-error";
 
 // Create a JWKS client using Keycloak's JWKS endpoint
 const JWKS = createRemoteJWKSet(new URL(KEYCLOAK_CERTS!));
@@ -11,6 +11,9 @@ export async function expressAuthentication(
   securityName: string,
   scopes?: string[]
 ): Promise<any> {
+  if (DISABLE_AUTH) {
+    return;
+  }
   // Enable logging for debugging:
   // console.log("authorization", request.header("authorization"));
   // console.log("securityName", securityName);
