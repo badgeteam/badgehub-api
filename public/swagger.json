@@ -7,6 +7,26 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
+      "JwtError": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stack": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["name", "message", "status"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "Badge": {
         "properties": {
           "created_at": {
@@ -575,6 +595,51 @@
     "contact": {}
   },
   "paths": {
+    "/api/v3/private": {
+      "get": {
+        "operationId": "GetPrivate",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  },
+                  "required": ["message", "status"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwtError"
+                }
+              }
+            }
+          }
+        },
+        "description": "Only for testing auth endpoint",
+        "tags": ["public"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": []
+      }
+    },
     "/api/v3/devices": {
       "get": {
         "operationId": "GetDevices",
