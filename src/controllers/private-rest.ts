@@ -11,6 +11,7 @@ import {
   Request,
   Res,
   Route,
+  Security,
   Tags,
   type TsoaResponse,
   UploadedFile,
@@ -29,11 +30,9 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import type { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
 import {
   addUserSubMiddleware,
-  ensureContributorRouteMiddleware,
   getUser,
   type RequestWithUser,
-  verifyJwtTokenMiddleware,
-} from "@auth/jwt";
+} from "@auth/jwt-decode";
 import { DISABLE_AUTH } from "@config";
 import { User } from "@domain/readModels/project/User";
 
@@ -51,10 +50,8 @@ type BadRequestCallback = TsoaResponse<404 | 403, { reason: string }>;
 
 @Route("/api/v3")
 @Tags("private")
-@Middlewares(
-  ...(DISABLE_AUTH ? [] : [verifyJwtTokenMiddleware]),
-  addUserSubMiddleware
-)
+@Security("bearer", ["hacker"])
+@Middlewares(addUserSubMiddleware)
 export class PrivateRestController extends Controller {
   public constructor(
     private badgeHubData: BadgeHubData = new BadgeHubData(

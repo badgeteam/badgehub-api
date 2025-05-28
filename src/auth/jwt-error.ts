@@ -1,5 +1,8 @@
 import express, { NextFunction } from "express";
-import { JwtError } from "@controllers/public-rest";
+export interface JwtError extends Error {
+  status: number;
+  message: string;
+}
 
 // Handle TSOA errors
 export function jwtErrorHandler(
