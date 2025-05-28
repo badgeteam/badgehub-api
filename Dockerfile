@@ -4,7 +4,7 @@ FROM node:22-bookworm-slim AS build
 WORKDIR /home/node/app
 
 COPY package*.json ./
-RUN npm install --ignore-scripts
+RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 
