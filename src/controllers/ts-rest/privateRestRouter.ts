@@ -76,17 +76,18 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
     },
 
     getDraftProject: async ({ params: { slug }, req }) => {
-      const authorizationFailureResponse = await checkProjectAuthorization(
-        badgeHubData,
-        slug,
-        req
-      );
-      if (authorizationFailureResponse) return authorizationFailureResponse;
-      // Retrieve the draft project.
       const project = await badgeHubData.getProject(slug, "draft");
       if (!project) {
         return nok(HTTP_NOT_FOUND, `No project with slug '${slug}' found`);
       }
+      const authorizationFailureResponse = await checkProjectAuthorization(
+        badgeHubData,
+        slug,
+        req,
+        project
+      );
+      if (authorizationFailureResponse) return authorizationFailureResponse;
+
       return ok(project);
     },
 
