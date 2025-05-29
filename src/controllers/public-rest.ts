@@ -13,6 +13,7 @@ import { Category } from "@domain/readModels/project/Category";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { Readable } from "node:stream";
 import type { RevisionNumber } from "@domain/readModels/project/Version";
+import { JwtError } from "@auth/jwt-error";
 
 /**
  * The code is annotated so that OpenAPI documentation can be generated with tsoa
@@ -25,11 +26,6 @@ import type { RevisionNumber } from "@domain/readModels/project/Version";
  *
  * npm run swagger
  */
-
-export interface JwtError extends Error {
-  status: number;
-  message: string;
-}
 
 @Route("/api/v3")
 @Tags("public")
@@ -102,7 +98,7 @@ export class PublicRestController extends Controller {
     @Path() revision: RevisionNumber,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getPublishedProject(slug, revision);
+    const details = await this.badgeHubData.getProject(slug, revision);
     if (!details) {
       return notFoundResponse(404, {
         reason: `No public app with slug '${slug}' found`,
@@ -119,7 +115,7 @@ export class PublicRestController extends Controller {
     @Path() slug: string,
     @Res() notFoundResponse: TsoaResponse<404, { reason: string }>
   ): Promise<Project | undefined> {
-    const details = await this.badgeHubData.getPublishedProject(slug, "latest");
+    const details = await this.badgeHubData.getProject(slug, "latest");
     if (!details) {
       return notFoundResponse(404, {
         reason: `No public app with slug '${slug}' found`,

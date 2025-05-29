@@ -7,7 +7,6 @@ import {
   POSTGRES_USER,
 } from "@config";
 import sql, { raw } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/project/DBUser";
 import { DBDatedData } from "@db/models/project/DBDatedData";
 import { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
@@ -81,10 +80,14 @@ export async function repopulateDB() {
 }
 
 async function cleanDatabases(client: pg.PoolClient) {
+  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
+  for (const table of tablesWithoutIdSeq) {
+    await client.query(sql`delete
+                           from ${raw(table)}`);
+  }
   const tablesWithIdSeq = [
     "files",
     "file_data",
-    "users",
     "app_metadata_jsons",
     "versions",
     "versioned_dependencies",
@@ -94,11 +97,6 @@ async function cleanDatabases(client: pg.PoolClient) {
     await client.query(sql`delete
                            from ${raw(table)}`);
     await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
-  }
-  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
-  for (const table of tablesWithoutIdSeq) {
-    await client.query(sql`delete
-                           from ${raw(table)}`);
   }
 }
 
@@ -169,7 +167,6 @@ async function populateDatabases(
 ) {
   await insertBadges(client);
   await insertCategories(client);
-  await insertUsers(badgeHubData);
   const projectNames = await insertProjects(badgeHubData);
   await publishSomeProjects(badgeHubData, projectNames);
   await badgeProjectCrossTable(
@@ -269,41 +266,6 @@ const USERS = [
   "CyberCraftsman",
   "CodeConnoisseur",
 ];
-
-async function insertUsers(badgeHubData: BadgeHubData) {
-  const domains = [
-    "bitlair.nl",
-    "hackalot.nl",
-    "techinc.nl",
-    "hack42.nl",
-    "gmail.com",
-    "hotmail.com",
-  ];
-  for (let id = 0; id < USERS.length; id++) {
-    const name = USERS[id]!;
-    const semiRandomNumber = await stringToNumberDigest(name);
-    const isAdmin = semiRandomNumber % 10 == 0;
-    const email = `${name.toLowerCase()}@${domains[semiRandomNumber % domains.length]}`;
-    const password = "****";
-    const isPublic = semiRandomNumber % 10 != 0;
-    const showProjects = semiRandomNumber % 10 != 0;
-    const { created_at, updated_at } = await getSemiRandomDates(name);
-
-    const toInsert: DBInsertUser & DBDatedData = {
-      id,
-      admin: isAdmin,
-      name,
-      email,
-      password,
-      public: isPublic,
-      show_projects: showProjects,
-      created_at,
-      updated_at,
-    };
-
-    await badgeHubData.insertUser(toInsert);
-  }
-}
 
 const writeDraftAppFiles = async (
   badgeHubData: BadgeHubData,
@@ -453,12 +415,12 @@ async function insertProjects(badgeHubData: BadgeHubData) {
   for (const projectName of projectNames) {
     const semiRandomNumber = await stringToNumberDigest(projectName);
     const slug = projectName.toLowerCase();
-    const userId = semiRandomNumber % USERS.length;
+    const userName = USERS[semiRandomNumber % USERS.length]!;
 
     const { created_at, updated_at } = await getSemiRandomDates(projectName);
 
     await badgeHubData.insertProject(
-      { slug, user_id: userId },
+      { slug, idp_user_id: userName },
       { created_at, updated_at }
     );
     await writeDraftAppFiles(badgeHubData, projectName);

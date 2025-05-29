@@ -9,6 +9,6 @@ export interface DBFileMetadata extends VersionRelation, DBDatedData {
   name: string; // file name without extension
   ext: string; // file name without extension
   mimetype: string; // Can include info about the programming language
-  size_of_content: number;
+  size_of_content: string;
   sha256: DBFileData["sha256"]; // lowercase hex sha256 digest, allows verifying whether content is the same as other file.
 }

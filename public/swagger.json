@@ -7,6 +7,26 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
+      "JwtError": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stack": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": ["name", "message", "status"],
+        "type": "object",
+        "additionalProperties": false
+      },
       "Badge": {
         "properties": {
           "created_at": {
@@ -95,9 +115,6 @@
             "type": "number",
             "format": "double"
           },
-          "user_name": {
-            "type": "string"
-          },
           "interpreter": {
             "type": "string"
           },
@@ -110,9 +127,8 @@
           "slug": {
             "type": "string"
           },
-          "user_id": {
-            "type": "number",
-            "format": "double"
+          "idp_user_id": {
+            "type": "string"
           },
           "git": {
             "type": "string"
@@ -129,7 +145,13 @@
             "format": "date-time"
           }
         },
-        "required": ["category", "slug", "user_id", "created_at", "updated_at"],
+        "required": [
+          "category",
+          "slug",
+          "idp_user_id",
+          "created_at",
+          "updated_at"
+        ],
         "type": "object",
         "description": "From T, pick a set of properties whose keys are in the union K"
       },
@@ -347,9 +369,8 @@
           "slug": {
             "type": "string"
           },
-          "user_id": {
-            "type": "number",
-            "format": "double"
+          "idp_user_id": {
+            "type": "string"
           },
           "git": {
             "type": "string"
@@ -396,9 +417,6 @@
             "type": "number",
             "format": "double"
           },
-          "user_name": {
-            "type": "string"
-          },
           "interpreter": {
             "type": "string"
           },
@@ -412,19 +430,21 @@
             "type": "array"
           }
         },
-        "required": ["slug", "user_id", "created_at", "updated_at", "category"],
+        "required": [
+          "slug",
+          "idp_user_id",
+          "created_at",
+          "updated_at",
+          "category"
+        ],
         "type": "object",
         "additionalProperties": false
       },
       "ProjectSlug": {
         "type": "string"
       },
-      "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
+      "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__": {
         "properties": {
-          "user_id": {
-            "type": "number",
-            "format": "double"
-          },
           "git": {
             "type": "string"
           },
@@ -432,19 +452,17 @@
             "type": "boolean"
           }
         },
-        "required": ["user_id"],
         "type": "object",
         "description": "From T, pick a set of properties whose keys are in the union K"
       },
-      "Omit_CreateProjectProps.slug_": {
-        "$ref": "#/components/schemas/Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__",
+      "Omit_CreateProjectProps.slug-or-idp_user_id_": {
+        "$ref": "#/components/schemas/Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
         "description": "Construct a type with the properties of T except for those in type K."
       },
       "ProjectPropsPartial": {
         "properties": {
-          "user_id": {
-            "type": "number",
-            "format": "double"
+          "idp_user_id": {
+            "type": "string"
           },
           "git": {
             "type": "string"
@@ -559,7 +577,13 @@
         "additionalProperties": false
       }
     },
-    "securitySchemes": {}
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "info": {
     "title": "badgehub-api",
@@ -571,6 +595,51 @@
     "contact": {}
   },
   "paths": {
+    "/api/v3/private": {
+      "get": {
+        "operationId": "GetPrivate",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  },
+                  "required": ["message", "status"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JwtError"
+                }
+              }
+            }
+          }
+        },
+        "description": "Only for testing auth endpoint",
+        "tags": ["public"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": []
+      }
+    },
     "/api/v3/devices": {
       "get": {
         "operationId": "GetDevices",
@@ -589,7 +658,7 @@
             }
           }
         },
-        "description": "Only for testing auth endpoint",
+        "description": "Get list of devices (badges)",
         "tags": ["public"],
         "security": [],
         "parameters": []
@@ -786,7 +855,11 @@
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -802,7 +875,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Omit_CreateProjectProps.slug_"
+                "$ref": "#/components/schemas/Omit_CreateProjectProps.slug-or-idp_user_id_"
               }
             }
           }
@@ -813,11 +886,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -834,11 +943,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Create a new project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -995,19 +1140,38 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Get all draft projects that the given user has access to.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
             "schema": {
-              "format": "double",
-              "type": "number"
+              "type": "string"
             }
           },
           {
@@ -1037,11 +1201,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Upload a file to the latest draft version of the project.\nNote that the filePath needs to be url encoded.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1083,11 +1283,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Delete the given file from the latest draft version of the project.\nNote that the filePath needs to be url encoded.\nNote that the metadata.json file cannot be deleted",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1121,6 +1357,22 @@
               }
             }
           },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
           "404": {
             "description": "",
             "content": {
@@ -1140,7 +1392,11 @@
         },
         "description": "get the latest draft version of the project.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1167,11 +1423,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Change the metadata of the latest draft version of the project.",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1208,6 +1500,22 @@
               }
             }
           },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
           "404": {
             "description": "",
             "content": {
@@ -1227,7 +1535,11 @@
         },
         "description": "Get Project details of the draft version of the project",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -1246,11 +1558,47 @@
         "responses": {
           "204": {
             "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
         "description": "Publish the current draft as a new version",
         "tags": ["private"],
-        "security": [],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
           {
             "in": "path",
