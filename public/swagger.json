@@ -7,47 +7,6 @@
     "requestBodies": {},
     "responses": {},
     "schemas": {
-      "JwtError": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "stack": {
-            "type": "string"
-          },
-          "status": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": ["name", "message", "status"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Badge": {
-        "properties": {
-          "created_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          }
-        },
-        "required": ["created_at", "updated_at", "name", "slug"],
-        "type": "object",
-        "additionalProperties": false
-      },
       "AppCategoryName": {
         "type": "string",
         "enum": [
@@ -68,19 +27,6 @@
           "SAO",
           "Interpreter"
         ]
-      },
-      "Category": {
-        "properties": {
-          "name": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
-          "slug": {
-            "type": "string"
-          }
-        },
-        "required": ["name", "slug"],
-        "type": "object",
-        "additionalProperties": false
       },
       "Pick_Project.Exclude_keyofProject.version__": {
         "properties": {
@@ -161,6 +107,142 @@
       },
       "ProjectWithoutVersion": {
         "$ref": "#/components/schemas/Omit_Project.version_"
+      },
+      "ProjectSlug": {
+        "type": "string"
+      },
+      "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__": {
+        "properties": {
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          }
+        },
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_CreateProjectProps.slug-or-idp_user_id_": {
+        "$ref": "#/components/schemas/Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "ProjectPropsPartial": {
+        "properties": {
+          "idp_user_id": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "latest_revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "draft_revision": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Record_string.string_": {
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "Record_string._source-string--destination-string_-Array_": {
+        "properties": {},
+        "additionalProperties": {
+          "items": {
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": ["destination", "source"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "DbInsertAppMetadataJSONPartial": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "author": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "license_file": {
+            "type": "string"
+          },
+          "is_library": {
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "main_executable": {
+            "type": "string"
+          },
+          "main_executable_overrides": {
+            "$ref": "#/components/schemas/Record_string.string_"
+          },
+          "file_mappings": {
+            "items": {
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": ["destination", "source"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file_mappings_overrides": {
+            "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
       },
       "RevisionNumber": {
         "type": "number",
@@ -439,142 +521,6 @@
         ],
         "type": "object",
         "additionalProperties": false
-      },
-      "ProjectSlug": {
-        "type": "string"
-      },
-      "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__": {
-        "properties": {
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
-          }
-        },
-        "type": "object",
-        "description": "From T, pick a set of properties whose keys are in the union K"
-      },
-      "Omit_CreateProjectProps.slug-or-idp_user_id_": {
-        "$ref": "#/components/schemas/Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
-        "description": "Construct a type with the properties of T except for those in type K."
-      },
-      "ProjectPropsPartial": {
-        "properties": {
-          "idp_user_id": {
-            "type": "string"
-          },
-          "git": {
-            "type": "string"
-          },
-          "allow_team_fixes": {
-            "type": "boolean"
-          },
-          "created_at": {
-            "type": "string"
-          },
-          "updated_at": {
-            "type": "string"
-          },
-          "latest_revision": {
-            "type": "number",
-            "format": "double"
-          },
-          "draft_revision": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Record_string.string_": {
-        "properties": {},
-        "additionalProperties": {
-          "type": "string"
-        },
-        "type": "object",
-        "description": "Construct a type with a set of properties K of type T"
-      },
-      "Record_string._source-string--destination-string_-Array_": {
-        "properties": {},
-        "additionalProperties": {
-          "items": {
-            "properties": {
-              "destination": {
-                "type": "string"
-              },
-              "source": {
-                "type": "string"
-              }
-            },
-            "required": ["destination", "source"],
-            "type": "object"
-          },
-          "type": "array"
-        },
-        "type": "object",
-        "description": "Construct a type with a set of properties K of type T"
-      },
-      "DbInsertAppMetadataJSONPartial": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "category": {
-            "$ref": "#/components/schemas/AppCategoryName"
-          },
-          "author": {
-            "type": "string"
-          },
-          "icon": {
-            "type": "string"
-          },
-          "license_file": {
-            "type": "string"
-          },
-          "is_library": {
-            "type": "boolean"
-          },
-          "is_hidden": {
-            "type": "boolean"
-          },
-          "semantic_version": {
-            "type": "string"
-          },
-          "interpreter": {
-            "type": "string"
-          },
-          "main_executable": {
-            "type": "string"
-          },
-          "main_executable_overrides": {
-            "$ref": "#/components/schemas/Record_string.string_"
-          },
-          "file_mappings": {
-            "items": {
-              "properties": {
-                "destination": {
-                  "type": "string"
-                },
-                "source": {
-                  "type": "string"
-                }
-              },
-              "required": ["destination", "source"],
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "file_mappings_overrides": {
-            "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
-          }
-        },
-        "type": "object",
-        "additionalProperties": false
       }
     },
     "securitySchemes": {
@@ -595,102 +541,9 @@
     "contact": {}
   },
   "paths": {
-    "/api/v3/private": {
+    "/api/v3/users/{userId}/drafts": {
       "get": {
-        "operationId": "GetPrivate",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "number",
-                      "format": "double"
-                    }
-                  },
-                  "required": ["message", "status"],
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JwtError"
-                }
-              }
-            }
-          }
-        },
-        "description": "Only for testing auth endpoint",
-        "tags": ["public"],
-        "security": [
-          {
-            "bearer": ["hacker"]
-          }
-        ],
-        "parameters": []
-      }
-    },
-    "/api/v3/devices": {
-      "get": {
-        "operationId": "GetDevices",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Badge"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get list of devices (badges)",
-        "tags": ["public"],
-        "security": [],
-        "parameters": []
-      }
-    },
-    "/api/v3/categories": {
-      "get": {
-        "operationId": "GetCategories",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Category"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get list of categories",
-        "tags": ["public"],
-        "security": [],
-        "parameters": []
-      }
-    },
-    "/api/v3/projects": {
-      "get": {
-        "operationId": "GetProjects",
+        "operationId": "GetUserDraftProjects",
         "responses": {
           "200": {
             "description": "Ok",
@@ -704,12 +557,40 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
           }
         },
-        "description": "Get list of projects, optionally limited by page start/length and/or filtered by categorySlug",
-        "tags": ["public"],
-        "security": [],
+        "description": "Get all draft projects that the given user has access to.",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
         "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "in": "query",
             "name": "pageStart",
@@ -727,125 +608,11 @@
               "format": "double",
               "type": "number"
             }
-          },
-          {
-            "in": "query",
-            "name": "category",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "device",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/api/v3/projects/{slug}/rev{revision}": {
-      "get": {
-        "operationId": "GetProjectVersion",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Project"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get project details for a specific published revision of the project",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "revision",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/RevisionNumber"
-            }
           }
         ]
       }
     },
     "/api/v3/projects/{slug}": {
-      "get": {
-        "operationId": "GetProject",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Project"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get project details of the latest published version",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
       "post": {
         "operationId": "CreateProject",
         "responses": {
@@ -1004,195 +771,6 @@
             }
           }
         }
-      }
-    },
-    "/api/v3/projects/{slug}/latest/files/{filePath}": {
-      "get": {
-        "operationId": "GetLatestPublishedFile",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "byte"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "get the latest published version of a file in the project",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "filePath",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/api/v3/projects/{slug}/rev{revision}/files/{filePath}": {
-      "get": {
-        "operationId": "GetFileForVersion",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string",
-                  "format": "byte"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "get a file for a specific version of the project",
-        "tags": ["public"],
-        "security": [],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "slug",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "revision",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/RevisionNumber"
-            }
-          },
-          {
-            "in": "path",
-            "name": "filePath",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/api/v3/users/{userId}/drafts": {
-      "get": {
-        "operationId": "GetUserDraftProjects",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ProjectWithoutVersion"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "reason": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["reason"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get all draft projects that the given user has access to.",
-        "tags": ["private"],
-        "security": [
-          {
-            "bearer": ["hacker"]
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "pageStart",
-            "required": false,
-            "schema": {
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "pageLength",
-            "required": false,
-            "schema": {
-              "format": "double",
-              "type": "number"
-            }
-          }
-        ]
       }
     },
     "/api/v3/projects/{slug}/draft/files/{filePath}": {

@@ -294,6 +294,9 @@ describe(
         expect(getRes.text).toEqual(
           "print('Hello world from the CodeCraft app')"
         );
+        expect(getRes.headers["content-disposition"]).toEqual(
+          'attachment; filename="__init__.py"'
+        );
       }
     );
     describe("unpublished versions should be be requestable", () => {

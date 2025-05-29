@@ -2,12 +2,13 @@ import { ErrorType, NotAuthenticatedError } from "@error";
 import { decodeJwt } from "jose";
 import { NextFunction, Request, Response } from "express";
 import { User } from "@domain/readModels/project/User";
+export type UserDataInRequest = Pick<User, "idp_user_id">;
 
 export type RequestWithUser = {
-  user: Pick<User, "idp_user_id">;
+  user: UserDataInRequest;
 } & Request;
 
-export function getUser(req: RequestWithUser): Pick<User, "idp_user_id"> {
+export function getUser(req: { user: UserDataInRequest }): UserDataInRequest {
   return req.user;
 }
 
@@ -24,7 +25,7 @@ const decodeTokenWithErrorHandling = (token: string) => {
 };
 
 const addUserSubMiddleware = (
-  req: Request,
+  req: { headers: { authorization?: string } },
   res: Response,
   next: NextFunction
 ) => {
@@ -54,16 +55,16 @@ const addUserSubMiddleware = (
 const handleError = (err: unknown, res: Response) => {
   if (err && typeof err === "object" && "name" in err && "message" in err) {
     if (err.name == ErrorType.NotAuthorized) {
-      res.status(403).json({ error: err.message });
+      res.status(403).json({ reason: err.message });
       return;
     }
     if (err.name == ErrorType.NotAuthenticated) {
-      res.status(401).json({ error: err.message });
+      res.status(401).json({ reason: err.message });
       return;
     }
   }
   console.warn("JWT:handleError: Internal server error", err);
-  res.status(500).json({ error: "Internal server error" });
+  res.status(500).json({ reason: "Internal server error" });
 };
 
 export { addUserSubMiddleware };
