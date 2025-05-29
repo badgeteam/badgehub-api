@@ -1,4 +1,4 @@
-import { AppMetadataJSON, appMetadataJSONSchema } from "./AppMetadataJSON";
+import { AppMetadataJSON, readAppMetadataJSONSchema } from "./AppMetadataJSON";
 import { DatedData, datedDataSchema } from "./DatedData";
 import { FileMetadata, fileMetadataSchema } from "./FileMetadata";
 import { Project } from "@domain/readModels/project/Project";
@@ -35,7 +35,7 @@ export const versionSchema = datedDataSchema.extend({
   size_of_zip: z.number().optional(),
   git_commit_id: z.string().optional(),
   files: z.array(fileMetadataSchema),
-  app_metadata: appMetadataJSONSchema,
+  app_metadata: readAppMetadataJSONSchema,
   published_at: z.date().optional(),
   download_count: z.number(),
   project_slug: z.string(), // Project slug

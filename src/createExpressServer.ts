@@ -4,17 +4,23 @@ import openapi from "@openapi";
 import { RegisterRoutes } from "@generated/routes";
 import { addTsoaValidationFailureLogging } from "@util/logging";
 import multer from "multer";
-import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
+import { MAX_UPLOAD_FILE_SIZE_BYTES, NODE_ENV } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";
 import { createPublicRestRouter } from "@controllers/ts-rest/publicRestRouter";
+import { privateRestContracts } from "@shared/contracts/privateRestContracts";
+import { createPrivateRestRouter } from "@controllers/ts-rest/privateRestRouter";
+import { addUserSubMiddleware } from "@auth/jwt-decode";
+import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 
 export const createExpressServer = () => {
   const app = express();
-  app.use((req, res, next) => {
-    next(); // for inspection during development
-  });
+  if (NODE_ENV === "development") {
+    app.use((req, res, next) => {
+      next(); // for inspection during development
+    });
+  }
 
   const rateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -29,17 +35,23 @@ export const createExpressServer = () => {
   app.use(pino);
 
   openapi(app);
-  const publicExpressRouter = express.Router();
-  app.use("/api/v3", publicExpressRouter);
+
+  const apiV3Router = express.Router();
+  app.use("/api/v3", apiV3Router);
   createExpressEndpoints(
     publicRestContracts,
     createPublicRestRouter(),
-    publicExpressRouter
+    apiV3Router
   );
 
-  RegisterRoutes(app, {
-    multer: multer({ limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES } }),
-  });
+  createExpressEndpoints(
+    privateRestContracts,
+    createPrivateRestRouter(),
+    apiV3Router,
+    {
+      globalMiddleware: [jwtVerifyTokenMiddleware, addUserSubMiddleware],
+    }
+  );
 
   addTsoaValidationFailureLogging(app);
 
