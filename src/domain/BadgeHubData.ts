@@ -23,6 +23,7 @@ import { DBDatedData } from "@db/models/project/DBDatedData";
 import { calcSha256 } from "@util/digests";
 import { TimestampTZ } from "@db/DBTypes";
 import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
+import { WriteAppMetadataJSON } from "@domain/writeModels/AppMetadataJSON";
 
 export class BadgeHubData {
   constructor(
@@ -145,7 +146,7 @@ export class BadgeHubData {
 
   async updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    appMetadataChanges: Partial<WriteAppMetadataJSON>,
     mockDates?: DBDatedData
   ): Promise<void> {
     await this.badgeHubMetadata.updateDraftMetadata(

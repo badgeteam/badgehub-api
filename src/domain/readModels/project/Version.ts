@@ -1,7 +1,9 @@
-import { AppMetadataJSON } from "./AppMetadataJSON";
-import { DatedData } from "./DatedData";
-import { FileMetadata } from "./FileMetadata";
+import { AppMetadataJSON, readAppMetadataJSONSchema } from "./AppMetadataJSON";
+import { DatedData, datedDataSchema } from "./DatedData";
+import { FileMetadata, fileMetadataSchema } from "./FileMetadata";
 import { Project } from "@domain/readModels/project/Project";
+import { z } from "zod/v3";
+import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type LatestVersionAlias = "latest";
 type DraftVersionAlias = "draft";
@@ -25,3 +27,18 @@ export interface Version extends DatedData {
   download_count: number;
   project_slug: Project["slug"];
 }
+
+export const versionSchema = datedDataSchema.extend({
+  revision: z.number(),
+  semantic_version: z.string().optional(),
+  zip: z.string().optional(),
+  size_of_zip: z.number().optional(),
+  git_commit_id: z.string().optional(),
+  files: z.array(fileMetadataSchema),
+  app_metadata: readAppMetadataJSONSchema,
+  published_at: z.date().optional(),
+  download_count: z.number(),
+  project_slug: z.string(), // Project slug
+});
+
+type Checks = [CheckSame<Version, Version, z.infer<typeof versionSchema>>];
