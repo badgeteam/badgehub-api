@@ -19,8 +19,11 @@ import { RouterImplementation } from "@ts-rest/express/src/lib/types";
 import { getUser, RequestWithUser, UserDataInRequest } from "@auth/jwt-decode";
 import { Project, ProjectSlug } from "@domain/readModels/project/Project";
 import { Readable } from "node:stream";
+import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 
-const upload = multer();
+const upload = multer({
+  limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES },
+});
 
 const createProjectRouter = (badgeHubData: BadgeHubData) => {
   const privateProjectRouter: RouterImplementation<

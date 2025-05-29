@@ -1,10 +1,7 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
 import openapi from "@openapi";
-import { RegisterRoutes } from "@generated/routes";
-import { addTsoaValidationFailureLogging } from "@util/logging";
-import multer from "multer";
-import { MAX_UPLOAD_FILE_SIZE_BYTES, NODE_ENV } from "@config";
+import { NODE_ENV } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";
@@ -52,8 +49,6 @@ export const createExpressServer = () => {
       globalMiddleware: [jwtVerifyTokenMiddleware, addUserSubMiddleware],
     }
   );
-
-  addTsoaValidationFailureLogging(app);
 
   return app;
 };
