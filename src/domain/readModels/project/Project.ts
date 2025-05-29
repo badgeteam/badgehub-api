@@ -2,17 +2,26 @@ import { Version } from "./Version";
 import { User } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
-import { ProjectStatusOnBadge } from "../ProjectStatusOnBadge";
 import { AppMetadataJSON } from "./AppMetadataJSON";
-import { VoteFromUser } from "./VoteFromUser";
-import { WarningFromUser } from "./WarningFromUser";
-import { Category } from "@domain/readModels/project/Category";
+import {
+  Category,
+  categoryNameSchema,
+} from "@domain/readModels/project/Category";
+import { z } from "zod/v3";
+import { CheckExtends, CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type ProjectStatusName =
   | "working"
   | "in_progress"
   | "broken"
   | "unknown";
+
+export const projectStatusNameSchema = z.enum([
+  "working",
+  "in_progress",
+  "broken",
+  "unknown",
+]);
 
 export interface ProjectCore {
   slug: string;
@@ -59,3 +68,31 @@ interface Dependency {
   // Changed! semantic_version_range added
   semantic_version_range: string; // Semantic version range specification that allows tilde, caret, wildcard specification of the version of a project that should be used. Following what is described here: https://python-poetry.org/docs/dependency-specification/
 }
+
+export const projectSchema = z.object({
+  slug: z.string(),
+  idp_user_id: z.string(),
+  git: z.string().optional(),
+  allow_team_fixes: z.boolean().optional(),
+  created_at: z.date(),
+  updated_at: z.date(),
+  name: z.string().optional(),
+  min_firmware: z.number().optional(),
+  max_firmware: z.number().optional(),
+  git_commit_id: z.string().optional(),
+  published_at: z.date().optional(),
+  license: z.string().optional(),
+  category: categoryNameSchema,
+  description: z.string().optional(),
+  revision: z.number().optional(),
+  interpreter: z.string().optional(),
+});
+
+type Checks = [
+  CheckSame<Project, Project, z.infer<typeof projectSchema>>,
+  CheckSame<
+    ProjectStatusName,
+    ProjectStatusName,
+    z.infer<typeof projectStatusNameSchema>
+  >,
+];

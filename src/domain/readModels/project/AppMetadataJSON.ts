@@ -2,8 +2,13 @@
 // This is only put into the database for making interesting read queries possible.
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
-import { Category } from "@domain/readModels/project/Category";
+import {
+  Category,
+  categoryNameSchema,
+} from "@domain/readModels/project/Category";
 import { Badge } from "@domain/readModels/Badge";
+import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { z } from "zod/v3";
 
 export interface AppMetadataJSON {
   name?: string;
@@ -24,3 +29,44 @@ export interface AppMetadataJSON {
     Array<{ source: string; destination: string }>
   >; // Changed! optional field to allow overriding or adding a file mapping for a device name slug (key).
 }
+
+export const appMetadataJSONSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  category: categoryNameSchema.optional(), // Category name
+  author: z.string().optional(), // The name of the user_name
+  icon: z.string().optional(), // The relative icon path
+  license_file: z.string().optional(), // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
+  is_library: z.boolean().optional(), // Whether this project can be used as a library by other apps
+  is_hidden: z.boolean().optional(), // Whether this project should be shown in the launcher or not. Only useful for libraries.
+  semantic_version: z.string().optional(), // Changed! [Semantic version](https://semver.org/) of the project, the semantic versioning is mostly relevant if the project is a library. Authors who don't use this semantic versioning will get a 0.x version with x just an number like we previously had the revision number.
+  interpreter: z.string().optional(), // Changed! For example 'python' or the project slug of a 3rd party dependency of this project.
+  main_executable: z.string().optional(), // Relative path of the executable file from this package that is the main executable file of this project.
+  main_executable_overrides: z.record(z.string(), z.string()).optional(), // Optional field to allow overriding the main_executable for a certain badge.
+  file_mappings: z
+    .array(
+      z.object({
+        source: z.string(),
+        destination: z.string(),
+      })
+    )
+    .optional(),
+  file_mappings_overrides: z
+    .record(
+      z.array(
+        z.object({
+          source: z.string(),
+          destination: z.string(),
+        })
+      )
+    )
+    .optional(),
+});
+
+type Checks = [
+  CheckSame<
+    AppMetadataJSON,
+    AppMetadataJSON,
+    z.infer<typeof appMetadataJSONSchema>
+  >,
+];
