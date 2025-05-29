@@ -1,6 +1,6 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
-import openapi from "@openapi";
+import serveApiDocs from "@serveApiDocs";
 import { NODE_ENV } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
@@ -31,7 +31,7 @@ export const createExpressServer = () => {
   const pino = pinoHttp();
   app.use(pino);
 
-  openapi(app);
+  serveApiDocs(app);
 
   const apiV3Router = express.Router();
   app.use("/api/v3", apiV3Router);
