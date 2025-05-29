@@ -3,12 +3,11 @@
     // Base Options recommended for all projects
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "es2023",
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    // Enable strict type checking so you can catch bugs early
-    "strict": true,
+    "strict": true, // Enable all strict type-checking options, required for Zod which we use for ts-rest
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noImplicitAny": true,
@@ -18,7 +17,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "noEmit": true,
-    "lib": ["es2022"],
+    "lib": ["es2023"],
     "paths": {
       "@*": ["./src/*"]
     }
