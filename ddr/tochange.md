@@ -14,6 +14,6 @@ After having worked with both TSOA and TS Rest, I prefer TS Rest. The reasons ar
 - TS Rest does not need generated code, on either side (Backend and Frontend).
   - This is much easier to maintain. Currently, when changing a type or controller, we need to generate controller code in the backend and client code on in the frontend.
 
-### Use yarn instead of npm
+### Use Node.js' 2022 feature to run typescript directly without transpiling
 
-Yarn is much faster than npm, most of the industry is not using npm anymore. Also yarn has nice workspace support.
+Node.js now supports running TypeScript files directly without the need for a separate transpilation step. This can simplify the development process and reduce build times.
