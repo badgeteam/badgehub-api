@@ -29,6 +29,17 @@ const expressAuthenticationRecasted = expressAuthentication as (
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+  JwtError: {
+    dataType: "refObject",
+    properties: {
+      name: { dataType: "string", required: true },
+      message: { dataType: "string", required: true },
+      stack: { dataType: "string" },
+      status: { dataType: "double", required: true },
+    },
+    additionalProperties: false,
+  },
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   Badge: {
     dataType: "refObject",
     properties: {
@@ -89,11 +100,10 @@ const models: TsoaRoute.Models = {
         category: { ref: "AppCategoryName", required: true },
         description: { dataType: "string" },
         revision: { dataType: "double" },
-        user_name: { dataType: "string" },
         interpreter: { dataType: "string" },
         badges: { dataType: "array", array: { dataType: "string" } },
         slug: { dataType: "string", required: true },
-        user_id: { dataType: "double", required: true },
+        idp_user_id: { dataType: "string", required: true },
         git: { dataType: "string" },
         allow_team_fixes: { dataType: "boolean" },
         created_at: { dataType: "datetime", required: true },
@@ -226,7 +236,7 @@ const models: TsoaRoute.Models = {
     dataType: "refObject",
     properties: {
       slug: { dataType: "string", required: true },
-      user_id: { dataType: "double", required: true },
+      idp_user_id: { dataType: "string", required: true },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "datetime", required: true },
@@ -240,7 +250,6 @@ const models: TsoaRoute.Models = {
       category: { ref: "AppCategoryName", required: true },
       description: { dataType: "string" },
       revision: { dataType: "double" },
-      user_name: { dataType: "string" },
       interpreter: { dataType: "string" },
       version: { ref: "Version" },
       badges: { dataType: "array", array: { dataType: "string" } },
@@ -253,23 +262,23 @@ const models: TsoaRoute.Models = {
     type: { dataType: "string", validators: {} },
   },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__": {
-    dataType: "refAlias",
-    type: {
-      dataType: "nestedObjectLiteral",
-      nestedProperties: {
-        user_id: { dataType: "double", required: true },
-        git: { dataType: "string" },
-        allow_team_fixes: { dataType: "boolean" },
+  "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__":
+    {
+      dataType: "refAlias",
+      type: {
+        dataType: "nestedObjectLiteral",
+        nestedProperties: {
+          git: { dataType: "string" },
+          allow_team_fixes: { dataType: "boolean" },
+        },
+        validators: {},
       },
-      validators: {},
     },
-  },
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-  "Omit_CreateProjectProps.slug_": {
+  "Omit_CreateProjectProps.slug-or-idp_user_id_": {
     dataType: "refAlias",
     type: {
-      ref: "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug__",
+      ref: "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
       validators: {},
     },
   },
@@ -277,7 +286,7 @@ const models: TsoaRoute.Models = {
   ProjectPropsPartial: {
     dataType: "refObject",
     properties: {
-      user_id: { dataType: "double" },
+      idp_user_id: { dataType: "string" },
       git: { dataType: "string" },
       allow_team_fixes: { dataType: "boolean" },
       created_at: { dataType: "string" },
@@ -368,6 +377,47 @@ export function RegisterRoutes(
 
   const upload = opts?.multer || multer({ limits: { fileSize: 8388608 } });
 
+  app.get(
+    "/api/v3/private",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
+    ...fetchMiddlewares<RequestHandler>(PublicRestController),
+    ...fetchMiddlewares<RequestHandler>(
+      PublicRestController.prototype.getPrivate
+    ),
+
+    async function PublicRestController_getPrivate(
+      request: ExRequest,
+      response: ExResponse,
+      next: any
+    ) {
+      const args: Record<string, TsoaRoute.ParameterSchema> = {};
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      let validatedArgs: any[] = [];
+      try {
+        validatedArgs = templateService.getValidatedArgs({
+          args,
+          request,
+          response,
+        });
+
+        const controller = new PublicRestController();
+
+        await templateService.apiHandler({
+          methodName: "getPrivate",
+          controller,
+          response,
+          next,
+          validatedArgs,
+          successStatus: undefined,
+        });
+      } catch (err) {
+        return next(err);
+      }
+    }
+  );
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/devices",
     ...fetchMiddlewares<RequestHandler>(PublicRestController),
@@ -715,6 +765,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/users/:userId/drafts",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getUserDraftProjects
@@ -730,7 +781,20 @@ export function RegisterRoutes(
           in: "path",
           name: "userId",
           required: true,
-          dataType: "double",
+          dataType: "string",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
         pageStart: { in: "query", name: "pageStart", dataType: "double" },
         pageLength: { in: "query", name: "pageLength", dataType: "double" },
@@ -764,6 +828,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
     "/api/v3/projects/:slug",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.createProject
@@ -780,7 +845,13 @@ export function RegisterRoutes(
           in: "body",
           name: "props",
           required: true,
-          ref: "Omit_CreateProjectProps.slug_",
+          ref: "Omit_CreateProjectProps.slug-or-idp_user_id_",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
         },
       };
 
@@ -812,6 +883,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.delete(
     "/api/v3/projects/:slug",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.deleteProject
@@ -824,6 +896,19 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, ref: "ProjectSlug" },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -854,6 +939,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
     "/api/v3/projects/:slug",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.updateProject
@@ -871,6 +957,19 @@ export function RegisterRoutes(
           name: "changes",
           required: true,
           ref: "ProjectPropsPartial",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -902,6 +1001,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.post(
     "/api/v3/projects/:slug/draft/files/:filePath",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     upload.fields([
       {
         name: "file",
@@ -931,6 +1031,19 @@ export function RegisterRoutes(
           name: "file",
           required: true,
           dataType: "file",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -962,6 +1075,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.delete(
     "/api/v3/projects/:slug/draft/files/:filePath",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.deleteDraftFile
@@ -979,6 +1093,19 @@ export function RegisterRoutes(
           name: "filePath",
           required: true,
           dataType: "string",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -1010,6 +1137,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
     "/api/v3/projects/:slug/draft/metadata",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.changeDraftAppMetadata
@@ -1027,6 +1155,19 @@ export function RegisterRoutes(
           name: "appMetadataChanges",
           required: true,
           ref: "DbInsertAppMetadataJSONPartial",
+        },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
         },
       };
 
@@ -1058,6 +1199,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/projects/:slug/draft/files/:filePath",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getDraftFile
@@ -1076,9 +1218,15 @@ export function RegisterRoutes(
           required: true,
           dataType: "string",
         },
-        notFoundResponse: {
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
           in: "res",
-          name: "404",
+          name: "403",
           required: true,
           dataType: "nestedObjectLiteral",
           nestedProperties: { reason: { dataType: "string", required: true } },
@@ -1113,6 +1261,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.get(
     "/api/v3/projects/:slug/draft",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.getDraftProject
@@ -1125,9 +1274,15 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
-        notFoundResponse: {
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
           in: "res",
-          name: "404",
+          name: "403",
           required: true,
           dataType: "nestedObjectLiteral",
           nestedProperties: { reason: { dataType: "string", required: true } },
@@ -1162,6 +1317,7 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
   app.patch(
     "/api/v3/projects/:slug/publish",
+    authenticateMiddleware([{ bearer: ["hacker"] }]),
     ...fetchMiddlewares<RequestHandler>(PrivateRestController),
     ...fetchMiddlewares<RequestHandler>(
       PrivateRestController.prototype.publishVersion
@@ -1174,6 +1330,19 @@ export function RegisterRoutes(
     ) {
       const args: Record<string, TsoaRoute.ParameterSchema> = {
         slug: { in: "path", name: "slug", required: true, dataType: "string" },
+        request: {
+          in: "request",
+          name: "request",
+          required: true,
+          dataType: "object",
+        },
+        badRequestCallback: {
+          in: "res",
+          name: "403",
+          required: true,
+          dataType: "nestedObjectLiteral",
+          nestedProperties: { reason: { dataType: "string", required: true } },
+        },
       };
 
       // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -1244,6 +1413,89 @@ export function RegisterRoutes(
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+  // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+  function authenticateMiddleware(security: TsoaRoute.Security[] = []) {
+    return async function runAuthenticationMiddleware(
+      request: any,
+      response: any,
+      next: any
+    ) {
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      // keep track of failed auth attempts so we can hand back the most
+      // recent one.  This behavior was previously existing so preserving it
+      // here
+      const failedAttempts: any[] = [];
+      const pushAndRethrow = (error: any) => {
+        failedAttempts.push(error);
+        throw error;
+      };
+
+      const secMethodOrPromises: Promise<any>[] = [];
+      for (const secMethod of security) {
+        if (Object.keys(secMethod).length > 1) {
+          const secMethodAndPromises: Promise<any>[] = [];
+
+          for (const name in secMethod) {
+            secMethodAndPromises.push(
+              expressAuthenticationRecasted(
+                request,
+                name,
+                secMethod[name],
+                response
+              ).catch(pushAndRethrow)
+            );
+          }
+
+          // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+          secMethodOrPromises.push(
+            Promise.all(secMethodAndPromises).then((users) => {
+              return users[0];
+            })
+          );
+        } else {
+          for (const name in secMethod) {
+            secMethodOrPromises.push(
+              expressAuthenticationRecasted(
+                request,
+                name,
+                secMethod[name],
+                response
+              ).catch(pushAndRethrow)
+            );
+          }
+        }
+      }
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+      try {
+        request["user"] = await Promise.any(secMethodOrPromises);
+
+        // Response was sent in middleware, abort
+        if (response.writableEnded) {
+          return;
+        }
+
+        next();
+      } catch (err) {
+        // Show most recent error as response
+        const error = failedAttempts.pop();
+        error.status = error.status || 401;
+
+        // Response was sent in middleware, abort
+        if (response.writableEnded) {
+          return;
+        }
+        next(error);
+      }
+
+      // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    };
+  }
 
   // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 }

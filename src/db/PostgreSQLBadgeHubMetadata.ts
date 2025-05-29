@@ -1,3 +1,5 @@
+// noinspection SqlResolve
+
 import { Badge } from "@domain/readModels/Badge";
 import {
   Project,
@@ -17,7 +19,6 @@ import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
 import { DBInsertProject } from "@db/models/project/DBProject";
 import sql, { join, raw, Sql } from "sql-template-tag";
-import { DBInsertUser } from "@db/models/project/DBUser";
 import { getEntriesWithDefinedValues } from "@util/objectEntries";
 import { DBBadge } from "@db/models/DBBadge";
 import {
@@ -49,17 +50,18 @@ import path from "node:path";
 import { DBFileMetadata } from "@db/models/project/DBFileMetadata";
 import { FileMetadata } from "@domain/readModels/project/FileMetadata";
 import { DBDatedData, DBSoftDeletable } from "@db/models/project/DBDatedData";
-import { propIsDefinedAndNotNull, WithRequiredProp } from "@util/assertions";
 import { TimestampTZ } from "@db/DBTypes";
 
 const ONE_KILO = 1024;
 
 function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
+  const size_of_content = Number.parseInt(dbFile.size_of_content);
   return {
     ...convertDatedData(dbFileWithoutVersionId),
+    size_of_content,
     full_path: path.join(dbFile.dir, dbFile.name + dbFile.ext),
-    size_formatted: (dbFile.size_of_content / ONE_KILO).toFixed(2) + "KB",
+    size_formatted: (size_of_content / ONE_KILO).toFixed(2) + "KB",
   };
 }
 
@@ -88,7 +90,7 @@ const getVersionQuery = (
   versionRevision: RevisionNumberOrAlias
 ): Sql => {
   if (typeof versionRevision === "number") {
-    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug})`;
+    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug} and published_at is not null)`;
   }
   switch (versionRevision) {
     case "draft":
@@ -175,13 +177,6 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
                                   and name = ${name}
                                   and ext = ${ext}`);
     }
-  }
-
-  async insertUser(user: DBInsertUser): Promise<void> {
-    const { keys, values } = getInsertKeysAndValuesSql(user);
-    const insertQuery = sql`insert into users (${keys})
-                            values (${values})`;
-    await this.pool.query(insertQuery);
   }
 
   async getCategories(): Promise<Category[]> {
@@ -295,54 +290,21 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     `);
   }
 
-  async getPublishedProject(
+  async getProject(
     projectSlug: string,
     versionRevision: LatestVersionAlias
   ): Promise<undefined | Project> {
-    const version = await this.getPublishedVersion(
-      projectSlug,
-      versionRevision
-    );
+    const version = await this.getVersion(projectSlug, versionRevision);
     if (!version) {
       return undefined;
     }
     const projectWithoutVersion = (
-      await this.getProjects({ projectSlug }, "latest")
+      await this.getProjects({ projectSlug }, versionRevision)
     )[0]!;
     return {
       ...projectWithoutVersion,
       version: version,
     };
-  }
-
-  async getDraftProject(projectSlug: string): Promise<Project | undefined> {
-    const projectWithoutVersion = (
-      await this.getProjects({ projectSlug }, "draft")
-    )[0]!;
-    if (!projectWithoutVersion) {
-      return undefined;
-    }
-    return {
-      ...projectWithoutVersion,
-      version: await this.getDraftVersion(projectSlug),
-    };
-  }
-
-  async getDraftVersion(
-    projectSlug: ProjectSlug
-  ): Promise<Version | undefined> {
-    return this.getVersion(projectSlug, "draft");
-  }
-
-  async getPublishedVersion(
-    projectSlug: ProjectSlug,
-    versionRevision: RevisionNumberOrAlias
-  ): Promise<undefined | WithRequiredProp<Version, "published_at">> {
-    const version = await this.getVersion(projectSlug, versionRevision);
-    if (!propIsDefinedAndNotNull(version, "published_at")) {
-      return;
-    }
-    return version;
   }
 
   async getVersion(
@@ -378,18 +340,10 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),
-      files: await this._getFilesMetadataForVersion(dbVersion.id), // TODO
-      app_metadata: stripDatedData(appMetadataWithoutId), // TODO
+      files: await this._getFilesMetadataForVersion(dbVersion.id),
+      app_metadata: stripDatedData(appMetadataWithoutId),
       published_at: timestampTZToDate(dbVersion.published_at),
     };
-  }
-
-  getUser(userId: User["id"]): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-
-  updateUser(updatedUser: User): Promise<void> {
-    throw new Error("Method not implemented.");
   }
 
   async getBadges(): Promise<Badge[]> {
@@ -413,7 +367,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       pageLength?: number;
       badgeSlug?: Badge["slug"];
       categorySlug?: Category["slug"];
-      userId?: User["id"];
+      userId?: User["idp_user_id"];
     },
     revision?: LatestOrDraftAlias
   ): Promise<ProjectWithoutVersion[]> {
@@ -436,7 +390,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     }
 
     if (filter?.userId !== undefined) {
-      query = sql`${query} and p.user_id =
+      query = sql`${query} and p.idp_user_id =
       ${filter.userId}`;
     }
 
