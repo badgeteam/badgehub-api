@@ -1,0 +1,1219 @@
+{
+  "openapi": "3.0.0",
+  "components": {
+    "examples": {},
+    "headers": {},
+    "parameters": {},
+    "requestBodies": {},
+    "responses": {},
+    "schemas": {
+      "AppCategoryName": {
+        "type": "string",
+        "enum": [
+          "Uncategorised",
+          "Event related",
+          "Games",
+          "Graphics",
+          "Hardware",
+          "Utility",
+          "Wearable",
+          "Data",
+          "Silly",
+          "Hacking",
+          "Troll",
+          "Unusable",
+          "Adult",
+          "Virus",
+          "SAO",
+          "Interpreter"
+        ]
+      },
+      "Pick_Project.Exclude_keyofProject.version__": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "min_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "max_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "license": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "description": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "badges": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "idp_user_id": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "category",
+          "slug",
+          "idp_user_id",
+          "created_at",
+          "updated_at"
+        ],
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_Project.version_": {
+        "$ref": "#/components/schemas/Pick_Project.Exclude_keyofProject.version__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "ProjectWithoutVersion": {
+        "$ref": "#/components/schemas/Omit_Project.version_"
+      },
+      "ProjectSlug": {
+        "type": "string"
+      },
+      "Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__": {
+        "properties": {
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          }
+        },
+        "type": "object",
+        "description": "From T, pick a set of properties whose keys are in the union K"
+      },
+      "Omit_CreateProjectProps.slug-or-idp_user_id_": {
+        "$ref": "#/components/schemas/Pick_CreateProjectProps.Exclude_keyofCreateProjectProps.slug-or-idp_user_id__",
+        "description": "Construct a type with the properties of T except for those in type K."
+      },
+      "ProjectPropsPartial": {
+        "properties": {
+          "idp_user_id": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "latest_revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "draft_revision": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Record_string.string_": {
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "Record_string._source-string--destination-string_-Array_": {
+        "properties": {},
+        "additionalProperties": {
+          "items": {
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": ["destination", "source"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "DbInsertAppMetadataJSONPartial": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "author": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "license_file": {
+            "type": "string"
+          },
+          "is_library": {
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "main_executable": {
+            "type": "string"
+          },
+          "main_executable_overrides": {
+            "$ref": "#/components/schemas/Record_string.string_"
+          },
+          "file_mappings": {
+            "items": {
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": ["destination", "source"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file_mappings_overrides": {
+            "$ref": "#/components/schemas/Record_string._source-string--destination-string_-Array_"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "RevisionNumber": {
+        "type": "number",
+        "format": "double"
+      },
+      "FileMetadata": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dir": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ext": {
+            "type": "string"
+          },
+          "mimetype": {
+            "type": "string"
+          },
+          "size_of_content": {
+            "type": "number",
+            "format": "double"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "size_formatted": {
+            "type": "string"
+          },
+          "full_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "dir",
+          "name",
+          "ext",
+          "mimetype",
+          "size_of_content",
+          "sha256",
+          "size_formatted",
+          "full_path"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Record_Badge-at-slug.string_": {
+        "properties": {},
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "Record_Badge-at-slug.Array__source-string--destination-string___": {
+        "properties": {},
+        "additionalProperties": {
+          "items": {
+            "properties": {
+              "destination": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "required": ["destination", "source"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "type": "object",
+        "description": "Construct a type with a set of properties K of type T"
+      },
+      "AppMetadataJSON": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "author": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "license_file": {
+            "type": "string"
+          },
+          "is_library": {
+            "type": "boolean"
+          },
+          "is_hidden": {
+            "type": "boolean"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "main_executable": {
+            "type": "string"
+          },
+          "main_executable_overrides": {
+            "$ref": "#/components/schemas/Record_Badge-at-slug.string_"
+          },
+          "file_mappings": {
+            "items": {
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              },
+              "required": ["destination", "source"],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file_mappings_overrides": {
+            "$ref": "#/components/schemas/Record_Badge-at-slug.Array__source-string--destination-string___"
+          }
+        },
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Version": {
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revision": {
+            "$ref": "#/components/schemas/RevisionNumber"
+          },
+          "semantic_version": {
+            "type": "string"
+          },
+          "zip": {
+            "type": "string"
+          },
+          "size_of_zip": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/FileMetadata"
+            },
+            "type": "array"
+          },
+          "app_metadata": {
+            "$ref": "#/components/schemas/AppMetadataJSON"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "download_count": {
+            "type": "number",
+            "format": "double"
+          },
+          "project_slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "created_at",
+          "updated_at",
+          "revision",
+          "files",
+          "app_metadata",
+          "download_count",
+          "project_slug"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Project": {
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "idp_user_id": {
+            "type": "string"
+          },
+          "git": {
+            "type": "string"
+          },
+          "allow_team_fixes": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "min_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "max_firmware": {
+            "type": "number",
+            "format": "double"
+          },
+          "git_commit_id": {
+            "type": "string"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "license": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/AppCategoryName"
+          },
+          "description": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "number",
+            "format": "double"
+          },
+          "interpreter": {
+            "type": "string"
+          },
+          "version": {
+            "$ref": "#/components/schemas/Version"
+          },
+          "badges": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "slug",
+          "idp_user_id",
+          "created_at",
+          "updated_at",
+          "category"
+        ],
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "info": {
+    "title": "badgehub-api",
+    "version": "3",
+    "description": "Node project for the BadgeHub API",
+    "license": {
+      "name": "MIT"
+    },
+    "contact": {}
+  },
+  "paths": {
+    "/api/v3/users/{userId}/drafts": {
+      "get": {
+        "operationId": "GetUserDraftProjects",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWithoutVersion"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get all draft projects that the given user has access to.",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageStart",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageLength",
+            "required": false,
+            "schema": {
+              "format": "double",
+              "type": "number"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v3/projects/{slug}": {
+      "post": {
+        "operationId": "CreateProject",
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        },
+        "description": "Create a new project",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Omit_CreateProjectProps.slug-or-idp_user_id_"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DeleteProject",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create a new project",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "UpdateProject",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Create a new project",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectSlug"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPropsPartial"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/projects/{slug}/draft/files/{filePath}": {
+      "post": {
+        "operationId": "WriteDraftFile",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Upload a file to the latest draft version of the project.\nNote that the filePath needs to be url encoded.",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "DeleteDraftFile",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Delete the given file from the latest draft version of the project.\nNote that the filePath needs to be url encoded.\nNote that the metadata.json file cannot be deleted",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "get": {
+        "operationId": "GetDraftFile",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "get the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filePath",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v3/projects/{slug}/draft/metadata": {
+      "patch": {
+        "operationId": "ChangeDraftAppMetadata",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Change the metadata of the latest draft version of the project.",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DbInsertAppMetadataJSONPartial"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v3/projects/{slug}/draft": {
+      "get": {
+        "operationId": "GetDraftProject",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Get Project details of the draft version of the project",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/v3/projects/{slug}/publish": {
+      "patch": {
+        "operationId": "PublishVersion",
+        "responses": {
+          "204": {
+            "description": "No content"
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "reason": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["reason"],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "description": "Publish the current draft as a new version",
+        "tags": ["private"],
+        "security": [
+          {
+            "bearer": ["hacker"]
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/dev/populate": {
+      "post": {
+        "operationId": "RePopulateDB",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Repopulate the database with test data",
+        "tags": ["dev"],
+        "security": [],
+        "parameters": []
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ]
+}
