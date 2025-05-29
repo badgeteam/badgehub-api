@@ -6,6 +6,9 @@ import { addTsoaValidationFailureLogging } from "@util/logging";
 import multer from "multer";
 import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 import rateLimit from "express-rate-limit";
+import { createExpressEndpoints } from "@ts-rest/express";
+import { publicRestContracts } from "@shared/contracts/publicRestContracts";
+import { createPublicRestRouter } from "@controllers/ts-rest/publicRestRouter";
 
 export const createExpressServer = () => {
   const app = express();
@@ -26,6 +29,13 @@ export const createExpressServer = () => {
   app.use(pino);
 
   openapi(app);
+  const publicExpressRouter = express.Router();
+  app.use("/api/v3", publicExpressRouter);
+  createExpressEndpoints(
+    publicRestContracts,
+    createPublicRestRouter(),
+    publicExpressRouter
+  );
 
   RegisterRoutes(app, {
     multer: multer({ limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES } }),
