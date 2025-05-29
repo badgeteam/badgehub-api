@@ -1,4 +1,6 @@
-import { DatedData } from "./DatedData";
+import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { DatedData, datedDataSchema } from "./DatedData";
+import { z } from "zod/v3";
 
 export interface FileMetadata extends DatedData {
   dir: string; // directory of the file in the project, empty string if top level
@@ -11,3 +13,18 @@ export interface FileMetadata extends DatedData {
   size_formatted: string; // Human readable size_of_content
   full_path: string; // full path of file with filename and extensions (dir+'/'+name+'.'+ext)
 }
+
+export const fileMetadataSchema = datedDataSchema.extend({
+  dir: z.string(),
+  name: z.string(),
+  ext: z.string(),
+  mimetype: z.string(),
+  size_of_content: z.number(),
+  sha256: z.string().regex(/^[a-f0-9]{64}$/), // Lowercase hex sha256 digest
+  size_formatted: z.string(), // Human readable size_of_content
+  full_path: z.string(), // full path of file with filename and extensions (dir+'/'+name+'.'+ext)
+});
+
+type Checks = [
+  CheckSame<FileMetadata, FileMetadata, z.infer<typeof fileMetadataSchema>>,
+];
