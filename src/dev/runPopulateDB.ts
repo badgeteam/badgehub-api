@@ -1,4 +1,4 @@
-import { repopulateDB } from "@populateDB";
+import { repopulateDB } from "@dev/populateDB";
 import { runMigrations } from "@db/migrations";
 
 async function runWithMigrationFirst() {
