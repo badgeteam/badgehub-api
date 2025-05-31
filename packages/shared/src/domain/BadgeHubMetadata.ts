@@ -16,7 +16,7 @@ import { DBInsertAppMetadataJSON } from "@shared/dbModels/project/DBAppMetadataJ
 import { UploadedFile } from "@shared/domain/UploadedFile";
 import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
 import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata";
-import { TimestampTZ } from "@db/DBTypes";
+import { TimestampTZ } from "@shared/dbModels/DBTypes";
 
 export interface BadgeHubMetadata {
   insertProject(
