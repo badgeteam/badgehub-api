@@ -3,7 +3,7 @@ export interface AppCardProps {
   name?: string;
   description?: string;
   category: string;
-  published_at?: string;
+  published_at?: Date;
   revision?: number;
   badges?: string[];
 }
