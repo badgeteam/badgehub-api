@@ -12,6 +12,8 @@
     //    "erasableSyntaxOnly": true, // TODO enable this and refactor get rid of violations of this rule
     "noImplicitOverride": true,
     "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "esnext",
