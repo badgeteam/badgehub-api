@@ -22,7 +22,7 @@
     "noEmit": true,
     "lib": ["es2023"],
     "paths": {
-      "@shared/*": ["./shared/src/*"]
+      "@shared/*": ["./src/*"]
     }
   },
   "include": ["./src/**/*.ts"]
