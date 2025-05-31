@@ -59,6 +59,7 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
     getProjects: async ({
       query: { pageStart, pageLength, device, category },
     }) => {
+      console.log("HIIIII JOSSSSS");
       const data = await badgeHubData.getProjects(
         {
           pageStart,
