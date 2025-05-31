@@ -3,7 +3,6 @@ import { z } from "zod/v3";
 import { projectSchema } from "@shared/domain/readModels/project/Project";
 import { categorySchema } from "@shared/domain/readModels/project/Category";
 import { badgeSchema } from "@shared/domain/readModels/Badge";
-import { Readable } from "node:stream";
 import { notFoundSchema } from "@shared/contracts/httpResponseSchemas"; // TODO move domain to shared
 
 const c = initContract();
@@ -58,7 +57,7 @@ export const publicFilesContracts = c.router({
       filePath: z.string(),
     }),
     responses: {
-      200: z.instanceof(Readable).describe("File content as a stream"),
+      200: z.unknown().describe("File content as a stream"),
       404: notFoundSchema,
     },
     summary: "Get the latest published revision of a file in the project",
@@ -72,7 +71,7 @@ export const publicFilesContracts = c.router({
       filePath: z.string(),
     }),
     responses: {
-      200: z.instanceof(Readable).describe("File content as a stream"),
+      200: z.unknown().describe("File content as a stream"),
       404: notFoundSchema,
     },
     summary: "Get a file for a specific revision of the project",
