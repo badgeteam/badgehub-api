@@ -16,6 +16,7 @@ export const createExpressServer = () => {
   const app = express();
   if (NODE_ENV === "development") {
     app.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
       next(); // for inspection during development
     });
   }
