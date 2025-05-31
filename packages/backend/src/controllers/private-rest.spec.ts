@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from "vitest";
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
-import { isInDebugMode } from "@shared/util/debug";
+import { isInDebugMode } from "@util/debug";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 import { decodeJwt } from "jose";
 import { Version } from "@shared/domain/readModels/project/Version";

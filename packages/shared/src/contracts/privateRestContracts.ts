@@ -1,6 +1,5 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod/v3";
-import { Readable } from "node:stream";
 import { projectSchema } from "@shared/domain/readModels/project/Project";
 import { notFoundSchema } from "@shared/contracts/httpResponseSchemas";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
@@ -127,7 +126,7 @@ const privateProjectContracts = c.router(
         filePath: z.string(),
       }),
       responses: {
-        200: z.instanceof(Readable).describe("File content as a stream"),
+        200: z.unknown().describe("File content as a stream"),
         403: unauthorizedSchema,
         404: notFoundSchema,
       },
