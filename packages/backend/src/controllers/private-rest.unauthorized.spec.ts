@@ -9,8 +9,8 @@ import {
 import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
-import { isInDebugMode } from "@util/debug";
-import { CreateProjectProps } from "@domain/writeModels/project/WriteProject";
+import { isInDebugMode } from "@shared/util/debug";
+import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { decodeJwt } from "jose";
 
 const USER1_TOKEN =

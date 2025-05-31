@@ -4,7 +4,7 @@ import {
   publicProjectContracts,
   publicRestContracts,
 } from "@shared/contracts/publicRestContracts";
-import { BadgeHubData } from "@domain/BadgeHubData";
+import { BadgeHubData } from "@shared/domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { nok, ok } from "@controllers/ts-rest/httpResponses";

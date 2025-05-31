@@ -7,13 +7,13 @@ import {
   POSTGRES_USER,
 } from "@config";
 import sql, { raw } from "sql-template-tag";
-import { DBDatedData } from "@db/models/project/DBDatedData";
-import { DBInsertAppMetadataJSON } from "@db/models/project/DBAppMetadataJSON";
+import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
+import { DBInsertAppMetadataJSON } from "@shared/dbModels/project/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
-import { DBInsertProjectStatusOnBadge } from "@db/models/DBProjectStatusOnBadge";
-import { BadgeHubData } from "@domain/BadgeHubData";
+import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOnBadge";
+import { BadgeHubData } from "@shared/domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { stringToNumberDigest } from "@util/digests";
+import { stringToNumberDigest } from "@shared/util/digests";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
 

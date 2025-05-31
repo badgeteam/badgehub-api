@@ -58,7 +58,7 @@ const createSwaggerDoc = () => {
     setOperationId: true,
     operationMapper: (op) => withTag(op, "Open API"),
   });
-  const publicSwagger = generateOpenApi({ ...publicRestContracts }, apiDoc, {
+  const publicSwagger = generateOpenApi(publicRestContracts, apiDoc, {
     setOperationId: true,
     operationMapper: (op) => withTag(op, "Public"),
   });
