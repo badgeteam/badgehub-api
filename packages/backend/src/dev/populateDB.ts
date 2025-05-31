@@ -13,9 +13,9 @@ import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOnBadge";
 import { BadgeHubData } from "@shared/domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
-import { stringToNumberDigest } from "@shared/util/digests";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
+import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
 
 const CATEGORY_NAMES = [
   "Uncategorised",
@@ -104,7 +104,7 @@ const TWENTY_FOUR_HOURS_IN_MS = 24 * 60 * 60 * 1000;
 const SIX_HUNDRED_DAYS_IN_MS = 600 * TWENTY_FOUR_HOURS_IN_MS;
 
 const getSemiRandomDates = async (stringToDigest: string) => {
-  const semiRandomNumber = await stringToNumberDigest(stringToDigest);
+  const semiRandomNumber = await stringToSemiRandomNumber(stringToDigest);
   const createMillisBack = semiRandomNumber % SIX_HUNDRED_DAYS_IN_MS;
   const created_at = date(createMillisBack);
 
@@ -181,7 +181,7 @@ function date(millisBackFrom2025: number) {
 }
 
 async function getDescription(appName: string) {
-  switch ((await stringToNumberDigest(appName)) % 4) {
+  switch ((await stringToSemiRandomNumber(appName)) % 4) {
     case 0:
       return `Use ${appName} for some cool graphical effects.`;
     case 1:
@@ -272,7 +272,7 @@ const writeDraftAppFiles = async (
   projectName: string,
   semanticVersion: string = ""
 ) => {
-  const semiRandomNumber = await stringToNumberDigest(projectName);
+  const semiRandomNumber = await stringToSemiRandomNumber(projectName);
   const projectSlug = projectName.toLowerCase();
   const description = await getDescription(projectName);
   const userId = semiRandomNumber % USERS.length;
@@ -413,7 +413,7 @@ async function insertProjects(badgeHubData: BadgeHubData) {
   ];
 
   for (const projectName of projectNames) {
-    const semiRandomNumber = await stringToNumberDigest(projectName);
+    const semiRandomNumber = await stringToSemiRandomNumber(projectName);
     const slug = projectName.toLowerCase();
     const userName = USERS[semiRandomNumber % USERS.length]!;
 
@@ -435,7 +435,7 @@ async function badgeProjectCrossTable(
 ) {
   for (let index = 0; index < projectSlugs.length; index++) {
     let projectSlug = projectSlugs[index]!;
-    const semiRandomNumber = await stringToNumberDigest(projectSlug);
+    const semiRandomNumber = await stringToSemiRandomNumber(projectSlug);
     const badgeSlug = badgeSlugs[semiRandomNumber % 3]!;
     let insertObject1: DBInsertProjectStatusOnBadge = {
       badge_slug: badgeSlug,
