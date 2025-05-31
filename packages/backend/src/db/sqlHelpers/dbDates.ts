@@ -1,5 +1,8 @@
-import { DBDatedData, DBSoftDeletable } from "@db/models/project/DBDatedData";
-import { DatedData } from "@domain/readModels/project/DatedData";
+import {
+  DBDatedData,
+  DBSoftDeletable,
+} from "@shared/dbModels/project/DBDatedData";
+import { DatedData } from "@shared/domain/readModels/project/DatedData";
 import moment from "moment";
 
 export function extractDatedDataConverted(dbDatedData: DBDatedData): DatedData {

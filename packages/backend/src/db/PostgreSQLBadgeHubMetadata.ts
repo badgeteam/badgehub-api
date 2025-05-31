@@ -1,26 +1,26 @@
 // noinspection SqlResolve
 
-import { Badge } from "@domain/readModels/Badge";
+import { Badge } from "@shared/domain/readModels/Badge";
 import {
   Project,
   ProjectCore,
   ProjectSlug,
   ProjectWithoutVersion,
-} from "@domain/readModels/project/Project";
-import { User } from "@domain/readModels/project/User";
+} from "@shared/domain/readModels/project/Project";
+import { User } from "@shared/domain/readModels/project/User";
 import {
   LatestOrDraftAlias,
   type LatestVersionAlias,
   RevisionNumberOrAlias,
   Version,
-} from "@domain/readModels/project/Version";
-import { Category } from "@domain/readModels/project/Category";
+} from "@shared/domain/readModels/project/Version";
+import { Category } from "@shared/domain/readModels/project/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBInsertProject } from "@db/models/project/DBProject";
+import { DBInsertProject } from "@shared/dbModels/project/DBProject";
 import sql, { join, raw, Sql } from "sql-template-tag";
-import { getEntriesWithDefinedValues } from "@util/objectEntries";
-import { DBBadge } from "@db/models/DBBadge";
+import { getEntriesWithDefinedValues } from "@shared/util/objectEntries";
+import { DBBadge } from "@shared/dbModels/DBBadge";
 import {
   getBaseSelectProjectQuery,
   ProjectQueryResponse,
@@ -33,23 +33,26 @@ import {
   stripDatedData,
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
-import { DBVersion } from "@db/models/project/DBVersion";
+import { DBVersion } from "@shared/dbModels/project/DBVersion";
 import {
   APP_METADATA_ROWS,
   DBAppMetadataJSON,
   DBInsertAppMetadataJSON,
-} from "@db/models/project/DBAppMetadataJSON";
-import { DBCategory } from "@db/models/project/DBCategory";
+} from "@shared/dbModels/project/DBAppMetadataJSON";
+import { DBCategory } from "@shared/dbModels/project/DBCategory";
 import {
   assertValidColumKey,
   getInsertKeysAndValuesSql,
 } from "@db/sqlHelpers/objectToSQL";
-import { BadgeHubMetadata } from "@domain/BadgeHubMetadata";
-import { UploadedFile } from "@domain/UploadedFile";
+import { BadgeHubMetadata } from "@shared/domain/BadgeHubMetadata";
+import { UploadedFile } from "@shared/domain/UploadedFile";
 import path from "node:path";
-import { DBFileMetadata } from "@db/models/project/DBFileMetadata";
-import { FileMetadata } from "@domain/readModels/project/FileMetadata";
-import { DBDatedData, DBSoftDeletable } from "@db/models/project/DBDatedData";
+import { DBFileMetadata } from "@shared/dbModels/project/DBFileMetadata";
+import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata";
+import {
+  DBDatedData,
+  DBSoftDeletable,
+} from "@shared/dbModels/project/DBDatedData";
 import { TimestampTZ } from "@db/DBTypes";
 
 const ONE_KILO = 1024;

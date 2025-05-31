@@ -5,10 +5,10 @@ import { createExpressServer } from "@createExpressServer";
 import {
   Project,
   ProjectWithoutVersion,
-} from "@domain/readModels/project/Project";
-import { Badge } from "@domain/readModels/Badge";
-import { isInDebugMode } from "@util/debug";
-import { AppMetadataJSON } from "@domain/readModels/project/AppMetadataJSON";
+} from "@shared/domain/readModels/project/Project";
+import { Badge } from "@shared/domain/readModels/Badge";
+import { isInDebugMode } from "@shared/util/debug";
+import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON";
 
 describe(
   "Public API Routes",

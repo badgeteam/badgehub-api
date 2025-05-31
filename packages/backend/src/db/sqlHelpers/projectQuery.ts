@@ -1,12 +1,12 @@
-import { ProjectWithoutVersion } from "@domain/readModels/project/Project";
+import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project";
 import moment from "moment";
-import { DBProject } from "@db/models/project/DBProject";
-import { DBVersion } from "@db/models/project/DBVersion";
-import { DBAppMetadataJSON as DBMetadataFileContents } from "@db/models/project/DBAppMetadataJSON";
+import { DBProject } from "@shared/dbModels/project/DBProject";
+import { DBVersion } from "@shared/dbModels/project/DBVersion";
+import { DBAppMetadataJSON as DBMetadataFileContents } from "@shared/dbModels/project/DBAppMetadataJSON";
 import sql from "sql-template-tag";
 import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
-import { Category } from "@domain/readModels/project/Category";
-import { LatestOrDraftAlias } from "@domain/readModels/project/Version";
+import { Category } from "@shared/domain/readModels/project/Category";
+import { LatestOrDraftAlias } from "@shared/domain/readModels/project/Version";
 
 export function getBaseSelectProjectQuery(
   revision: LatestOrDraftAlias = "latest"

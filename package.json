@@ -1,0 +1,24 @@
+{
+  "name": "badgehub-api",
+  "version": "1.0.0",
+  "description": "> Node.js REST service for the BadgeHub",
+  "homepage": "https://github.com/badgeteam/badgehub-api#readme",
+  "bugs": {
+    "url": "https://github.com/badgeteam/badgehub-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/badgeteam/badgehub-api.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@ts-rest/core": "^3.52.1",
+    "zod": "^3.25.42"
+  }
+}
