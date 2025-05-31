@@ -20,7 +20,8 @@ function App() {
       .getProjects({ query: {} })
       .then((res) => {
         if (res.status === 200) {
-          setApps(res.body);
+          const body = res.body;
+          setApps(body);
           setError(null);
         } else {
           setError("Failed to fetch projects");
