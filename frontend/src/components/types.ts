@@ -1,10 +1,11 @@
+import type { Project } from "../contracts/publicRestContracts";
+
 export interface AppCardProps {
-  title: string;
-  description: string;
-  tags: { label: string; isMcu?: boolean }[];
-  author: string;
-  authorLink?: string;
-  rating: number;
-  ratingCount: number;
-  downloads: string;
+  slug: string;
+  name?: string;
+  description?: string;
+  category: string;
+  published_at?: string;
+  revision?: number;
+  badges?: string[];
 }
