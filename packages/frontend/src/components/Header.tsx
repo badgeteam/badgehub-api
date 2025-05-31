@@ -79,7 +79,7 @@ const Header: React.FC = () => {
                   strokeLinecap="round"
                 />
               </svg>
-              <span>μAppHub</span>
+              <span>BadgeHub</span>
             </a>
           </div>
 
