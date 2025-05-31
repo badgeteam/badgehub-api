@@ -53,7 +53,7 @@ import {
   DBDatedData,
   DBSoftDeletable,
 } from "@shared/dbModels/project/DBDatedData";
-import { TimestampTZ } from "@db/DBTypes";
+import { TimestampTZ } from "@shared/dbModels/DBTypes";
 
 const ONE_KILO = 1024;
 

@@ -1,7 +1,7 @@
 import { AppMetadataJSONRelation } from "./DBAppMetadataJSON";
 import { DBDatedData } from "./DBDatedData";
-import { TimestampTZ } from "@db/DBTypes";
-import { ProjectSlugRelation } from "@shared/dbModels/project/DBProject";
+import { TimestampTZ } from "../DBTypes";
+import { ProjectSlugRelation } from "./DBProject";
 
 export type VersionRelation<
   K extends string = "version_id",
