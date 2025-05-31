@@ -20,7 +20,7 @@ import { BadgeHubMetadata } from "@shared/domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@shared/domain/BadgeHubFiles";
 import { UploadedFile } from "@shared/domain/UploadedFile";
 import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
-import { calcSha256 } from "@shared/util/digests";
+import { calcSha256 } from "@util/sha256";
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
