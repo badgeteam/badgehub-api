@@ -1,7 +1,7 @@
 import multer from "multer";
 
 import { initServer } from "@ts-rest/express";
-import { BadgeHubData } from "@shared/domain/BadgeHubData";
+import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import {

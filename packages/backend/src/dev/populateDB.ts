@@ -11,7 +11,7 @@ import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
 import { DBInsertAppMetadataJSON } from "@shared/dbModels/project/DBAppMetadataJSON";
 import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
 import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOnBadge";
-import { BadgeHubData } from "@shared/domain/BadgeHubData";
+import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";

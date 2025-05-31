@@ -7,7 +7,7 @@ import {
   ProjectWithoutVersion,
 } from "@shared/domain/readModels/project/Project";
 import { Badge } from "@shared/domain/readModels/Badge";
-import { isInDebugMode } from "@shared/util/debug";
+import { isInDebugMode } from "@util/debug";
 import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON";
 
 describe(
