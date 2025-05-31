@@ -6,69 +6,29 @@ import Pagination from "./components/Pagination";
 import Footer from "./components/Footer";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
+import { useEffect, useState } from "react";
+import { tsRestClient } from "./api/tsRestClient";
 
 function App() {
-  const apps: AppCardProps[] = [
-    {
-      title: "Weather Station Deluxe",
-      description:
-        "Displays temperature, humidity, and pressure. Sends data to cloud.",
-      tags: [
-        { label: "ESP32", isMcu: true },
-        { label: "IoT" },
-        { label: "Sensors" },
-      ],
-      author: "DevGuru42",
-      authorLink: "#",
-      rating: 4.8,
-      ratingCount: 120,
-      downloads: "1.5k",
-    },
-    {
-      title: "Pico MIDI Controller",
-      description:
-        "Turns your Raspberry Pi Pico into a versatile USB MIDI device.",
-      tags: [
-        { label: "Pi Pico", isMcu: true },
-        { label: "Music" },
-        { label: "USB" },
-      ],
-      author: "SynthWizard",
-      authorLink: "#",
-      rating: 4.5,
-      ratingCount: 88,
-      downloads: "970",
-    },
-    {
-      title: "Arduino CNC Controller",
-      description: "GRBL-based CNC control software for Arduino Uno/Mega.",
-      tags: [
-        { label: "Arduino", isMcu: true },
-        { label: "Robotics" },
-        { label: "CNC" },
-      ],
-      author: "MakerBotTom",
-      authorLink: "#",
-      rating: 4.9,
-      ratingCount: 250,
-      downloads: "2.1k",
-    },
-    {
-      title: "STM32 FFT Spectrum Analyzer",
-      description:
-        "Real-time audio spectrum analysis using an STM32 and a microphone.",
-      tags: [
-        { label: "STM32", isMcu: true },
-        { label: "Audio" },
-        { label: "DSP" },
-      ],
-      author: "SignalPro",
-      authorLink: "#",
-      rating: 4.7,
-      ratingCount: 75,
-      downloads: "800",
-    },
-  ];
+  const [apps, setApps] = useState<AppCardProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    tsRestClient
+      .getProjects({ query: {} })
+      .then((res) => {
+        if (res.status === 200) {
+          setApps(res.body);
+          setError(null);
+        } else {
+          setError("Failed to fetch projects");
+        }
+      })
+      .catch(() => setError("Failed to fetch projects"))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-slate-200">
@@ -76,7 +36,13 @@ function App() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <Hero />
         <Filters />
-        <AppsGrid apps={apps} />
+        {loading ? (
+          <div className="text-center py-10 text-slate-400">Loading...</div>
+        ) : error ? (
+          <div className="text-center py-10 text-red-400">{error}</div>
+        ) : (
+          <AppsGrid apps={apps} />
+        )}
         <Pagination />
       </main>
       <Footer />
