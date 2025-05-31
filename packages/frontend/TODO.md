@@ -1,6 +1,6 @@
 ## Things to do in the frontend
 
-- [ ] Add a loading spinner to the main page while the data is being fetched.
+- [x] Add a loading spinner to the main page while the data is being fetched.
 - [ ] Implement filtering for the main page.
 - [ ] Implement sorting for the main page.
 - [ ] Implement pagination for the main page.

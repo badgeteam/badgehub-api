@@ -4,6 +4,7 @@ import Filters from "./components/Filters";
 import AppsGrid from "./components/AppsGrid";
 import Pagination from "./components/Pagination";
 import Footer from "./components/Footer";
+import Spinner from "./components/Spinner";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
 import { useEffect, useState } from "react";
@@ -38,7 +39,7 @@ function App() {
         <Hero />
         <Filters />
         {loading ? (
-          <div className="text-center py-10 text-slate-400">Loading...</div>
+          <Spinner />
         ) : error ? (
           <div className="text-center py-10 text-red-400">{error}</div>
         ) : (
