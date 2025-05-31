@@ -1,5 +1,3 @@
-import type { Project } from "../contracts/publicRestContracts";
-
 export interface AppCardProps {
   slug: string;
   name?: string;
