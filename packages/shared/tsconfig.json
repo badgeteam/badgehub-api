@@ -9,6 +9,7 @@
     "isolatedModules": true,
     "strict": true, // Enable all strict type-checking options, required for Zod which we use for ts-rest
     "noUncheckedIndexedAccess": true,
+    //    "erasableSyntaxOnly": true, // TODO enable this and refactor get rid of violations of this rule
     "noImplicitOverride": true,
     "noImplicitAny": true,
     "experimentalDecorators": true,

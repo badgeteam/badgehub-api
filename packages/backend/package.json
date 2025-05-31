@@ -10,6 +10,7 @@
     "monitor": "docker exec -it badgehub-api-node-1 npx pm2 monit",
     "lint": "pretty-quick --check",
     "build": "esbuild src/index.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/index.mjs",
+    "check:ts": "tsc --noEmit -p tsconfig.json",
     "dev": "node --import tsx --watch src/index.ts",
     "repopulate-db": "node --import tsx src/dev/runPopulateDB.ts",
     "test-db:up": "docker compose -f docker-compose.test-db.yml up -d",
@@ -48,9 +49,10 @@
     "pm2": "^5.4.0",
     "sql-template-tag": "^5.2.1",
     "swagger-ui-express": "^5.0.0",
+    "tsconfig-paths": "^4.2.0",
     "tslib": "^2.8.1",
     "tsx": "^4.19.3",
-    "typescript": "^5.4.5",
+    "typescript": "^5.8.3",
     "zod": "^3.25.34"
   },
   "devDependencies": {
