@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
           </a>
         </div>
         <p className="text-sm font-roboto-mono">
-          &copy; {year} μAppHub. All rights reserved.
+          &copy; {year} BadgeHub. All rights reserved.
         </p>
         <p className="text-xs text-slate-500 mt-2">
           Designed for makers, by makers.

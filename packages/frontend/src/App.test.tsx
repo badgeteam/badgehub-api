@@ -15,7 +15,7 @@ describe("App", () => {
     expect(screen.getAllByText(/Browse Apps/i).length).toBeGreaterThan(0);
     // Check for footer
     expect(
-      screen.getByText(/μAppHub. All rights reserved./i)
+      screen.getByText(/BadgeHub. All rights reserved./i)
     ).toBeInTheDocument();
   });
 });
