@@ -22,8 +22,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-
-    "baseUrl": "../../",
     "paths": {
       "@domain/*": ["../src/domain/*"],
       "@shared/*": ["../src/shared/*"],
