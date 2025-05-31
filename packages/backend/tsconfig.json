@@ -1,27 +1,10 @@
 {
+  "extends": ["../shared/tsconfig.json"],
   "compilerOptions": {
-    // Base Options recommended for all projects
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "target": "es2023",
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
-    "isolatedModules": true,
-    "strict": true, // Enable all strict type-checking options, required for Zod which we use for ts-rest
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noImplicitAny": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "noEmit": true,
-    "lib": ["es2023"],
     "paths": {
-      "@*": ["./src/*"]
+      "@*": ["./src/*"],
+      "@shared/*": ["../shared/src/*"]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["./src/**/*.ts"]
 }

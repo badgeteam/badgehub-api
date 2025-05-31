@@ -1,7 +1,7 @@
 import multer from "multer";
 
 import { initServer } from "@ts-rest/express";
-import { BadgeHubData } from "@domain/BadgeHubData";
+import { BadgeHubData } from "@shared/domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import {
@@ -17,7 +17,10 @@ import {
 } from "@shared/contracts/privateRestContracts";
 import { RouterImplementation } from "@ts-rest/express/src/lib/types";
 import { getUser, RequestWithUser, UserDataInRequest } from "@auth/jwt-decode";
-import { Project, ProjectSlug } from "@domain/readModels/project/Project";
+import {
+  Project,
+  ProjectSlug,
+} from "@shared/domain/readModels/project/Project";
 import { Readable } from "node:stream";
 import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 
