@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "noEmit": true, // Optional - see note below
+    "target": "ESNext",
+    "module": "NodeNext",
+    "rewriteRelativeImportExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["./**/*.ts"]
+}
