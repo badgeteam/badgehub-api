@@ -13,6 +13,7 @@ const Filters: React.FC = () => (
         <select
           id="mcu-filter"
           name="mcu-filter"
+          data-testid="filter-dropdown-mcu"
           className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
         >
           <option>All</option>
@@ -33,6 +34,7 @@ const Filters: React.FC = () => (
         <select
           id="category-filter"
           name="category-filter"
+          data-testid="filter-dropdown-category"
           className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
         >
           <option>All</option>
@@ -54,6 +56,7 @@ const Filters: React.FC = () => (
         <select
           id="sort-by"
           name="sort-by"
+          data-testid="sort-dropdown"
           className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
         >
           <option>Popularity</option>

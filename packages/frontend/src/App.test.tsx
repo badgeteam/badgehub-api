@@ -7,6 +7,8 @@ import App from "./App";
 describe("App", () => {
   it("renders the homepage without crashing", async () => {
     render(<App />);
+    // Check for main page container
+    expect(screen.getByTestId("main-page")).toBeInTheDocument();
     // Check for hero headline
     expect(screen.getByText(/Share\. Build\. Innovate\./i)).toBeInTheDocument();
     // Check for at least one featured app card
@@ -20,5 +22,18 @@ describe("App", () => {
     expect(
       screen.getByText(/BadgeHub. All rights reserved./i)
     ).toBeInTheDocument();
+    // Check for filters
+    expect(screen.getByTestId("filter-dropdown-mcu")).toBeInTheDocument();
+    expect(screen.getByTestId("filter-dropdown-category")).toBeInTheDocument();
+    // Check for sort dropdown
+    expect(screen.getByTestId("sort-dropdown")).toBeInTheDocument();
+    // Check for app cards container
+    expect(screen.getByTestId("app-cards-container")).toBeInTheDocument();
+  });
+
+  it("shows the filter bar", () => {
+    render(<App />);
+    // Check for the filter bar container
+    expect(screen.getByTestId("filter-bar")).toBeInTheDocument();
   });
 });
