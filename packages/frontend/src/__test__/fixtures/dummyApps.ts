@@ -1,5 +1,6 @@
 import type { AppCardProps } from "@components/types.ts";
 import { CATEGORIES } from "@shared/domain/readModels/project/Category.ts";
+import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
 
 export const dummyApps: AppCardProps[] = [
   {
@@ -9,7 +10,7 @@ export const dummyApps: AppCardProps[] = [
     category: CATEGORIES.silly,
     published_at: new Date(),
     revision: 1,
-    badges: ["mch2022", "why2025"],
+    badges: [BADGE_NAMES.mch2022, BADGE_NAMES.why2025],
   },
   {
     slug: "dummy-app-2",
@@ -18,7 +19,7 @@ export const dummyApps: AppCardProps[] = [
     category: CATEGORIES.silly,
     published_at: new Date(),
     revision: 1,
-    badges: ["troopers23"],
+    badges: [BADGE_NAMES.troopers23],
   },
   {
     slug: "dummy-app-3",
@@ -27,7 +28,7 @@ export const dummyApps: AppCardProps[] = [
     category: CATEGORIES.silly,
     published_at: new Date(),
     revision: 1,
-    badges: ["troopers23", "why2025"],
+    badges: [BADGE_NAMES.troopers23, BADGE_NAMES.why2025],
   },
   {
     slug: "dummy-app-4",

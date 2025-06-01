@@ -1,4 +1,6 @@
 import React from "react";
+import { CATEGORIES } from "@shared/domain/readModels/project/Category.ts";
+import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
 
 interface FiltersProps {
   device: string;
@@ -9,6 +11,10 @@ interface FiltersProps {
   onSortByChange: (value: string) => void;
   onApplyFilters: () => void;
 }
+
+const BADGES = Object.values(BADGE_NAMES);
+
+const CATEGORY_OPTIONS = Object.values(CATEGORIES);
 
 const Filters: React.FC<FiltersProps> = ({
   device,
@@ -39,12 +45,12 @@ const Filters: React.FC<FiltersProps> = ({
           value={device}
           onChange={(e) => onDeviceChange(e.target.value)}
         >
-          <option>All</option>
-          <option>ESP32</option>
-          <option>Raspberry Pi Pico</option>
-          <option>Arduino Uno</option>
-          <option>STM32</option>
-          <option>nRF52</option>
+          <option value="All">All</option>
+          {BADGES.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
         </select>
       </div>
       <div>
@@ -62,13 +68,12 @@ const Filters: React.FC<FiltersProps> = ({
           value={category}
           onChange={(e) => onCategoryChange(e.target.value)}
         >
-          <option>All</option>
-          <option>IoT</option>
-          <option>Robotics</option>
-          <option>Sensors</option>
-          <option>Display</option>
-          <option>Automation</option>
-          <option>Wearables</option>
+          <option value="All">All</option>
+          {CATEGORY_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
         </select>
       </div>
       <div>
