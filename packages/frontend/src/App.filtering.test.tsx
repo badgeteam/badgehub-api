@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import App from "../src/App";
-import { tsRestClientWithApps } from "../test/tsRestClientBuilder";
-import { dummyApps } from "../test/fixtures/dummyApps";
+import { tsRestClientWithApps } from "@__test__/tsRestClientBuilder";
+import { dummyApps } from "@__test__/fixtures/dummyApps";
 import userEvent from "@testing-library/user-event";
 
 describe("App filtering", () => {

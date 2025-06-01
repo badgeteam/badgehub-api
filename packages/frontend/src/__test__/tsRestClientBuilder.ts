@@ -4,11 +4,11 @@
 import {
   publicProjectContracts,
   getProjectsQuerySchema,
-} from "@shared/contracts/publicRestContracts";
+} from "@shared/contracts/publicRestContracts.ts";
 import { ApiFetcherArgs, initClient } from "@ts-rest/core";
 import type { AppCardProps } from "@components/types.ts";
 import { tsRestClient as defaultTsRestClient } from "@api/tsRestClient.ts";
-import { dummyApps } from "./fixtures/dummyApps";
+import { dummyApps } from "./fixtures/dummyApps.ts";
 
 function parseProjectsQuery(rawQuery: unknown) {
   if (!rawQuery) return undefined;
