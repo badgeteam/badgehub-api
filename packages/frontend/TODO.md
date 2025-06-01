@@ -1,9 +1,9 @@
 ## Things to do in the frontend
 
 - [x] Add a loading spinner to the main page while the data is being fetched.
-- [ ] Make the main page testable. To do this, we need to:
-  - [ ] Start the backend server when running the frontend tests.
-  - [ ] Check that the App.test.tsx is now working.
+- [x] Make the main page testable. To do this, we need to:
+  - [x] create a mock tsRestclient that can be injected into the App component.
+  - [x] Check that the App.test.tsx is now working.
 - [x] Add test ids to the main page elements.
   - [x] Add a test id to the main page.
   - [x] Add a test id to the loading spinner.
@@ -12,7 +12,7 @@
   - [x] Add a test id to the filter dropdowns.
   - [x] Add a test id to the sort dropdown.
   - [x] Add a test id to app cards container.
-- [ ] Update the App.test.tsx to use the test ids.
+- [x] Update the App.test.tsx to use the test ids.
 - [ ] Implement filtering for the main page.
 - [ ] Implement sorting for the main page.
 - [ ] Implement pagination for the main page.
