@@ -1,6 +1,10 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod/v3";
-import { projectSchema } from "@shared/domain/readModels/project/Project";
+import {
+  projectSchema,
+  ProjectWithoutVersion,
+  projectWithoutVersionSchema,
+} from "@shared/domain/readModels/project/Project";
 import { categorySchema } from "@shared/domain/readModels/project/Category";
 import { badgeSchema } from "@shared/domain/readModels/Badge";
 import { notFoundSchema } from "@shared/contracts/httpResponseSchemas";
@@ -30,7 +34,9 @@ export const publicProjectContracts = c.router({
     path: `/projects`,
     query: getProjectsQuerySchema,
     responses: {
-      200: z.array(projectSchema),
+      200: z
+        .array(projectWithoutVersionSchema)
+        .describe("List of projects without version data"),
     },
     summary: "Get all Projects",
   },

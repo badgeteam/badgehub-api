@@ -1,5 +1,5 @@
 import React from "react";
-import { CATEGORIES } from "@shared/domain/readModels/project/Category.ts";
+import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
 
 interface FiltersProps {
@@ -13,9 +13,14 @@ interface FiltersProps {
 }
 
 const BADGES = Object.values(BADGE_NAMES);
+const BADGES_KEYS_MAP = Object.fromEntries(
+  Object.entries(BADGE_NAMES).map(([key, value]) => [value, key])
+);
 
-const CATEGORY_OPTIONS = Object.values(CATEGORIES);
-
+const CATEGORY_OPTIONS = Object.values(CATEGORIE_NAMES);
+const CATEGORY_KEYS_MAP = Object.fromEntries(
+  Object.entries(CATEGORIE_NAMES).map(([key, value]) => [value, key])
+);
 const Filters: React.FC<FiltersProps> = ({
   device,
   category,
@@ -47,7 +52,7 @@ const Filters: React.FC<FiltersProps> = ({
         >
           <option value="All">All</option>
           {BADGES.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={BADGES_KEYS_MAP[option]}>
               {option}
             </option>
           ))}
@@ -70,7 +75,7 @@ const Filters: React.FC<FiltersProps> = ({
         >
           <option value="All">All</option>
           {CATEGORY_OPTIONS.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={CATEGORY_KEYS_MAP[option]}>
               {option}
             </option>
           ))}

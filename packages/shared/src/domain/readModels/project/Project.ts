@@ -90,8 +90,17 @@ export const projectSchema = z.object({
   interpreter: z.string().nullable(),
 });
 
+export const projectWithoutVersionSchema = projectSchema.omit({
+  version: true,
+});
+
 type Checks = [
   CheckSame<Project, Project, z.infer<typeof projectSchema>>,
+  CheckSame<
+    ProjectWithoutVersion,
+    ProjectWithoutVersion,
+    z.infer<typeof projectWithoutVersionSchema>
+  >,
   CheckSame<
     ProjectStatusName,
     ProjectStatusName,

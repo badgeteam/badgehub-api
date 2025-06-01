@@ -19,7 +19,7 @@ export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
   const initClient1 = initClient(publicProjectContracts, {
     baseUrl: "",
     api: async (args: ApiFetcherArgs) => {
-      if (args.path === "/projects" && args.method === "GET") {
+      if (args.path.match("/projects[^/]*") && args.method === "GET") {
         // Parse and validate query params using schema
         const parsedQuery = parseProjectsQuery(args.rawQuery);
         let filtered = apps;
@@ -27,11 +27,15 @@ export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
         const category = parsedQuery?.category;
         if (device) {
           filtered = filtered.filter(
-            (app) => app.badges && app.badges.includes(device)
+            (app) =>
+              app.badges &&
+              app.badges.map((b) => b.toLowerCase()).includes(device)
           );
         }
         if (category) {
-          filtered = filtered.filter((app) => app.category === category);
+          filtered = filtered.filter(
+            (app) => app.category.toLowerCase() === category
+          );
         }
         return { status: 200, body: filtered, headers: new Headers() };
       }
