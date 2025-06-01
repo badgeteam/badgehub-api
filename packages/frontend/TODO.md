@@ -4,10 +4,10 @@
 - [ ] Make the main page testable. To do this, we need to:
   - [ ] Start the backend server when running the frontend tests.
   - [ ] Check that the App.test.tsx is now working.
-- [ ] Add test ids to the main page elements.
+- [x] Add test ids to the main page elements.
   - [x] Add a test id to the main page.
   - [x] Add a test id to the loading spinner.
-  - [ ] Add a test id to the error message.
+  - [x] Add a test id to the error message.
   - [x] Add a test id to the app cards.
   - [x] Add a test id to the filter dropdowns.
   - [x] Add a test id to the sort dropdown.
