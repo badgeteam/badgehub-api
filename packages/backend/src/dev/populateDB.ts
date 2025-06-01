@@ -16,10 +16,10 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
-import { CATEGORIES } from "@shared/domain/readModels/project/Category";
+import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category";
 import { BADGE_NAMES } from "@shared/domain/readModels/Badge";
 
-const CATEGORY_NAMES = Object.values(CATEGORIES);
+const CATEGORY_NAMES = Object.values(CATEGORIE_NAMES);
 
 const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
 const BADGES = Object.values(BADGE_NAMES); // Hardcoded! Update by hand

@@ -61,6 +61,48 @@ describe(
       `);
     });
 
+    test("GET /api/v3/projects with device filter", async () => {
+      const res = await request(app).get("/api/v3/projects?device=why2025");
+      expect(res.statusCode).toBe(200);
+      expect(
+        res.body.every((app: ProjectWithoutVersion) =>
+          app.badges.includes("why2025")
+        )
+      ).toBe(true);
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => app.slug === "codecraft")
+      ).toBeDefined();
+    });
+
+    test("GET /api/v3/projects with category filter", async () => {
+      const res = await request(app).get("/api/v3/projects?category=silly");
+      expect(res.statusCode).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(
+        res.body.every((app: ProjectWithoutVersion) => app.category === "Silly")
+      ).toBe(true);
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => app.category === "Silly")
+      ).toBeDefined();
+    });
+
+    test("GET /api/v3/projects with device and category filters", async () => {
+      const res = await request(app).get(
+        "/api/v3/projects?device=why2025&category=Silly"
+      );
+      expect(res.statusCode).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(
+        res.body.every(
+          (app: ProjectWithoutVersion) =>
+            app.badges.includes("why2025") && app.category === "Silly"
+        )
+      ).toBe(true);
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => app.category === "Silly")
+      ).toBeDefined();
+    });
+
     test("GET /api/v3/projects/non-existent should return 404", async () => {
       const res = await request(app).get("/api/v3/projects/non-existent");
       expect(res.statusCode).toBe(404);

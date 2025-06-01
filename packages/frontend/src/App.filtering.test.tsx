@@ -4,7 +4,7 @@ import App from "../src/App";
 import { tsRestClientWithApps } from "@__test__/tsRestClientBuilder";
 import { dummyApps } from "@__test__/fixtures/dummyApps";
 import userEvent from "@testing-library/user-event";
-import { CATEGORIES } from "@shared/domain/readModels/project/Category.ts";
+import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
 
 describe("App filtering", () => {
@@ -41,14 +41,13 @@ describe("App filtering", () => {
     render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const categoryDropdown = screen.getByTestId("filter-dropdown-category");
     // Use a category value that exists in dummyApps, e.g., CATEGORIES.silly
-    await userEvent.selectOptions(categoryDropdown, CATEGORIES.silly);
-
+    await userEvent.selectOptions(categoryDropdown, "silly");
     await waitFor(() =>
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
     await waitFor(() =>
       dummyApps.forEach((app) => {
-        if (app.category === CATEGORIES.silly) {
+        if (app.category === CATEGORIE_NAMES.silly) {
           // Use a function matcher to be more flexible with text rendering
           expect(
             screen.getByText((content) => content.includes(app.name!))
@@ -68,13 +67,14 @@ describe("App filtering", () => {
     const categoryDropdown = screen.getByTestId("filter-dropdown-category");
     // Use values that exist together in an app, e.g., "mch2022" and CATEGORIES.silly
     await userEvent.selectOptions(mcuDropdown, "mch2022");
-    await userEvent.selectOptions(categoryDropdown, CATEGORIES.silly);
+    await userEvent.selectOptions(categoryDropdown, CATEGORIE_NAMES.silly);
     await waitFor(() =>
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
     dummyApps.forEach((app) => {
       const match =
-        app.badges?.includes("mch2022") && app.category === CATEGORIES.silly;
+        app.badges?.includes("mch2022") &&
+        app.category === CATEGORIE_NAMES.silly;
       if (match) {
         expect(screen.getByText(app.name!)).toBeInTheDocument();
       } else if (app.name) {
