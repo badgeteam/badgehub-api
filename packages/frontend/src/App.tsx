@@ -9,6 +9,8 @@ import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
 import { useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
+import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
+import { z } from "zod";
 
 interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;
@@ -19,10 +21,22 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter state
+  const [device, setDevice] = useState<string>("All");
+  const [category, setCategory] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<string>("Popularity");
+  const [filtersChanged, setFiltersChanged] = useState(false);
+
+  // Fetch apps with filters
   useEffect(() => {
     setLoading(true);
+    const query: z.infer<typeof getProjectsQuerySchema> = {};
+    if (device && device !== "All") query.device = device;
+    if (category && category !== "All") query.category = category;
+    // Pagination and sort can be added here as needed
+
     tsRestClient
-      .getProjects({ query: {} })
+      .getProjects({ query })
       .then((res) => {
         if (res.status === 200) {
           const body = res.body;
@@ -34,7 +48,13 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       })
       .catch(() => setError("Failed to fetch projects"))
       .finally(() => setLoading(false));
-  }, [tsRestClient]);
+  }, [tsRestClient, device, category, filtersChanged]);
+
+  // Handlers for Filters component
+  const handleDeviceChange = (value: string) => setDevice(value);
+  const handleCategoryChange = (value: string) => setCategory(value);
+  const handleSortByChange = (value: string) => setSortBy(value);
+  const handleApplyFilters = () => setFiltersChanged((v) => !v);
 
   return (
     <div
@@ -44,7 +64,15 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <Hero />
-        <Filters />
+        <Filters
+          device={device}
+          category={category}
+          sortBy={sortBy}
+          onDeviceChange={handleDeviceChange}
+          onCategoryChange={handleCategoryChange}
+          onSortByChange={handleSortByChange}
+          onApplyFilters={handleApplyFilters}
+        />
         {loading ? (
           <Spinner />
         ) : error ? (

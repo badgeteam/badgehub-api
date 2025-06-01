@@ -3,9 +3,16 @@ import { z } from "zod/v3";
 import { projectSchema } from "@shared/domain/readModels/project/Project";
 import { categorySchema } from "@shared/domain/readModels/project/Category";
 import { badgeSchema } from "@shared/domain/readModels/Badge";
-import { notFoundSchema } from "@shared/contracts/httpResponseSchemas"; // TODO move domain to shared
+import { notFoundSchema } from "@shared/contracts/httpResponseSchemas";
 
 const c = initContract();
+
+export const getProjectsQuerySchema = z.object({
+  pageStart: z.coerce.number().optional(),
+  pageLength: z.coerce.number().optional(),
+  device: z.string().optional(),
+  category: z.string().optional(),
+});
 
 export const publicProjectContracts = c.router({
   getProject: {
@@ -21,12 +28,7 @@ export const publicProjectContracts = c.router({
   getProjects: {
     method: "GET",
     path: `/projects`,
-    query: z.object({
-      pageStart: z.coerce.number().optional(),
-      pageLength: z.coerce.number().optional(),
-      device: z.string().optional(),
-      category: z.string().optional(),
-    }),
+    query: getProjectsQuerySchema,
     responses: {
       200: z.array(projectSchema),
     },

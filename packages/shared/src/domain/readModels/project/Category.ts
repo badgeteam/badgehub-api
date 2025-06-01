@@ -2,23 +2,31 @@ import { DBCategory } from "@shared/dbModels/project/DBCategory";
 import { z } from "zod/v3";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
-export type AppCategoryName =
-  | "Uncategorised"
-  | "Event related"
-  | "Games"
-  | "Graphics"
-  | "Hardware"
-  | "Utility"
-  | "Wearable"
-  | "Data"
-  | "Silly"
-  | "Hacking"
-  | "Troll"
-  | "Unusable"
-  | "Adult"
-  | "Virus"
-  | "SAO"
-  | "Interpreter"; // Changed! the interpreter categorySlug was added here for the case of libraries.
+export interface Category {
+  name: AppCategoryName;
+  slug: string;
+}
+
+export const CATEGORIES = {
+  uncategorised: "Uncategorised",
+  event_related: "Event related",
+  games: "Games",
+  graphics: "Graphics",
+  hardware: "Hardware",
+  utility: "Utility",
+  wearable: "Wearable",
+  data: "Data",
+  silly: "Silly",
+  hacking: "Hacking",
+  troll: "Troll",
+  unusable: "Unusable",
+  adult: "Adult",
+  virus: "Virus",
+  sao: "SAO",
+  interpreter: "Interpreter",
+} as const;
+
+export type AppCategoryName = (typeof CATEGORIES)[keyof typeof CATEGORIES]; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {
   category_slug: DBCategory["slug"];
@@ -26,11 +34,6 @@ export interface CategorySlugRelation {
 
 export interface CategoryNameRelation {
   category_name: DBCategory["name"];
-}
-
-export interface Category {
-  name: AppCategoryName;
-  slug: string;
 }
 
 export const categoryNameSchema = z.enum([

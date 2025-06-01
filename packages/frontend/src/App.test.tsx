@@ -5,8 +5,8 @@ import {
   tsRestClientWithApps,
   tsRestClientWithError,
   tsRestClientWithEmptyList,
-  dummyApps,
 } from "../test/tsRestClientBuilder.ts";
+import { dummyApps } from "../test/fixtures/dummyApps.ts";
 
 describe("App", () => {
   it("renders the homepage with dummy apps", async () => {

@@ -1,4 +1,4 @@
-import { Version } from "./Version";
+import { Version, versionSchema } from "./Version";
 import { User } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
@@ -8,7 +8,7 @@ import {
   categoryNameSchema,
 } from "@shared/domain/readModels/project/Category";
 import { z } from "zod/v3";
-import { CheckExtends, CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type ProjectStatusName =
   | "working"
@@ -26,39 +26,39 @@ export const projectStatusNameSchema = z.enum([
 export interface ProjectCore {
   slug: string;
   idp_user_id: User["idp_user_id"];
-  git?: string;
-  allow_team_fixes?: boolean;
+  git: string | null; // Git URL of the project, if it exists
+  allow_team_fixes: boolean | null;
 }
 
 export type ProjectWithoutVersion = Omit<Project, "version">;
 
 export interface Project extends ProjectCore, DatedData {
   // Computed
-  name?: string;
-  min_firmware?: number; // Smallest revision number that exists
-  max_firmware?: number; // Biggest revision number that exists
-  git_commit_id?: string;
-  published_at?: Date; // Last publish date
-  // download_counter?: number; // Sum of all version download count
-  license?: string; // Eg. MIT
-  // size_of_zip?: number;
-  // size_of_content?: number;
+  name: string;
+  min_firmware: number | null; // Smallest revision number that exists
+  max_firmware: number | null; // Biggest revision number that exists
+  git_commit_id: string | null;
+  published_at: Date | null; // Last publish date
+  // download_counter?: number; // Sum of all version download count|null
+  license: string | null; // Eg. MIT
+  // size_of_zip?: number;|null
+  // size_of_content?: number;|null
   category: Category["name"];
-  description?: string; // description in metadata of latest version of the project
-  revision?: number; // latest revsion number of the project
-  // status?: ProjectStatusName; // Status of newest version with a non-empty status
-  // user_name?: string; // user->name
-  interpreter?: AppMetadataJSON["interpreter"]; // Interpreter for latest version of project
+  description: string; // description in metadata of latest version of the project
+  revision: number; // latest revsion number of the project
+  // status?: ProjectStatusName; // Status of newest version with a non-empty status|null
+  // user_name?: string; // user->name|null
+  interpreter: string | null; // Interpreter for latest version of project
 
   // Relations
-  version?: Version;
-  badges?: Array<Badge["slug"]>;
-  // dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.
-  // states?: Array<ProjectStatusOnBadge>;
-  // versions?: Array<Version>;
-  // votes?: Array<VoteFromUser>;
-  // warnings?: Array<WarningFromUser>;
-  // collaborators?: Array<User>;
+  version: Version;
+  badges: Array<Badge["slug"]>;
+  // dependencies?: Array<Dependency>; // Changed! We depend on a semantic version specification of a project instead of just the project.|null
+  // states?: Array<ProjectStatusOnBadge>;|null
+  // versions?: Array<Version>;|null
+  // votes?: Array<VoteFromUser>;|null
+  // warnings?: Array<WarningFromUser>;|null
+  // collaborators?: Array<User>;|null
 }
 
 export type ProjectSlug = Project["slug"];
@@ -72,20 +72,22 @@ interface Dependency {
 export const projectSchema = z.object({
   slug: z.string(),
   idp_user_id: z.string(),
-  git: z.string().optional(),
-  allow_team_fixes: z.boolean().optional(),
+  git: z.string().nullable(),
+  allow_team_fixes: z.boolean().nullable(),
   created_at: z.date(),
   updated_at: z.date(),
-  name: z.string().optional(),
-  min_firmware: z.number().optional(),
-  max_firmware: z.number().optional(),
-  git_commit_id: z.string().optional(),
-  published_at: z.date().optional(),
-  license: z.string().optional(),
+  name: z.string(),
+  min_firmware: z.number().nullable(),
+  max_firmware: z.number().nullable(),
+  git_commit_id: z.string().nullable(),
+  published_at: z.date().nullable(),
+  license: z.string().nullable(),
   category: categoryNameSchema,
-  description: z.string().optional(),
-  revision: z.number().optional(),
-  interpreter: z.string().optional(),
+  description: z.string(),
+  revision: z.number(),
+  version: versionSchema,
+  badges: z.array(z.string()),
+  interpreter: z.string().nullable(),
 });
 
 type Checks = [
