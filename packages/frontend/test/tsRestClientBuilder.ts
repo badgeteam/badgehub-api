@@ -1,29 +1,39 @@
 // tsRestClientBuilder.ts
 // Utility to build mock tsRestClient for App tests
 
-import { publicProjectContracts } from "@shared/contracts/publicRestContracts";
+import {
+  publicProjectContracts,
+  getProjectsQuerySchema,
+} from "@shared/contracts/publicRestContracts";
 import { ApiFetcherArgs, initClient } from "@ts-rest/core";
 import type { AppCardProps } from "@components/types.ts";
 import { tsRestClient as defaultTsRestClient } from "@api/tsRestClient.ts";
+import { dummyApps } from "./fixtures/dummyApps";
 
-export const dummyApps: AppCardProps[] = [
-  {
-    slug: "dummy-app-1",
-    name: "Dummy App 1",
-    description: "A test app",
-    category: "IoT",
-    published_at: new Date(),
-    revision: 1,
-    badges: ["featured"],
-  },
-];
+function parseProjectsQuery(rawQuery: unknown) {
+  if (!rawQuery) return undefined;
+  return getProjectsQuerySchema.parse(rawQuery);
+}
 
-export function tsRestClientWithApps(apps: AppCardProps[]) {
+export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
   const initClient1 = initClient(publicProjectContracts, {
     baseUrl: "",
     api: async (args: ApiFetcherArgs) => {
       if (args.path === "/projects" && args.method === "GET") {
-        return { status: 200, body: apps, headers: new Headers() };
+        // Parse and validate query params using schema
+        const parsedQuery = parseProjectsQuery(args.rawQuery);
+        let filtered = apps;
+        const device = parsedQuery?.device;
+        const category = parsedQuery?.category;
+        if (device) {
+          filtered = filtered.filter(
+            (app) => app.badges && app.badges.includes(device)
+          );
+        }
+        if (category) {
+          filtered = filtered.filter((app) => app.category === category);
+        }
+        return { status: 200, body: filtered, headers: new Headers() };
       }
       // fallback for other endpoints
       return {

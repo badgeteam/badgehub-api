@@ -16,25 +16,9 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
+import { CATEGORIES } from "@shared/domain/readModels/project/Category";
 
-const CATEGORY_NAMES = [
-  "Uncategorised",
-  "Event related",
-  "Games",
-  "Graphics",
-  "Hardware",
-  "Utility",
-  "Wearable",
-  "Data",
-  "Silly",
-  "Hacking",
-  "Troll",
-  "Unusable",
-  "Adult",
-  "Virus",
-  "SAO",
-  "Interpreter",
-] as const;
+const CATEGORY_NAMES = Object.values(CATEGORIES);
 
 const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
 const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Update by hand
