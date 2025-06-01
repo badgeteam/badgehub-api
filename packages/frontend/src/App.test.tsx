@@ -1,16 +1,17 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
 
 // Basic smoke test for App rendering
 
 describe("App", () => {
-  it("renders the homepage without crashing", () => {
+  it("renders the homepage without crashing", async () => {
     render(<App />);
     // Check for hero headline
     expect(screen.getByText(/Share\. Build\. Innovate\./i)).toBeInTheDocument();
     // Check for at least one featured app card
-    // expect(screen.getByText(/CodeCraft/i)).toBeInTheDocument(); // TODO data in tests
+    const appCardElements = screen.getAllByTestId("AppCard");
+    await waitFor(() => expect(appCardElements.length).toBeGreaterThan(0));
     // Check for navigation (desktop or mobile)
     expect(screen.getAllByText(/Browse Apps/i).length).toBeGreaterThan(0);
     // Check for footer
