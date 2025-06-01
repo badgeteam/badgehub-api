@@ -9,7 +9,10 @@ const AppCard: React.FC<AppCardProps> = ({
   revision,
   badges,
 }) => (
-  <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden card-hover-effect flex flex-col">
+  <div
+    data-testid="AppCard"
+    className="bg-gray-800 rounded-lg shadow-lg overflow-hidden card-hover-effect flex flex-col"
+  >
     <div className="p-5 flex-grow">
       <h3 className="text-xl font-semibold text-emerald-400 mb-2 hover:text-emerald-300 transition-colors">
         <a href="#">{name}</a>
