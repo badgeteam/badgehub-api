@@ -17,12 +17,13 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
 import { CATEGORIES } from "@shared/domain/readModels/project/Category";
+import { BADGE_NAMES } from "@shared/domain/readModels/Badge";
 
 const CATEGORY_NAMES = Object.values(CATEGORIES);
 
 const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
-const BADGES = ["mch2022", "troopers23", "WHY2025"] as const; // Hardcoded! Update by hand
-const badgeSlugs = BADGES.map(nameToSlug); // Hardcoded! Update by hand
+const BADGES = Object.values(BADGE_NAMES); // Hardcoded! Update by hand
+const badgeSlugs = Object.keys(BADGE_NAMES); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 

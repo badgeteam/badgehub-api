@@ -5,6 +5,12 @@ import {
 import { z } from "zod/v3";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
+export const BADGE_NAMES = {
+  why2025: "why2025",
+  mch2022: "mch2022",
+  troopers23: "troopers23",
+};
+
 export interface BadgeRelation {
   badge: Badge;
 }
