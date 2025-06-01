@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import App from "./App";
+import { tsRestClient as defaultTsRestClient } from "@api/tsRestClient.ts";
 
 // Basic smoke test for App rendering
 
@@ -35,5 +36,15 @@ describe("App", () => {
     render(<App />);
     // Check for the filter bar container
     expect(screen.getByTestId("filter-bar")).toBeInTheDocument();
+  });
+
+  it("shows an error message when the API call fails", async () => {
+    const mockClient = {
+      getProjects: () => Promise.reject(new Error("API error")),
+    } as typeof defaultTsRestClient;
+    render(<App tsRestClient={mockClient} />);
+    expect(
+      await screen.findByText(/Failed to fetch projects/i)
+    ).toBeInTheDocument();
   });
 });

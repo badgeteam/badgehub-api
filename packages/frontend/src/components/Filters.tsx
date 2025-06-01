@@ -1,7 +1,10 @@
 import React from "react";
 
 const Filters: React.FC = () => (
-  <section className="mb-8 p-4 bg-gray-800 rounded-lg shadow">
+  <section
+    className="mb-8 p-4 bg-gray-800 rounded-lg shadow"
+    data-testid="filter-bar"
+  >
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div>
         <label
