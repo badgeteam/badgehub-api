@@ -33,7 +33,10 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-slate-200">
+    <div
+      className="min-h-screen flex flex-col bg-gray-900 text-slate-200"
+      data-testid="main-page"
+    >
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <Hero />
