@@ -8,9 +8,13 @@ import Spinner from "./components/Spinner";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
 import { useEffect, useState } from "react";
-import { tsRestClient } from "./api/tsRestClient";
+import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
 
-function App() {
+interface AppProps {
+  tsRestClient?: typeof defaultTsRestClient;
+}
+
+function App({ tsRestClient = defaultTsRestClient }: AppProps) {
   const [apps, setApps] = useState<AppCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +34,7 @@ function App() {
       })
       .catch(() => setError("Failed to fetch projects"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [tsRestClient]);
 
   return (
     <div
