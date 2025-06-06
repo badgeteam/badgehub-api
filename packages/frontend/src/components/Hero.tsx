@@ -6,8 +6,8 @@ const Hero: React.FC = () => (
       Share. Build. Innovate.
     </h1>
     <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-      Microcontroller applications at your fingertips. Discover projects or
-      contribute your own.
+      Badge applications at your fingertips. Discover projects or contribute
+      your own.
     </p>
     <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
       <a

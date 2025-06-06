@@ -40,7 +40,7 @@ const Filters: React.FC<FiltersProps> = ({
           htmlFor="mcu-filter"
           className="block text-sm font-medium text-slate-300 mb-1"
         >
-          Microcontroller
+          Badge
         </label>
         <select
           id="mcu-filter"

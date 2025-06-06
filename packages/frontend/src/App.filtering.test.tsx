@@ -19,7 +19,7 @@ describe("App filtering", () => {
     });
   });
 
-  it("filters by microcontroller/device", async () => {
+  it("filters by Badge/device", async () => {
     render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
     // Use a badge value that exists in dummyApps, e.g., "mch2022"

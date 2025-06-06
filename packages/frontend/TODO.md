@@ -20,7 +20,7 @@
 - [x] Implement showing the description
 - [ ] Implement showing the icon if there is one
 - [x] Implement showing the real description
-- [ ] Change "Microcontroller" to "Badge" in filters
+- [x] Change "Microcontroller" to "Badge" in filters
 - [ ] use nullable for optional properties instead so zod typing matches exactly
 - [ ] Implement sorting for the main page.
 - [ ] Implement Server assisted pagination for the main page.
