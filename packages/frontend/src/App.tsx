@@ -30,6 +30,9 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
   const pageSize = 8;
   const [filtersChanged, setFiltersChanged] = useState(false);
 
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Fetch apps with filters
   useEffect(() => {
     setLoading(true);
@@ -53,11 +56,19 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       .finally(() => setLoading(false));
   }, [tsRestClient, device, category, filtersChanged]);
 
-  // Compute paginated apps
+  // Filter apps by search query before pagination
+  const filteredApps = useMemo(() => {
+    if (!searchQuery.trim()) return apps;
+    return apps.filter((app) =>
+      app.name?.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+  }, [apps, searchQuery]);
+
+  // Compute paginated apps from filteredApps
   const paginatedApps = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return apps.slice(start, start + pageSize);
-  }, [apps, currentPage]);
+    return filteredApps.slice(start, start + pageSize);
+  }, [filteredApps, currentPage]);
 
   // Handlers for Filters component
   const handleDeviceChange = (value: string) => setDevice(value);
@@ -70,9 +81,16 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       className="min-h-screen flex flex-col bg-gray-900 text-slate-200"
       data-testid="main-page"
     >
-      <Header />
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={(q: string) => {
+          setSearchQuery(q);
+          setCurrentPage(1);
+        }}
+      />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <Hero />
+        {/* Removed duplicate search bar here */}
         <Filters
           device={device}
           category={category}
@@ -90,10 +108,10 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
           <AppsGrid apps={paginatedApps} />
         )}
         {/* show pagination if more than one page */}
-        {Math.ceil(apps.length / pageSize) > 1 && (
+        {Math.ceil(filteredApps.length / pageSize) > 1 && (
           <Pagination
             currentPage={currentPage}
-            totalPages={Math.ceil(apps.length / pageSize)}
+            totalPages={Math.ceil(filteredApps.length / pageSize)}
             onPageChange={setCurrentPage}
           />
         )}

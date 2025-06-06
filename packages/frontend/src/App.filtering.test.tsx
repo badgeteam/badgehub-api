@@ -82,4 +82,26 @@ describe("App filtering", () => {
       }
     });
   });
+
+  it("filters apps by search query", async () => {
+    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    // Wait for apps to load
+    await screen.findByText(dummyApps[0]!.name!);
+    const searchBar = await screen.findByTestId("search-bar");
+    // Type a partial name of the first app
+    const searchTerm = "game";
+    await userEvent.clear(searchBar);
+    await userEvent.type(searchBar, searchTerm);
+
+    // Only apps whose name includes the search term should be visible
+    await waitFor(() => {
+      dummyApps.forEach((app) => {
+        if (app.name?.toLowerCase().includes(searchTerm)) {
+          expect(screen.getByText(app.name!)).toBeInTheDocument();
+        } else if (app.name) {
+          expect(screen.queryByText(app.name)).not.toBeInTheDocument();
+        }
+      });
+    });
+  });
 });
