@@ -14,7 +14,7 @@ export const dummyApps: AppCardProps[] = [
   },
   {
     slug: "dummy-app-2",
-    name: "Dummy App 2",
+    name: "Dummy Game App 2 ",
     description: "Another test app",
     category: CATEGORIE_NAMES.silly,
     published_at: new Date(),
@@ -23,7 +23,7 @@ export const dummyApps: AppCardProps[] = [
   },
   {
     slug: "dummy-app-3",
-    name: "Dummy App 3",
+    name: "Dummy Game App 3",
     description: "Yet another test app",
     category: CATEGORIE_NAMES.silly,
     published_at: new Date(),
@@ -95,7 +95,7 @@ export const dummyApps: AppCardProps[] = [
   },
   {
     slug: "dummy-app-11",
-    name: "Dummy App 11",
+    name: "Dummy Game App 11",
     description: "Pagination test app 11",
     category: CATEGORIE_NAMES.games,
     published_at: new Date(),

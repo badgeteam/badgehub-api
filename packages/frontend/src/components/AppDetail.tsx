@@ -1,70 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
 import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient";
-import Spinner from "./Spinner";
+import AppDetailHeader from "./AppDetailPage/AppDetailHeader";
+import AppDescription from "./AppDetailPage/AppDescription";
+import AppMedia from "./AppDetailPage/AppMedia";
+import AppCodePreview from "./AppDetailPage/AppCodePreview";
+// import AppReviews from "./AppDetailPage/AppReviews";
+import AppSidebarDetails from "./AppDetailPage/AppSidebarDetails";
+import AppSidebarAuthor from "./AppDetailPage/AppSidebarAuthor";
+import AppSidebarSimilar from "./AppDetailPage/AppSidebarSimilar";
+import AppBreadcrumb from "./AppDetailPage/AppBreadcrumb";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
+import Header from "./Header";
+import Footer from "./Footer";
 
-const AppDetail: React.FC<{ tsRestClient?: typeof defaultTsRestClient }> = ({
-  tsRestClient = defaultTsRestClient,
-}) => {
-  const { appId } = useParams<{ appId: string }>();
-  const [app, setApp] = useState<Project | null>(null);
+const AppDetail: React.FunctionComponent<{
+  tsRestClient?: typeof defaultTsRestClient;
+  slug: string;
+}> = ({ tsRestClient = defaultTsRestClient, slug }) => {
+  const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  // Dummy search state for Header (not used on detail page)
+  const [searchQuery] = useState("");
+  const setSearchQuery = () => {};
 
   useEffect(() => {
-    if (!appId) return;
+    let mounted = true;
     setLoading(true);
-    tsRestClient
-      .getProject({ params: { slug: appId } })
-      .then((res) => {
-        if (res.status === 200) {
-          const body = res.body;
-          setApp(body);
-          setError(null);
-        } else {
-          setError("App not found");
-        }
-      })
-      .catch(() => setError("Error loading app"))
-      .finally(() => setLoading(false));
-  }, [appId, tsRestClient]);
+    tsRestClient.getProject({ params: { slug } }).then((res) => {
+      if (mounted && res.status === 200) {
+        setProject(res.body);
+      }
+      setLoading(false);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [slug, tsRestClient]);
 
-  if (loading) return <Spinner />;
-  if (error) return <div data-testid="app-detail-error">{error}</div>;
-  if (!app) return null;
-
-  return (
-    <div data-testid="app-detail-page" className="max-w-2xl mx-auto p-6">
-      <Link to="/" className="text-emerald-400">
-        &larr; Back to list
-      </Link>
-      <h1 className="text-3xl font-bold mt-4 mb-2">{app.name}</h1>
-      <p className="text-slate-400 mb-4">{app.description}</p>
-      <div className="mb-2">
-        <span className="tag text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
-          {app.category}
-        </span>
-        {app.badges &&
-          app.badges.map((badge: string) => (
-            <span
-              key={badge}
-              className="tag-mcu text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full"
-            >
-              {badge}
-            </span>
-          ))}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64 text-slate-400 bg-gray-900 min-h-screen">
+        Loading...
       </div>
-      <p className="text-xs text-slate-500 font-roboto-mono mb-1">
-        Revision: {app.revision ?? "-"}
-      </p>
-      <p className="text-xs text-slate-500 font-roboto-mono mb-1">
-        Published:{" "}
-        {app.published_at
-          ? new Date(app.published_at).toLocaleDateString()
-          : "-"}
-      </p>
-      {/* Add more app details here as needed */}
+    );
+  }
+  if (!project) {
+    return (
+      <div className="flex justify-center items-center h-64 text-red-400 bg-gray-900 min-h-screen">
+        App not found.
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-900 text-slate-200">
+      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+        <AppBreadcrumb project={project} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            <AppDetailHeader project={project} />
+            <AppDescription project={project} />
+            <AppMedia project={project} />
+            <AppCodePreview project={project} />
+            {/*<AppReviews project={project} />*/}
+          </div>
+          <aside className="lg:col-span-1 space-y-8">
+            <AppSidebarDetails project={project} />
+            <AppSidebarAuthor project={project} />
+            <AppSidebarSimilar project={project} />
+          </aside>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 };
