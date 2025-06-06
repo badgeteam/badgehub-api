@@ -7,7 +7,12 @@ const navLinks = [
   { label: "Community", href: "#" },
 ];
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -100,6 +105,9 @@ const Header: React.FC = () => {
               <input
                 type="search"
                 placeholder="Search apps..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                data-testid="search-bar"
                 className="bg-gray-700 text-gray-300 placeholder-gray-500 rounded-md py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -194,13 +202,6 @@ const Header: React.FC = () => {
               {link.label}
             </a>
           ))}
-          <div className="mt-3 sm:hidden">
-            <input
-              type="search"
-              placeholder="Search apps..."
-              className="w-full bg-gray-700 text-gray-300 placeholder-gray-500 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
-            />
-          </div>
         </div>
       </div>
     </header>
