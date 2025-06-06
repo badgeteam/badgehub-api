@@ -14,8 +14,7 @@
   - [x] Add a test id to app cards container.
 - [x] Update the App.test.tsx to use the test ids.
 - [ ] try to implement keycloak authentication.
-- [ ] Implement filtering for the main page.
-- [ ] Implement sorting for the main page.
+- [x] Implement filtering for the main page.
 - [ ] Implement pagination for the main page.
 - [ ] Implement the search bar for the main page.
 - [ ] Implement showing the description
@@ -23,3 +22,4 @@
 - [x] Implement showing the real description
 - [ ] Change "Microcontroller" to "Badge" in filters
 - [ ] use nullable for optional properties instead so zod typing matches exactly
+- [ ] Implement sorting for the main page.

@@ -96,10 +96,7 @@ const Filters: React.FC<FiltersProps> = ({
           value={sortBy}
           onChange={(e) => onSortByChange(e.target.value)}
         >
-          <option>Popularity</option>
-          <option>Recent</option>
-          <option>Rating</option>
-          <option>A-Z</option>
+          <option>Arbitrary</option>
         </select>
       </div>
       <div className="flex items-end">
