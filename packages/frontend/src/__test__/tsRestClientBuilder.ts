@@ -19,6 +19,19 @@ export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
   const initClient1 = initClient(publicProjectContracts, {
     baseUrl: "",
     api: async (args: ApiFetcherArgs) => {
+      // Handle getProject (by slug)
+      if (args.path.match(/^\/projects\/[^/]+$/) && args.method === "GET") {
+        const slug = args.path.split("/").pop();
+        const app = apps.find((a) => a.slug === slug);
+        if (app) {
+          return { status: 200, body: app, headers: new Headers() };
+        }
+        return {
+          status: 404,
+          body: { reason: "Not found" },
+          headers: new Headers(),
+        };
+      }
       if (args.path.match("/projects[^/]*") && args.method === "GET") {
         // Parse and validate query params using schema
         const parsedQuery = parseProjectsQuery(args.rawQuery);
