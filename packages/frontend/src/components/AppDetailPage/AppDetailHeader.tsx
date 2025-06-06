@@ -28,20 +28,6 @@ const AppDetailHeader: React.FC<{ project: any }> = ({ project }) => (
         </p>
       </div>
       <div className="mt-4 sm:mt-0 sm:ml-4 flex-shrink-0 flex flex-col space-y-2 items-stretch">
-        <button className="btn-primary px-6 py-3 rounded-lg text-base font-semibold shadow-md hover:shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center">
-          <svg
-            className="icon h-5 w-5 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Download App
-        </button>
         {project.repositoryUrl && (
           <a
             href={project.repositoryUrl}
