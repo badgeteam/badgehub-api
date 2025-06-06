@@ -21,7 +21,11 @@
 - [ ] Implement showing the icon if there is one
 - [x] Implement showing the real description
 - [x] Change "Microcontroller" to "Badge" in filters
-- [ ] use nullable for optional properties instead so zod typing matches exactly
-- [ ] Implement sorting for the main page.
+- [x] Implement sorting for the main page.
+- [ ] Implement the app detail page.
+
+# Optimizations
+
 - [ ] Implement Server assisted pagination for the main page.
+- [ ] use nullable for optional properties instead so zod typing matches exactly
 - [ ] Implement Server assisted search for the main page.
