@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Spinner from "./components/Spinner";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { z } from "zod";
@@ -25,6 +25,9 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
   const [device, setDevice] = useState<string>("All");
   const [category, setCategory] = useState<string>("All");
   const [sortBy, setSortBy] = useState<string>("Popularity");
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 8;
   const [filtersChanged, setFiltersChanged] = useState(false);
 
   // Fetch apps with filters
@@ -49,6 +52,12 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       .catch(() => setError("Failed to fetch projects"))
       .finally(() => setLoading(false));
   }, [tsRestClient, device, category, filtersChanged]);
+
+  // Compute paginated apps
+  const paginatedApps = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return apps.slice(start, start + pageSize);
+  }, [apps, currentPage]);
 
   // Handlers for Filters component
   const handleDeviceChange = (value: string) => setDevice(value);
@@ -78,9 +87,16 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
         ) : error ? (
           <div className="text-center py-10 text-red-400">{error}</div>
         ) : (
-          <AppsGrid apps={apps} />
+          <AppsGrid apps={paginatedApps} />
         )}
-        <Pagination />
+        {/* show pagination if more than one page */}
+        {Math.ceil(apps.length / pageSize) > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(apps.length / pageSize)}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </main>
       <Footer />
     </div>
