@@ -19,7 +19,7 @@ const DownloadIcon = () => (
     />
   </svg>
 );
-
+const BADGEHUB_API_BASEURL = "http://localhost:8081"; // TODO move config
 const AppCodePreview: React.FC<{ project: Project }> = ({ project }) => {
   const files = project?.version?.files;
   const [previewedFile, setPreviewedFile] = useState<string | null>(null);
@@ -81,7 +81,7 @@ const AppCodePreview: React.FC<{ project: Project }> = ({ project }) => {
   };
 
   const handleDownload = (fullPath: string) => {
-    window.location.href = `/api/public/projects/${project.slug}/latest/files/${encodeURIComponent(fullPath)}`;
+    window.location.href = `${BADGEHUB_API_BASEURL}/api/v3/projects/${project.slug}/latest/files/${encodeURIComponent(fullPath)}`;
   };
 
   return (
