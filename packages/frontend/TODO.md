@@ -17,7 +17,7 @@
 - [x] Implement filtering for the main page.
 - [x] Implement pagination for the main page.
 - [x] Implement the search bar for the main page.
-- [ ] Implement showing the description
+- [x] Implement showing the description
 - [ ] Implement showing the icon if there is one
 - [x] Implement showing the real description
 - [ ] Change "Microcontroller" to "Badge" in filters
