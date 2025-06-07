@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { BadgeHubIcon } from "@components/BadgeHubIcon.tsx";
 
 const navLinks = [
-  // TODO
-  { label: "Browse Apps", href: "#" },
+  { label: "Browse Apps", href: "/" },
   { label: "Submit App", href: "#" },
   { label: "Docs", href: "#" },
   { label: "Community", href: "#" },
