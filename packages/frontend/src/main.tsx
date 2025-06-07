@@ -12,6 +12,7 @@ const AppDetailWrapper = () => {
   }
   return <AppDetail slug={slug} />;
 };
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
@@ -22,3 +23,33 @@ createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </StrictMode>
 );
+
+// Floating toggle button logic
+function setupTodoToggleButton() {
+  const btn = document.createElement("button");
+  btn.className = "todo-toggle-btn";
+  btn.title = "Toggle TODO overlay";
+  btn.innerHTML = "🟧";
+  let enabled = false;
+
+  const rootDiv = document.getElementById("root");
+  function updateRootClass() {
+    if (!rootDiv) return;
+    if (enabled) {
+      rootDiv.classList.add("todoOverlayEnabled");
+    } else {
+      rootDiv.classList.remove("todoOverlayEnabled");
+    }
+    btn.style.opacity = enabled ? "1" : "0.6";
+  }
+
+  btn.onclick = () => {
+    enabled = !enabled;
+    updateRootClass();
+  };
+
+  document.body.appendChild(btn);
+  updateRootClass();
+}
+
+setupTodoToggleButton();

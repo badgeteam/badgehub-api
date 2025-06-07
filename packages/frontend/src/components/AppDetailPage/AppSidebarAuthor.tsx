@@ -3,7 +3,7 @@ import React from "react";
 const AppSidebarAuthor: React.FC<{ project: any }> = ({ project }) => {
   const author = project.author || {};
   return (
-    <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <section className="bg-gray-800 p-6 rounded-lg shadow-lg todoElement">
       <h2 className="text-xl font-semibold text-slate-100 mb-4 border-b border-gray-700 pb-2">
         Author
       </h2>
@@ -37,7 +37,7 @@ const AppSidebarAuthor: React.FC<{ project: any }> = ({ project }) => {
       </p>
       <a
         href="#"
-        className="mt-3 inline-block btn-secondary px-4 py-2 rounded-md text-xs font-semibold w-full text-center"
+        className="mt-3 inline-block btn-secondary px-4 py-2 rounded-md text-xs font-semibold w-full text-center todoElement"
       >
         View Profile
       </a>

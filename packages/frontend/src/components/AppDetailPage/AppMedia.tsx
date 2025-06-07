@@ -15,7 +15,7 @@ const AppMedia: React.FC<{ project: any }> = ({ project }) => {
           },
         ];
   return (
-    <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <section className="bg-gray-800 p-6 rounded-lg shadow-lg todoElement">
       <h2 className="text-2xl font-semibold text-slate-100 mb-4">
         Screenshots & Media
       </h2>

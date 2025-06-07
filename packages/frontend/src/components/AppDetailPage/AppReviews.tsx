@@ -1,7 +1,7 @@
 import React from "react";
 
 const AppReviews: React.FC<{ project: any }> = () => (
-  <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+  <section className="bg-gray-800 p-6 rounded-lg shadow-lg todoElement">
     <h2 className="text-2xl font-semibold text-slate-100 mb-4">
       Reviews & Comments (120)
     </h2>
@@ -84,7 +84,7 @@ const AppReviews: React.FC<{ project: any }> = () => (
         <h3 className="text-xl font-semibold text-slate-100 mb-3">
           Leave a Review
         </h3>
-        <form>
+        <form className="todoElement">
           <div className="mb-4">
             <label
               htmlFor="review-rating"

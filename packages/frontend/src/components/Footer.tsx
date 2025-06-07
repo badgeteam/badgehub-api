@@ -3,7 +3,7 @@ import React from "react";
 const Footer: React.FC = () => {
   const year = new Date().getFullYear();
   return (
-    <footer className="bg-gray-800 border-t border-gray-700 mt-16">
+    <footer className="bg-gray-800 border-t border-gray-700 mt-16 todoElement">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-slate-400">
         <div className="mb-4">
           {["About", "Contact", "Terms of Service"].map((item) => (

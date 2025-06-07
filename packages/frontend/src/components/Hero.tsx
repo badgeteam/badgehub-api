@@ -9,7 +9,7 @@ const Hero: React.FC = () => (
       Badge applications at your fingertips. Discover projects or contribute
       your own.
     </p>
-    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 todoElement">
       <a
         href="#apps-grid"
         className="btn-primary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105"
