@@ -63,5 +63,5 @@
 
 
 # TODO for making backend mergable
-- backend should host static files in static files dir
-- Change setup so that dev is running from backend server
+- [x] backend should host static files in static files dir
+- [x] Change setup so that dev is running from backend server
