@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { tsRestClient } from "@api/tsRestClient.ts";
+import { BADGEHUB_API_BASE_URL, tsRestClient } from "@api/tsRestClient.ts";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 
 const DownloadIcon = () => (
@@ -19,7 +19,7 @@ const DownloadIcon = () => (
     />
   </svg>
 );
-const BADGEHUB_API_BASEURL = "http://localhost:8081"; // TODO move config
+
 const AppCodePreview: React.FC<{ project: Project }> = ({ project }) => {
   const files = project?.version?.files;
   const [previewedFile, setPreviewedFile] = useState<string | null>(null);
@@ -81,7 +81,7 @@ const AppCodePreview: React.FC<{ project: Project }> = ({ project }) => {
   };
 
   const handleDownload = (fullPath: string) => {
-    window.location.href = `${BADGEHUB_API_BASEURL}/api/v3/projects/${project.slug}/latest/files/${encodeURIComponent(fullPath)}`;
+    window.location.href = `${BADGEHUB_API_BASE_URL}/api/v3/projects/${project.slug}/latest/files/${encodeURIComponent(fullPath)}`;
   };
 
   return (
