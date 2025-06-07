@@ -16,7 +16,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Install dependencies
         run: |
-          npm ci
+          npm ci && cd packages/backend && npm ci && cd ../frontend && npm ci
       - name: Run lint
         run: |
           npm run lint
