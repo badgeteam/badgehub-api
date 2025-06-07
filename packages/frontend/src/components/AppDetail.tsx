@@ -53,7 +53,10 @@ const AppDetail: React.FunctionComponent<{
     );
   }
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900 text-slate-200">
+    <div
+      data-testid={"app-detail-page"}
+      className="min-h-screen flex flex-col bg-gray-900 text-slate-200"
+    >
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <AppBreadcrumb project={project} />

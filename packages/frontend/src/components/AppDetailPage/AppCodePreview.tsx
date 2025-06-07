@@ -21,7 +21,7 @@ const DownloadIcon = () => (
 );
 
 const AppCodePreview: React.FC<{ project: Project }> = ({ project }) => {
-  const files = project?.version?.files;
+  const files = project?.version?.files ?? [];
   const [previewedFile, setPreviewedFile] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

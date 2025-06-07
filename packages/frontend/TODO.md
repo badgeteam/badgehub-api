@@ -60,7 +60,7 @@
 - [ ] AppSidebarSimilar: Sidebar section (`<section>`) for similar apps, and links to similar apps
 - [ ] AppReviews: Reviews section (`<section>`) for app reviews, and review form (`<form>`) for submitting a review
 - [ ] AppSidebarAuthor: Sidebar section (`<section>`) for app author details, and author action button
-
+- [ ] Add error handling for the detail page and re-enable the detail page erro tests
 
 # TODO for making backend mergable
 - [x] backend should host static files in static files dir

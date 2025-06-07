@@ -1,35 +1,33 @@
 import React from "react";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
-import { Badge, BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
-import { DatedData } from "@shared/domain/readModels/project/DatedData.ts";
 
-type BadgeWithoutDate = Omit<Badge, keyof DatedData>;
 const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
-  const badges: BadgeWithoutDate[] = [
-    { name: BADGE_NAMES.why2025, slug: "why2025" },
-  ];
+  const badges: string[] = project.badges;
   return (
     <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-100 mb-2">
+          <h1
+            className="text-3xl font-bold text-slate-100 mb-2"
+            data-testid="app-detail-name"
+          >
             {project.name}
           </h1>
           <p className="text-slate-400 mb-1">
             By{" "}
             <a href="#" className="text-emerald-400 hover:underline">
-              {project.version.app_metadata.author || "Unknown"}
+              {project.version?.app_metadata.author ?? "Unknown"}
             </a>
           </p>
           <p className="text-xs text-slate-500">
             Published:{" "}
-            {project.version.published_at
-              ? new Date(project.version.published_at).toLocaleDateString()
+            {project.version?.published_at
+              ? new Date(project.version?.published_at).toLocaleDateString()
               : "—"}
             {" | "}
             Last Updated:{" "}
-            {project.version.updated_at
-              ? new Date(project.version.updated_at).toLocaleDateString()
+            {project.version?.updated_at
+              ? new Date(project.version?.updated_at).toLocaleDateString()
               : "—"}
           </p>
         </div>
@@ -59,12 +57,12 @@ const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
         </div>
       </div>
       <div className="mt-4 pt-4 border-t border-gray-700">
-        {badges?.map((dev: BadgeWithoutDate) => (
+        {badges?.map((dev: string) => (
           <span
-            key={dev.slug}
+            key={dev}
             className="tag-mcu text-sm font-semibold mr-2 px-3 py-1 rounded-full"
           >
-            {dev.name}
+            {dev}
           </span>
         ))}
         {[project.category].map((cat) => (
