@@ -30,6 +30,7 @@
 - [ ] Make top level dev command that starts the frontend in dev mode and starts the backend
   - make top level package json
   - Move tsconfigs to top level? Not immediately, is an optimization
+- [ ] Add link to API docs (in footer i guess) in frontend to replace old api homepage
 
 # Optimizations
 
@@ -59,3 +60,8 @@
 - [ ] AppSidebarSimilar: Sidebar section (`<section>`) for similar apps, and links to similar apps
 - [ ] AppReviews: Reviews section (`<section>`) for app reviews, and review form (`<form>`) for submitting a review
 - [ ] AppSidebarAuthor: Sidebar section (`<section>`) for app author details, and author action button
+
+
+# TODO for making backend mergable
+- backend should host static files in static files dir
+- Change setup so that dev is running from backend server
