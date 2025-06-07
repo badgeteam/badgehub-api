@@ -10,7 +10,7 @@ services:
       - ./backup:/var/backup
 
   badgehub-backend:
-    build: .
+    build: ../../
     ports:
       - "9001:8081"
     env_file:

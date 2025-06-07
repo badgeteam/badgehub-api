@@ -1,4 +1,6 @@
 import { config } from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 config();
 export const EXPRESS_PORT = 8081;
@@ -13,3 +15,9 @@ export const MAX_UPLOAD_FILE_SIZE_BYTES = 32 * 1024 * 1024; // 32 MB
 export const KEYCLOAK_ISSUER = process.env.KEYCLOAK_ISSUER;
 export const KEYCLOAK_CERTS =
   KEYCLOAK_ISSUER + "/protocol/openid-connect/certs";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const PUBLIC_STATIC_FILE_DIR = path.resolve(
+  __dirname,
+  "../../frontend/dist"
+);

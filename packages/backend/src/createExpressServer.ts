@@ -1,7 +1,7 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
 import serveApiDocs from "@serveApiDocs";
-import { NODE_ENV } from "@config";
+import { NODE_ENV, PUBLIC_STATIC_FILE_DIR } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";
@@ -10,6 +10,7 @@ import { privateRestContracts } from "@shared/contracts/privateRestContracts";
 import { createPrivateRestRouter } from "@controllers/ts-rest/privateRestRouter";
 import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
+import * as path from "path";
 
 export const createExpressServer = () => {
   const app = express();
@@ -27,7 +28,7 @@ export const createExpressServer = () => {
   app.use(rateLimiter);
 
   app.use(express.json());
-  app.use(express.static("public"));
+  app.use(express.static(PUBLIC_STATIC_FILE_DIR));
 
   const pino = pinoHttp();
   app.use(pino);
