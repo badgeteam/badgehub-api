@@ -24,7 +24,9 @@
     "test:frontend": "cd packages/frontend && npm run test",
     "test:backend": "cd packages/backend && npm run test",
     "prepare": "husky",
-    "lint-staged": "pretty-quick --staged"
+    "lint-staged": "pretty-quick --staged",
+    "lint": "pretty-quick --check",
+    "lint:fix": "pretty-quick --check"
   },
   "dependencies": {
     "@ts-rest/core": "^3.52.1",
