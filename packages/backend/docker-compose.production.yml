@@ -43,4 +43,3 @@ volumes:
 networks:
   badgehub_network:
     name: badgehub_network
-    external: true

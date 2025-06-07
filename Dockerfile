@@ -12,10 +12,10 @@ WORKDIR /home/node/app/packages/backend
 COPY packages/backend/package*.json ./
 RUN npm ci --ignore-scripts
 
-RUN mkdir ./packages/frontend
+RUN mkdir /home/node/app/packages/frontend
 WORKDIR /home/node/app/packages/frontend
 COPY packages/frontend/package*.json ./
-RUN cd npm ci --ignore-scripts
+RUN npm ci --ignore-scripts
 
 WORKDIR /home/node/app
 
@@ -47,8 +47,8 @@ COPY  --chown=node:node --from=build /home/node/app/packages/frontend/dist packa
 WORKDIR packages/backend
 RUN npm ci --only=production --ignore-scripts
 
-COPY badgehub-api/packages/backend/process.json .
-RUN mkdir -p /home/node/.pm2 /home/node/app/logs /home/node/app/pids && chown -R node:node /home/node/.pm2 /home/node/app/logs
+COPY  --chown=node:node --from=build /home/node/app/packages/backend/process.json process.json
+RUN mkdir -p /home/node/.pm2 logs pids && chown -R node:node /home/node/.pm2 logs pids
 
 USER node
 EXPOSE 8081
