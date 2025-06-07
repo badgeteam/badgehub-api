@@ -25,7 +25,7 @@ jobs:
           npm run build
       - name: Start environment
         run: |
-          npm run test-db:up -- --wait
+          cd packages/backend && npm run test-db:up -- --wait
       - name: Run test
         run: |
           npm run test
