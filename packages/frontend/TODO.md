@@ -26,9 +26,17 @@
 - [ ] Implement project/app creation UI and logic (form, validation, API integration, feedback)
 - [ ] Implement login functionality (UI, authentication flow, error handling)
 - [ ] Implement "My Projects" page (list projects created by the logged-in user)
+- [ ] Deployment: Make new frontend the homepage of the api
+- [ ] Make top level dev command that starts the frontend in dev mode and starts the backend
+  - make top level package json
+  - Move tsconfigs to top level? Not immediately, is an optimization
 
 # Optimizations
 
 - [ ] Implement Server assisted pagination for the main page.
 - [ ] use nullable for optional properties instead so zod typing matches exactly
 - [ ] Implement Server assisted search for the main page.
+
+# Niceties
+
+- [ ] All thing not implemented yet, so the things that are using dummy data, should have some visual indication, maybe like a grey or red border around them
