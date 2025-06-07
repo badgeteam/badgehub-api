@@ -2,7 +2,7 @@ import React from "react";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 
 const AppSidebarSimilar: React.FC<{ project: Project }> = () => (
-  <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+  <section className="bg-gray-800 p-6 rounded-lg shadow-lg todoElement">
     <h2 className="text-xl font-semibold text-slate-100 mb-4 border-b border-gray-700 pb-2">
       Other Projects by this author
     </h2>
@@ -16,7 +16,7 @@ const AppSidebarSimilar: React.FC<{ project: Project }> = () => (
         <div>
           <a
             href="#"
-            className="text-sm font-semibold text-emerald-400 hover:underline"
+            className="text-sm font-semibold text-emerald-400 hover:underline todoElement"
           >
             PicoTemp Monitor
           </a>
@@ -32,7 +32,7 @@ const AppSidebarSimilar: React.FC<{ project: Project }> = () => (
         <div>
           <a
             href="#"
-            className="text-sm font-semibold text-emerald-400 hover:underline"
+            className="text-sm font-semibold text-emerald-400 hover:underline todoElement"
           >
             Arduino EnviroLogger
           </a>
@@ -48,7 +48,7 @@ const AppSidebarSimilar: React.FC<{ project: Project }> = () => (
         <div>
           <a
             href="#"
-            className="text-sm font-semibold text-emerald-400 hover:underline"
+            className="text-sm font-semibold text-emerald-400 hover:underline todoElement"
           >
             ESP8266 Smart Plant
           </a>

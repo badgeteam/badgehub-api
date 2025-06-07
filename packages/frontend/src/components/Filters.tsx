@@ -81,7 +81,7 @@ const Filters: React.FC<FiltersProps> = ({
           ))}
         </select>
       </div>
-      <div>
+      <div className="todoElement">
         <label
           htmlFor="sort-by"
           className="block text-sm font-medium text-slate-300 mb-1"
@@ -99,7 +99,7 @@ const Filters: React.FC<FiltersProps> = ({
           <option>Arbitrary</option>
         </select>
       </div>
-      <div className="flex items-end">
+      <div className="flex items-end todoElement">
         <button
           className="w-full btn-primary px-4 py-2 rounded-md text-sm font-semibold flex items-center justify-center"
           type="button"

@@ -134,6 +134,61 @@ button:focus-visible {
   fill: currentColor;
 }
 
+.todoElement {
+  position: relative;
+}
+/* Only show overlay if a parent has .todoOverlayEnabled */
+.todoOverlayEnabled .todoElement::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 140, 0, 0.18); /* orange, semi-transparent */
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+  animation: todo-orange-fade 2s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55)
+    alternate;
+}
+
+/* Floating toggle button styles */
+.todo-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  background: #ff8c00;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  transition: background 0.2s;
+}
+.todo-toggle-btn:hover {
+  background: #ffa733;
+}
+
+@keyframes todo-orange-fade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
