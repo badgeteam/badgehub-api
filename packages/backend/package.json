@@ -8,7 +8,6 @@
     "install:container": "docker exec -it badgehub-api-node-1 npm install",
     "start": "node dist/index.mjs",
     "monitor": "docker exec -it badgehub-api-node-1 npx pm2 monit",
-    "lint": "pretty-quick --check",
     "build": "node --experimental-strip-types esbuild/esbuild.config.ts",
     "check:ts": "tsc --noEmit -p tsconfig.json",
     "dev": "concurrently npm:dev:*",
