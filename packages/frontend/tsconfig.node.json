@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "../shared/tsconfig.json"
+  ],
+  "compilerOptions": {
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    //    "module": "nodenext",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "erasableSyntaxOnly": true
+  },
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts"
+  ]
+}

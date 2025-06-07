@@ -13,6 +13,7 @@ data
 **/.next
 **/.vercel
 **/.react-email
+**/coverage
 
 # Other useless files in the image
 .git/

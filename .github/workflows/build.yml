@@ -16,7 +16,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Install dependencies
         run: |
-          npm ci
+          npm ci && cd packages/backend && npm ci && cd ../frontend && npm ci
       - name: Run lint
         run: |
           npm run lint
@@ -25,10 +25,12 @@ jobs:
           npm run build
       - name: Start environment
         run: |
-          npm run test-db:up -- --wait
+          cd packages/backend && npm run test-db:up -- --wait
       - name: Run test
         run: |
           npm run test
       - name: Report Coverage
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          working-directory: packages/backend
