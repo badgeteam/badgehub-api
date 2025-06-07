@@ -15,12 +15,14 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "concurrently -k -c 'auto' 'npm:test:*'",
     "build": "cd packages/backend && npm run build && cd ../frontend && npm run build",
     "start": "cd packages/backend && npm run start",
     "dev": "concurrently -k -c 'auto' 'npm:dev:*'",
     "dev:frontend": "cd packages/frontend && npm run dev",
     "dev:backend": "cd packages/backend && npm run dev",
+    "test:frontend": "cd packages/frontend && npm run test",
+    "test:backend": "cd packages/backend && npm run test",
     "prepare": "husky",
     "lint-staged": "pretty-quick --staged"
   },

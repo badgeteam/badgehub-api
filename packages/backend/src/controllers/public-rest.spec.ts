@@ -88,7 +88,7 @@ describe(
 
     test("GET /api/v3/projects with device and category filters", async () => {
       const res = await request(app).get(
-        "/api/v3/projects?device=why2025&category=Silly"
+        "/api/v3/projects?device=why2025&category=silly"
       );
       expect(res.statusCode).toBe(200);
       expect(res.body.length).toBeGreaterThan(0);
