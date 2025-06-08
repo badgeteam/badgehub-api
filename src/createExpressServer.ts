@@ -10,6 +10,7 @@ import { privateRestContracts } from "@shared/contracts/privateRestContracts";
 import { createPrivateRestRouter } from "@controllers/ts-rest/privateRestRouter";
 import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
+import cors from "cors";
 
 export const createExpressServer = () => {
   const app = express();
@@ -18,6 +19,10 @@ export const createExpressServer = () => {
       next(); // for inspection during development
     });
   }
+
+  console.log("enable cors");
+
+  app.use(cors());
 
   const rateLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
