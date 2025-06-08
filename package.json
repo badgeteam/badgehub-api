@@ -15,7 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "concurrently -k -c 'auto' 'npm:test:*'",
+    "test": "concurrently npm:test:*",
     "build": "cd packages/backend && npm run build && cd ../frontend && npm run build",
     "start": "cd packages/backend && npm run start",
     "dev": "concurrently -k -c 'auto' 'npm:dev:*'",
