@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Spinner from "./components/Spinner";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { z } from "zod";
@@ -44,7 +44,7 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
     tsRestClient
       .getProjects({ query })
       .then((res) => {
-        if (res.status === 200) {
+        if (res.status === 200 && typeof res.body === "object") {
           const body = res.body;
           setApps(body);
           setError(null);
@@ -52,7 +52,10 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
           setError("Failed to fetch projects");
         }
       })
-      .catch(() => setError("Failed to fetch projects"))
+      .catch((e) => {
+        console.error(e);
+        setError("Failed to fetch projects");
+      })
       .finally(() => setLoading(false));
   }, [tsRestClient, device, category, filtersChanged]);
 
@@ -103,7 +106,12 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
         {loading ? (
           <Spinner />
         ) : error ? (
-          <div className="text-center py-10 text-red-400">{error}</div>
+          <div
+            data-testid="error-message"
+            className="text-center py-10 text-red-400"
+          >
+            {error}
+          </div>
         ) : (
           <AppsGrid apps={paginatedApps} />
         )}

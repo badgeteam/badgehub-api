@@ -14,7 +14,7 @@ export const dummyApps: AppCardProps[] = [
   },
   {
     slug: "dummy-app-2",
-    name: "Dummy Game App 2 ",
+    name: "Dummy Game App 2",
     description: "Another test app",
     category: CATEGORIE_NAMES.silly,
     published_at: new Date(),

@@ -18,7 +18,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/app/:slug" element={<AppDetailWrapper />} />
+        <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

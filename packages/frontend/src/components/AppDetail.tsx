@@ -47,7 +47,10 @@ const AppDetail: React.FunctionComponent<{
   }
   if (!project) {
     return (
-      <div className="flex justify-center items-center h-64 text-red-400 bg-gray-900 min-h-screen">
+      <div
+        data-testid="app-detail-error"
+        className="flex justify-center items-center h-64 text-red-400 bg-gray-900 min-h-screen"
+      >
         App not found.
       </div>
     );

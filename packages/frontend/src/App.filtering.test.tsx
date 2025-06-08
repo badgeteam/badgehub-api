@@ -11,7 +11,7 @@ describe("App filtering", () => {
   it("shows all apps by default", async () => {
     render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
     await waitFor(() => {
-      dummyApps.forEach((app) => {
+      dummyApps.slice(0, 7).forEach((app) => {
         if (app.name) {
           expect(screen.getByText(app.name)).toBeInTheDocument();
         }

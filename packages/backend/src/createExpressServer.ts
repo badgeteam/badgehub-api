@@ -33,6 +33,9 @@ export const createExpressServer = () => {
 
   app.use(express.json());
   app.use(express.static(PUBLIC_STATIC_FILE_DIR));
+  app.use("/page", (req, res, next) => {
+    res.sendFile(path.join(PUBLIC_STATIC_FILE_DIR, "index.html"));
+  });
 
   const pino = pinoHttp();
   app.use(pino);
