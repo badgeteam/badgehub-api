@@ -22,7 +22,7 @@
 - [x] Implement showing the real description
 - [x] Change "Microcontroller" to "Badge" in filters
 - [x] Implement sorting for the main page.
-- [ ] Implement the app detail page.
+- [x] Implement the app detail page.
 - [ ] Implement project/app creation UI and logic (form, validation, API integration, feedback)
 - [ ] Implement login functionality (UI, authentication flow, error handling)
 - [ ] Implement "My Projects" page (list projects created by the logged-in user)
