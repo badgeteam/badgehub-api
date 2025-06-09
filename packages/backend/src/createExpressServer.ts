@@ -11,6 +11,7 @@ import { createPrivateRestRouter } from "@controllers/ts-rest/privateRestRouter"
 import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 import cors from "cors";
+import * as path from "path";
 
 export const createExpressServer = () => {
   const app = express();
