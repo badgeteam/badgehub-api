@@ -1,4 +1,4 @@
-import { EXPRESS_PORT, NODE_ENV } from "@config";
+import { EXPRESS_PORT, IS_DEV_ENV } from "@config";
 // TODO: enable when disableWriteWhenNotDev is available
 // import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
@@ -10,7 +10,7 @@ async function startServer() {
   await runMigrations();
   app.listen(EXPRESS_PORT, () => {
     console.info(
-      `Node.js server started. Listening on port ${EXPRESS_PORT}, environment: ${NODE_ENV}`
+      `Node.js server started. Listening on port [${EXPRESS_PORT}], IS_DEV_ENV [${IS_DEV_ENV}]`
     );
   });
 }

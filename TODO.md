@@ -62,6 +62,5 @@
 - [ ] AppSidebarAuthor: Sidebar section (`<section>`) for app author details, and author action button
 - [ ] Add error handling for the detail page and re-enable the detail page erro tests
 
-# TODO for making backend mergable
-- [x] backend should host static files in static files dir
-- [x] Change setup so that dev is running from backend server
+# Misc
+- [x] Throw descriptive error in case some required .env variable is not set

@@ -1,7 +1,7 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
 import serveApiDocs from "@serveApiDocs";
-import { NODE_ENV, PUBLIC_STATIC_FILE_DIR } from "@config";
+import { IS_DEV_ENV, PUBLIC_STATIC_FILE_DIR } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";
@@ -15,7 +15,7 @@ import * as path from "path";
 
 export const createExpressServer = () => {
   const app = express();
-  if (NODE_ENV === "development") {
+  if (IS_DEV_ENV) {
     app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       next(); // for inspection during development
