@@ -10,7 +10,7 @@ async function startServer() {
   await runMigrations();
   app.listen(EXPRESS_PORT, () => {
     console.info(
-      `Node.js server started. Listening on port [${EXPRESS_PORT}], IS_DEV_ENV [${IS_DEV_ENV}]`
+      `Node.js server started with settings port [${EXPRESS_PORT}], IS_DEV_ENV [${IS_DEV_ENV}].\nApp available at http://localhost:${EXPRESS_PORT}/`
     );
   });
 }
