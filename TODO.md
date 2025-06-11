@@ -30,7 +30,7 @@
 - [ ] Make top level dev command that starts the frontend in dev mode and starts the backend
   - make top level package json
   - Move tsconfigs to top level? Not immediately, is an optimization
-- [ ] Add link to API docs (in footer i guess) in frontend to replace old api homepage
+- [x] Add link to API docs in header in frontend to replace old api homepage
 
 # Optimizations
 

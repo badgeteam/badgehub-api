@@ -4,7 +4,7 @@ import { BadgeHubIcon } from "@components/BadgeHubIcon.tsx";
 const navLinks = [
   { label: "Browse Apps", href: "/" },
   { label: "Submit App", href: "#" },
-  { label: "Docs", href: "#" },
+  { label: "Api Docs", href: "/api-docs" },
   { label: "Community", href: "#" },
 ];
 
