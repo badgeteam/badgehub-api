@@ -151,8 +151,8 @@ docker compose --file docker-compose.production.yml down
 ## Tools used
 
 - [Express](https://expressjs.com/), a framework for Node.js
-- [tsoa](https://tsoa-community.github.io/docs/) for generating a swagger file from code
+- [ts-rest](https://ts-rest.com/) for a type safe http controller, contract and client without code generation
+- [zod](https://github.com/colinhacks/zod) for defining and checking json schemas
 - [sql-template-tag](https://github.com/blakeembrey/sql-template-tag) for more easily writing SQL queries
 - [db-migrate](https://db-migrate.readthedocs.io/en/latest/) for database migrations
-- [tsx](https://tsx.is/) for watching TypeScript files in Node.js
 - [PM2](https://pm2.keymetrics.io/) for managing Node.js processes
