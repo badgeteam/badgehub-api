@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@__test__";
 import App from "./App";
-import { tsRestClientWithApps } from "@__test__/tsRestClientBuilder.ts";
-import { dummyApps } from "@__test__/fixtures/dummyApps.ts";
+import { tsRestClientWithApps } from "@__test__";
+import { dummyApps } from "@__test__";
 
 describe("App Pagination", () => {
   it("shows first page of apps and paginates to next page", async () => {

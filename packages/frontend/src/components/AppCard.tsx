@@ -1,5 +1,5 @@
 import React from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import type { AppCardProps } from "./types";
 
 const AppCard: React.FC<AppCardProps> = ({
@@ -18,7 +18,7 @@ const AppCard: React.FC<AppCardProps> = ({
     >
       <div className="p-5 flex-grow">
         <h3 className="text-xl font-semibold text-emerald-400 mb-2 hover:text-emerald-300 transition-colors">
-          <a href={`/page/app/${slug}`}>{name}</a>
+          <Link to={`/page/app/${slug}`}>{name}</Link>
         </h3>
         <p className="text-sm text-slate-400 mb-3 leading-relaxed">
           {description}

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@__test__";
 import App from "./App";
 import {
   tsRestClientWithApps,
   tsRestClientWithError,
   tsRestClientWithEmptyList,
-} from "@__test__/tsRestClientBuilder.ts";
-import { dummyApps } from "@__test__/fixtures/dummyApps.ts";
+} from "@__test__";
+import { dummyApps } from "@__test__";
 
 describe("App", () => {
   it("renders the homepage with dummy apps", async () => {

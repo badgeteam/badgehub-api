@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  dummyApps,
+  render,
+  screen,
+  tsRestClientWithApps,
+  waitFor,
+} from "@__test__";
 import App from "../src/App";
-import { tsRestClientWithApps } from "@__test__/tsRestClientBuilder";
-import { dummyApps } from "@__test__/fixtures/dummyApps";
 import userEvent from "@testing-library/user-event";
 import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
