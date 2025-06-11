@@ -24,7 +24,7 @@
 - [x] Implement sorting for the main page.
 - [x] Implement the app detail page.
 - [ ] Implement project/app creation UI and logic (form, validation, API integration, feedback)
-- [ ] Implement login functionality (UI, authentication flow, error handling)
+- [x] Implement login functionality (UI, authentication flow, error handling)
 - [ ] Implement "My Projects" page (list projects created by the logged-in user)
 - [ ] Deployment: Make new frontend the homepage of the api
 - [ ] Make top level dev command that starts the frontend in dev mode and starts the backend
@@ -67,3 +67,4 @@
 - [ ] Fix repopulate db script 
   - currently it results in an empty mockup-data.sql file
   - currently it seems there is a timezone dependency that causes different data to be generated on different machines
+- [ ] use env vars for frontend keycloak config packages/frontend/src/components/ProfileIcon.tsx
