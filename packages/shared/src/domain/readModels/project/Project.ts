@@ -43,9 +43,9 @@ export interface Project extends ProjectCore, DatedData {
   license: string | null; // Eg. MIT
   // size_of_zip?: number;|null
   // size_of_content?: number;|null
-  category: Category["name"];
-  description: string; // description in metadata of latest version of the project
-  revision: number; // latest revsion number of the project
+  category: Category["name"] | null;
+  description: string | null; // description in metadata of latest version of the projectct
+  revision: number; // latest revsion number of the projectt
   // status?: ProjectStatusName; // Status of newest version with a non-empty status|null
   // user_name?: string; // user->name|null
   interpreter: string | null; // Interpreter for latest version of project
@@ -82,8 +82,8 @@ export const projectSchema = z.object({
   git_commit_id: z.string().nullable(),
   published_at: z.date().nullable(),
   license: z.string().nullable(),
-  category: categoryNameSchema,
-  description: z.string(),
+  category: categoryNameSchema.nullable(),
+  description: z.string().nullable(),
   revision: z.number(),
   version: versionSchema,
   badges: z.array(z.string()),
