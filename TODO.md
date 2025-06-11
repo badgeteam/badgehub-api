@@ -64,3 +64,6 @@
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
+- [ ] Fix repopulate db script 
+  - currently it results in an empty mockup-data.sql file
+  - currently it seems there is a timezone dependency that causes different data to be generated on different machines
