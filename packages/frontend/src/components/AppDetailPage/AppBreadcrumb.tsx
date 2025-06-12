@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const AppBreadcrumb: React.FC<{ project: { name: string } }> = ({
   project,
@@ -6,9 +7,9 @@ const AppBreadcrumb: React.FC<{ project: { name: string } }> = ({
   <nav className="mb-6 text-sm" aria-label="Breadcrumb">
     <ol className="list-none p-0 inline-flex space-x-2">
       <li className="flex items-center">
-        <a href="/" className="text-emerald-400 hover:text-emerald-300">
+        <Link to="/" className="text-emerald-400 hover:text-emerald-300">
           Home
-        </a>
+        </Link>
       </li>
       <li className="flex items-center">
         <svg
@@ -22,12 +23,12 @@ const AppBreadcrumb: React.FC<{ project: { name: string } }> = ({
             clipRule="evenodd"
           ></path>
         </svg>
-        <a
-          href="/#apps-grid"
+        <Link
+          to="/#apps-grid"
           className="text-emerald-400 hover:text-emerald-300"
         >
           Apps
-        </a>
+        </Link>
       </li>
       <li className="flex items-center">
         <svg
