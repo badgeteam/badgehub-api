@@ -1,0 +1,107 @@
+<!--
+1st option with description cutoff: https://g.co/gemini/share/ed4312a1b06e
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Card - Weather Station Deluxe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+      /* Basic body styling for dark mode */
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #1a202c; /* Equivalent to Tailwind's gray-900 */
+          color: #e2e8f0; /* Equivalent to Tailwind's slate-200 */
+      }
+      /* Mono font for specific elements */
+      .font-roboto-mono {
+          font-family: 'Roboto Mono', monospace;
+      }
+      /* Card hover effect for a subtle animation */
+      .card-hover-effect {
+          transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      }
+      .card-hover-effect:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+      }
+      /* Styling for general category tags */
+      .tag {
+          background-color: #374151; /* gray-700 */
+          color: #d1d5db; /* gray-300 */
+      }
+      /* Specific styling for the main microcontroller tag */
+      .tag-mcu {
+          background-color: #047857; /* emerald-600 */
+          color: #d1fae5; /* emerald-100 */
+      }
+      /* Basic styling for SVG icons */
+      .icon {
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          stroke-width: 0;
+          stroke: currentColor;
+          fill: currentColor;
+      }
+      /* Custom class to truncate text to 2 lines */
+      .line-clamp-2 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+      }
+  </style>
+</head>
+<body class="antialiased flex items-center justify-center min-h-screen p-4">
+
+<!-- App Card Container - Fixed height h-80 -->
+<div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden card-hover-effect flex flex-col w-full max-w-sm h-80">
+
+  <!-- Main content of the card -->
+  <div class="p-5 flex-grow flex flex-col">
+    <!-- Header section with icon and title -->
+    <div class="flex items-center mb-3">
+      <div class="w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center mr-4 flex-shrink-0">
+        <svg class="w-6 h-6 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-2.43-4.242 4.5 4.5 0 00-8.32 2.734 4.5 4.5 0 00-4.5 4.5z" /></svg>
+      </div>
+      <h3 class="text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"><a href="#">Weather Station Deluxe</a></h3>
+    </div>
+
+    <!-- Description - Removed mb-4 for better spacing -->
+    <p class="text-sm text-slate-400 leading-relaxed line-clamp-2">Displays temperature, humidity, and pressure. Sends data to a cloud backend for remote monitoring. This extra text will be hidden and properly clamped.</p>
+
+    <!-- Tags and Author block, pushed down with mt-auto -->
+    <div class="mt-auto">
+      <div class="mb-3">
+        <span class="tag-mcu text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">ESP32</span>
+        <span class="tag text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">IoT</span>
+        <span class="tag text-xs font-semibold px-2.5 py-0.5 rounded-full">Sensors</span>
+      </div>
+
+      <!-- Author information -->
+      <p class="text-xs text-slate-500 font-roboto-mono">Author: <a href="#" class="text-emerald-500 hover:underline">DevGuru42</a></p>
+    </div>
+  </div>
+
+  <!-- Card Footer with stats -->
+  <div class="px-5 py-3 bg-gray-750 border-t border-gray-700 flex justify-between items-center">
+    <!-- Rating -->
+    <div class="flex items-center text-sm text-slate-400">
+      <svg class="icon h-4 w-4 mr-1 text-yellow-400" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+      4.8 (120)
+    </div>
+    <!-- Downloads -->
+    <div class="flex items-center text-sm text-slate-400">
+      <svg class="icon h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+      1.5k Dls
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
