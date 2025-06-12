@@ -1,0 +1,259 @@
+<!--https://g.co/gemini/share/0c6f1656a55b-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit App - μAppHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #1a202c; /* Tailwind gray-900 */
+          color: #e2e8f0; /* Tailwind slate-200 */
+      }
+      .font-roboto-mono {
+          font-family: 'Roboto Mono', monospace;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: #2d3748; /* gray-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #4a5568; /* gray-600 */
+          border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: #718096; /* gray-500 */
+      }
+      .btn-primary {
+          background-color: #047857; /* emerald-600 */
+          color: white;
+      }
+      .btn-primary:hover {
+          background-color: #059669; /* emerald-500 */
+      }
+      .btn-secondary {
+          background-color: #4b5563; /* gray-600 */
+          color: white;
+      }
+      .btn-secondary:hover {
+          background-color: #52525b; /* zinc-600 */
+      }
+      .btn-danger {
+          background-color: #dc2626; /* red-600 */
+          color: white;
+      }
+      .btn-danger:hover {
+          background-color: #ef4444; /* red-500 */
+      }
+      .icon {
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          stroke-width: 0;
+          stroke: currentColor;
+          fill: currentColor;
+      }
+      .form-input {
+          background-color: #2d3748; /* gray-800 */
+          border: 1px solid #4a5568; /* gray-600 */
+          color: #e2e8f0; /* slate-200 */
+          border-radius: 0.375rem; /* rounded-md */
+      }
+      .form-input:focus {
+          border-color: #10b981; /* emerald-500 */
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+      }
+  </style>
+</head>
+<body class="antialiased">
+
+<header class="bg-gray-800 shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <a href="#" class="flex items-center space-x-2 text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+          <svg class="icon h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 20H15C18.3137 20 21 17.3137 21 14V10C21 6.68629 18.3137 4 15 4H9C5.68629 4 3 6.68629 3 10V14C3 17.3137 5.68629 20 9 20Z" stroke="currentColor" stroke-width="2"/><path d="M7 8H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 12H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 16H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 8H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 12H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 16H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>μAppHub</span>
+        </a>
+      </div>
+      <nav class="hidden md:flex space-x-4 items-center">
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Browse Apps</a>
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Submit App</a>
+      </nav>
+      <div class="flex items-center">
+        <button class="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white transition-colors">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+    <ol class="list-none p-0 inline-flex space-x-2">
+      <li class="flex items-center">
+        <a href="#" class="text-emerald-400 hover:text-emerald-300">Home</a>
+      </li>
+      <li class="flex items-center">
+        <svg class="icon h-4 w-4 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4-4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+        <a href="#" class="text-emerald-400 hover:text-emerald-300">Apps</a>
+      </li>
+      <li class="flex items-center">
+        <svg class="icon h-4 w-4 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4-4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+        <a href="#" class="text-emerald-400 hover:text-emerald-300">Weather Station Deluxe</a>
+      </li>
+      <li class="flex items-center">
+        <svg class="icon h-4 w-4 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4-4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+        <span class="text-slate-500">Edit</span>
+      </li>
+    </ol>
+  </nav>
+
+  <h1 class="text-3xl font-bold text-slate-100 mb-6">Editing: Weather Station Deluxe</h1>
+
+  <form action="#" method="POST" class="space-y-8">
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">Basic Information</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="app-name" class="block text-sm font-medium text-slate-300 mb-1">App Name</label>
+          <input type="text" id="app-name" name="app-name" class="w-full form-input p-2" value="Weather Station Deluxe">
+        </div>
+        <div>
+          <label for="app-version" class="block text-sm font-medium text-slate-300 mb-1">Version</label>
+          <input type="text" id="app-version" name="app-version" class="w-full form-input p-2" value="1.2.0">
+        </div>
+      </div>
+      <div class="mt-6">
+        <label for="app-description" class="block text-sm font-medium text-slate-300 mb-1">Description</label>
+        <textarea id="app-description" name="app-description" rows="6" class="w-full form-input p-2">This comprehensive weather station application for the ESP32 microcontroller accurately measures and displays real-time temperature, humidity, and atmospheric pressure. It leverages the BME280 sensor for precise readings. Key features include data logging to an SD card, wireless data transmission to a cloud platform, a user-friendly web interface, and optional OLED display support.</textarea>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">Categorization</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div>
+          <label for="mcu" class="block text-sm font-medium text-slate-300 mb-1">Microcontroller (MCU)</label>
+          <select id="mcu" name="mcu" class="w-full form-input p-2">
+            <option>Arduino Uno</option>
+            <option selected>ESP32</option>
+            <option>Raspberry Pi Pico</option>
+            <option>STM32</option>
+            <option>nRF52</option>
+            <option>ESP8266</option>
+          </select>
+        </div>
+        <div>
+          <label for="tags" class="block text-sm font-medium text-slate-300 mb-1">Tags</label>
+          <input type="text" id="tags" name="tags" class="w-full form-input p-2" value="IoT, Sensors, BME280, Web Server">
+          <p class="text-xs text-slate-500 mt-1">Comma-separated values.</p>
+        </div>
+        <div>
+          <label for="license" class="block text-sm font-medium text-slate-300 mb-1">License</label>
+          <input type="text" id="license" name="license" class="w-full form-input p-2" value="MIT">
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">Media & Files</h2>
+      <div>
+        <label class="block text-sm font-medium text-slate-300 mb-2">Screenshots & Media</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div class="relative group">
+            <img src="https://placehold.co/600x400/2d3748/e2e8f0?text=App+Screenshot+1" alt="App Screenshot 1" class="rounded-md w-full h-auto object-cover aspect-video">
+            <button type="button" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+          </div>
+          <div class="relative group">
+            <img src="https://placehold.co/600x400/2d3748/e2e8f0?text=Hardware+Setup" alt="Hardware Setup" class="rounded-md w-full h-auto object-cover aspect-video">
+            <button type="button" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+          </div>
+        </div>
+        <input type="file" name="media-upload" class="form-input w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" multiple>
+      </div>
+      <div class="mt-6">
+        <label for="code-preview" class="block text-sm font-medium text-slate-300 mb-1">Main Code File (e.g., main.ino)</label>
+        <textarea id="code-preview" name="code-preview" rows="15" class="w-full form-input p-2 font-roboto-mono text-sm">// main.ino - Weather Station Deluxe
+#include <WiFi.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+
+#define SEALEVELPRESSURE_HPA (1013.25)
+
+Adafruit_BME280 bme; // I2C
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println(F("BME280 Test"));
+
+  bool status = bme.begin(0x76);
+  if (!status) {
+    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    while (1);
+  }
+}
+
+void loop() {
+  Serial.print("Temperature = ");
+  Serial.print(bme.readTemperature());
+  Serial.println(" *C");
+  delay(2000);
+}</textarea>
+      </div>
+      <div class="mt-6">
+        <label class="block text-sm font-medium text-slate-300 mb-2">Project File Bundle (.zip)</label>
+        <p class="text-xs text-slate-500 mb-2">Current file: <span class="font-roboto-mono text-emerald-400">WeatherStationDeluxe-v1.2.0.zip</span></p>
+        <input type="file" name="project-files-upload" class="form-input w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+        <p class="text-xs text-slate-500 mt-1">Upload a new zip file to replace the existing one.</p>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">Actions</h2>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <button type="submit" class="btn-primary px-6 py-3 rounded-lg font-semibold transition-all duration-200 ease-in-out transform hover:scale-105">Save Changes</button>
+          <a href="#" class="btn-secondary px-6 py-3 rounded-lg font-semibold transition-all duration-200 ease-in-out">Cancel</a>
+        </div>
+        <div>
+          <button type="button" class="btn-danger px-6 py-3 rounded-lg font-semibold transition-all duration-200 ease-in-out flex items-center">
+            <svg class="icon h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+            Delete Application
+          </button>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 mt-4 text-right">Deleting an application is permanent and cannot be undone.</p>
+    </section>
+  </form>
+</main>
+
+<footer class="bg-gray-800 border-t border-gray-700 mt-16">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-slate-400">
+    <div class="mb-4">
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">About</a>
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">Contact</a>
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">Terms of Service</a>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-3 hover:text-emerald-400 transition-colors text-sm">GitHub</a>
+    </div>
+    <p class="text-sm font-roboto-mono">&copy; <span id="currentYear"></span> μAppHub. All rights reserved.</p>
+    <p class="text-xs text-slate-500 mt-2">Designed for makers, by makers.</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
