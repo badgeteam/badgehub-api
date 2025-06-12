@@ -1,81 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
-import Keycloak from "keycloak-js";
 
-// Simulate a user type
-interface User {
-  name: string;
-  email: string;
-}
+import { useSession } from "@components/keycloakSession/SessionContext.tsx";
 
-let keycloak: Keycloak.KeycloakInstance | undefined = undefined;
-
-function getLoggedInUser(): User | undefined {
-  if (!keycloak) {
-    console.warn("Keycloak instance is not initialized.");
-    return undefined;
-  }
-  if (keycloak.authenticated && keycloak.tokenParsed) {
-    return {
-      name:
-        keycloak.tokenParsed.name ||
-        keycloak.tokenParsed.preferred_username ||
-        "User",
-      email: keycloak.tokenParsed.email || "",
-    };
-  }
-  return undefined;
-}
-
-async function login() {
-  await keycloak?.login();
-}
-
-async function logout() {
-  await keycloak?.logout();
-}
-
-const KEYCLOAK_URL = "https://keycloak.p1m.nl";
-const KEYCLOAK_REALM = "master";
-const KEYCLOAK_CLIENT_ID = "badgehub-api-frontend";
-
+// --- ProfileIcon ---
 const ProfileIcon: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | undefined>(undefined);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user, keycloak } = useSession();
 
-  useEffect(() => {
-    if (!keycloak) {
-      keycloak = new Keycloak({
-        url: KEYCLOAK_URL,
-        realm: KEYCLOAK_REALM,
-        clientId: KEYCLOAK_CLIENT_ID,
-      });
-      try {
-        keycloak
-          .init({
-            onLoad: "check-sso",
-            checkLoginIframe: false,
-            pkceMethod: "S256",
-            // silentCheckSsoRedirectUri:
-            //   window.location.origin + "/silent-check-sso.html",
-          })
-          .then((authenticated) => {
-            if (authenticated) {
-              setUser(getLoggedInUser());
-            } else {
-              setUser(undefined);
-            }
-          })
-          .catch((error) => {
-            console.error("Keycloak initialization failed:", error);
-            setUser(undefined);
-          });
-      } catch (error) {
-        console.error("Keycloak sync initialization error:", error);
-        setUser(undefined);
-      }
-    }
-  }, []);
+  async function login() {
+    await keycloak?.login();
+  }
+
+  async function logout() {
+    await keycloak?.logout();
+  }
 
   // Close menu on outside click
   useEffect(() => {

@@ -5,6 +5,8 @@ import "./index.css";
 import App from "./App.tsx";
 import AppDetail from "./components/AppDetail";
 
+import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
+
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();
   if (!slug) {
@@ -16,10 +18,12 @@ const AppDetailWrapper = () => {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
-      </Routes>
+      <SessionProvider>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
+        </Routes>
+      </SessionProvider>
     </BrowserRouter>
   </StrictMode>
 );

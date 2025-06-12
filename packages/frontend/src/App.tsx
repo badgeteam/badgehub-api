@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 import Spinner from "./components/Spinner";
 import "./App.css";
 import type { AppCardProps } from "./components/types.ts";
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { z } from "zod";
@@ -16,7 +16,7 @@ interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;
 }
 
-function App({ tsRestClient = defaultTsRestClient }: AppProps) {
+const App = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
   const [apps, setApps] = useState<AppCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +127,6 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       <Footer />
     </div>
   );
-}
+});
 
 export default App;
