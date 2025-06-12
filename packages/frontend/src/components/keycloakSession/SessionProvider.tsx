@@ -28,10 +28,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
       realm: KEYCLOAK_REALM,
       clientId: KEYCLOAK_CLIENT_ID,
     });
-    setKeycloak(kc);
 
     kc.init({
       checkLoginIframe: false,
+      onLoad: "check-sso",
       pkceMethod: "S256",
     })
       .then((authenticated) => {
@@ -50,8 +50,17 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
       .catch((error) => {
         console.error("Keycloak initialization failed:", error);
         setUser(undefined);
+      })
+      .finally(() => {
+        setKeycloak(kc);
       });
   }, []);
-
+  if (!keycloak) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-gray-500">Loading User data...</div>
+      </div>
+    );
+  }
   return <SessionContext value={{ user, keycloak }}>{children}</SessionContext>;
 };

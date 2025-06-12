@@ -68,3 +68,6 @@
   - currently it results in an empty mockup-data.sql file
   - currently it seems there is a timezone dependency that causes different data to be generated on different machines
 - [ ] use env vars for frontend keycloak config packages/frontend/src/components/ProfileIcon.tsx
+- [ ] Use hidden iframe (see silentCheckSsoRedirectUri documentation in keycloak-js) to check if user is logged in.
+  - This will improve the homepage loading time and user experience.
+

@@ -1,5 +1,4 @@
-import Keycloak from "keycloak-js";
-import React, { useContext } from "react";
+import React, { use } from "react";
 
 export interface User {
   name: string;
@@ -12,4 +11,4 @@ interface SessionContextType {
 }
 
 export const SessionContext = React.createContext<SessionContextType>({});
-export const useSession = () => useContext(SessionContext);
+export const useSession = () => use(SessionContext);
