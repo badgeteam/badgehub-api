@@ -1,8 +1,8 @@
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import Filters from "./components/Filters";
-import AppsGrid from "./components/AppsGrid";
-import Pagination from "./components/Pagination";
+import Filters from "./components/AppsGrid/Filters.tsx";
+import AppsGrid from "./components/AppsGrid/AppsGrid.tsx";
+import Pagination from "./components/AppsGrid/Pagination.tsx";
 import Footer from "./components/Footer";
 import Spinner from "./components/Spinner";
 import "./App.css";

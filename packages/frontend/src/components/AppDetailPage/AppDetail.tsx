@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient";
-import AppDetailHeader from "./AppDetailPage/AppDetailHeader";
-import AppDescription from "./AppDetailPage/AppDescription";
-import AppMedia from "./AppDetailPage/AppMedia";
-import AppCodePreview from "./AppDetailPage/AppCodePreview";
+import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
+import AppDetailHeader from "./AppDetailHeader.tsx";
+import AppDescription from "./AppDescription.tsx";
+import AppMedia from "./AppMedia.tsx";
+import AppCodePreview from "./AppCodePreview.tsx";
 // import AppReviews from "./AppDetailPage/AppReviews";
-import AppSidebarDetails from "./AppDetailPage/AppSidebarDetails";
-import AppSidebarAuthor from "./AppDetailPage/AppSidebarAuthor";
-import AppSidebarSimilar from "./AppDetailPage/AppSidebarSimilar";
-import AppBreadcrumb from "./AppDetailPage/AppBreadcrumb";
+import AppSidebarDetails from "./AppSidebarDetails.tsx";
+import AppSidebarAuthor from "./AppSidebarAuthor.tsx";
+import AppSidebarSimilar from "./AppSidebarSimilar.tsx";
+import AppBreadcrumb from "./AppBreadcrumb.tsx";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "../Header.tsx";
+import Footer from "../Footer.tsx";
 
 const AppDetail: React.FunctionComponent<{
   tsRestClient?: typeof defaultTsRestClient;

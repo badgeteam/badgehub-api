@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import type { AppCardProps } from "./types";
+import type { AppCardProps } from "../types.ts";
 
 const AppCard: React.FC<AppCardProps> = ({
   name,

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
-import AppDetail from "./components/AppDetail";
+import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
 
 import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
 

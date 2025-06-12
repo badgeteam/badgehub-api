@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "@__test__";
-import AppDetail from "./AppDetail";
+import AppDetail from "./AppDetail.tsx";
 import { tsRestClientWithApps } from "@__test__";
 import { dummyApps } from "@__test__";
 
