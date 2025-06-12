@@ -39,6 +39,7 @@ export interface Project extends ProjectCore, DatedData {
   max_firmware: number | null; // Biggest revision number that exists
   git_commit_id: string | null;
   published_at: Date | null; // Last publish date
+  icon: string | null; // Relative path to the icon of the project
   // download_counter?: number; // Sum of all version download count|null
   license: string | null; // Eg. MIT
   // size_of_zip?: number;|null
@@ -73,6 +74,7 @@ export const projectSchema = z.object({
   slug: z.string(),
   idp_user_id: z.string(),
   git: z.string().nullable(),
+  icon: z.string().nullable(),
   allow_team_fixes: z.boolean().nullable(),
   created_at: z.date(),
   updated_at: z.date(),
