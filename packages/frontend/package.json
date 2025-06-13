@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cp index-indirect-dev.html dist/index.html && vite",
+    "dev": "mkdir -p dist && cp index-indirect-dev.html dist/index.html && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

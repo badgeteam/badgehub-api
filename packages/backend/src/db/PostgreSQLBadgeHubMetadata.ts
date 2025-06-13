@@ -411,7 +411,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const badgesMap = await this._getBadgesMap(projects.map((p) => p.slug));
     return projects.map(projectQueryResponseToReadModel).map((p) => ({
       ...p,
-      badges: badgesMap[p.slug],
+      badges: badgesMap[p.slug] ?? [],
     }));
   }
 

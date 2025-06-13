@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { BADGEHUB_API_BASE_URL, tsRestClient } from "@api/tsRestClient.ts";
+import { tsRestClient } from "@api/tsRestClient.ts";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { BADGEHUB_API_BASE_URL } from "@config.ts";
 
 const DownloadIcon = () => (
   <svg

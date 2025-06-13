@@ -14,18 +14,28 @@ import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOn
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
-import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
-import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category";
-import { BADGE_NAMES } from "@shared/domain/readModels/Badge";
+import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category";
+import { BADGE_MAP } from "@shared/domain/readModels/Badge";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
-const CATEGORY_NAMES = Object.values(CATEGORIE_NAMES);
+const CATEGORY_NAMES = Object.values(CATEGORY_MAP);
 
 const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
-const BADGES = Object.values(BADGE_NAMES); // Hardcoded! Update by hand
-const badgeSlugs = Object.keys(BADGE_NAMES); // Hardcoded! Update by hand
+const BADGE_NAMES = Object.values(BADGE_MAP); // Hardcoded! Update by hand
+const BADGE_SLUGS = Object.keys(BADGE_MAP); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
+const ICON_COUNT = 16;
+const ICON_FILENAMES = Array.from(
+  { length: ICON_COUNT },
+  (_, i) => `icon${i}.png`
+);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ICONS_ASSETS_PATH = path.resolve(__dirname, "./dummy-icons");
 
 export async function repopulateDB() {
   const pool = new pg.Pool({
@@ -45,22 +55,6 @@ export async function repopulateDB() {
     await populateDatabases(client, badgeHubData);
   } finally {
     client.release();
-  }
-
-  const shouldRunWithPodman = await new Promise((resolve) =>
-    exec("podman --version", (error) => {
-      if (error) {
-        resolve(false); // assuming podman is not in use
-      } else {
-        // podman is in use, so we'll use that
-        resolve(true);
-      }
-    })
-  );
-  if (shouldRunWithPodman) {
-    exec("npm run podman:overwrite-mockup-data");
-  } else {
-    exec("npm run docker:overwrite-mockup-data");
   }
 }
 
@@ -104,7 +98,7 @@ const getSemiRandomDates = async (stringToDigest: string) => {
 };
 
 async function insertBadges(client: pg.PoolClient) {
-  for (const badgeName of BADGES) {
+  for (const badgeName of BADGE_NAMES) {
     const { created_at, updated_at } = await getSemiRandomDates(badgeName);
     await client.query(
       sql`insert into badgehub.badges (name, slug, created_at, updated_at)
@@ -161,8 +155,9 @@ async function populateDatabases(
 }
 
 function date(millisBackFrom2025: number) {
-  const MAX_DATE = new Date(2025, 0);
-  return new Date(MAX_DATE.getTime() - millisBackFrom2025).toISOString();
+  const JAN_FIRST_2025_BRUSSELS = 1_735_686_000_000;
+  const MAX_DATE_MILLIS = JAN_FIRST_2025_BRUSSELS;
+  return new Date(MAX_DATE_MILLIS - millisBackFrom2025).toISOString();
 }
 
 async function getDescription(appName: string) {
@@ -265,6 +260,23 @@ const writeDraftAppFiles = async (
 
   const { created_at, updated_at } = await getSemiRandomDates(projectName);
 
+  let iconBuffer: Buffer | undefined = undefined;
+
+  // Pick a semirandom icon
+  const iconIndex = semiRandomNumber % (ICON_COUNT + 4);
+  const iconFilename = ICON_FILENAMES[iconIndex];
+  const iconRelativePath = iconFilename;
+  if (iconFilename) {
+    const iconFullPath = path.join(ICONS_ASSETS_PATH, iconFilename);
+
+    // Read icon file from disk
+    try {
+      iconBuffer = fs.readFileSync(iconFullPath);
+    } catch (e) {
+      console.warn(`Could not read icon file: ${iconFullPath}`);
+    }
+  }
+
   const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
     name: projectName,
     description,
@@ -274,6 +286,7 @@ const writeDraftAppFiles = async (
     category: CATEGORY_NAMES[categoryId],
     created_at,
     updated_at,
+    icon: iconRelativePath,
   };
   if (semanticVersion !== "") {
     appMetadata.semantic_version = semanticVersion;
@@ -290,6 +303,20 @@ const writeDraftAppFiles = async (
     },
     { created_at, updated_at }
   );
+
+  // Upload the icon file if it exists
+  if (iconRelativePath && iconBuffer) {
+    await badgeHubData.writeDraftFile(
+      projectSlug,
+      iconRelativePath,
+      {
+        mimetype: "image/png",
+        size: iconBuffer.length,
+        fileContent: iconBuffer,
+      },
+      { created_at, updated_at }
+    );
+  }
 
   const initPyContent = Buffer.from(
     `print('Hello world from the ${projectName} app${semanticVersion}')`
@@ -421,7 +448,7 @@ async function badgeProjectCrossTable(
   for (let index = 0; index < projectSlugs.length; index++) {
     let projectSlug = projectSlugs[index]!;
     const semiRandomNumber = await stringToSemiRandomNumber(projectSlug);
-    const badgeSlug = badgeSlugs[semiRandomNumber % 3]!;
+    const badgeSlug = BADGE_SLUGS[semiRandomNumber % 3]!;
     let insertObject1: DBInsertProjectStatusOnBadge = {
       badge_slug: badgeSlug,
       project_slug: projectSlug,
@@ -434,7 +461,7 @@ async function badgeProjectCrossTable(
     );
 
     // Some project support two badges
-    const badgeId2 = badgeSlugs[semiRandomNumber % 3]!;
+    const badgeId2 = BADGE_SLUGS[semiRandomNumber % 3]!;
     if (badgeId2 != badgeSlug && semiRandomNumber % 3 == 1) {
       const insertObject2: DBInsertProjectStatusOnBadge = {
         badge_slug: badgeId2,

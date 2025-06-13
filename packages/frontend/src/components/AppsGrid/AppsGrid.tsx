@@ -1,6 +1,6 @@
 import React from "react";
-import AppCard from "./AppCard";
-import type { AppCardProps } from "./types";
+import AppCard from "./AppCard.tsx";
+import type { AppCardProps } from "../types.ts";
 
 interface AppsGridProps {
   apps: AppCardProps[];

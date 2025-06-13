@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import AppDetail from "./AppDetail";
-import { tsRestClientWithApps } from "@__test__/tsRestClientBuilder";
-import { dummyApps } from "@__test__/fixtures/dummyApps";
+import { render, screen, waitFor } from "@__test__";
+import AppDetail from "./AppDetail.tsx";
+import { tsRestClientWithApps } from "@__test__";
+import { dummyApps } from "@__test__";
 
 describe(
   "AppDetail",
@@ -22,7 +22,7 @@ describe(
         app.name!
       );
       expect(await screen.findByText(app.description!)).toBeInTheDocument();
-      expect(screen.getAllByText(app.category).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(app.category!).length).toBeGreaterThan(0);
       if (app.badges && app.badges.length > 0) {
         expect(screen.queryAllByText(app.badges[0]!).length).toBeGreaterThan(0);
       }

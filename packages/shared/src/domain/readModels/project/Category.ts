@@ -7,7 +7,7 @@ export interface Category {
   slug: string;
 }
 
-export const CATEGORIE_NAMES = {
+export const CATEGORY_MAP = {
   uncategorised: "Uncategorised",
   event_related: "Event related",
   games: "Games",
@@ -26,8 +26,7 @@ export const CATEGORIE_NAMES = {
   interpreter: "Interpreter",
 } as const;
 
-export type AppCategoryName =
-  (typeof CATEGORIE_NAMES)[keyof typeof CATEGORIE_NAMES]; // Changed! the interpreter categorySlug was added here for the case of libraries.
+export type AppCategoryName = (typeof CATEGORY_MAP)[keyof typeof CATEGORY_MAP]; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {
   category_slug: DBCategory["slug"];

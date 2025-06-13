@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { BadgeHubIcon } from "@components/BadgeHubIcon.tsx";
+import ProfileIcon from "@components/ProfileIcon";
+import { MLink } from "@components/MLink.tsx";
 
 const navLinks = [
-  { label: "Browse Apps", href: "/" },
-  { label: "Submit App", href: "#" },
-  { label: "Docs", href: "#" },
-  { label: "Community", href: "#" },
+  { label: "Browse Apps", to: "/" },
+  { label: "Submit App", to: "/todo" },
+  { label: "My Apps", to: "/todo" },
+  { label: "Api Docs", to: "/api-docs", external: true },
+  // { label: "Community", to: "#" },
 ];
 
 interface HeaderProps {
@@ -21,24 +24,25 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <a
-              href="/"
+            <MLink
+              to="/"
               className="flex items-center space-x-2 text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
             >
               <BadgeHubIcon />
               <span>BadgeHub</span>
-            </a>
+            </MLink>
           </div>
 
           <nav className="hidden md:flex space-x-4 items-center todoElement">
             {navLinks.map((link) => (
-              <a
+              <MLink
+                to={link.to}
+                external={link.external}
                 key={link.label}
-                href={link.href}
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 {link.label}
-              </a>
+              </MLink>
             ))}
           </nav>
 
@@ -66,24 +70,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
                 </svg>
               </div>
             </div>
-            <button
-              className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white transition-colors"
-              aria-label="Profile"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </button>
+            <ProfileIcon />
           </div>
 
           <div className="md:hidden flex items-center">
@@ -136,13 +123,14 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
       >
         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
           {navLinks.map((link) => (
-            <a
+            <MLink
+              to={link.to}
+              external={link.external}
               key={link.label}
-              href={link.href}
               className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors"
             >
               {link.label}
-            </a>
+            </MLink>
           ))}
         </div>
       </div>

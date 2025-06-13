@@ -1,14 +1,14 @@
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Filters from "./components/Filters";
-import AppsGrid from "./components/AppsGrid";
-import Pagination from "./components/Pagination";
-import Footer from "./components/Footer";
-import Spinner from "./components/Spinner";
-import "./App.css";
-import type { AppCardProps } from "./components/types.ts";
-import { useEffect, useMemo, useState } from "react";
-import { tsRestClient as defaultTsRestClient } from "./api/tsRestClient";
+import Header from "../components/Header.tsx";
+import Hero from "../components/Hero.tsx";
+import Filters from "../components/AppsGrid/Filters.tsx";
+import AppsGrid from "../components/AppsGrid/AppsGrid.tsx";
+import Pagination from "../components/AppsGrid/Pagination.tsx";
+import Footer from "../components/Footer.tsx";
+import Spinner from "../components/Spinner.tsx";
+import "./HomePage.css";
+import type { AppCardProps } from "../components/types.ts";
+import { memo, useEffect, useMemo, useState } from "react";
+import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient.ts";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { z } from "zod";
 
@@ -16,7 +16,7 @@ interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;
 }
 
-function App({ tsRestClient = defaultTsRestClient }: AppProps) {
+const HomePage = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
   const [apps, setApps] = useState<AppCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,7 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
   const [sortBy, setSortBy] = useState<string>("Popularity");
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8;
+  const pageSize = 12;
   const [filtersChanged, setFiltersChanged] = useState(false);
 
   // Search state
@@ -127,6 +127,6 @@ function App({ tsRestClient = defaultTsRestClient }: AppProps) {
       <Footer />
     </div>
   );
-}
+});
 
-export default App;
+export default HomePage;
