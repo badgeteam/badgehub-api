@@ -138,4 +138,17 @@ export const dummyApps: AppCardProps[] = [
     revision: 1,
     badges: [],
   },
-] as const;
+].map((app) => ({
+  ...app,
+  min_firmware: null,
+  max_firmware: null,
+  git_commit_id: null,
+  icon: null,
+  allow_team_fixes: null,
+  interpreter: null,
+  license: "MIT",
+  idp_user_id: "dummy-user-id",
+  git: null,
+  created_at: new Date(),
+  updated_at: new Date(),
+}));
