@@ -70,4 +70,4 @@
 - [ ] use env vars for frontend keycloak config packages/frontend/src/components/ProfileIcon.tsx
 - [ ] Use hidden iframe (see silentCheckSsoRedirectUri documentation in keycloak-js) to check if user is logged in.
   - This will improve the homepage loading time and user experience.
-
+- [ ] Add filter parameters to the URL so that the user can share the filtered view with others and so that refresh retains the filters.
