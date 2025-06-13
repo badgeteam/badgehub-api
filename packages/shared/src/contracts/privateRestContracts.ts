@@ -1,6 +1,9 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod/v3";
-import { projectSchema } from "@shared/domain/readModels/project/Project";
+import {
+  projectSchema,
+  projectWithoutVersionSchema,
+} from "@shared/domain/readModels/project/Project";
 import { notFoundSchema } from "@shared/contracts/httpResponseSchemas";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 import {
@@ -184,7 +187,7 @@ export const privateRestContracts = c.router(
         pageLength: z.coerce.number().optional(),
       }),
       responses: {
-        200: z.array(projectSchema),
+        200: z.array(projectWithoutVersionSchema),
         403: unauthorizedSchema,
       },
       summary: "Get all draft projects for a user",
