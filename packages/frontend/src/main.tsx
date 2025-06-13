@@ -1,11 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
 import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
 
 import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
+import { TodoPage } from "@TodoPage.tsx";
 
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
+          <Route path="/todo" element={<TodoPage />} />
         </Routes>
       </SessionProvider>
     </BrowserRouter>
