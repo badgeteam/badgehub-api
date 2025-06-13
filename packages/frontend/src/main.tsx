@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
-          <Route path="/todo" element={<TodoPage />} />
+          <Route path="/page/todo" element={<TodoPage />} />
         </Routes>
       </SessionProvider>
     </BrowserRouter>

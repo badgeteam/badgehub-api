@@ -5,8 +5,8 @@ import { MLink } from "@components/MLink.tsx";
 
 const navLinks = [
   { label: "Browse Apps", to: "/" },
-  { label: "Submit App", to: "/todo" },
-  { label: "My Apps", to: "/todo" },
+  { label: "Submit App", to: "/page/todo" },
+  { label: "My Apps", to: "/page/todo" },
   { label: "Api Docs", to: "/api-docs", external: true },
   // { label: "Community", to: "#" },
 ];
