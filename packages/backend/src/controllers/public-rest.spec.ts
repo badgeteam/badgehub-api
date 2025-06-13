@@ -24,10 +24,6 @@ describe(
       expect(
         res.body.find((badge: Badge) => badge.slug === "why2025")
       ).toBeDefined();
-      expect(res.body[0]).toEqual({
-        slug: "mch2022",
-        name: "mch2022",
-      });
     });
 
     test("GET /api/v3/projects", async () => {

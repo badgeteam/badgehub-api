@@ -1,6 +1,6 @@
 import React from "react";
-import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category.ts";
-import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
+import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
+import { BADGE_MAP } from "@shared/domain/readModels/Badge.ts";
 
 interface FiltersProps {
   device: string;
@@ -12,14 +12,14 @@ interface FiltersProps {
   onApplyFilters: () => void;
 }
 
-const BADGES = Object.values(BADGE_NAMES);
-const BADGES_KEYS_MAP = Object.fromEntries(
-  Object.entries(BADGE_NAMES).map(([key, value]) => [value, key])
+const BADGES = Object.values(BADGE_MAP);
+const REVERSE_BADGES_MAP = Object.fromEntries(
+  Object.entries(BADGE_MAP).map(([key, value]) => [value, key])
 );
 
-const CATEGORY_OPTIONS = Object.values(CATEGORIE_NAMES);
+const CATEGORY_OPTIONS = Object.values(CATEGORY_MAP);
 const CATEGORY_KEYS_MAP = Object.fromEntries(
-  Object.entries(CATEGORIE_NAMES).map(([key, value]) => [value, key])
+  Object.entries(CATEGORY_MAP).map(([key, value]) => [value, key])
 );
 const Filters: React.FC<FiltersProps> = ({
   device,
@@ -52,7 +52,7 @@ const Filters: React.FC<FiltersProps> = ({
         >
           <option value="All">All</option>
           {BADGES.map((option) => (
-            <option key={option} value={BADGES_KEYS_MAP[option]}>
+            <option key={option} value={REVERSE_BADGES_MAP[option]}>
               {option}
             </option>
           ))}

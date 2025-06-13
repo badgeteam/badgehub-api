@@ -16,14 +16,14 @@ import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
-import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category";
-import { BADGE_NAMES } from "@shared/domain/readModels/Badge";
+import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category";
+import { BADGE_MAP } from "@shared/domain/readModels/Badge";
 
-const CATEGORY_NAMES = Object.values(CATEGORIE_NAMES);
+const CATEGORY_NAMES = Object.values(CATEGORY_MAP);
 
 const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
-const BADGES = Object.values(BADGE_NAMES); // Hardcoded! Update by hand
-const badgeSlugs = Object.keys(BADGE_NAMES); // Hardcoded! Update by hand
+const BADGE_NAMES = Object.values(BADGE_MAP); // Hardcoded! Update by hand
+const BADGE_SLUGS = Object.keys(BADGE_MAP); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 
@@ -104,7 +104,7 @@ const getSemiRandomDates = async (stringToDigest: string) => {
 };
 
 async function insertBadges(client: pg.PoolClient) {
-  for (const badgeName of BADGES) {
+  for (const badgeName of BADGE_NAMES) {
     const { created_at, updated_at } = await getSemiRandomDates(badgeName);
     await client.query(
       sql`insert into badgehub.badges (name, slug, created_at, updated_at)
@@ -421,7 +421,7 @@ async function badgeProjectCrossTable(
   for (let index = 0; index < projectSlugs.length; index++) {
     let projectSlug = projectSlugs[index]!;
     const semiRandomNumber = await stringToSemiRandomNumber(projectSlug);
-    const badgeSlug = badgeSlugs[semiRandomNumber % 3]!;
+    const badgeSlug = BADGE_SLUGS[semiRandomNumber % 3]!;
     let insertObject1: DBInsertProjectStatusOnBadge = {
       badge_slug: badgeSlug,
       project_slug: projectSlug,
@@ -434,7 +434,7 @@ async function badgeProjectCrossTable(
     );
 
     // Some project support two badges
-    const badgeId2 = badgeSlugs[semiRandomNumber % 3]!;
+    const badgeId2 = BADGE_SLUGS[semiRandomNumber % 3]!;
     if (badgeId2 != badgeSlug && semiRandomNumber % 3 == 1) {
       const insertObject2: DBInsertProjectStatusOnBadge = {
         badge_slug: badgeId2,
