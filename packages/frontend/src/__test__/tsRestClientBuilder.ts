@@ -1,5 +1,5 @@
 // tsRestClientBuilder.ts
-// Utility to build mock tsRestClient for App tests
+// Utility to build mock tsRestClient for tests
 
 import {
   publicProjectContracts,
@@ -47,7 +47,7 @@ export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
         }
         if (category) {
           filtered = filtered.filter(
-            (app) => app.category.toLowerCase() === category
+            (app) => app.category?.toLowerCase() === category
           );
         }
         return { status: 200, body: filtered, headers: new Headers() };
