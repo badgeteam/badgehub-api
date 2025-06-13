@@ -60,9 +60,10 @@ export const projectQueryResponseToReadModel = (
     // dependencies: undefined, // TODO
     // votes: undefined, // TODO
     // warnings: undefined, // TODO
+    icon: enrichedDBProject.icon ?? null,
     badges: [], // TODO
-    min_firmware: -1, // TODO: this should be the smallest revision number that exists, but we don't have this in the query
-    max_firmware: -1, // TODO: this should be the smallest revision number that exists, but we don't have this in the query
+    // min_firmware: null, // TODO: this should be the smallest revision number that exists, but we don't have this in the query
+    // max_firmware: null, // TODO: this should be the smallest revision number that exists, but we don't have this in the query
     ...extractDatedDataConverted(enrichedDBProject),
   };
 };

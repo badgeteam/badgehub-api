@@ -64,8 +64,8 @@
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
-- [ ] Fix repopulate db script 
-  - currently it results in an empty mockup-data.sql file
+- [x] Fix repopulate db script 
+  - [x] currently it results in an empty mockup-data.sql file
   - [x] currently it seems there is a timezone dependency that causes different data to be generated on different machines
 - [ ] use env vars for frontend keycloak config packages/frontend/src/components/ProfileIcon.tsx
 - [ ] Use hidden iframe (see silentCheckSsoRedirectUri documentation in keycloak-js) to check if user is logged in.

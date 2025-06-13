@@ -6,7 +6,7 @@ import {
   Project,
   ProjectWithoutVersion,
 } from "@shared/domain/readModels/project/Project";
-import { Badge } from "@shared/domain/readModels/Badge";
+import { Badge, BADGE_MAP } from "@shared/domain/readModels/Badge";
 import { isInDebugMode } from "@util/debug";
 import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON";
 
@@ -45,6 +45,7 @@ describe(
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
           "git_commit_id": null,
+          "icon": null,
           "idp_user_id": "NanoNavigator",
           "interpreter": "python",
           "license": "MIT",
@@ -122,6 +123,7 @@ describe(
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
           "git_commit_id": null,
+          "icon": null,
           "idp_user_id": "NanoNavigator",
           "interpreter": "python",
           "license": "MIT",
@@ -222,6 +224,7 @@ describe(
           "description": "Use CodeCraft for some cool graphical effects.",
           "git": null,
           "git_commit_id": null,
+          "icon": null,
           "idp_user_id": "NanoNavigator",
           "interpreter": "python",
           "license": "MIT",

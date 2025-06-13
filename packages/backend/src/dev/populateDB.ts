@@ -14,7 +14,6 @@ import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOn
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
-import { exec } from "node:child_process";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
 import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category";
 import { BADGE_MAP } from "@shared/domain/readModels/Badge";
@@ -45,22 +44,6 @@ export async function repopulateDB() {
     await populateDatabases(client, badgeHubData);
   } finally {
     client.release();
-  }
-
-  const shouldRunWithPodman = await new Promise((resolve) =>
-    exec("podman --version", (error) => {
-      if (error) {
-        resolve(false); // assuming podman is not in use
-      } else {
-        // podman is in use, so we'll use that
-        resolve(true);
-      }
-    })
-  );
-  if (shouldRunWithPodman) {
-    exec("npm run podman:overwrite-mockup-data");
-  } else {
-    exec("npm run docker:overwrite-mockup-data");
   }
 }
 

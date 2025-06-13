@@ -1,5 +1,6 @@
 services:
   db:
+    container_name: badgehub-db
     image: postgres:16
     restart: always
     env_file:

@@ -140,8 +140,6 @@ export const dummyApps: AppCardProps[] = [
   },
 ].map((app) => ({
   ...app,
-  min_firmware: null,
-  max_firmware: null,
   git_commit_id: null,
   icon: null,
   allow_team_fixes: null,

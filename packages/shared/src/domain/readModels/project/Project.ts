@@ -35,8 +35,8 @@ export type ProjectWithoutVersion = Omit<Project, "version">;
 export interface Project extends ProjectCore, DatedData {
   // Computed
   name: string;
-  min_firmware: number | null; // Smallest revision number that exists
-  max_firmware: number | null; // Biggest revision number that exists
+  // min_firmware: number | null; // Smallest revision number that exists
+  // max_firmware: number | null; // Biggest revision number that exists
   git_commit_id: string | null;
   published_at: Date | null; // Last publish date
   icon: string | null; // Relative path to the icon of the project
@@ -79,8 +79,8 @@ export const projectSchema = z.object({
   created_at: z.date(),
   updated_at: z.date(),
   name: z.string(),
-  min_firmware: z.number().nullable(),
-  max_firmware: z.number().nullable(),
+  // min_firmware: z.number().nullable(),
+  // max_firmware: z.number().nullable(),
   git_commit_id: z.string().nullable(),
   published_at: z.date().nullable(),
   license: z.string().nullable(),
