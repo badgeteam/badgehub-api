@@ -161,8 +161,9 @@ async function populateDatabases(
 }
 
 function date(millisBackFrom2025: number) {
-  const MAX_DATE = new Date(2025, 0);
-  return new Date(MAX_DATE.getTime() - millisBackFrom2025).toISOString();
+  const JAN_FIRST_2025_BRUSSELS = 1_735_686_000_000;
+  const MAX_DATE_MILLIS = JAN_FIRST_2025_BRUSSELS;
+  return new Date(MAX_DATE_MILLIS - millisBackFrom2025).toISOString();
 }
 
 async function getDescription(appName: string) {
