@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import type { AppCardProps } from "../types.ts";
 import { DummyAppCardIcon } from "@components/AppsGrid/DummyAppCardIcon.tsx";
-import { BADGEHUB_API_BASE_URL } from "@api/tsRestClient.ts";
 import { MLink } from "@components/MLink.tsx";
+import { BADGEHUB_API_BASE_URL } from "@config.ts";
 
 const AppCard: React.FC<AppCardProps> = ({
   name,
