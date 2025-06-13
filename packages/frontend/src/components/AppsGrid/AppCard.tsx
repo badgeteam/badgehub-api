@@ -18,7 +18,7 @@ const AppCard: React.FC<AppCardProps> = ({
   return (
     <div
       data-testid="AppCard"
-      className="bg-gray-800 rounded-lg shadow-lg overflow-hidden card-hover-effect flex flex-col h-56"
+      className="bg-gray-800 rounded-lg shadow-lg overflow-hidden card-hover-effect flex flex-col h-60"
     >
       <div className="p-5 flex flex-col flex-grow">
         {/* Header with icon and title */}
