@@ -75,7 +75,11 @@ async function cleanDatabases(client: pg.PoolClient) {
   for (const table of tablesWithIdSeq) {
     await client.query(sql`delete
                            from ${raw(table)}`);
-    await client.query(sql`alter sequence ${raw(table)}_id_seq restart`);
+    await client
+      .query(sql`alter sequence ${raw(table)}_id_seq restart`)
+      .catch((e) => {
+        console.warn(`could not reset ${table}_id_seq, ignoring issue`, e);
+      });
   }
 }
 
