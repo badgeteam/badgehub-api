@@ -1,9 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import type { AppCardProps } from "../types.ts";
-import { DummyAppCardIcon } from "@components/AppsGrid/DummyAppCardIcon.tsx";
 import { MLink } from "@components/MLink.tsx";
-import { BADGEHUB_API_BASE_URL } from "@config.ts";
+import { BADGEHUB_API_BASE_URL, BADGEHUB_FRONTEND_BASE_URL } from "@config.ts";
 
 const AppCard: React.FC<AppCardProps> = ({
   name,
@@ -15,6 +13,9 @@ const AppCard: React.FC<AppCardProps> = ({
   slug,
   icon,
 }) => {
+  const iconSrc = icon
+    ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/latest/files/${encodeURIComponent(icon)}`
+    : `${BADGEHUB_FRONTEND_BASE_URL}/assets/no-icon-uploaded.png`;
   return (
     <div
       data-testid="AppCard"
@@ -24,16 +25,12 @@ const AppCard: React.FC<AppCardProps> = ({
         {/* Header with icon and title */}
         <div className="flex items-center mb-3">
           <div className="w-10 h-10 rounded-lg bg-gray-700 flex items-center justify-center mr-4 flex-shrink-0 overflow-hidden">
-            {icon ? (
-              <img
-                src={`${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/latest/files/${encodeURIComponent(icon)}`}
-                alt={name || "App icon"}
-                className="w-8 h-8 object-contain"
-                loading="lazy"
-              />
-            ) : (
-              <DummyAppCardIcon appSlug={slug} />
-            )}
+            <img
+              src={iconSrc}
+              alt={name || "App icon"}
+              className="w-8 h-8 object-contain"
+              loading="lazy"
+            />
           </div>
           <MLink to={`/page/app/${slug}`}>
             <h3 className="text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors line-clamp-2">

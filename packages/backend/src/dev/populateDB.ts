@@ -17,6 +17,9 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
 import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category";
 import { BADGE_MAP } from "@shared/domain/readModels/Badge";
+import * as fs from "fs";
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 const CATEGORY_NAMES = Object.values(CATEGORY_MAP);
 
@@ -25,6 +28,14 @@ const BADGE_NAMES = Object.values(BADGE_MAP); // Hardcoded! Update by hand
 const BADGE_SLUGS = Object.keys(BADGE_MAP); // Hardcoded! Update by hand
 
 const CATEGORIES_COUNT = CATEGORY_NAMES.length;
+const ICON_COUNT = 16;
+const ICON_FILENAMES = Array.from(
+  { length: ICON_COUNT },
+  (_, i) => `icon${i}.png`
+);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ICONS_ASSETS_PATH = path.resolve(__dirname, "./dummy-icons");
 
 export async function repopulateDB() {
   const pool = new pg.Pool({
@@ -249,6 +260,23 @@ const writeDraftAppFiles = async (
 
   const { created_at, updated_at } = await getSemiRandomDates(projectName);
 
+  let iconBuffer: Buffer | undefined = undefined;
+
+  // Pick a semirandom icon
+  const iconIndex = semiRandomNumber % (ICON_COUNT + 4);
+  const iconFilename = ICON_FILENAMES[iconIndex];
+  const iconRelativePath = iconFilename;
+  if (iconFilename) {
+    const iconFullPath = path.join(ICONS_ASSETS_PATH, iconFilename);
+
+    // Read icon file from disk
+    try {
+      iconBuffer = fs.readFileSync(iconFullPath);
+    } catch (e) {
+      console.warn(`Could not read icon file: ${iconFullPath}`);
+    }
+  }
+
   const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
     name: projectName,
     description,
@@ -258,6 +286,7 @@ const writeDraftAppFiles = async (
     category: CATEGORY_NAMES[categoryId],
     created_at,
     updated_at,
+    icon: iconRelativePath,
   };
   if (semanticVersion !== "") {
     appMetadata.semantic_version = semanticVersion;
@@ -274,6 +303,20 @@ const writeDraftAppFiles = async (
     },
     { created_at, updated_at }
   );
+
+  // Upload the icon file if it exists
+  if (iconRelativePath && iconBuffer) {
+    await badgeHubData.writeDraftFile(
+      projectSlug,
+      iconRelativePath,
+      {
+        mimetype: "image/png",
+        size: iconBuffer.length,
+        fileContent: iconBuffer,
+      },
+      { created_at, updated_at }
+    );
+  }
 
   const initPyContent = Buffer.from(
     `print('Hello world from the ${projectName} app${semanticVersion}')`

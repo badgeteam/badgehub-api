@@ -27,7 +27,8 @@ export function getBaseSelectProjectQuery(
                     m.description,
                     m.interpreter,
                     m.license_file,
-                    m.name
+                    m.name,
+                    m.icon
              from projects p
                     left join versions v on ${revision === "draft" ? sql`p.draft_revision` : sql`p.latest_revision`} = v.revision and p.slug = v.project_slug
                     left join app_metadata_jsons m on v.app_metadata_json_id = m.id

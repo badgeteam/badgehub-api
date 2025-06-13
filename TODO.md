@@ -42,6 +42,7 @@
 
 - [x] All thing not implemented yet, so the things that are using dummy data, should have some visual indication, maybe like a grey or red border around them
 - [ ] Project zip download button on detail page
+- [ ] Icons should fill the rounded square, not be centered in it
 
 # Components/elements with `todoElement` class (to review/implement)
 
