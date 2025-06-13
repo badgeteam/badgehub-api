@@ -12,13 +12,13 @@ const Hero: React.FC = () => (
     <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 todoElement">
       <a
         href="#apps-grid"
-        className="btn-primary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105"
+        className="btn-primary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
       >
         Explore Projects
       </a>
       <a
         href="#"
-        className="btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105"
+        className="btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
       >
         Upload Your Creation
       </a>
