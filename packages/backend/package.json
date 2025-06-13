@@ -10,7 +10,7 @@
     "monitor": "docker exec -it badgehub-api-node-1 npx pm2 monit",
     "build": "node --experimental-strip-types esbuild/esbuild.config.ts",
     "check:ts": "tsc --noEmit -p tsconfig.json",
-    "dev": "node --import tsx src/index.ts",
+    "dev": "node --watch --import tsx src/index.ts",
     "repopulate-db": "node --import tsx src/dev/runPopulateDB.ts",
     "test-db:up": "docker compose -f docker-compose.test-db.yml up -d",
     "test-db:down": "docker compose -f docker-compose.test-db.yml down",
