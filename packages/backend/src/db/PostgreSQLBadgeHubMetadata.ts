@@ -93,7 +93,9 @@ const getVersionQuery = (
   versionRevision: RevisionNumberOrAlias
 ): Sql => {
   if (typeof versionRevision === "number") {
-    return sql`(select id from versions where revision = ${versionRevision} and project_slug = ${projectSlug} and published_at is not null)`;
+    return sql`(select id
+                from versions
+                where revision = ${versionRevision} and project_slug = ${projectSlug} and published_at is not null)`;
   }
   switch (versionRevision) {
     case "draft":
@@ -381,6 +383,10 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       ${filter.badgeSlug}`;
     }
     query = sql`${query} where p.deleted_at is null`;
+
+    if (revision !== "draft") {
+      query = sql`${query} and v.published_at is not null`;
+    }
 
     if (filter?.categorySlug) {
       query = sql`${query} and c.slug =

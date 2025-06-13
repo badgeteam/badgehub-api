@@ -58,6 +58,14 @@ describe(
       `);
     });
 
+    test("GET /api/v3/projects should not contain unpublished apps", async () => {
+      const res = await request(app).get("/api/v3/projects");
+      expect(res.statusCode).toBe(200);
+      expect(
+        res.body.find((app: ProjectWithoutVersion) => !app.published_at)?.name
+      ).toBeUndefined();
+    });
+
     test("GET /api/v3/projects with device filter", async () => {
       const res = await request(app).get("/api/v3/projects?device=why2025");
       expect(res.statusCode).toBe(200);
