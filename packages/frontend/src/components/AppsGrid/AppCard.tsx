@@ -14,7 +14,7 @@ const AppCard: React.FC<AppCardProps> = ({
   icon,
 }) => {
   const iconSrc = icon
-    ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/latest/files/${encodeURIComponent(icon)}`
+    ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/rev${revision}/files/${encodeURIComponent(icon)}`
     : `${BADGEHUB_FRONTEND_BASE_URL}/assets/no-icon-uploaded.png`;
   return (
     <div

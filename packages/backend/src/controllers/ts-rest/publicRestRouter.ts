@@ -40,6 +40,8 @@ const createFilesRouter = (badgeHubData: BadgeHubData) => {
         "Content-Disposition",
         `attachment; filename="${filePath}"`
       );
+      // Enable public caching for immutable revisioned files (1 year)
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
       const data = Readable.from(file);
       return ok(data);
     },

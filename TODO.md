@@ -31,7 +31,7 @@
   - make top level package json
   - Move tsconfigs to top level? Not immediately, is an optimization
 - [x] Add link to API docs in header in frontend to replace old api homepage
-- [ ] app icon caching: currently the app icon is fetched from the backend every time the app detail page is loaded. We need to change the setup so that the app icons can be cached on the client side.
+- [x] app icon caching: currently the app icon is fetched from the backend every time the app detail page is loaded. We need to change the setup so that the app icons can be cached on the client side.
 
 - [ ] Implement Server assisted pagination for the main page.
 - [ ] use nullable for optional properties instead so zod typing matches exactly
