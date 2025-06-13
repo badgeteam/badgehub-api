@@ -154,5 +154,6 @@ docker compose --file docker-compose.production.yml down
 - [ts-rest](https://ts-rest.com/) for a type safe http controller, contract and client without code generation
 - [zod](https://github.com/colinhacks/zod) for defining and checking json schemas
 - [sql-template-tag](https://github.com/blakeembrey/sql-template-tag) for more easily writing SQL queries
+- [tsx](https://tsx.is/) for running TypeScript files in Node.js
 - [db-migrate](https://db-migrate.readthedocs.io/en/latest/) for database migrations
 - [PM2](https://pm2.keymetrics.io/) for managing Node.js processes
