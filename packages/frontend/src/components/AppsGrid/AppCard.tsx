@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { AppCardProps } from "../types.ts";
 import { DummyAppCardIcon } from "@components/AppsGrid/DummyAppCardIcon.tsx";
 import { BADGEHUB_API_BASE_URL } from "@api/tsRestClient.ts";
+import { MLink } from "@components/MLink.tsx";
 
 const AppCard: React.FC<AppCardProps> = ({
   name,
@@ -34,9 +35,11 @@ const AppCard: React.FC<AppCardProps> = ({
               <DummyAppCardIcon appSlug={slug} />
             )}
           </div>
-          <h3 className="text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors line-clamp-2">
-            <Link to={`/page/app/${slug}`}>{name}</Link>
-          </h3>
+          <MLink to={`/page/app/${slug}`}>
+            <h3 className="text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors line-clamp-2">
+              {name}
+            </h3>
+          </MLink>
         </div>
 
         {/* Description with line clamp */}

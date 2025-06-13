@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { BadgeHubIcon } from "@components/BadgeHubIcon.tsx";
 import ProfileIcon from "@components/ProfileIcon";
-import { Link } from "react-router-dom";
 import { MLink } from "@components/MLink.tsx";
 
 const navLinks = [

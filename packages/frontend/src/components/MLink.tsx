@@ -3,7 +3,7 @@ import React from "react";
 // Maybe Link, can also just be an anchor tag for external links
 export const MLink: React.FC<{
   to: string;
-  className: string;
+  className?: string;
   key?: string;
   external?: boolean;
   children: React.ReactNode;
