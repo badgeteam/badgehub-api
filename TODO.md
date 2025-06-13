@@ -2,8 +2,8 @@
 
 - [x] Add a loading spinner to the main page while the data is being fetched.
 - [x] Make the main page testable. To do this, we need to:
-  - [x] create a mock tsRestclient that can be injected into the App component.
-  - [x] Check that the App.test.tsx is now working.
+  - [x] create a mock tsRestclient that can be injected into the HomePage component.
+  - [x] Check that the HomePage.test.tsx is now working.
 - [x] Add test ids to the main page elements.
   - [x] Add a test id to the main page.
   - [x] Add a test id to the loading spinner.
@@ -12,7 +12,7 @@
   - [x] Add a test id to the filter dropdowns.
   - [x] Add a test id to the sort dropdown.
   - [x] Add a test id to app cards container.
-- [x] Update the App.test.tsx to use the test ids.
+- [x] Update the HomePage.test.tsx to use the test ids.
 - [ ] try to implement keycloak authentication.
 - [x] Implement filtering for the main page.
 - [x] Implement pagination for the main page.

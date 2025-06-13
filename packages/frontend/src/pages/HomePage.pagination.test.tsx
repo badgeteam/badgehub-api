@@ -1,12 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@__test__";
-import App from "./App";
+import HomePage from "./HomePage.tsx";
 import { tsRestClientWithApps } from "@__test__";
 import { dummyApps } from "@__test__";
 
-describe("App Pagination", () => {
+describe("HomePage Pagination", () => {
   it("shows first page of apps and paginates to next page", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     expect(
       await screen.findByTestId("app-cards-container")
     ).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe("App Pagination", () => {
   });
 
   it("disables previous button on first page", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     expect(
       await screen.findByTestId("app-cards-container")
     ).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe("App Pagination", () => {
   });
 
   it("disables next button on last page", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     let nextButton = (await screen.findByTestId(
       "pagination-next"
     )) as HTMLButtonElement;
@@ -59,7 +59,7 @@ describe("App Pagination", () => {
   });
 
   it("can go back to previous page", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const nextButton = (await screen.findByTestId(
       "pagination-next"
     )) as HTMLButtonElement;

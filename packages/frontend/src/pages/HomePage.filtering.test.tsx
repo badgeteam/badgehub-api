@@ -6,14 +6,14 @@ import {
   tsRestClientWithApps,
   waitFor,
 } from "@__test__";
-import App from "../src/App";
+import HomePage from "./HomePage.tsx";
 import userEvent from "@testing-library/user-event";
 import { CATEGORIE_NAMES } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_NAMES } from "@shared/domain/readModels/Badge.ts";
 
-describe("App filtering", () => {
+describe("HomePage filtering", () => {
   it("shows all apps by default", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     await waitFor(() => {
       dummyApps.slice(0, 7).forEach((app) => {
         if (app.name) {
@@ -24,7 +24,7 @@ describe("App filtering", () => {
   });
 
   it("filters by Badge/device", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
     // Use a badge value that exists in dummyApps, e.g., "mch2022"
     await userEvent.selectOptions(mcuDropdown, BADGE_NAMES.mch2022);
@@ -42,7 +42,7 @@ describe("App filtering", () => {
   });
 
   it("filters by category", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const categoryDropdown = screen.getByTestId("filter-dropdown-category");
     // Use a category value that exists in dummyApps, e.g., CATEGORIES.silly
     await userEvent.selectOptions(categoryDropdown, "silly");
@@ -66,7 +66,7 @@ describe("App filtering", () => {
   });
 
   it("filters by both device and category", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
     const categoryDropdown = screen.getByTestId("filter-dropdown-category");
     // Use values that exist together in an app, e.g., "mch2022" and CATEGORIES.silly
@@ -88,7 +88,7 @@ describe("App filtering", () => {
   });
 
   it("filters apps by search query", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     // Wait for apps to load
     await screen.findByText(dummyApps[0]!.name!);
     const searchBar = await screen.findByTestId("search-bar");

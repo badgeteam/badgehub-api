@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "@__test__";
-import App from "./App";
+import HomePage from "./HomePage.tsx";
 import {
   tsRestClientWithApps,
   tsRestClientWithError,
@@ -8,9 +8,9 @@ import {
 } from "@__test__";
 import { dummyApps } from "@__test__";
 
-describe("App", () => {
+describe("HomePage", () => {
   it("renders the homepage with dummy apps", async () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     expect(screen.getByTestId("main-page")).toBeInTheDocument();
     expect(screen.getByText(/Share\. Build\. Innovate\./i)).toBeInTheDocument();
     await waitFor(() => {
@@ -28,19 +28,19 @@ describe("App", () => {
   });
 
   it("shows the filter bar", () => {
-    render(<App tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     expect(screen.getByTestId("filter-bar")).toBeInTheDocument();
   });
 
   it("shows an error message when the API call fails", async () => {
-    render(<App tsRestClient={tsRestClientWithError()} />);
+    render(<HomePage tsRestClient={tsRestClientWithError()} />);
     expect(
       await screen.findByText(/Failed to fetch projects/i)
     ).toBeInTheDocument();
   });
 
   it("shows a message or empty state when there are no apps", async () => {
-    render(<App tsRestClient={tsRestClientWithEmptyList()} />);
+    render(<HomePage tsRestClient={tsRestClientWithEmptyList()} />);
     expect(screen.queryByTestId("app-cards-container")).not.toBeInTheDocument();
     expect(await screen.findByText(/No apps found\./i)).toBeInTheDocument();
   });
