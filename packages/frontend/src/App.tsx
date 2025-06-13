@@ -27,7 +27,7 @@ const App = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
   const [sortBy, setSortBy] = useState<string>("Popularity");
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 8;
+  const pageSize = 12;
   const [filtersChanged, setFiltersChanged] = useState(false);
 
   // Search state

@@ -13,8 +13,8 @@ describe("App Pagination", () => {
 
     expect(screen.getByText("Dummy App 1")).toBeInTheDocument();
     expect(screen.getByText("Dummy App 8")).toBeInTheDocument();
-    expect(screen.queryByText("Dummy App 12")).not.toBeInTheDocument();
     expect(screen.queryByText("Dummy App 13")).not.toBeInTheDocument();
+    expect(screen.queryByText("Dummy App 14")).not.toBeInTheDocument();
 
     // Click next page using test id
     const nextButton = screen.getByTestId(
