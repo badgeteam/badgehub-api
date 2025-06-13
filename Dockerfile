@@ -23,31 +23,11 @@ COPY . .
 
 RUN npm run build
 
-# Prod stage
-FROM node:22-bookworm-slim
-
-WORKDIR /home/node/app
 ENV NODE_ENV=production
-
-# Copy only needed files
-RUN mkdir packages
-RUN mkdir packages/backend
-RUN mkdir packages/frontend
-
-COPY  --chown=node:node --from=build /home/node/app/packages/backend/package*.json packages/backend/
-
-COPY  --chown=node:node --from=build /home/node/app/packages/backend/dist packages/backend/dist
-COPY  --chown=node:node --from=build /home/node/app/packages/backend/database.json packages/backend/database.json
-COPY  --chown=node:node --from=build /home/node/app/packages/backend/migrations packages/backend/migrations
-
-COPY  --chown=node:node --from=build /home/node/app/packages/frontend/dist packages/frontend/dist
-COPY  --chown=node:node --from=build /home/node/app/packages/frontend/dist packages/frontend/dist
-
 
 WORKDIR packages/backend
 RUN npm ci --only=production --ignore-scripts
 
-COPY  --chown=node:node --from=build /home/node/app/packages/backend/process.json process.json
 RUN mkdir -p /home/node/.pm2 logs pids && chown -R node:node /home/node/.pm2 logs pids
 
 USER node
