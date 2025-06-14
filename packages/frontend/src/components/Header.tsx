@@ -4,10 +4,10 @@ import ProfileIcon from "@components/ProfileIcon";
 import { MLink } from "@components/MLink.tsx";
 
 const navLinks = [
-  { label: "Browse Apps", to: "/" },
-  { label: "Submit App", to: "/page/todo" },
-  { label: "My Apps", to: "/page/todo" },
-  { label: "Api Docs", to: "/api-docs", external: true },
+  { label: "Browse Projects", to: "/" },
+  { label: "Submit Project", to: "/page/todo" },
+  { label: "My Projects", to: "/page/todo" },
+  { label: "API Docs", to: "/api-docs", external: true },
   // { label: "Community", to: "#" },
 ];
 
