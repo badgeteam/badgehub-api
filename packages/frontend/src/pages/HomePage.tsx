@@ -1,16 +1,14 @@
 import Header from "../components/Header.tsx";
 import Hero from "../components/Hero.tsx";
-import Filters from "../components/AppsGrid/Filters.tsx";
-import AppsGrid from "../components/AppsGrid/AppsGrid.tsx";
-import Pagination from "../components/AppsGrid/Pagination.tsx";
+import AppGridWithFilterAndPagination from "../components/AppGridWithFilterAndPagination";
 import Footer from "../components/Footer.tsx";
-import Spinner from "../components/Spinner.tsx";
 import "./HomePage.css";
 import type { AppCardProps } from "../components/types.ts";
 import { memo, useEffect, useMemo, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient.ts";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { z } from "zod";
+import { APP_GRID_PAGE_SIZE } from "@config.ts";
 
 interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;
@@ -27,7 +25,7 @@ const HomePage = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
   const [sortBy, setSortBy] = useState<string>("Popularity");
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 12;
+  const pageSize = APP_GRID_PAGE_SIZE;
   const [filtersChanged, setFiltersChanged] = useState(false);
 
   // Search state
@@ -93,36 +91,22 @@ const HomePage = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
       />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <Hero />
-        {/* Removed duplicate search bar here */}
-        <Filters
+        <AppGridWithFilterAndPagination
+          apps={apps}
+          loading={loading}
+          error={error}
           device={device}
           category={category}
           sortBy={sortBy}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          searchQuery={searchQuery}
           onDeviceChange={handleDeviceChange}
           onCategoryChange={handleCategoryChange}
           onSortByChange={handleSortByChange}
           onApplyFilters={handleApplyFilters}
+          onPageChange={setCurrentPage}
         />
-        {loading ? (
-          <Spinner />
-        ) : error ? (
-          <div
-            data-testid="error-message"
-            className="text-center py-10 text-red-400"
-          >
-            {error}
-          </div>
-        ) : (
-          <AppsGrid apps={paginatedApps} />
-        )}
-        {/* show pagination if more than one page */}
-        {Math.ceil(filteredApps.length / pageSize) > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(filteredApps.length / pageSize)}
-            onPageChange={setCurrentPage}
-          />
-        )}
       </main>
       <Footer />
     </div>
