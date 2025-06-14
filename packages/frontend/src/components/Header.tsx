@@ -33,13 +33,16 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
             </MLink>
           </div>
 
-          <nav className="hidden md:flex space-x-4 items-center todoElement">
+          <nav className="hidden md:flex space-x-4 items-center">
             {navLinks.map((link) => (
               <MLink
                 to={link.to}
                 external={link.external}
                 key={link.label}
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className={
+                  (link.to.endsWith("/todo") ? "todoElement " : "") +
+                  "text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                }
               >
                 {link.label}
               </MLink>
