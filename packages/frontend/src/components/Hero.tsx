@@ -9,7 +9,7 @@ const Hero: React.FC = () => (
       Badge applications at your fingertips. Discover projects or contribute
       your own.
     </p>
-    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 todoElement">
+    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
       <a
         href="#apps-grid"
         className="btn-primary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
@@ -18,7 +18,7 @@ const Hero: React.FC = () => (
       </a>
       <a
         href="#"
-        className="btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+        className="todoElement btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
       >
         Upload Your Creation
       </a>

@@ -43,25 +43,6 @@
 - [ ] Project zip download button on detail page
 - [ ] Icons should fill the rounded square, not be centered in it
 
-# Components/elements with `todoElement` class (to review/implement)
-
-- [ ] Header: Navigation bar (`<nav>`) for main site links
-  - [ ] AppCard: Individual app card component (`<div>`) for displaying app details
-    - [ ] Requires implementing the app upload/creation functionality
-    - [ ] Requires finding or deciding on docs and community link
-- [ ] Footer: Footer section (`<footer>`) at the bottom of the site
-  - [ ] Requires Adding an About page or just link to github README.md
-  - [ ] Requires Adding a Contact page or link to github issues
-  - [ ] Requires Adding a terms of service or links to github license file
-- [ ] Hero: Main hero section (`<div>`) likely for the landing page
-- [ ] Filters: Filter controls (`<div>`) for browsing/filtering apps
-- [ ] AppMedia: Media section (`<section>`) for app screenshots or videos
-  - [ ] Requires backend support for project description media
-- [ ] AppSidebarSimilar: Sidebar section (`<section>`) for similar apps, and links to similar apps
-- [ ] AppReviews: Reviews section (`<section>`) for app reviews, and review form (`<form>`) for submitting a review
-- [ ] AppSidebarAuthor: Sidebar section (`<section>`) for app author details, and author action button
-- [ ] Add error handling for the detail page and re-enable the detail page erro tests
-
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
 - [x] Fix repopulate db script 
