@@ -5,6 +5,7 @@ import {
   SessionContext,
   User,
 } from "@components/keycloakSession/SessionContext.tsx";
+import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from "@config.ts";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -18,10 +19,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (initialized.current) return;
     initialized.current = true;
-
-    const KEYCLOAK_URL = "https://keycloak.p1m.nl";
-    const KEYCLOAK_REALM = "master";
-    const KEYCLOAK_CLIENT_ID = "badgehub-api-frontend";
 
     const kc = new Keycloak({
       url: KEYCLOAK_URL,

@@ -7,3 +7,7 @@ declare const window: Window;
 
 export const BADGEHUB_FRONTEND_BASE_URL =
   window.BADGEHUB_FRONTEND_BASE_URL ?? "";
+
+export const KEYCLOAK_URL = "https://keycloak.p1m.nl";
+export const KEYCLOAK_REALM = "master";
+export const KEYCLOAK_CLIENT_ID = "badgehub-api-frontend";
