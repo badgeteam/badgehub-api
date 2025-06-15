@@ -168,7 +168,7 @@ const privateProjectContracts = c.router(
   }
 );
 
-export const privateRestContracts = c.router(
+const privateRestContracts = c.router(
   {
     ...privateProjectContracts,
     testPrivateEndpoint: {
@@ -200,4 +200,4 @@ export const privateRestContracts = c.router(
   }
 );
 
-export { privateProjectContracts };
+export { privateProjectContracts, privateRestContracts };
