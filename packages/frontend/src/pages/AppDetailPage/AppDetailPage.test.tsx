@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, waitFor } from "@__test__";
-import AppDetail from "./AppDetail.tsx";
+import AppDetailPage from "./AppDetailPage.tsx";
 import { tsRestClientWithApps } from "@__test__";
 import { dummyApps } from "@__test__";
 
 describe(
-  "AppDetail",
+  "AppDetailPage",
   () => {
     it("renders app details when found", async () => {
       const app = dummyApps[0]!;
       render(
-        <AppDetail
+        <AppDetailPage
           tsRestClient={tsRestClientWithApps(dummyApps)}
           slug={"dummy-app-1"}
         />
@@ -30,7 +30,7 @@ describe(
     it("renders the app revision", async () => {
       const app = dummyApps[0]!;
       render(
-        <AppDetail
+        <AppDetailPage
           tsRestClient={tsRestClientWithApps(dummyApps)}
           slug={"dummy-app-1"}
         />
@@ -47,7 +47,7 @@ describe(
     it.skip("shows error if app not found", async () => {
       //TODO
       render(
-        <AppDetail
+        <AppDetailPage
           tsRestClient={tsRestClientWithApps(dummyApps)}
           slug={"dummy-app-1"}
         />

@@ -12,7 +12,7 @@ import { Project } from "@shared/domain/readModels/project/Project.ts";
 import Header from "@sharedComponents/Header.tsx";
 import Footer from "@sharedComponents/Footer.tsx";
 
-const AppDetail: React.FunctionComponent<{
+const AppDetailPage: React.FunctionComponent<{
   tsRestClient?: typeof defaultTsRestClient;
   slug: string;
 }> = ({ tsRestClient = defaultTsRestClient, slug }) => {
@@ -81,4 +81,4 @@ const AppDetail: React.FunctionComponent<{
   );
 };
 
-export default AppDetail;
+export default AppDetailPage;
