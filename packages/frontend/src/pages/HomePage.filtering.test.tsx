@@ -10,12 +10,14 @@ import HomePage from "./HomePage.tsx";
 import userEvent from "@testing-library/user-event";
 import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_MAP } from "@shared/domain/readModels/Badge.ts";
+import { APP_GRID_PAGE_SIZE } from "@config.ts";
+import { isInDebugMode } from "@__test__/isInDebugMode.ts";
 
 describe("HomePage filtering", () => {
   it("shows all apps by default", async () => {
     render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     await waitFor(() => {
-      dummyApps.slice(0, 7).forEach((app) => {
+      dummyApps.slice(0, APP_GRID_PAGE_SIZE - 1).forEach((app) => {
         if (app.name) {
           expect(screen.getByText(app.name)).toBeInTheDocument();
         }
@@ -25,6 +27,10 @@ describe("HomePage filtering", () => {
 
   it("filters by Badge/device", async () => {
     render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
+    // Wait for spinner to disappear
+    await waitFor(() =>
+      expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
+    );
     const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
     // Use a badge value that exists in dummyApps, e.g., "mch2022"
     await userEvent.selectOptions(mcuDropdown, BADGE_MAP.mch2022);

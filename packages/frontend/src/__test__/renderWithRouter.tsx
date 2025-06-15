@@ -1,15 +1,47 @@
-import { render } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-import type React from "react";
+import React from "react";
+import { SessionContext } from "@components/keycloakSession/SessionContext.tsx";
+import Keycloak from "keycloak-js";
+import { vitest } from "vitest";
+import { MemoryRouter } from "react-router-dom";
+import { render } from "@testing-library/react";
 
-// test utils file
+const TestSessionProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const session = {
+    user: {
+      name: "Test User",
+      email: "",
+      id: "test-user-id",
+      token: "test-token",
+    },
+    keycloak: {
+      authenticated: true,
+      login: vitest.fn() as unknown,
+      logout: vitest.fn() as unknown,
+      updateToken: vitest.fn().mockResolvedValue(true) as unknown,
+    } as Keycloak,
+  };
+  return <SessionContext value={session}> {children}</SessionContext>;
+};
+
+const RouterAndSession: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  return (
+    <MemoryRouter>
+      <TestSessionProvider>{children};</TestSessionProvider>
+    </MemoryRouter>
+  );
+};
+
 const renderWithRouter = (ui: React.ReactNode, { route = "/" } = {}) => {
   window.history.pushState({}, "Test page", route);
 
   return {
     user: userEvent.setup(),
-    ...render(ui, { wrapper: MemoryRouter }),
+    ...render(ui, { wrapper: RouterAndSession }),
   };
 };
 

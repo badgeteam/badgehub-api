@@ -42,6 +42,7 @@
 - [x] All thing not implemented yet, so the things that are using dummy data, should have some visual indication, maybe like a grey or red border around them
 - [ ] Project zip download button on detail page
 - [ ] Icons should fill the rounded square, not be centered in it
+- [ ] Nicer handling of user not logged case on my projects page.
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set

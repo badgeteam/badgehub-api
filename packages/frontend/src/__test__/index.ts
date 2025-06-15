@@ -1,3 +1,5 @@
 export * from "./renderWithRouter.tsx";
-export * from "./tsRestClientBuilder.ts";
-export * from "./fixtures";
+export * from "./privateTsRestClientBuilder.ts";
+export * from "./publicTsRestClientBuilder.ts";
+export * from "./fixtures/index.ts";
+export * from "./routeContractMatch.ts";

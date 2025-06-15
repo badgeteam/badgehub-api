@@ -7,6 +7,7 @@ import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
 
 import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
+import MyProjectsPage from "@pages/MyProjectsPage.tsx";
 
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
+          <Route path="/page/my-projects" element={<MyProjectsPage />} />
           <Route path="/page/todo" element={<TodoPage />} />
         </Routes>
       </SessionProvider>

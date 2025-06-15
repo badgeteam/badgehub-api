@@ -4,10 +4,19 @@ import ProfileIcon from "@components/ProfileIcon";
 import { MLink } from "@components/MLink.tsx";
 
 const navLinks = [
-  { label: "Browse Projects", to: "/" },
-  { label: "Submit Project", to: "/page/todo" },
-  { label: "My Projects", to: "/page/todo" },
-  { label: "API Docs", to: "/api-docs", external: true },
+  { label: "Browse Projects", to: "/", testId: "BrowseProjects" },
+  { label: "Submit Project", to: "/page/todo", testId: "SubmitProject" },
+  {
+    label: "My Projects",
+    to: "/page/my-projects",
+    testId: "MyProjects",
+  },
+  {
+    label: "API Docs",
+    to: "/api-docs",
+    external: true,
+    testId: "APIDocs",
+  },
   // { label: "Community", to: "#" },
 ];
 
@@ -39,6 +48,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
                 to={link.to}
                 external={link.external}
                 key={link.label}
+                data-testid={"Header/Link/" + link.testId}
                 className={
                   (link.to.endsWith("/todo") ? "todoElement " : "") +
                   "text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
