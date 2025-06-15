@@ -42,7 +42,7 @@ const Filters: React.FC<FiltersProps> = ({
             id="mcu-filter"
             name="mcu-filter"
             data-testid="filter-dropdown-mcu"
-            className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
+            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
             value={device}
             onChange={(e) =>
               onDeviceChange(
@@ -71,7 +71,7 @@ const Filters: React.FC<FiltersProps> = ({
             id="category-filter"
             name="category-filter"
             data-testid="filter-dropdown-category"
-            className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
+            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
             value={category}
             onChange={(e) =>
               onCategoryChange(
@@ -100,7 +100,7 @@ const Filters: React.FC<FiltersProps> = ({
             id="sort-by"
             name="sort-by"
             data-testid="sort-dropdown"
-            className="w-full bg-gray-700 border-gray-600 text-slate-200 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
+            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
             value={sortBy}
             onChange={(e) =>
               onSortByChange(

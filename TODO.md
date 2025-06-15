@@ -43,6 +43,7 @@
 - [ ] Project zip download button on detail page
 - [ ] Icons should fill the rounded square, not be centered in it
 - [ ] Nicer handling of user not logged case on my projects page.
+- [ ] Improve the styling of inputs on edit page to match the design better, particularly border color on hover
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
