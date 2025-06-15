@@ -4,7 +4,7 @@ import Keycloak from "keycloak-js";
 import {
   SessionContext,
   User,
-} from "@components/keycloakSession/SessionContext.tsx";
+} from "@sharedComponents/keycloakSession/SessionContext.tsx";
 import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from "@config.ts";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -28,7 +28,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
 
     kc.init({
       checkLoginIframe: false,
-      onLoad: "check-sso",
+      // onLoad: "check-sso",
       pkceMethod: "S256",
     })
       .then((authenticated) => {

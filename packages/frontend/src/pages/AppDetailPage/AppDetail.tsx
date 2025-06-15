@@ -10,8 +10,8 @@ import AppSidebarAuthor from "./AppSidebarAuthor.tsx";
 import AppSidebarSimilar from "./AppSidebarSimilar.tsx";
 import AppBreadcrumb from "./AppBreadcrumb.tsx";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
-import Header from "../Header.tsx";
-import Footer from "../Footer.tsx";
+import Header from "@sharedComponents/Header.tsx";
+import Footer from "@sharedComponents/Footer.tsx";
 
 const AppDetail: React.FunctionComponent<{
   tsRestClient?: typeof defaultTsRestClient;

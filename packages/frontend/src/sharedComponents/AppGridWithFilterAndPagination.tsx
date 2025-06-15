@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import type { AppCardProps } from "@components/types.ts";
-import Filters from "@components/AppsGrid/Filters.tsx";
-import Spinner from "@components/Spinner.tsx";
-import AppsGrid from "@components/AppsGrid/AppsGrid.tsx";
-import Pagination from "@components/AppsGrid/Pagination.tsx";
+import type { AppCardProps } from "@sharedComponents/types.ts";
+import Filters from "@sharedComponents/AppsGrid/Filters.tsx";
+import Spinner from "@sharedComponents/Spinner.tsx";
+import AppsGrid from "@sharedComponents/AppsGrid/AppsGrid.tsx";
+import Pagination from "@sharedComponents/AppsGrid/Pagination.tsx";
 import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
 import { z } from "zod";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";

@@ -1,13 +1,13 @@
-import Header from "../components/Header.tsx";
-import Footer from "../components/Footer.tsx";
+import Header from "@sharedComponents/Header.tsx";
+import Footer from "@sharedComponents/Footer.tsx";
 import { memo, useState } from "react";
-import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient.ts";
+import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import {
   AppFetcher,
   AppGridWithFilterAndPagination,
-} from "@components/AppGridWithFilterAndPagination.tsx";
-import { useSession } from "@components/keycloakSession/SessionContext.tsx";
-import { PleaseLoginMessage } from "@pages/PleaseLoginMessage.tsx";
+} from "@sharedComponents/AppGridWithFilterAndPagination.tsx";
+import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
+import { PleaseLoginMessage } from "@sharedComponents/PleaseLoginMessage.tsx";
 
 interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;

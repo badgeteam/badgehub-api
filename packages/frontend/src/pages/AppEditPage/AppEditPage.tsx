@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
-import Header from "../Header.tsx";
-import Footer from "../Footer.tsx";
+import Header from "@sharedComponents/Header.tsx";
+import Footer from "@sharedComponents/Footer.tsx";
 import AppEditBreadcrumb from "./AppEditBreadcrumb.tsx";
 import AppEditBasicInfo from "./AppEditBasicInfo.tsx";
 import AppEditCategorization from "./AppEditCategorization.tsx";
