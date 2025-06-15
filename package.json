@@ -12,7 +12,7 @@
   },
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "concurrently npm:test:*",
@@ -27,7 +27,8 @@
     "prepare": "husky",
     "lint-staged": "pretty-quick --staged",
     "lint": "pretty-quick --check",
-    "lint:fix": "pretty-quick --check"
+    "lint:fix": "pretty-quick --check",
+    "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
     "@ts-rest/core": "^3.52.1",

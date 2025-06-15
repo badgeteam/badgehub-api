@@ -2,31 +2,32 @@
 FROM node:22-bookworm-slim AS build
 
 WORKDIR /home/node/app
-COPY package*.json ./
-RUN npm ci --ignore-scripts
+RUN npm install -g corepack@latest
+RUN corepack enable pnpm
+COPY package*.json pnpm*.yaml  ./
 
 RUN mkdir ./packages
-
 RUN mkdir ./packages/backend
 WORKDIR /home/node/app/packages/backend
-COPY packages/backend/package*.json ./
-RUN npm ci --ignore-scripts
+COPY packages/backend/package.json ./
 
-RUN mkdir /home/node/app/packages/frontend
+WORKDIR /home/node/app
+RUN mkdir ./packages/frontend
 WORKDIR /home/node/app/packages/frontend
-COPY packages/frontend/package*.json ./
-RUN npm ci --ignore-scripts
+COPY packages/frontend/package.json ./
+
+RUN pnpm i --ignore-scripts
 
 WORKDIR /home/node/app
 
 COPY . .
 
-RUN npm run build
+RUN pnpm run build
 
 ENV NODE_ENV=production
 
 WORKDIR packages/backend
-RUN npm ci --only=production --ignore-scripts
+RUN pnpm i --only=production --ignore-scripts
 
 RUN mkdir -p /home/node/.pm2 logs pids && chown -R node:node /home/node/.pm2 logs pids
 
