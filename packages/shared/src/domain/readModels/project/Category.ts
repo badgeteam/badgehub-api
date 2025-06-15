@@ -26,6 +26,12 @@ export const CATEGORY_MAP = {
   interpreter: "Interpreter",
 } as const;
 
+export const CATEGORY_SLUGS = Object.keys(CATEGORY_MAP) as Array<
+  keyof typeof CATEGORY_MAP
+>;
+
+export type CategorySlug = keyof typeof CATEGORY_MAP;
+
 export type AppCategoryName = (typeof CATEGORY_MAP)[keyof typeof CATEGORY_MAP]; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {
@@ -53,7 +59,7 @@ export const categoryNameSchema = z.enum([
   "Virus",
   "SAO",
   "Interpreter",
-]);
+] as const satisfies AppCategoryName[]);
 
 export const categorySchema = z.object({
   name: categoryNameSchema,

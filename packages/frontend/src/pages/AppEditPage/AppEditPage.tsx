@@ -29,14 +29,12 @@ const AppEditPage: React.FC<{
         setProject(res.body);
         setForm({
           name: res.body.name ?? "",
-          version: res.body.version ?? "",
+          version: res.body.version.semantic_version ?? "",
           description: res.body.description ?? "",
-          mcu: res.body.category ?? "",
-          tags: res.body.tags?.join(", ") ?? "",
+          mcu: res.body.badges.join(",") ?? "",
+          category: res.body.category ?? "",
           license: res.body.license ?? "",
-          media: res.body.media ?? [],
-          code: res.body.code ?? "",
-          bundle: res.body.bundle ?? "",
+          main_executable: res.body.version.app_metadata.main_executable ?? "",
         });
       }
       setLoading(false);

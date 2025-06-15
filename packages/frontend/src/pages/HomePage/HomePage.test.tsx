@@ -19,8 +19,8 @@ describe("HomePage", () => {
     expect(
       screen.getByText(/BadgeHub. All rights reserved./i)
     ).toBeInTheDocument();
-    expect(screen.getByTestId("filter-dropdown-mcu")).toBeInTheDocument();
-    expect(screen.getByTestId("filter-dropdown-category")).toBeInTheDocument();
+    expect(screen.getByTestId("badge-dropdown")).toBeInTheDocument();
+    expect(screen.getByTestId("category-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("sort-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("app-cards-container")).toBeInTheDocument();
   });
