@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import "./index.css";
 import HomePage from "./pages/HomePage/HomePage.tsx";
-import AppDetail from "@pages/AppDetailPage/AppDetail.tsx";
+import AppDetailPage from "@pages/AppDetailPage/AppDetailPage.tsx";
 import AppEditPage from "@pages/AppEditPage/AppEditPage.tsx";
 
 import { SessionProvider } from "@sharedComponents/keycloakSession/SessionProvider.tsx";
@@ -15,7 +15,7 @@ const AppDetailWrapper = () => {
   if (!slug) {
     return <div>Error: App slug is required</div>;
   }
-  return <AppDetail slug={slug} />;
+  return <AppDetailPage slug={slug} />;
 };
 
 const AppEditPageWrapper = () => {
