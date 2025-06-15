@@ -1,6 +1,6 @@
 import userEvent from "@testing-library/user-event";
 import React from "react";
-import { SessionContext } from "@components/keycloakSession/SessionContext.tsx";
+import { SessionContext } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 import Keycloak from "keycloak-js";
 import { vitest } from "vitest";
 import { MemoryRouter } from "react-router-dom";
@@ -45,6 +45,6 @@ const renderWithRouter = (ui: React.ReactNode, { route = "/" } = {}) => {
   };
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
+// eslint-disable-next-line react-refresh/only-export-sharedComponents
 export * from "@testing-library/react";
 export { renderWithRouter as render };

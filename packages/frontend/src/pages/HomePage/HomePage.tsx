@@ -1,12 +1,12 @@
-import Header from "../components/Header.tsx";
-import Hero from "../components/Hero.tsx";
-import Footer from "../components/Footer.tsx";
+import Header from "@sharedComponents/Header.tsx";
+import Hero from "@sharedComponents/Hero.tsx";
+import Footer from "@sharedComponents/Footer.tsx";
 import { memo, useState } from "react";
-import { tsRestClient as defaultTsRestClient } from "../api/tsRestClient.ts";
+import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import {
   AppFetcher,
   AppGridWithFilterAndPagination,
-} from "@components/AppGridWithFilterAndPagination.tsx";
+} from "@sharedComponents/AppGridWithFilterAndPagination.tsx";
 
 interface AppProps {
   tsRestClient?: typeof defaultTsRestClient;

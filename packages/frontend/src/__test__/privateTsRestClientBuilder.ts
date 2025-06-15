@@ -1,4 +1,4 @@
-import type { AppCardProps } from "@components/types.ts";
+import type { AppCardProps } from "@sharedComponents/types.ts";
 import { dummyApps } from "@__test__/fixtures";
 import { ApiFetcherArgs, initClient } from "@ts-rest/core";
 import { matchRoute } from "@__test__/routeContractMatch.ts";

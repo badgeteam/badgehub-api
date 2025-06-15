@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { BadgeHubIcon } from "@components/BadgeHubIcon.tsx";
-import ProfileIcon from "@components/ProfileIcon";
-import { MLink } from "@components/MLink.tsx";
+import { BadgeHubIcon } from "@sharedComponents/BadgeHubIcon.tsx";
+import ProfileIcon from "@sharedComponents/ProfileIcon";
+import { MLink } from "@sharedComponents/MLink.tsx";
 
 const navLinks = [
   { label: "Browse Projects", to: "/", testId: "BrowseProjects" },

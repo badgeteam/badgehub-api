@@ -1,4 +1,4 @@
-import { MLink } from "@components/MLink.tsx";
+import { MLink } from "@sharedComponents/MLink.tsx";
 import { REPO_URL } from "@config.ts";
 
 export const TodoPage = () => (

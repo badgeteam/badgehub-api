@@ -2,13 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import "./index.css";
-import HomePage from "./pages/HomePage.tsx";
-import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
-import AppEditPage from "./components/AppEditPage/AppEditPage.tsx";
+import HomePage from "./pages/HomePage/HomePage.tsx";
+import AppDetail from "@pages/AppDetailPage/AppDetail.tsx";
+import AppEditPage from "@pages/AppEditPage/AppEditPage.tsx";
 
-import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
+import { SessionProvider } from "@sharedComponents/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
-import MyProjectsPage from "@pages/MyProjectsPage.tsx";
+import MyProjectsPage from "@pages/MyProjectsPage/MyProjectsPage.tsx";
 
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();

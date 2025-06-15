@@ -2,7 +2,7 @@
 // Utility to build mock tsRestClient for tests
 
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
-import type { AppCardProps } from "@components/types.ts";
+import type { AppCardProps } from "@sharedComponents/types.ts";
 import { tsRestClient as defaultTsRestClient } from "@api/tsRestClient.ts";
 import { dummyApps } from "./fixtures/dummyApps.ts";
 import { matchRoute } from "@__test__/routeContractMatch.ts";

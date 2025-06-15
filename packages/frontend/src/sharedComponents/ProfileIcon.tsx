@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { useSession } from "@components/keycloakSession/SessionContext.tsx";
+import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 
 // --- ProfileIcon ---
 const ProfileIcon: React.FC = () => {

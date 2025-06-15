@@ -4,7 +4,7 @@ import Keycloak from "keycloak-js";
 import {
   SessionContext,
   User,
-} from "@components/keycloakSession/SessionContext.tsx";
+} from "@sharedComponents/keycloakSession/SessionContext.tsx";
 import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from "@config.ts";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
