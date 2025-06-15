@@ -30,9 +30,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     kc.init({
-      checkLoginIframe: false,
       onLoad: "check-sso",
       pkceMethod: "S256",
+      silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
     })
       .then((authenticated) => {
         if (authenticated && kc.tokenParsed) {
