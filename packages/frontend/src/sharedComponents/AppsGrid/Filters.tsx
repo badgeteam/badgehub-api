@@ -12,7 +12,7 @@ interface FiltersProps {
   onBadgeChange: (value: BadgeSlug | undefined) => void;
   onCategoryChange: (value: CategorySlug | undefined) => void;
   onSortByChange: (value: string | undefined) => void;
-  onApplyFilters: () => void;
+  onResetFilters: () => void;
 }
 const Filters: React.FC<FiltersProps> = ({
   badge,
@@ -21,7 +21,7 @@ const Filters: React.FC<FiltersProps> = ({
   onBadgeChange,
   onCategoryChange,
   onSortByChange,
-  onApplyFilters,
+  onResetFilters,
 }) => {
   return (
     <section
@@ -51,7 +51,7 @@ const Filters: React.FC<FiltersProps> = ({
           <button
             className="w-full btn-primary px-4 py-2 rounded-md text-sm font-semibold flex items-center justify-center"
             type="button"
-            onClick={onApplyFilters}
+            onClick={onResetFilters}
           >
             <svg
               className="h-4 w-4 mr-2"
@@ -60,7 +60,7 @@ const Filters: React.FC<FiltersProps> = ({
             >
               <path d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L13 10.414V15a1 1 0 01-.293.707l-2 2A1 1 0 019 17v-6.586L4.293 6.707A1 1 0 014 6V3z" />
             </svg>
-            Apply Filters
+            Reset Filters
           </button>
         </div>
       </div>

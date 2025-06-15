@@ -30,13 +30,12 @@ export const AppGridWithFilterAndPagination = ({
   const [error, setError] = useState<string | null>(null);
 
   // Filter state
-  const [device, setDevice] = useState<BadgeSlug | undefined>();
-  const [category, setCategory] = useState<CategorySlug | undefined>();
+  const [device, setDeviceFilter] = useState<BadgeSlug | undefined>();
+  const [category, setCategoryFilter] = useState<CategorySlug | undefined>();
   const [sortBy, setSortBy] = useState<string | undefined>();
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 12;
-  const [filtersChanged, setFiltersChanged] = useState(false);
 
   // Fetch apps with filters
   useEffect(() => {
@@ -57,7 +56,7 @@ export const AppGridWithFilterAndPagination = ({
         setError(e.message || "Failed to fetch projects");
       })
       .finally(() => setLoading(false));
-  }, [device, category, filtersChanged, appFetcher]);
+  }, [device, category, appFetcher]);
 
   // Filter apps by search query before pagination
   const filteredApps = useMemo(() => {
@@ -74,11 +73,15 @@ export const AppGridWithFilterAndPagination = ({
   }, [filteredApps, currentPage]);
 
   // Handlers for Filters component
-  const handleBadgeChange = (value: BadgeSlug | undefined) => setDevice(value);
+  const handleBadgeChange = (value: BadgeSlug | undefined) =>
+    setDeviceFilter(value);
   const handleCategoryChange = (value: CategorySlug | undefined) =>
-    setCategory(value);
+    setCategoryFilter(value);
   const handleSortByChange = (value: string | undefined) => setSortBy(value);
-  const handleApplyFilters = () => setFiltersChanged((v) => !v);
+  const handleResetFilters = () => {
+    setDeviceFilter(undefined);
+    setCategoryFilter(undefined);
+  };
 
   return (
     <>
@@ -89,7 +92,7 @@ export const AppGridWithFilterAndPagination = ({
         onBadgeChange={handleBadgeChange}
         onCategoryChange={handleCategoryChange}
         onSortByChange={handleSortByChange}
-        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
       />
       {loading ? (
         <Spinner />
