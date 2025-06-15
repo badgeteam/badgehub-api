@@ -3,7 +3,6 @@ import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
 
 export type ProjectEditFormData = {
   name: string;
-  media: string[];
   version: string;
   description: string;
   badge: BadgeSlug | undefined;

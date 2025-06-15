@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import AppDetailHeader from "./AppDetailHeader.tsx";
 import AppDescription from "./AppDescription.tsx";
-import AppMedia from "./AppMedia.tsx";
 import AppCodePreview from "./AppCodePreview.tsx";
 // import AppReviews from "./AppDetailPage/AppReviews";
 import AppSidebarDetails from "./AppSidebarDetails.tsx";
@@ -67,7 +66,6 @@ const AppDetail: React.FunctionComponent<{
           <div className="lg:col-span-2 space-y-8">
             <AppDetailHeader project={project} />
             <AppDescription project={project} />
-            <AppMedia project={project} />
             <AppCodePreview project={project} />
             {/*<AppReviews project={project} />*/}
           </div>

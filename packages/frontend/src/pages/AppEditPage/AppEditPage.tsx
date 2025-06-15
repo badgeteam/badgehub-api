@@ -5,7 +5,6 @@ import Footer from "@sharedComponents/Footer.tsx";
 import AppEditBreadcrumb from "./AppEditBreadcrumb.tsx";
 import AppEditBasicInfo from "./AppEditBasicInfo.tsx";
 import AppEditCategorization from "./AppEditCategorization.tsx";
-import AppEditMediaFiles from "./AppEditMediaFiles.tsx";
 import AppEditActions from "./AppEditActions.tsx";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 
@@ -86,7 +85,6 @@ const AppEditPage: React.FC<{
         <form className="space-y-8" onSubmit={handleSubmit}>
           <AppEditBasicInfo form={form} onChange={handleFormChange} />
           <AppEditCategorization form={form} onChange={handleFormChange} />
-          <AppEditMediaFiles form={form} onChange={handleFormChange} />
           <AppEditActions />
         </form>
       </main>
