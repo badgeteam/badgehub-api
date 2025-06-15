@@ -6,6 +6,7 @@ export const MLink: React.FC<{
   className?: string;
   key?: string;
   external?: boolean;
+  "data-testid"?: string;
   children: React.ReactNode;
 }> = ({ external, to, ...props }) => {
   if (external) {
