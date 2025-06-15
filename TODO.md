@@ -56,3 +56,5 @@
 - [ ] Use hidden iframe (see silentCheckSsoRedirectUri documentation in keycloak-js) to check if user is logged in.
   - This will improve the homepage loading time and user experience.
 - [ ] Add filter parameters to the URL so that the user can share the filtered view with others and so that refresh retains the filters.
+- [ ] Clean up Catalog slug vs name mess
+- [ ] Badges and Categories should be configurable per environment, so we need to get rid of all the hardcoded values in the frontend and backend.
