@@ -3,23 +3,22 @@ import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
 import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
 import { CategorySelector } from "@sharedComponents/OptionSelector/CategorySelector.tsx";
 import { BadgeSelector } from "@sharedComponents/OptionSelector/BadgeSelector.tsx";
+import { OptionSelectorWithTitle } from "@sharedComponents/OptionSelector/OptionSelectorWithTitle.tsx";
 
 interface FiltersProps {
   badge: BadgeSlug | undefined;
   category: CategorySlug | undefined;
   sortBy: string | undefined;
-  onDeviceChange: (value: string | undefined) => void;
-  onCategoryChange: (value: string | undefined) => void;
+  onBadgeChange: (value: BadgeSlug | undefined) => void;
+  onCategoryChange: (value: CategorySlug | undefined) => void;
   onSortByChange: (value: string | undefined) => void;
   onApplyFilters: () => void;
 }
-const NO_FILTER_OPTION_VALUE = "All";
-
 const Filters: React.FC<FiltersProps> = ({
   badge,
   category,
   sortBy,
-  onDeviceChange,
+  onBadgeChange,
   onCategoryChange,
   onSortByChange,
   onApplyFilters,
@@ -33,37 +32,21 @@ const Filters: React.FC<FiltersProps> = ({
         <BadgeSelector
           noValueSetName={"All"}
           badge={badge}
-          onBadgeChange={onDeviceChange}
+          onBadgeChange={onBadgeChange}
         />
         <CategorySelector
           noValueSetName={"All"}
           category={category}
           onCategoryChange={onCategoryChange}
         />
-        <div className="todoElement">
-          <label
-            htmlFor="sort-by"
-            className="block text-sm font-medium text-slate-300 mb-1"
-          >
-            Sort By
-          </label>
-          <select
-            id="sort-by"
-            name="sort-by"
-            data-testid="sort-dropdown"
-            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
-            value={sortBy}
-            onChange={(e) =>
-              onSortByChange(
-                e.target.value === NO_FILTER_OPTION_VALUE
-                  ? undefined
-                  : e.target.value
-              )
-            }
-          >
-            <option value={NO_FILTER_OPTION_VALUE}>Arbitrary</option>
-          </select>
-        </div>
+        <OptionSelectorWithTitle
+          title={"Sort By"}
+          noValueSetName={"No Sorting"}
+          onValueSelection={onSortByChange}
+          valueMap={undefined}
+          value={sortBy}
+        />
+
         <div className="flex items-end todoElement">
           <button
             className="w-full btn-primary px-4 py-2 rounded-md text-sm font-semibold flex items-center justify-center"

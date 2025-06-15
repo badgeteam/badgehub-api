@@ -28,8 +28,8 @@ const AppEditBasicInfo: React.FC<{
         <input
           type="text"
           className="w-full form-input p-2"
-          value={form.version}
-          onChange={(e) => onChange({ version: e.target.value })}
+          value={form.semantic_version}
+          onChange={(e) => onChange({ semantic_version: e.target.value })}
         />
       </div>
     </div>

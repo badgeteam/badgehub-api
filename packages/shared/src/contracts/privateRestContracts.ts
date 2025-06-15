@@ -2,22 +2,14 @@ import { initContract } from "@ts-rest/core";
 import { z } from "zod/v3";
 import {
   projectSchema,
-  projectWithoutVersionSchema,
+  ProjectWithoutVersion,
 } from "@shared/domain/readModels/project/Project";
-import { notFoundSchema } from "@shared/contracts/httpResponseSchemas";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 import {
   CreateProjectProps,
   createProjectPropsSchema,
 } from "@shared/domain/writeModels/project/WriteProject";
 import { writeAppMetadataJSONSchema } from "@shared/domain/writeModels/AppMetadataJSON";
-
-// Basic error schema used for not found or forbidden responses.
-const unauthorizedSchema = z
-  .object({
-    reason: z.string(),
-  })
-  .describe("Unauthorized access to the resource");
 
 const c = initContract();
 
@@ -46,7 +38,7 @@ const privateProjectContracts = c.router(
       body: createProjectBodySchema,
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
+        403: c.type<{ reason: string }>(),
       },
       summary: "Create a new project",
     },
@@ -58,8 +50,8 @@ const privateProjectContracts = c.router(
       body: createProjectBodySchema,
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Update an existing project",
     },
@@ -70,8 +62,8 @@ const privateProjectContracts = c.router(
       pathParams: z.object({ slug: z.string() }),
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Delete an existing project",
     },
@@ -87,8 +79,8 @@ const privateProjectContracts = c.router(
       }),
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Upload a file to the latest draft version of a project",
     },
@@ -102,8 +94,8 @@ const privateProjectContracts = c.router(
       }),
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Delete a file from the latest draft version of a project",
     },
@@ -115,8 +107,8 @@ const privateProjectContracts = c.router(
       body: appMetadataPartialSchema,
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Change the metadata of the latest draft version of a project",
     },
@@ -130,8 +122,8 @@ const privateProjectContracts = c.router(
       }),
       responses: {
         200: z.unknown().describe("File content as a stream"),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Get a file from the draft version of a project",
     },
@@ -142,8 +134,8 @@ const privateProjectContracts = c.router(
       pathParams: z.object({ slug: z.string() }),
       responses: {
         200: projectSchema,
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       summary: "Get project details for the draft version of a project",
     },
@@ -154,8 +146,8 @@ const privateProjectContracts = c.router(
       pathParams: z.object({ slug: z.string() }),
       responses: {
         204: z.void(),
-        403: unauthorizedSchema,
-        404: notFoundSchema,
+        403: c.type<{ reason: string }>(),
+        404: c.type<{ reason: string }>(),
       },
       body: z.unknown().optional().nullable(),
       summary: "Publish the current draft as a new version",
@@ -187,8 +179,8 @@ const privateRestContracts = c.router(
         pageLength: z.coerce.number().optional(),
       }),
       responses: {
-        200: z.array(projectWithoutVersionSchema),
-        403: unauthorizedSchema,
+        200: c.type<ProjectWithoutVersion[]>(),
+        403: c.type<{ reason: string }>(),
       },
       summary: "Get all draft projects for a user",
     },

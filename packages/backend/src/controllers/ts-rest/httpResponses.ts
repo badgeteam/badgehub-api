@@ -11,9 +11,9 @@ export function noContent(): { status: 204; body: void } {
 
 export function ok<T>(data: T) {
   return {
-    status: 200, //
+    status: 200 as const, //
     body: data,
-  } as const;
+  };
 }
 
 export const nok = <T extends number>(status: T, reason: string) => {
