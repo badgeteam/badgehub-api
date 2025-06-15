@@ -41,7 +41,7 @@ export const OptionSelectorWithTitle: React.FC<
         name={selectionId}
         data-testid={selectionId}
         className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2"
-        value={value}
+        value={value === undefined ? NO_FILTER_OPTION_VALUE : String(value)}
         onChange={(e) =>
           onValueSelection(
             e.target.value === NO_FILTER_OPTION_VALUE
