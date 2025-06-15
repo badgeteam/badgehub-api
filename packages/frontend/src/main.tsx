@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import "./index.css";
 import HomePage from "./pages/HomePage.tsx";
 import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
+import AppEditPage from "./components/AppEditPage/AppEditPage.tsx";
 
 import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
@@ -17,6 +18,14 @@ const AppDetailWrapper = () => {
   return <AppDetail slug={slug} />;
 };
 
+const AppEditPageWrapper = () => {
+  const { slug } = useParams<{ slug: string }>();
+  if (!slug) {
+    return <div>Error: App slug is required</div>;
+  }
+  return <AppEditPage slug={slug} />;
+};
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
@@ -24,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
+          <Route path="/page/app/:slug/edit" element={<AppEditPageWrapper />} />
           <Route path="/page/my-projects" element={<MyProjectsPage />} />
           <Route path="/page/todo" element={<TodoPage />} />
         </Routes>
