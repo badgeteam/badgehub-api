@@ -20,13 +20,50 @@ const navLinks = [
   // { label: "Community", to: "#" },
 ];
 
-interface HeaderProps {
+type SearchProps = {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
-}
+};
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
+const SearchField: React.FC<SearchProps> = ({
+  searchQuery,
+  setSearchQuery,
+}) => {
+  return (
+    <div className="relative hidden sm:block">
+      <input
+        type="search"
+        placeholder="Search apps..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        data-testid="search-bar"
+        className="bg-gray-700 text-gray-300 placeholder-gray-500 rounded-md py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
+      />
+      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <svg
+          className="h-4 w-4 text-gray-400"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            fillRule="evenodd"
+            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+const Header: React.FC<Partial<SearchProps>> = (searchProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const searchEnabled =
+    searchProps.searchQuery !== undefined &&
+    searchProps.setSearchQuery !== undefined;
+  const checkedSearchProps: SearchProps | undefined = searchEnabled
+    ? (searchProps as SearchProps)
+    : undefined;
 
   return (
     <header className="bg-gray-800 shadow-md sticky top-0 z-50">
@@ -60,29 +97,9 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
           </nav>
 
           <div className="flex items-center space-x-3">
-            <div className="relative hidden sm:block">
-              <input
-                type="search"
-                placeholder="Search apps..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                data-testid="search-bar"
-                className="bg-gray-700 text-gray-300 placeholder-gray-500 rounded-md py-2 pl-3 pr-10 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div>
+            {checkedSearchProps && (
+              <SearchField {...checkedSearchProps}></SearchField>
+            )}
             <ProfileIcon />
           </div>
 

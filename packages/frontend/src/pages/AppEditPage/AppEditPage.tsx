@@ -7,6 +7,7 @@ import AppEditBasicInfo from "./AppEditBasicInfo.tsx";
 import AppEditCategorization from "./AppEditCategorization.tsx";
 import AppEditActions from "./AppEditActions.tsx";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
 
 const AppEditPage: React.FC<{
   tsRestClient?: typeof defaultTsRestClient;
@@ -14,11 +15,7 @@ const AppEditPage: React.FC<{
 }> = ({ tsRestClient = defaultTsRestClient, slug }) => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState<any>(null);
-
-  // Dummy search state for Header (not used here)
-  const [searchQuery] = useState("");
-  const setSearchQuery = () => {};
+  const [form, setForm] = useState<ProjectEditFormData | undefined>(undefined);
 
   useEffect(() => {
     let mounted = true;
@@ -76,7 +73,7 @@ const AppEditPage: React.FC<{
       data-testid="app-edit-page"
       className="min-h-screen flex flex-col bg-gray-900 text-slate-200"
     >
-      <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <AppEditBreadcrumb project={project} />
         <h1 className="text-3xl font-bold text-slate-100 mb-6">
