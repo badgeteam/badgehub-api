@@ -4,6 +4,7 @@ import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
 
 const NO_FILTER_OPTION_VALUE = "All";
 type CategoryMap = typeof CATEGORY_MAP;
+type SortByOption = string | undefined;
 export const OptionSelectorWithTitle: React.FC<
   {
     title: string;
@@ -19,11 +20,16 @@ export const OptionSelectorWithTitle: React.FC<
         value: keyof CategoryMap | undefined;
         onValueSelection: (newValue: keyof CategoryMap | undefined) => void;
       }
+    | {
+        valueMap: undefined;
+        value: SortByOption | undefined;
+        onValueSelection: (newValue: SortByOption | undefined) => void;
+      }
   )
 > = ({ title, noValueSetName, valueMap, value, onValueSelection }) => {
   const selectionId = `${title.toLowerCase()}-dropdown`;
   return (
-    <div>
+    <div className={valueMap ? "" : "todoElement"}>
       <label
         htmlFor={selectionId}
         className="block text-sm font-medium text-slate-300 mb-1"
@@ -34,7 +40,7 @@ export const OptionSelectorWithTitle: React.FC<
         id={selectionId}
         name={selectionId}
         data-testid={selectionId}
-        className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
+        className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2"
         value={value}
         onChange={(e) =>
           onValueSelection(
@@ -46,10 +52,10 @@ export const OptionSelectorWithTitle: React.FC<
         }
       >
         <option value={NO_FILTER_OPTION_VALUE}>{noValueSetName}</option>
-        {(Object.keys(valueMap) as Array<keyof typeof valueMap>).map(
+        {(Object.keys(valueMap ?? {}) as Array<keyof typeof valueMap>).map(
           (option) => (
             <option key={option} value={option}>
-              {valueMap[option]}
+              {valueMap?.[option]}
             </option>
           )
         )}

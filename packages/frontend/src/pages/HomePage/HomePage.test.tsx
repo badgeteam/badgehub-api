@@ -21,7 +21,7 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId("badge-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("category-dropdown")).toBeInTheDocument();
-    expect(screen.getByTestId("sort-dropdown")).toBeInTheDocument();
+    expect(screen.getByTestId("sort by-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("app-cards-container")).toBeInTheDocument();
   });
 

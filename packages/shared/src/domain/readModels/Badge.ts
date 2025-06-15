@@ -30,4 +30,10 @@ export const badgeSchema = datedDataSchema.extend({
   slug: z.string(),
 });
 
+export const badgeSlugSchema = z.enum([
+  "mch2022",
+  "troopers23",
+  "why2025",
+] as const satisfies BadgeSlug[]);
+
 type Checks = [CheckSame<Badge, Badge, z.infer<typeof badgeSchema>>];

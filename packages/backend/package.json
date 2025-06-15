@@ -5,9 +5,7 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "install:container": "docker exec -it badgehub-api-node-1 npm install",
     "start": "node dist/index.mjs",
-    "monitor": "docker exec -it badgehub-api-node-1 npx pm2 monit",
     "build": "node --experimental-strip-types esbuild/esbuild.config.ts",
     "check:ts": "tsc --noEmit -p tsconfig.json",
     "dev": "node --watch --import tsx src/index.ts",

@@ -10,6 +10,8 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { nok, ok } from "@controllers/ts-rest/httpResponses";
 import { Readable } from "node:stream";
 import { RouterImplementation } from "@ts-rest/express/src/lib/types";
+import { z } from "zod";
+import { initContract } from "@ts-rest/core";
 
 const createFilesRouter = (badgeHubData: BadgeHubData) => {
   const filesRouter: RouterImplementation<typeof publicFilesContracts> = {
@@ -92,17 +94,16 @@ export const createPublicRestRouter = (
     new PostgreSQLBadgeHubFiles()
   )
 ) => {
-  const s = initServer();
-  return s.router(publicRestContracts, {
+  return initServer().router(publicRestContracts, {
     ...createProjectRouter(badgeHubData),
     ...createFilesRouter(badgeHubData),
+    getBadges: async () => {
+      const data = await badgeHubData.getBadges();
+      return ok(data);
+    },
     getCategories: async () => {
       const data = await badgeHubData.getCategories();
       return ok(data);
     },
-    getDevices: async () => {
-      const data = await badgeHubData.getBadges();
-      return ok(data);
-    },
-  });
+  } as any);
 };

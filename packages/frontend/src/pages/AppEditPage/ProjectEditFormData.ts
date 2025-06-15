@@ -1,12 +1,3 @@
-import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
-import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
+import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON.ts";
 
-export type ProjectEditFormData = {
-  name: string;
-  version: string;
-  description: string;
-  badge: BadgeSlug | undefined;
-  category: CategorySlug | undefined;
-  license: string;
-  main_executable: string;
-};
+export type ProjectEditFormData = WriteAppMetadataJSON;

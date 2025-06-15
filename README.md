@@ -151,6 +151,7 @@ docker compose --file docker-compose.production.yml down
 ## Tools used
 
 - [Express](https://expressjs.com/), a framework for Node.js
+- [pnpm](https://pnpm.io/) for package management
 - [ts-rest](https://ts-rest.com/) for a type safe http controller, contract and client without code generation
 - [zod](https://github.com/colinhacks/zod) for defining and checking json schemas
 - [sql-template-tag](https://github.com/blakeembrey/sql-template-tag) for more easily writing SQL queries

@@ -2,9 +2,8 @@ import { Version, versionSchema } from "./Version";
 import { User } from "./User";
 import { DatedData } from "./DatedData";
 import { Badge } from "../Badge";
-import { AppMetadataJSON } from "./AppMetadataJSON";
 import {
-  Category,
+  CategoryName,
   categoryNameSchema,
 } from "@shared/domain/readModels/project/Category";
 import { z } from "zod/v3";
@@ -44,7 +43,7 @@ export interface Project extends ProjectCore, DatedData {
   license: string | null; // Eg. MIT
   // size_of_zip?: number;|null
   // size_of_content?: number;|null
-  category: Category["name"] | null;
+  category: CategoryName | null;
   description: string | null; // description in metadata of latest version of the projectct
   revision: number; // latest revsion number of the projectt
   // status?: ProjectStatusName; // Status of newest version with a non-empty status|null

@@ -18,6 +18,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --bg-gray-700: #2d3748;
+  --bg-gray-600: #4a5568;
   --slate-200: #e2e8f0;
 }
 
@@ -206,11 +207,12 @@ button:focus-visible {
 }
 
 input, textarea, select {
+  line-height: 1.25;
   color: var(--slate-200);
   background-color: var(--bg-gray-700);
 }
 
 input, textarea {
-  border: 1px solid #4a5568;
+  border: 1px solid var(--bg-gray-600);
   border-radius: 0.375rem;
 }

@@ -22,15 +22,16 @@ const AppEditPage: React.FC<{
     setLoading(true);
     tsRestClient.getProject({ params: { slug } }).then((res) => {
       if (mounted && res.status === 200) {
-        setProject(res.body);
+        const project = res.body;
+        setProject(project);
         setForm({
-          name: res.body.name ?? "",
-          version: res.body.version.semantic_version ?? "",
-          description: res.body.description ?? "",
-          mcu: res.body.badges.join(",") ?? "",
-          category: res.body.category ?? "",
-          license: res.body.license ?? "",
-          main_executable: res.body.version.app_metadata.main_executable ?? "",
+          name: project.name ?? "",
+          semantic_version: project.version.app_metadata.semantic_version ?? "",
+          description: project.description ?? "",
+          // badge: project.badges.join(",") ?? "",
+          category: project.version.app_metadata.category,
+          license_file: project.version.app_metadata.license_file ?? "",
+          main_executable: project.version.app_metadata.main_executable ?? "",
         });
       }
       setLoading(false);
@@ -59,8 +60,18 @@ const AppEditPage: React.FC<{
   }
 
   // Form state handlers
-  const handleFormChange = (changes: Partial<typeof form>) => {
-    setForm((prev: any) => ({ ...prev, ...changes }));
+  const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
+    setForm((prev: ProjectEditFormData | undefined) => {
+      const newName = prev?.name || changes.name;
+      if (!newName) {
+        return undefined;
+      }
+      return {
+        ...prev,
+        ...changes,
+        name: newName,
+      };
+    });
   };
 
   const handleSubmit = (e: React.FormEvent) => {

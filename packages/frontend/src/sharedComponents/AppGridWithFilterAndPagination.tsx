@@ -7,6 +7,11 @@ import Pagination from "@sharedComponents/AppsGrid/Pagination.tsx";
 import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
 import { z } from "zod";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
+import {
+  CategoryName,
+  CategorySlug,
+} from "@shared/domain/readModels/project/Category.ts";
+import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
 
 export type ProjectQueryParams = z.infer<typeof getProjectsQuerySchema>;
 export type AppFetcher = (
@@ -25,8 +30,8 @@ export const AppGridWithFilterAndPagination = ({
   const [error, setError] = useState<string | null>(null);
 
   // Filter state
-  const [device, setDevice] = useState<string | undefined>();
-  const [category, setCategory] = useState<string | undefined>();
+  const [device, setDevice] = useState<BadgeSlug | undefined>();
+  const [category, setCategory] = useState<CategorySlug | undefined>();
   const [sortBy, setSortBy] = useState<string | undefined>();
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -69,8 +74,8 @@ export const AppGridWithFilterAndPagination = ({
   }, [filteredApps, currentPage]);
 
   // Handlers for Filters component
-  const handleDeviceChange = (value: string | undefined) => setDevice(value);
-  const handleCategoryChange = (value: string | undefined) =>
+  const handleBadgeChange = (value: BadgeSlug | undefined) => setDevice(value);
+  const handleCategoryChange = (value: CategorySlug | undefined) =>
     setCategory(value);
   const handleSortByChange = (value: string | undefined) => setSortBy(value);
   const handleApplyFilters = () => setFiltersChanged((v) => !v);
@@ -81,7 +86,7 @@ export const AppGridWithFilterAndPagination = ({
         badge={device}
         category={category}
         sortBy={sortBy}
-        onDeviceChange={handleDeviceChange}
+        onBadgeChange={handleBadgeChange}
         onCategoryChange={handleCategoryChange}
         onSortByChange={handleSortByChange}
         onApplyFilters={handleApplyFilters}
