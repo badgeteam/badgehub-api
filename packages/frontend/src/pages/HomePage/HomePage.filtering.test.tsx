@@ -31,7 +31,7 @@ describe("HomePage filtering", () => {
     await waitFor(() =>
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
-    const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
+    const mcuDropdown = screen.getByTestId("badge-dropdown");
     // Use a badge value that exists in dummyApps, e.g., "mch2022"
     await userEvent.selectOptions(mcuDropdown, BADGE_MAP.mch2022);
     // Wait for spinner to disappear
@@ -49,7 +49,7 @@ describe("HomePage filtering", () => {
 
   it("filters by category", async () => {
     render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
-    const categoryDropdown = screen.getByTestId("filter-dropdown-category");
+    const categoryDropdown = screen.getByTestId("category-dropdown");
     // Use a category value that exists in dummyApps, e.g., CATEGORIES.silly
     await userEvent.selectOptions(categoryDropdown, "silly");
     await waitFor(() =>
@@ -73,8 +73,8 @@ describe("HomePage filtering", () => {
 
   it("filters by both device and category", async () => {
     render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
-    const mcuDropdown = screen.getByTestId("filter-dropdown-mcu");
-    const categoryDropdown = screen.getByTestId("filter-dropdown-category");
+    const mcuDropdown = screen.getByTestId("badge-dropdown");
+    const categoryDropdown = screen.getByTestId("category-dropdown");
     // Use values that exist together in an app, e.g., "mch2022" and CATEGORIES.silly
     await userEvent.selectOptions(mcuDropdown, "mch2022");
     await userEvent.selectOptions(categoryDropdown, CATEGORY_MAP.silly);

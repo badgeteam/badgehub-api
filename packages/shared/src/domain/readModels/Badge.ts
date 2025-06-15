@@ -11,6 +11,11 @@ export const BADGE_MAP = {
   why2025: "WHY2025",
 };
 
+export type BadgeMap = typeof BADGE_MAP;
+
+export const BADGE_SLUGS = Object.keys(BADGE_MAP) as Array<keyof BadgeMap>;
+export type BadgeSlug = keyof BadgeMap;
+export type BadgeName = BadgeMap[BadgeSlug];
 export interface BadgeRelation {
   badge: Badge;
 }

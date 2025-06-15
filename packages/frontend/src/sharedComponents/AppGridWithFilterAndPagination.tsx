@@ -78,7 +78,7 @@ export const AppGridWithFilterAndPagination = ({
   return (
     <>
       <Filters
-        device={device}
+        badge={device}
         category={category}
         sortBy={sortBy}
         onDeviceChange={handleDeviceChange}

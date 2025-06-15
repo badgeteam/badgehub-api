@@ -18,8 +18,8 @@ describe("MyProjectsPage", () => {
       const appCardElements = screen.getAllByTestId("AppCard");
       expect(appCardElements.length).toBeGreaterThan(0);
     });
-    expect(screen.getByTestId("filter-dropdown-mcu")).toBeInTheDocument();
-    expect(screen.getByTestId("filter-dropdown-category")).toBeInTheDocument();
+    expect(screen.getByTestId("badge-dropdown")).toBeInTheDocument();
+    expect(screen.getByTestId("category-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("sort-dropdown")).toBeInTheDocument();
     expect(screen.getByTestId("app-cards-container")).toBeInTheDocument();
   });

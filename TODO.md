@@ -36,6 +36,7 @@
 - [ ] Implement Server assisted pagination for the main page.
 - [ ] use nullable for optional properties instead so zod typing matches exactly
 - [ ] Implement Server assisted search for the main page.
+- [ ] Badge multi select on app edit page
 
 # Niceties
 
@@ -44,6 +45,7 @@
 - [ ] Icons should fill the rounded square, not be centered in it
 - [ ] Nicer handling of user not logged case on my projects page.
 - [ ] Improve the styling of inputs on edit page to match the design better, particularly border color on hover
+- [ ] Project Media, allow creators to upload screenshots and show them on the app detail page
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set

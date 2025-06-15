@@ -1,10 +1,12 @@
 import React from "react";
-import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
-import { BADGE_MAP } from "@shared/domain/readModels/Badge.ts";
+import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
+import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
+import { CategorySelector } from "@sharedComponents/OptionSelector/CategorySelector.tsx";
+import { BadgeSelector } from "@sharedComponents/OptionSelector/BadgeSelector.tsx";
 
 interface FiltersProps {
-  device: string | undefined;
-  category: string | undefined;
+  badge: BadgeSlug | undefined;
+  category: CategorySlug | undefined;
   sortBy: string | undefined;
   onDeviceChange: (value: string | undefined) => void;
   onCategoryChange: (value: string | undefined) => void;
@@ -12,12 +14,9 @@ interface FiltersProps {
   onApplyFilters: () => void;
 }
 const NO_FILTER_OPTION_VALUE = "All";
-const BADGE_SLUGS = Object.keys(BADGE_MAP) as Array<keyof typeof BADGE_MAP>;
-const CATEGORY_SLUGS = Object.keys(CATEGORY_MAP) as Array<
-  keyof typeof CATEGORY_MAP
->;
+
 const Filters: React.FC<FiltersProps> = ({
-  device,
+  badge,
   category,
   sortBy,
   onDeviceChange,
@@ -31,64 +30,16 @@ const Filters: React.FC<FiltersProps> = ({
       data-testid="filter-bar"
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div>
-          <label
-            htmlFor="mcu-filter"
-            className="block text-sm font-medium text-slate-300 mb-1"
-          >
-            Badge
-          </label>
-          <select
-            id="mcu-filter"
-            name="mcu-filter"
-            data-testid="filter-dropdown-mcu"
-            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
-            value={device}
-            onChange={(e) =>
-              onDeviceChange(
-                e.target.value === NO_FILTER_OPTION_VALUE
-                  ? undefined
-                  : e.target.value
-              )
-            }
-          >
-            <option value={NO_FILTER_OPTION_VALUE}>All</option>
-            {BADGE_SLUGS.map((option) => (
-              <option key={option} value={option}>
-                {BADGE_MAP[option]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label
-            htmlFor="category-filter"
-            className="block text-sm font-medium text-slate-300 mb-1"
-          >
-            Category
-          </label>
-          <select
-            id="category-filter"
-            name="category-filter"
-            data-testid="filter-dropdown-category"
-            className="w-full border-gray-600 rounded-md shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2 text-sm"
-            value={category}
-            onChange={(e) =>
-              onCategoryChange(
-                e.target.value === NO_FILTER_OPTION_VALUE
-                  ? undefined
-                  : e.target.value
-              )
-            }
-          >
-            <option value={NO_FILTER_OPTION_VALUE}>All</option>
-            {CATEGORY_SLUGS.map((option) => (
-              <option key={option} value={option}>
-                {CATEGORY_MAP[option]}
-              </option>
-            ))}
-          </select>
-        </div>
+        <BadgeSelector
+          noValueSetName={"All"}
+          badge={badge}
+          onBadgeChange={onDeviceChange}
+        />
+        <CategorySelector
+          noValueSetName={"All"}
+          category={category}
+          onCategoryChange={onCategoryChange}
+        />
         <div className="todoElement">
           <label
             htmlFor="sort-by"
