@@ -4,9 +4,10 @@ import type { AppCardProps } from "../types.ts";
 
 interface AppsGridProps {
   apps: AppCardProps[];
+  editable?: boolean;
 }
 
-const AppsGrid: React.FC<AppsGridProps> = ({ apps }) => {
+const AppsGrid: React.FC<AppsGridProps> = ({ apps, editable }) => {
   return (
     <>
       <section id="apps-grid">
@@ -22,7 +23,9 @@ const AppsGrid: React.FC<AppsGridProps> = ({ apps }) => {
               No apps found.
             </div>
           ) : (
-            apps.map((app) => <AppCard key={app.slug} {...app} />)
+            apps.map((app) => (
+              <AppCard key={app.slug} {...app} editable={editable} />
+            ))
           )}
         </div>
       </section>

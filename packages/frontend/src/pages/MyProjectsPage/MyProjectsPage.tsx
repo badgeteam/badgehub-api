@@ -63,6 +63,7 @@ const MyProjectsPage = memo(
             <AppGridWithFilterAndPagination
               appFetcher={appFetcher}
               searchQuery={searchQuery}
+              editable={true}
             />
           ) : (
             <PleaseLoginMessage whatToSee={"your projects"} />

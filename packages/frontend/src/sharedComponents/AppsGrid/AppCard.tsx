@@ -12,6 +12,7 @@ const AppCard: React.FC<AppCardProps> = ({
   badges,
   slug,
   icon,
+  editable,
 }) => {
   const iconSrc = icon
     ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/rev${revision}/files/${encodeURIComponent(icon)}`
@@ -32,7 +33,11 @@ const AppCard: React.FC<AppCardProps> = ({
               loading="lazy"
             />
           </div>
-          <MLink to={`/page/app/${slug}`}>
+          <MLink
+            to={
+              editable ? `/page/project/${slug}/edit` : `/page/project/${slug}`
+            }
+          >
             <h3 className="text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors line-clamp-2">
               {name}
             </h3>

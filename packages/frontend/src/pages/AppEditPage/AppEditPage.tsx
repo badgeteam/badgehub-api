@@ -8,6 +8,7 @@ import AppEditCategorization from "./AppEditCategorization.tsx";
 import AppEditActions from "./AppEditActions.tsx";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
+import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 
 const AppEditPage: React.FC<{
   tsRestClient?: typeof defaultTsRestClient;
@@ -16,11 +17,19 @@ const AppEditPage: React.FC<{
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<ProjectEditFormData | undefined>(undefined);
+  const { user, keycloak } = useSession();
 
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    tsRestClient.getProject({ params: { slug } }).then((res) => {
+    (async () => {
+      await keycloak?.updateToken(30);
+      const res = await tsRestClient.getDraftProject({
+        headers: {
+          authorization: `Bearer ${user?.token}`,
+        },
+        params: { slug },
+      });
       if (mounted && res.status === 200) {
         const project = res.body;
         setProject(project);
@@ -35,11 +44,11 @@ const AppEditPage: React.FC<{
         });
       }
       setLoading(false);
-    });
+    })();
     return () => {
       mounted = false;
     };
-  }, [slug, tsRestClient]);
+  }, [keycloak, slug, tsRestClient, user?.token]);
 
   if (loading) {
     return (

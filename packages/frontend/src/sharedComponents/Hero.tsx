@@ -1,4 +1,5 @@
 import React from "react";
+import { MLink } from "@sharedComponents/MLink.tsx";
 
 const Hero: React.FC = () => (
   <section className="text-center mb-12 pt-8">
@@ -16,12 +17,12 @@ const Hero: React.FC = () => (
       >
         Explore Projects
       </a>
-      <a
-        href="#"
-        className="todoElement btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
+      <MLink
+        to="/page/create-project"
+        className="btn-secondary px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transition-all duration-200 ease-in-out transform hover:scale-105"
       >
         Upload Your Creation
-      </a>
+      </MLink>
     </div>
   </section>
 );

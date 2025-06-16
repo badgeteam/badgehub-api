@@ -5,7 +5,11 @@ import { MLink } from "@sharedComponents/MLink.tsx";
 
 const navLinks = [
   { label: "Browse Projects", to: "/", testId: "BrowseProjects" },
-  { label: "Submit Project", to: "/page/todo", testId: "SubmitProject" },
+  {
+    label: "Create Project",
+    to: "/page/create-project",
+    testId: "CreateProject",
+  },
   {
     label: "My Projects",
     to: "/page/my-projects",

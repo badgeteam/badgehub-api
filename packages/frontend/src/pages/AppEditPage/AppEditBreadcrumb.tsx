@@ -12,13 +12,19 @@ const AppEditBreadcrumb: React.FC<{ project: Project }> = ({ project }) => (
       </li>
       <li className="flex items-center">
         <span className="mx-2 text-slate-400">/</span>
-        <Link to="/page/my-projects" className="text-emerald-400 hover:text-emerald-300">
+        <Link
+          to="/page/my-projects"
+          className="text-emerald-400 hover:text-emerald-300"
+        >
           Apps
         </Link>
       </li>
       <li className="flex items-center">
         <span className="mx-2 text-slate-400">/</span>
-        <Link to={`/page/app/${project.slug}`} className="text-emerald-400 hover:text-emerald-300">
+        <Link
+          to={`/page/project/${project.slug}`}
+          className="text-emerald-400 hover:text-emerald-300"
+        >
           {project.name}
         </Link>
       </li>

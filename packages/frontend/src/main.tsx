@@ -5,6 +5,7 @@ import "./index.css";
 import HomePage from "./pages/HomePage/HomePage.tsx";
 import AppDetailPage from "@pages/AppDetailPage/AppDetailPage.tsx";
 import AppEditPage from "@pages/AppEditPage/AppEditPage.tsx";
+import CreateProjectPage from "@pages/AppCreationPage/AppCreationPage.tsx";
 
 import { SessionProvider } from "@sharedComponents/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
@@ -32,10 +33,14 @@ createRoot(document.getElementById("root")!).render(
       <SessionProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
-          <Route path="/page/app/:slug/edit" element={<AppEditPageWrapper />} />
+          <Route path="/page/project/:slug" element={<AppDetailWrapper />} />
+          <Route
+            path="/page/project/:slug/edit"
+            element={<AppEditPageWrapper />}
+          />
           <Route path="/page/my-projects" element={<MyProjectsPage />} />
           <Route path="/page/todo" element={<TodoPage />} />
+          <Route path="/page/create-project" element={<CreateProjectPage />} />
         </Routes>
       </SessionProvider>
     </BrowserRouter>

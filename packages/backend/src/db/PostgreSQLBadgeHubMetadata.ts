@@ -54,6 +54,7 @@ import {
   DBSoftDeletable,
 } from "@shared/dbModels/project/DBDatedData";
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
+import { VALID_SLUG_REGEX } from "@shared/contracts/slug";
 
 const ONE_KILO = 1024;
 
@@ -198,6 +199,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     project: Omit<DBInsertProject, keyof DBDatedData>,
     mockDates?: DBDatedData
   ): Promise<void> {
+    if (!project.slug.match(VALID_SLUG_REGEX)) {
+      throw new Error(
+        `Project slug '${project.slug}' is not valid. It must match the pattern: /^[a-z][a-z_0-9]{2,50}$/`
+      );
+    }
     const createdAt = mockDates?.created_at ?? raw("now()");
     const updatedAt = mockDates?.updated_at ?? raw("now()");
     const { keys, values } = getInsertKeysAndValuesSql({

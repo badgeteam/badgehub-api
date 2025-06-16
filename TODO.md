@@ -46,7 +46,8 @@
 - [ ] Nicer handling of user not logged case on my projects page.
 - [ ] Improve the styling of inputs on edit page to match the design better, particularly border color on hover
 - [ ] Project Media, allow creators to upload screenshots and show them on the app detail page (See commit 94c89f8ec4c5f5dfb4f3b0dafc8d5aca5522ebe3)
-
+- [ ] descriptive error in UI if a project already exists with the same slug
+- 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
 - [x] Fix repopulate db script 

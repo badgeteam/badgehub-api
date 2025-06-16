@@ -7,10 +7,7 @@ import Pagination from "@sharedComponents/AppsGrid/Pagination.tsx";
 import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
 import { z } from "zod";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
-import {
-  CategoryName,
-  CategorySlug,
-} from "@shared/domain/readModels/project/Category.ts";
+import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
 import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
 
 export type ProjectQueryParams = z.infer<typeof getProjectsQuerySchema>;
@@ -21,9 +18,11 @@ export type AppFetcher = (
 export const AppGridWithFilterAndPagination = ({
   appFetcher,
   searchQuery,
+  editable = false,
 }: {
   appFetcher: AppFetcher;
   searchQuery: string;
+  editable?: boolean;
 }) => {
   const [apps, setApps] = useState<AppCardProps[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,7 +103,7 @@ export const AppGridWithFilterAndPagination = ({
           {error}
         </div>
       ) : (
-        <AppsGrid apps={paginatedApps} />
+        <AppsGrid apps={paginatedApps} editable={editable} />
       )}
       {/* show pagination if more than one page */}
       {Math.ceil(filteredApps.length / pageSize) > 1 && (
