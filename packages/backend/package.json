@@ -6,6 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "start": "node dist/index.mjs",
+    "start:pm2": "pm2-runtime process.json",
     "build": "node --experimental-strip-types esbuild/esbuild.config.ts",
     "check:ts": "tsc --noEmit -p tsconfig.json",
     "dev": "node --watch --import tsx src/index.ts",

@@ -2,35 +2,28 @@
 FROM node:22-bookworm-slim AS build
 
 WORKDIR /home/node/app
-RUN npm install -g corepack@latest
-RUN corepack enable pnpm
-COPY package*.json pnpm*.yaml  ./
+COPY package*.json ./
 
 RUN mkdir ./packages
 RUN mkdir ./packages/backend
-WORKDIR /home/node/app/packages/backend
-COPY packages/backend/package.json ./
-
-WORKDIR /home/node/app
+COPY packages/backend/package.json ./packages/backend/
 RUN mkdir ./packages/frontend
-WORKDIR /home/node/app/packages/frontend
-COPY packages/frontend/package.json ./
+COPY packages/frontend/package.json ./packages/frontend/
 
-RUN pnpm i --ignore-scripts
+RUN npm ci --ignore-scripts
 
 WORKDIR /home/node/app
 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 ENV NODE_ENV=production
 
 WORKDIR packages/backend
-RUN pnpm i --only=production --ignore-scripts
 
 RUN mkdir -p /home/node/.pm2 logs pids && chown -R node:node /home/node/.pm2 logs pids
 
 USER node
 EXPOSE 8081
-CMD ["./node_modules/pm2/bin/pm2-runtime", "process.json"]
+CMD ["npm", "run", "start:pm2"]

@@ -15,20 +15,17 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "concurrently npm:test:*",
-    "build": "cd packages/backend && npm run build && cd ../frontend && npm run build",
-    "start": "cd packages/backend && npm run start",
+    "test": "npm run test --workspaces",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspace=packages/backend",
     "dev": "concurrently -k -c 'auto' 'npm:dev:*'",
-    "dev:frontend": "cd packages/frontend && npm run dev",
-    "dev:backend": "npm run test-db:up && cd packages/backend && npm run dev",
-    "test-db:up": "cd packages/backend && npm run test-db:up | exit 0",
-    "test:frontend": "cd packages/frontend && npm run test",
-    "test:backend": "cd packages/backend && npm run test",
+    "dev:frontend": "npm run dev --workspace=packages/frontend",
+    "test-db:up": "npm run --workspace=packages/backend test-db:up | exit 0",
+    "dev:backend": "npm run test-db:up && npm run dev --workspace=packages/backend",
     "prepare": "husky",
     "lint-staged": "pretty-quick --staged",
     "lint": "pretty-quick --check",
-    "lint:fix": "pretty-quick --check",
-    "preinstall": "npx only-allow pnpm"
+    "lint:fix": "pretty-quick --check"
   },
   "dependencies": {
     "@ts-rest/core": "^3.52.1",
@@ -40,5 +37,9 @@
     "husky": "^9.0.11",
     "prettier": "^3.2.5",
     "pretty-quick": "^4.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/frontend",
+    "packages/backend"
+  ]
 }
