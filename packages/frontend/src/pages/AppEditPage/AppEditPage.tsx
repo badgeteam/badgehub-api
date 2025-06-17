@@ -34,13 +34,15 @@ const AppEditPage: React.FC<{
         const project = res.body;
         setProject(project);
         setForm({
-          name: project.name ?? "",
-          semantic_version: project.version.app_metadata.semantic_version ?? "",
-          description: project.description ?? "",
-          // badge: project.badges.join(",") ?? "",
-          category: project.version.app_metadata.category,
-          license_file: project.version.app_metadata.license_file ?? "",
-          main_executable: project.version.app_metadata.main_executable ?? "",
+          name: project.name ?? undefined,
+          semantic_version:
+            project.version.app_metadata.semantic_version ?? undefined,
+          description: project.description ?? undefined,
+          // badge: project.badges.join(",") ?? undefined,
+          category: project.version.app_metadata.category ?? undefined,
+          license_file: project.version.app_metadata.license_file ?? undefined,
+          main_executable:
+            project.version.app_metadata.main_executable ?? undefined,
         });
       }
       setLoading(false);
