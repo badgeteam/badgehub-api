@@ -54,10 +54,20 @@
 - [x] Fix repopulate db script 
   - [x] currently it results in an empty mockup-data.sql file
   - [x] currently it seems there is a timezone dependency that causes different data to be generated on different machines
+- [ ] Add filter parameters to the URL so that the user can share the filtered view with others and so that refresh retains the filters.
+- [ ] Clean up Catalog slug vs name mess
+- [ ] to make updating an app more simple, git reference should be moved to the app metadata
+
+# Important things
+- [ ] User name resolving: we only store user subs in the database, but when a list of apps is shown, we want to show the user's name, not the sub. So we need to resolve the user name from the sub.
+  - So we need to decide how we do this: will we let the frontend request it from keycloack, or will be let the backend resolve it and then send that back instead of the user sub? Checking this with Parko
+- [ ] Badges and Categories should be configurable per environment
 - [ ] use env vars for frontend keycloak config packages/frontend/src/components/ProfileIcon.tsx
 - [ ] Use hidden iframe (see silentCheckSsoRedirectUri documentation in keycloak-js) to check if user is logged in.
   - This will improve the homepage loading time and user experience.
-- [ ] Add filter parameters to the URL so that the user can share the filtered view with others and so that refresh retains the filters.
-- [ ] Clean up Catalog slug vs name mess
-- [ ] Badges and Categories should be configurable per environment, so we need to get rid of all the hardcoded values in the frontend and backend.
-- [ ] to make updating an app more simple, git reference should be moved to the app metadata
+- [ ] Users need to be able to create and revoke tokens for the API, so that this can be used for: 
+  - app upload/edit from BADGE
+  - app upload/edit from CLI, eg github action
+- [ ] Metrics reporting and download counting
+  - For download counts, the idea is that the badge will send a badge id in the request, so we can count the unique number of badges that downloaded an app.
+  - We should also think about app usage metrics, firmware could help with this from the launcher.
