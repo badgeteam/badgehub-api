@@ -47,7 +47,7 @@
 - [ ] Improve the styling of inputs on edit page to match the design better, particularly border color on hover
 - [ ] Project Media, allow creators to upload screenshots and show them on the app detail page (See commit 94c89f8ec4c5f5dfb4f3b0dafc8d5aca5522ebe3)
 - [ ] descriptive error in UI if a project already exists with the same slug
-- 
+
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
 - [x] Fix repopulate db script 
@@ -59,3 +59,4 @@
 - [ ] Add filter parameters to the URL so that the user can share the filtered view with others and so that refresh retains the filters.
 - [ ] Clean up Catalog slug vs name mess
 - [ ] Badges and Categories should be configurable per environment, so we need to get rid of all the hardcoded values in the frontend and backend.
+- [ ] to make updating an app more simple, git reference should be moved to the app metadata

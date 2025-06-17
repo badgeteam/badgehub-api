@@ -68,9 +68,8 @@ const AppEditPage: React.FC<{
     );
   }
 
-  // Form state handlers
   const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
-    setForm((prev: ProjectEditFormData | undefined) => {
+    setForm((prev) => {
       const newName = prev?.name || changes.name;
       if (!newName) {
         return undefined;
@@ -79,13 +78,27 @@ const AppEditPage: React.FC<{
         ...prev,
         ...changes,
         name: newName,
-      };
+      } as ProjectEditFormData;
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Save logic
+    if (!form) return;
+    await tsRestClient.changeDraftAppMetadata({
+      headers: {
+        authorization: `Bearer ${user?.token}`,
+      },
+      params: { slug },
+      body: form,
+    });
+    await tsRestClient.publishVersion({
+      headers: {
+        authorization: `Bearer ${user?.token}`,
+      },
+      params: { slug },
+      body: undefined,
+    });
   };
 
   return (

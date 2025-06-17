@@ -10,7 +10,7 @@ const AppEditActions: React.FC = () => (
           type="submit"
           className="btn-primary px-6 py-3 rounded-lg font-semibold transition-all duration-200 ease-in-out transform hover:scale-105"
         >
-          Save Changes
+          Save & Publish
         </button>
         <Link
           to=".."
