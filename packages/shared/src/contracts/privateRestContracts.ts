@@ -37,7 +37,8 @@ const privateProjectContracts = c.router(
       pathParams: z.object({ slug: z.string() }),
       body: createProjectBodySchema,
       responses: {
-        204: z.void(),
+        204: c.type<void>(),
+        409: c.type<{ reason: string }>(),
         403: c.type<{ reason: string }>(),
       },
       summary: "Create a new project",

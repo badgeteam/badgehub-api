@@ -24,7 +24,9 @@ const AppEditCategorization: React.FC<{
         noValueSetName="Please select"
         category={form.category && REVERSE_CATEGORY_MAP[form.category]}
         onCategoryChange={(newValue) =>
-          onChange({ category: newValue && CATEGORY_MAP[newValue] })
+          onChange({
+            category: (newValue && CATEGORY_MAP[newValue]) || undefined,
+          })
         }
       />
       <div>

@@ -23,6 +23,7 @@ import {
 } from "@shared/domain/readModels/project/Project";
 import { Readable } from "node:stream";
 import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
+import { ProjectAlreadyExistsError, UserError } from "@domain/UserError";
 
 const upload = multer({
   limits: { fileSize: MAX_UPLOAD_FILE_SIZE_BYTES },
@@ -35,11 +36,20 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
     createProject: async ({ params: { slug }, req, body: props }) => {
       // Create a new draft project using the user from the token.
       const user = getUser(req as unknown as RequestWithUser);
-      await badgeHubData.insertProject({
-        ...props,
-        slug,
-        idp_user_id: user.idp_user_id,
-      });
+      try {
+        await badgeHubData.insertProject({
+          ...props,
+          slug,
+          idp_user_id: user.idp_user_id,
+        });
+      } catch (e) {
+        if (e instanceof ProjectAlreadyExistsError) {
+          return nok(409, e.message);
+        }
+        if (e instanceof UserError) {
+          return nok(400, e.message);
+        }
+      }
       return noContent();
     },
 
@@ -104,6 +114,7 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
       await badgeHubData.publishVersion(slug);
       return noContent();
     },
+
     writeDraftFile: {
       middleware: [upload.single("file")],
       handler: async ({ params: { slug, filePath }, file, req }) => {
@@ -132,6 +143,7 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
         return noContent();
       },
     },
+
     deleteDraftFile: async ({ params: { slug, filePath }, req }) => {
       const authorizationFailureResponse = await checkProjectAuthorization(
         badgeHubData,
@@ -143,6 +155,7 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
       await badgeHubData.deleteDraftFile(slug, filePath);
       return noContent();
     },
+
     getDraftFile: async ({ params: { slug, filePath }, req }) => {
       const authorizationFailureResponse = await checkProjectAuthorization(
         badgeHubData,

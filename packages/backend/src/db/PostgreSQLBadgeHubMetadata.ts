@@ -55,6 +55,7 @@ import {
 } from "@shared/dbModels/project/DBDatedData";
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { VALID_SLUG_REGEX } from "@shared/contracts/slug";
+import { ProjectAlreadyExistsError, UserError } from "@domain/UserError";
 
 const ONE_KILO = 1024;
 
@@ -200,9 +201,15 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     mockDates?: DBDatedData
   ): Promise<void> {
     if (!project.slug.match(VALID_SLUG_REGEX)) {
-      throw new Error(
+      throw new UserError(
         `Project slug '${project.slug}' is not valid. It must match the pattern: /^[a-z][a-z_0-9]{2,50}$/`
       );
+    }
+    const alreadyExistingProject = await this.pool.query(
+      sql`select 1 from projects where slug = ${project.slug}`
+    );
+    if (alreadyExistingProject.rows.length) {
+      throw new ProjectAlreadyExistsError(project.slug);
     }
     const createdAt = mockDates?.created_at ?? raw("now()");
     const updatedAt = mockDates?.updated_at ?? raw("now()");
