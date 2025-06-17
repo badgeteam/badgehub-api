@@ -20,6 +20,9 @@ const AppEditPage: React.FC<{
   const { user, keycloak } = useSession();
 
   useEffect(() => {
+    if (project) {
+      return;
+    }
     let mounted = true;
     setLoading(true);
     (async () => {
@@ -50,7 +53,7 @@ const AppEditPage: React.FC<{
     return () => {
       mounted = false;
     };
-  }, [keycloak, slug, tsRestClient, user?.token]);
+  }, [keycloak, project, slug, tsRestClient, user?.token]);
 
   if (loading) {
     return (
@@ -72,14 +75,9 @@ const AppEditPage: React.FC<{
 
   const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
     setForm((prev) => {
-      const newName = prev?.name || changes.name;
-      if (!newName) {
-        return undefined;
-      }
       return {
         ...prev,
         ...changes,
-        name: newName,
       } as ProjectEditFormData;
     });
   };
@@ -101,6 +99,7 @@ const AppEditPage: React.FC<{
       params: { slug },
       body: undefined,
     });
+    setProject(null);
   };
 
   return (
@@ -112,7 +111,7 @@ const AppEditPage: React.FC<{
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
         <AppEditBreadcrumb project={project} />
         <h1 className="text-3xl font-bold text-slate-100 mb-6">
-          Editing: {form.name}
+          Editing {project.slug}/rev{project.version.revision}
         </h1>
         <form className="space-y-8" onSubmit={handleSubmit}>
           <AppEditBasicInfo form={form} onChange={handleFormChange} />
