@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import Header from "@sharedComponents/Header.tsx";
 import Footer from "@sharedComponents/Footer.tsx";
@@ -6,6 +6,8 @@ import AppEditBreadcrumb from "./AppEditBreadcrumb.tsx";
 import AppEditBasicInfo from "./AppEditBasicInfo.tsx";
 import AppEditCategorization from "./AppEditCategorization.tsx";
 import AppEditActions from "./AppEditActions.tsx";
+import AppEditFileUpload from "./AppEditFileUpload";
+import AppEditFilePreview from "./AppEditFilePreview";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
 import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
@@ -18,19 +20,19 @@ const AppEditPage: React.FC<{
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<ProjectEditFormData | undefined>(undefined);
   const { user, keycloak } = useSession();
+  const [fileRefreshKey, setFileRefreshKey] = useState(0);
+  const handleFileUploadSuccess = useCallback(() => {
+    setFileRefreshKey((k) => k + 1);
+  }, []);
 
   useEffect(() => {
-    if (project) {
-      return;
-    }
+    if (project) return;
     let mounted = true;
     setLoading(true);
     (async () => {
       await keycloak?.updateToken(30);
       const res = await tsRestClient.getDraftProject({
-        headers: {
-          authorization: `Bearer ${user?.token}`,
-        },
+        headers: { authorization: `Bearer ${user?.token}` },
         params: { slug },
       });
       if (mounted && res.status === 200) {
@@ -41,7 +43,6 @@ const AppEditPage: React.FC<{
           semantic_version:
             project.version.app_metadata.semantic_version ?? undefined,
           description: project.description ?? undefined,
-          // badge: project.badges.join(",") ?? undefined,
           category: project.version.app_metadata.category ?? undefined,
           license_file: project.version.app_metadata.license_file ?? undefined,
           main_executable:
@@ -55,47 +56,20 @@ const AppEditPage: React.FC<{
     };
   }, [keycloak, project, slug, tsRestClient, user?.token]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64 text-slate-400 bg-gray-900 min-h-screen">
-        Loading...
-      </div>
-    );
-  }
-  if (!project || !form) {
-    return (
-      <div
-        data-testid="app-edit-error"
-        className="flex justify-center items-center h-64 text-red-400 bg-gray-900 min-h-screen"
-      >
-        App not found.
-      </div>
-    );
-  }
-
   const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
-    setForm((prev) => {
-      return {
-        ...prev,
-        ...changes,
-      } as ProjectEditFormData;
-    });
+    setForm((prev) => ({ ...prev, ...changes }) as ProjectEditFormData);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form) return;
     await tsRestClient.changeDraftAppMetadata({
-      headers: {
-        authorization: `Bearer ${user?.token}`,
-      },
+      headers: { authorization: `Bearer ${user?.token}` },
       params: { slug },
       body: form,
     });
     await tsRestClient.publishVersion({
-      headers: {
-        authorization: `Bearer ${user?.token}`,
-      },
+      headers: { authorization: `Bearer ${user?.token}` },
       params: { slug },
       body: undefined,
     });
@@ -109,15 +83,52 @@ const AppEditPage: React.FC<{
     >
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-        <AppEditBreadcrumb project={project} />
-        <h1 className="text-3xl font-bold text-slate-100 mb-6">
-          Editing {project.slug}/rev{project.version.revision}
-        </h1>
-        <form className="space-y-8" onSubmit={handleSubmit}>
-          <AppEditBasicInfo form={form} onChange={handleFormChange} />
-          <AppEditCategorization form={form} onChange={handleFormChange} />
-          <AppEditActions />
-        </form>
+        {!loading && (!project || !form) ? (
+          <div
+            data-testid="app-edit-error"
+            className="flex justify-center items-center h-64 text-red-400 bg-gray-900"
+          >
+            App not found.
+          </div>
+        ) : loading ? (
+          <div className="flex justify-center items-center h-64 text-slate-400 bg-gray-900">
+            Loading...
+          </div>
+        ) : (
+          <>
+            <AppEditBreadcrumb project={project as Project} />
+            <h1 className="text-3xl font-bold text-slate-100 mb-6">
+              Editing {project!.slug}/rev{project!.version.revision}
+            </h1>
+            <form className="space-y-8" onSubmit={handleSubmit}>
+              <AppEditBasicInfo
+                form={form as ProjectEditFormData}
+                onChange={handleFormChange}
+              />
+              <AppEditCategorization
+                form={form as ProjectEditFormData}
+                onChange={handleFormChange}
+              />
+              <AppEditFileUpload
+                slug={slug}
+                tsRestClient={tsRestClient}
+                userToken={user?.token}
+                onUploadSuccess={handleFileUploadSuccess}
+              />
+              <AppEditFilePreview
+                slug={slug}
+                tsRestClient={tsRestClient}
+                userToken={user?.token}
+                refreshKey={fileRefreshKey}
+                onSetIcon={(filePath) =>
+                  setForm((prev) => (prev ? { ...prev, icon: filePath } : prev))
+                }
+                iconFilePath={form?.icon ?? null}
+              />
+              <AppEditActions />
+            </form>
+          </>
+        )}
       </main>
       <Footer />
     </div>

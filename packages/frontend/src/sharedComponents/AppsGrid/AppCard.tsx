@@ -14,8 +14,11 @@ const AppCard: React.FC<AppCardProps> = ({
   icon,
   editable,
 }) => {
+  const draftOrRevision = published_at
+    ? `rev${revision}`
+    : `rev${revision - 1}`;
   const iconSrc = icon
-    ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/rev${revision}/files/${encodeURIComponent(icon)}`
+    ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/${draftOrRevision}/files/${encodeURIComponent(icon)}`
     : `${BADGEHUB_FRONTEND_BASE_URL}/assets/no-icon-uploaded.png`;
   return (
     <div
