@@ -66,7 +66,7 @@ const MyProjectsPage = memo(
               editable={true}
             />
           ) : (
-            <PleaseLoginMessage whatToSee={"your projects"} />
+            <PleaseLoginMessage whatToSee={"see your projects"} />
           )}
         </main>
         <Footer />

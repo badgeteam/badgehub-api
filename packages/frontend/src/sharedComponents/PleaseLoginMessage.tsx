@@ -5,7 +5,7 @@ export const PleaseLoginMessage: React.FC<{ whatToSee: string }> = ({
 }) => (
   <>
     <div className="items-center justify-center bg-gray-900 text-slate-200 text-center">
-      <p>Please log in to see {whatToSee}.</p>
+      <p>Please log in to {whatToSee}.</p>
     </div>
   </>
 );

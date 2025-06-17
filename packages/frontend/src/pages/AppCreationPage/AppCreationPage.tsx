@@ -8,6 +8,7 @@ import { VALID_SLUG_REGEX } from "@shared/contracts/slug.ts";
 import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import { useNavigate } from "react-router-dom";
+import { PleaseLoginMessage } from "@sharedComponents/PleaseLoginMessage.tsx";
 
 export interface AppCreationFormData {
   slug: string;
@@ -24,7 +25,7 @@ const AppCreationPage: React.FC<{
 }> = ({ tsRestClient = defaultTsRestClient }) => {
   const [form, setForm] = useState<AppCreationFormData>(initialForm);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useSession();
+  const { user, keycloak } = useSession();
   const navigate = useNavigate();
   const handleFormChange = (changes: Partial<AppCreationFormData>) => {
     setForm((prev) => ({
@@ -65,6 +66,9 @@ const AppCreationPage: React.FC<{
   // Check if slug is valid
   const isSlugValid = VALID_SLUG_REGEX.test(form.slug);
 
+  // Check if user is logged in
+  const userIsLoggedIn = keycloak?.authenticated && user?.id;
+
   return (
     <div
       data-testid="app-creation-page"
@@ -76,15 +80,21 @@ const AppCreationPage: React.FC<{
         <h1 className="text-3xl font-bold text-slate-100 mb-6">
           Create a New Project
         </h1>
-        {error && (
-          <div className="mb-4 text-red-400 bg-red-900/40 border border-red-700 rounded px-4 py-2">
-            {error}
-          </div>
+        {!userIsLoggedIn ? (
+          <PleaseLoginMessage whatToSee="create a project" />
+        ) : (
+          <>
+            {error && (
+              <div className="mb-4 text-red-400 bg-red-900/40 border border-red-700 rounded px-4 py-2">
+                {error}
+              </div>
+            )}
+            <form className="space-y-8" onSubmit={handleSubmit}>
+              <AppCreationBasicInfo form={form} onChange={handleFormChange} />
+              <AppCreationActions isSlugValid={isSlugValid} />
+            </form>
+          </>
         )}
-        <form className="space-y-8" onSubmit={handleSubmit}>
-          <AppCreationBasicInfo form={form} onChange={handleFormChange} />
-          <AppCreationActions isSlugValid={isSlugValid} />
-        </form>
       </main>
       <Footer />
     </div>
