@@ -2,18 +2,29 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
 import "./index.css";
-import HomePage from "./pages/HomePage.tsx";
-import AppDetail from "./components/AppDetailPage/AppDetail.tsx";
+import HomePage from "./pages/HomePage/HomePage.tsx";
+import AppDetailPage from "@pages/AppDetailPage/AppDetailPage.tsx";
+import AppEditPage from "@pages/AppEditPage/AppEditPage.tsx";
+import CreateProjectPage from "@pages/AppCreationPage/AppCreationPage.tsx";
 
-import { SessionProvider } from "@components/keycloakSession/SessionProvider.tsx";
+import { SessionProvider } from "@sharedComponents/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
+import MyProjectsPage from "@pages/MyProjectsPage/MyProjectsPage.tsx";
 
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();
   if (!slug) {
     return <div>Error: App slug is required</div>;
   }
-  return <AppDetail slug={slug} />;
+  return <AppDetailPage slug={slug} />;
+};
+
+const AppEditPageWrapper = () => {
+  const { slug } = useParams<{ slug: string }>();
+  if (!slug) {
+    return <div>Error: App slug is required</div>;
+  }
+  return <AppEditPage slug={slug} />;
 };
 
 createRoot(document.getElementById("root")!).render(
@@ -22,8 +33,14 @@ createRoot(document.getElementById("root")!).render(
       <SessionProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/page/app/:slug" element={<AppDetailWrapper />} />
+          <Route path="/page/project/:slug" element={<AppDetailWrapper />} />
+          <Route
+            path="/page/project/:slug/edit"
+            element={<AppEditPageWrapper />}
+          />
+          <Route path="/page/my-projects" element={<MyProjectsPage />} />
           <Route path="/page/todo" element={<TodoPage />} />
+          <Route path="/page/create-project" element={<CreateProjectPage />} />
         </Routes>
       </SessionProvider>
     </BrowserRouter>

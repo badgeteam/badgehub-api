@@ -1,0 +1,188 @@
+<!--Link: https://g.co/gemini/share/3cf6fbed2daa -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create App - μAppHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+      body {
+          font-family: 'Inter', sans-serif;
+          background-color: #1a202c; /* Tailwind gray-900 */
+          color: #e2e8f0; /* Tailwind slate-200 */
+      }
+      .font-roboto-mono {
+          font-family: 'Roboto Mono', monospace;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: #2d3748; /* gray-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+          background: #4a5568; /* gray-600 */
+          border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: #718096; /* gray-500 */
+      }
+      .btn-primary {
+          background-color: #047857; /* emerald-600 */
+          color: white;
+      }
+      .btn-primary:hover {
+          background-color: #059669; /* emerald-500 */
+      }
+      .icon {
+          display: inline-block;
+          width: 1em;
+          height: 1em;
+          stroke-width: 0;
+          stroke: currentColor;
+          fill: currentColor;
+      }
+      .form-input {
+          background-color: #2d3748; /* gray-800 */
+          border: 1px solid #4a5568; /* gray-600 */
+          color: #e2e8f0; /* slate-200 */
+          border-radius: 0.375rem; /* rounded-md */
+      }
+      .form-input:focus {
+          border-color: #10b981; /* emerald-500 */
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
+      }
+      .slug-preview {
+          background-color: #2d3748; /* gray-800 */
+          padding: 0.5rem 0.75rem;
+          border-radius: 0.375rem;
+          color: #94a3b8; /* slate-400 */
+      }
+  </style>
+</head>
+<body class="antialiased">
+
+<header class="bg-gray-800 shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center">
+        <a href="#" class="flex items-center space-x-2 text-xl font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+          <svg class="icon h-7 w-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 20H15C18.3137 20 21 17.3137 21 14V10C21 6.68629 18.3137 4 15 4H9C5.68629 4 3 6.68629 3 10V14C3 17.3137 5.68629 20 9 20Z" stroke="currentColor" stroke-width="2"/><path d="M7 8H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 12H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 16H7.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 8H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 12H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 16H17.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>μAppHub</span>
+        </a>
+      </div>
+      <nav class="hidden md:flex space-x-4 items-center">
+        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Browse Apps</a>
+        <a href="#" class="text-white bg-gray-900 px-3 py-2 rounded-md text-sm font-medium">Submit App</a>
+      </nav>
+      <div class="flex items-center">
+        <button class="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white transition-colors">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+    <ol class="list-none p-0 inline-flex space-x-2">
+      <li class="flex items-center">
+        <a href="#" class="text-emerald-400 hover:text-emerald-300">Home</a>
+      </li>
+      <li class="flex items-center">
+        <svg class="icon h-4 w-4 text-slate-400 mx-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4-4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+        <span class="text-slate-500">Create New App</span>
+      </li>
+    </ol>
+  </nav>
+
+  <h1 class="text-3xl font-bold text-slate-100 mb-6">Create a New μApp</h1>
+
+  <form action="#" method="POST" class="space-y-8">
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">App Details</h2>
+      <div class="space-y-6">
+        <div>
+          <label for="app-name" class="block text-sm font-medium text-slate-300 mb-1">App Name</label>
+          <input type="text" id="app-name" name="app-name" class="w-full form-input p-2" placeholder="e.g., My Awesome Weather Station">
+        </div>
+        <div>
+          <label for="app-slug-preview" class="block text-sm font-medium text-slate-300 mb-1">URL Slug Preview</label>
+          <div id="app-slug-preview" class="slug-preview font-roboto-mono text-sm">
+            <span class="text-slate-500">https://uapphub.com/apps/</span><span id="slug-text" class="text-emerald-400"></span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">This is the unique URL for your app. It's generated automatically.</p>
+        </div>
+      </div>
+      <div class="mt-6">
+        <label for="app-description" class="block text-sm font-medium text-slate-300 mb-1">Description</label>
+        <textarea id="app-description" name="app-description" rows="8" class="w-full form-input p-2" placeholder="Describe what your application does, what hardware it uses, and any other important details."></textarea>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold text-slate-100 mb-4">Submit</h2>
+      <div class="flex items-center justify-start">
+        <button type="submit" class="btn-primary px-8 py-3 rounded-lg font-semibold transition-all duration-200 ease-in-out transform hover:scale-105 flex items-center space-x-2">
+          <svg class="icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" clip-rule="evenodd" />
+          </svg>
+          <span>Create Application</span>
+        </button>
+      </div>
+      <p class="text-xs text-slate-500 mt-4">You can add code, media, and other details after creation.</p>
+    </section>
+  </form>
+</main>
+
+<footer class="bg-gray-800 border-t border-gray-700 mt-16">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-slate-400">
+    <div class="mb-4">
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">About</a>
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">Contact</a>
+      <a href="#" class="px-3 hover:text-emerald-400 transition-colors text-sm">Terms of Service</a>
+      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-3 hover:text-emerald-400 transition-colors text-sm">GitHub</a>
+    </div>
+    <p class="text-sm font-roboto-mono">&copy; <span id="currentYear"></span> μAppHub. All rights reserved.</p>
+    <p class="text-xs text-slate-500 mt-2">Designed for makers, by makers.</p>
+  </div>
+</footer>
+
+<script>
+  // Set the current year in the footer
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+  // --- Slug Generation Logic ---
+  const appNameInput = document.getElementById('app-name');
+  const slugText = document.getElementById('slug-text');
+
+  // Function to generate a clean slug from a string
+  const generateSlug = (name) => {
+    // 1. Convert to lowercase
+    // 2. Replace one or more spaces with a single underscore
+    // 3. Remove any characters that are not lowercase letters, numbers, or underscores
+    // 4. Trim leading/trailing underscores
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_]/g, '')
+      .replace(/^_+|_+$/g, '');
+    return slug;
+  };
+
+  // Event listener for the app name input field
+  appNameInput.addEventListener('input', () => {
+    const name = appNameInput.value;
+    const slug = generateSlug(name);
+    slugText.textContent = slug;
+  });
+</script>
+
+</body>
+</html>

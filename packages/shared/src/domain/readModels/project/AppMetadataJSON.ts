@@ -3,7 +3,7 @@
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
 import {
-  Category,
+  CategoryName,
   categoryNameSchema,
 } from "@shared/domain/readModels/project/Category";
 import { Badge } from "@shared/domain/readModels/Badge";
@@ -13,7 +13,7 @@ import { z } from "zod/v3";
 export interface AppMetadataJSON {
   name?: string;
   description?: string;
-  category?: Category["name"];
+  category?: CategoryName;
   author?: string; // The name of the user_name
   icon?: string; // The relative icon path
   license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.

@@ -3,8 +3,8 @@ import { z } from "zod/v3";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export interface Category {
-  name: AppCategoryName;
-  slug: string;
+  name: CategoryName;
+  slug: CategorySlug;
 }
 
 export const CATEGORY_MAP = {
@@ -26,7 +26,15 @@ export const CATEGORY_MAP = {
   interpreter: "Interpreter",
 } as const;
 
-export type AppCategoryName = (typeof CATEGORY_MAP)[keyof typeof CATEGORY_MAP]; // Changed! the interpreter categorySlug was added here for the case of libraries.
+export const CATEGORY_SLUGS = Object.keys(CATEGORY_MAP) as Array<
+  keyof typeof CATEGORY_MAP
+>;
+export const REVERSE_CATEGORY_MAP = Object.fromEntries(
+  Object.entries(CATEGORY_MAP).map(([key, value]) => [value, key])
+) as Record<CategoryName, CategorySlug>;
+export type CategorySlug = keyof typeof CATEGORY_MAP;
+
+export type CategoryName = (typeof CATEGORY_MAP)[keyof typeof CATEGORY_MAP]; // Changed! the interpreter categorySlug was added here for the case of libraries.
 
 export interface CategorySlugRelation {
   category_slug: DBCategory["slug"];
@@ -53,18 +61,23 @@ export const categoryNameSchema = z.enum([
   "Virus",
   "SAO",
   "Interpreter",
-]);
+] as const satisfies CategoryName[]);
 
-export const categorySchema = z.object({
-  name: categoryNameSchema,
-  slug: z.string(),
-});
-
-type Checks = [
-  CheckSame<
-    AppCategoryName,
-    AppCategoryName,
-    z.infer<typeof categoryNameSchema>
-  >,
-  CheckSame<Category, Category, z.infer<typeof categorySchema>>,
-];
+export const categorySlugSchema = z.enum([
+  "uncategorised",
+  "event_related",
+  "games",
+  "graphics",
+  "hardware",
+  "utility",
+  "wearable",
+  "data",
+  "silly",
+  "hacking",
+  "troll",
+  "unusable",
+  "adult",
+  "virus",
+  "sao",
+  "interpreter",
+] as const satisfies CategorySlug[]);

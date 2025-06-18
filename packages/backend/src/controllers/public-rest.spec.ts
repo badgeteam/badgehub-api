@@ -18,8 +18,8 @@ describe(
       app = createExpressServer();
     });
 
-    test("GET /api/v3/devices", async () => {
-      const res = await request(app).get("/api/v3/devices");
+    test("GET /api/v3/badges", async () => {
+      const res = await request(app).get("/api/v3/badges");
       expect(res.statusCode).toBe(200);
       expect(
         res.body.find((badge: Badge) => badge.slug === "why2025")

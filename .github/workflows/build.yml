@@ -16,7 +16,7 @@ jobs:
           node-version-file: ".nvmrc"
       - name: Install dependencies
         run: |
-          npm ci && cd packages/backend && npm ci && cd ../frontend && npm ci
+          npm ci
       - name: Run lint
         run: |
           npm run lint
@@ -25,7 +25,7 @@ jobs:
           npm run build
       - name: Start environment
         run: |
-          cd packages/backend && npm run test-db:up -- --wait
+          npm run test-db:up --workspace=packages/backend -- --wait
       - name: Run test
         run: |
           npm run test

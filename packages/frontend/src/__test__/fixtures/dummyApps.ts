@@ -1,4 +1,4 @@
-import type { AppCardProps } from "@components/types.ts";
+import type { AppCardProps } from "@sharedComponents/types.ts";
 import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_MAP } from "@shared/domain/readModels/Badge.ts";
 
