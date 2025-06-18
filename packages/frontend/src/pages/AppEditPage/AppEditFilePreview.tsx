@@ -1,83 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
+import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { User } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 
 const AppEditFilePreview: React.FC<{
-  slug: string;
-  tsRestClient?: typeof defaultTsRestClient;
-  userToken: string | undefined;
-  refreshKey: number;
+  user?: User; // Optional user prop for authentication
+  tsRestClient: typeof defaultTsRestClient; // Replace with actual type if available
+  project: Project;
   onSetIcon?: (filePath: string) => void;
   iconFilePath?: string | null;
-}> = ({
-  slug,
-  tsRestClient = defaultTsRestClient,
-  userToken,
-  refreshKey,
-  onSetIcon,
-  iconFilePath,
-}) => {
-  const [files, setFiles] = useState<any[]>([]);
-  const [previewedFile, setPreviewedFile] = useState<string | null>(null);
-  const [fileContent, setFileContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    let mounted = true;
-    setFiles([]);
-    setPreviewedFile(null);
-    setFileContent(null);
-    setLoading(true);
-    (async () => {
-      const res = await tsRestClient.getDraftProject({
-        headers: { authorization: `Bearer ${userToken}` },
-        params: { slug },
-      });
-      if (mounted && res.status === 200) {
-        setFiles(res.body?.version?.files ?? []);
-      }
-      setLoading(false);
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [slug, tsRestClient, userToken, refreshKey]);
-
-  useEffect(() => {
-    if (!previewedFile) {
-      setFileContent(null);
-      return;
-    }
-    setLoading(true);
-    tsRestClient
-      .getDraftFile({
-        headers: { authorization: `Bearer ${userToken}` },
-        params: { slug, filePath: previewedFile },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          if (typeof res.body === "string") {
-            setFileContent(res.body);
-          } else if (res.body instanceof Blob) {
-            res.body.text().then(setFileContent);
-          } else {
-            setFileContent("// Unable to display file content");
-          }
-        } else {
-          setFileContent("// Unable to load file");
-        }
-        setLoading(false);
-      });
-  }, [previewedFile, slug, tsRestClient, userToken]);
-
-  const handlePreview = (fullPath: string) => {
-    setPreviewedFile(fullPath);
-  };
+}> = ({ project, onSetIcon, iconFilePath }) => {
+  const files = project?.version?.files ?? [];
 
   const handleSetIcon = (fullPath: string) => {
     if (onSetIcon) onSetIcon(fullPath);
   };
 
-  // Only allow "Set as Icon" for .png files
   const isPng = (filePath: string) => filePath.toLowerCase().endsWith(".png");
 
   return (
@@ -93,23 +31,16 @@ const AppEditFilePreview: React.FC<{
           <ul className="list-none text-slate-400 text-sm space-y-1">
             {files.map((f, i: number) => (
               <li key={i} className="flex items-center gap-2">
-                <button
-                  className={`text-left hover:underline font-mono ${
-                    previewedFile === f.full_path
-                      ? "text-slate-100 font-bold"
-                      : "text-slate-400"
-                  }`}
-                  onClick={() => handlePreview(f.full_path)}
+                <p
+                  className={`text-left font-mono text-slate-400`}
                   style={{
                     background: "none",
                     border: "none",
                     padding: 0,
-                    cursor: "pointer",
                   }}
-                  title="Preview file"
                 >
                   {f.full_path}
-                </button>
+                </p>
                 {f.size_formatted && (
                   <span className="ml-2 text-slate-500">
                     {f.size_formatted}
@@ -136,19 +67,6 @@ const AppEditFilePreview: React.FC<{
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-      <div className="mt-6 md:ml-0">
-        <div className="code-block font-roboto-mono text-sm bg-gray-900 rounded p-4 overflow-x-auto min-h-[200px]">
-          <pre>
-            <code>
-              {loading
-                ? "// Loading file..."
-                : previewedFile
-                  ? (fileContent ?? "// Loading file...")
-                  : "// No file selected"}
-            </code>
-          </pre>
         </div>
       </div>
     </section>

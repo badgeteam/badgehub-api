@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import Header from "@sharedComponents/Header.tsx";
 import Footer from "@sharedComponents/Footer.tsx";
@@ -16,17 +16,15 @@ const AppEditPage: React.FC<{
   tsRestClient?: typeof defaultTsRestClient;
   slug: string;
 }> = ({ tsRestClient = defaultTsRestClient, slug }) => {
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<(Project & { stale?: true }) | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<ProjectEditFormData | undefined>(undefined);
   const { user, keycloak } = useSession();
-  const [fileRefreshKey, setFileRefreshKey] = useState(0);
-  const handleFileUploadSuccess = useCallback(() => {
-    setFileRefreshKey((k) => k + 1);
-  }, []);
 
   useEffect(() => {
-    if (project) return;
+    if (project && !project.stale) return;
     let mounted = true;
     setLoading(true);
     (async () => {
@@ -73,7 +71,13 @@ const AppEditPage: React.FC<{
       params: { slug },
       body: undefined,
     });
-    setProject(null);
+    if (project) {
+      setProject({
+        ...project,
+        stale: true,
+        version: { ...project.version, app_metadata: form },
+      });
+    }
   };
 
   return (
@@ -113,13 +117,12 @@ const AppEditPage: React.FC<{
                 slug={slug}
                 tsRestClient={tsRestClient}
                 userToken={user?.token}
-                onUploadSuccess={handleFileUploadSuccess}
+                onUploadSuccess={() => setProject(null)}
               />
               <AppEditFilePreview
-                slug={slug}
                 tsRestClient={tsRestClient}
-                userToken={user?.token}
-                refreshKey={fileRefreshKey}
+                user={user}
+                project={project as Project}
                 onSetIcon={(filePath) =>
                   setForm((prev) => (prev ? { ...prev, icon: filePath } : prev))
                 }
