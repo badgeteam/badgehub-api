@@ -1,5 +1,6 @@
 import React from "react";
 import { AppCreationFormData } from "./AppCreationPage";
+import { BADGEHUB_FRONTEND_BASE_URL } from "@config.ts";
 
 const AppCreationBasicInfo: React.FC<{
   form: AppCreationFormData;
@@ -43,7 +44,9 @@ const AppCreationBasicInfo: React.FC<{
             className="slug-preview font-roboto-mono text-sm"
             data-testid="app-creation-slug-preview"
           >
-            <span className="text-slate-500">https://uapphub.com/apps/</span>
+            <span className="text-slate-500">
+              {BADGEHUB_FRONTEND_BASE_URL}/
+            </span>
             <span className="text-emerald-400">{slug}</span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
