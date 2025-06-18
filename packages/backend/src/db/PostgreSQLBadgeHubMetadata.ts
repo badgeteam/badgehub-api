@@ -202,7 +202,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
   ): Promise<void> {
     if (!project.slug.match(VALID_SLUG_REGEX)) {
       throw new UserError(
-        `Project slug '${project.slug}' is not valid. It must match the pattern: /^[a-z][a-z_0-9]{2,50}$/`
+        `Project slug '${project.slug}' is not valid. It must match the pattern: /^[a-z][a-z_0-9]{2,100}$/`
       );
     }
     const alreadyExistingProject = await this.pool.query(
