@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
 import { Project } from "@shared/domain/readModels/project/Project.ts";
 import { User } from "@sharedComponents/keycloakSession/SessionContext.tsx";
+import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata.ts";
+
+const disableFileDelete = (f: FileMetadata) => {
+  return f.full_path === "metadata.json";
+};
 
 const AppEditFilePreview: React.FC<{
   user?: User; // Optional user prop for authentication
@@ -25,7 +30,7 @@ const AppEditFilePreview: React.FC<{
         Code Preview / Files
       </h2>
       <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3 w-full">
+        <div className="md w-full">
           <h3 className="text-lg font-medium text-slate-200 mb-2">
             Project Files:
           </h3>
@@ -35,9 +40,10 @@ const AppEditFilePreview: React.FC<{
                 {onDeleteFile && (
                   <button
                     type="button"
-                    className="bg-red-600 hover:bg-red-700 text-white rounded p-1 flex items-center justify-center"
+                    className={`bg-red-600 text-white rounded p-1 flex items-center justify-center ${disableFileDelete(f) ? " opacity-50 cursor-not-allowed" : " hover:bg-red-700"}`}
                     title="Delete file"
                     onClick={() => onDeleteFile(f.full_path)}
+                    disabled={disableFileDelete(f)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
