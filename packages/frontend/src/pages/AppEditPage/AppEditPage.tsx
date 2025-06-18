@@ -58,6 +58,15 @@ const AppEditPage: React.FC<{
     setForm((prev) => ({ ...prev, ...changes }) as ProjectEditFormData);
   };
 
+  const handleDeleteFile = async (filePath: string) => {
+    if (!user?.token) return;
+    await tsRestClient.deleteDraftFile({
+      headers: { authorization: `Bearer ${user.token}` },
+      params: { slug, filePath },
+    });
+    setProject(null); // Refresh project data after deletion
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form) return;
@@ -127,6 +136,7 @@ const AppEditPage: React.FC<{
                   setForm((prev) => (prev ? { ...prev, icon: filePath } : prev))
                 }
                 iconFilePath={form?.icon ?? null}
+                onDeleteFile={handleDeleteFile}
               />
               <AppEditActions />
             </form>

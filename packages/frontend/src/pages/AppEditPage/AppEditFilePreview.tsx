@@ -9,7 +9,8 @@ const AppEditFilePreview: React.FC<{
   project: Project;
   onSetIcon?: (filePath: string) => void;
   iconFilePath?: string | null;
-}> = ({ project, onSetIcon, iconFilePath }) => {
+  onDeleteFile?: (filePath: string) => void;
+}> = ({ project, onSetIcon, iconFilePath, onDeleteFile }) => {
   const files = project?.version?.files ?? [];
 
   const handleSetIcon = (fullPath: string) => {
@@ -31,6 +32,29 @@ const AppEditFilePreview: React.FC<{
           <ul className="list-none text-slate-400 text-sm space-y-1">
             {files.map((f, i: number) => (
               <li key={i} className="flex items-center gap-2">
+                {onDeleteFile && (
+                  <button
+                    type="button"
+                    className="bg-red-600 hover:bg-red-700 text-white rounded p-1 flex items-center justify-center"
+                    title="Delete file"
+                    onClick={() => onDeleteFile(f.full_path)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3m5 0H6"
+                      />
+                    </svg>
+                  </button>
+                )}
                 <p
                   className={`text-left font-mono text-slate-400`}
                   style={{
