@@ -5,7 +5,12 @@ import {
   SessionContext,
   User,
 } from "@sharedComponents/keycloakSession/SessionContext.tsx";
-import { KEYCLOAK_CLIENT_ID, KEYCLOAK_REALM, KEYCLOAK_URL } from "@config.ts";
+import {
+  BADGEHUB_FRONTEND_BASE_URL,
+  KEYCLOAK_CLIENT_ID,
+  KEYCLOAK_REALM,
+  KEYCLOAK_URL,
+} from "@config.ts";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -29,7 +34,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
     kc.init({
       onLoad: "check-sso",
       pkceMethod: "S256",
-      silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`,
+      silentCheckSsoRedirectUri: `${BADGEHUB_FRONTEND_BASE_URL}/silent-check-sso.html`,
     })
       .then((authenticated) => {
         if (authenticated && kc.tokenParsed) {
@@ -54,12 +59,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
         setKeycloak(kc);
       });
   }, []);
-  if (!keycloak) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-gray-500">Loading User data...</div>
-      </div>
-    );
-  }
+
   return <SessionContext value={{ user, keycloak }}>{children}</SessionContext>;
 };

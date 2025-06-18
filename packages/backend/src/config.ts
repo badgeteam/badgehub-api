@@ -29,7 +29,8 @@ export const KEYCLOAK_CERTS =
   KEYCLOAK_ISSUER + "/protocol/openid-connect/certs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const PUBLIC_STATIC_FILE_DIR = path.resolve(
+export const FRONTEND_DIST_DIR = path.resolve(__dirname, "../../frontend/dist");
+export const FRONTEND_PUBLIC_DIR = path.resolve(
   __dirname,
-  "../../frontend/dist"
+  "../../frontend/public"
 );
