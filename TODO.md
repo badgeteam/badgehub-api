@@ -48,6 +48,8 @@
 - [ ] Project Media, allow creators to upload screenshots and show them on the app detail page (See commit 94c89f8ec4c5f5dfb4f3b0dafc8d5aca5522ebe3)
 - [x] descriptive error in UI if a project already exists with the same slug
 - [ ] Add edit button to app cards in case the logged in user is the creator of the app, then use that also on myProjects page for simplification.
+- [ ] Save & Publish button should be disabled if there are no changes compared to the current 
+- [ ] Page should not keep scroll location when project data is refreshed.
 
 # Misc
 - [x] Throw descriptive error in case some required .env variable is not set
