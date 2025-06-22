@@ -59,9 +59,9 @@ function setupTodoToggleButton() {
   function updateRootClass() {
     if (!rootDiv) return;
     if (enabled) {
-      rootDiv.classList.add("todoOverlayEnabled");
+      rootDiv.classList.add("debugEnabled");
     } else {
-      rootDiv.classList.remove("todoOverlayEnabled");
+      rootDiv.classList.remove("debugEnabled");
     }
     btn.style.opacity = enabled ? "1" : "0.6";
   }

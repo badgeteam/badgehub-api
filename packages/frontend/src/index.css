@@ -141,8 +141,8 @@ button:focus-visible {
 .todoElement {
   position: relative;
 }
-/* Only show overlay if a parent has .todoOverlayEnabled */
-.todoOverlayEnabled .todoElement::after {
+/* Only show overlay if a parent has .debugEnabled */
+.debugEnabled .todoElement::after {
   content: "";
   position: absolute;
   top: 0;
