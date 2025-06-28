@@ -1,8 +1,56 @@
-# BadgeHub API
+# BadgeHub API and Frontend
 
 > Node.js REST service for the BadgeHub
 
 ## - Development -
+## Install
+
+Make sure [Docker](https://www.docker.com/get-started/) is installed and running.
+
+Before running, copy the `.env.example` into `.env`
+
+```bash
+cp .env.example .env
+```
+
+and fill out the details.
+
+## Run
+
+Then start the Docker containers by typing
+
+```bash
+docker compose up --detach
+```
+
+Then visit [http://localhost:8001/](http://localhost:8001/) for the development BadgeHub homepage.
+
+Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
+Use password `badgehub` to connect to the BadgeHub database server.
+
+Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST API.
+
+## Development
+
+After setting up the development container, you can start it with
+
+```bash
+docker compose up --detach
+```
+
+The API should now be accessible through `localhost:8001`.
+
+And to stop BadgeHub
+
+```bash
+docker compose down
+```
+
+Or, to stop BadgeHub and delete all volumes (to start fresh)
+
+```bash
+docker compose down --volumes
+```
 
 ### Database Migrations
 
@@ -56,55 +104,6 @@ npm run db-migrate:down
 #### Commit the migration files to git.
 
 When the code is deployed, the up migrations will be run automatically before starting the server.
-
-## Install
-
-Make sure [Docker](https://www.docker.com/get-started/) is installed and running.
-
-Before running, copy the `.env.example` into `.env`
-
-```bash
-cp .env.example .env
-```
-
-and fill out the details.
-
-## Run
-
-Then start the Docker containers by typing
-
-```bash
-docker compose up --detach
-```
-
-Then visit [http://localhost:8001/](http://localhost:8001/) for the development BadgeHub homepage.
-
-Visit [http://localhost:8002/](http://localhost:8002/) for the pgAdmin interface.
-Use password `badgehub` to connect to the BadgeHub database server.
-
-Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST API.
-
-## Development
-
-After setting up the development container, you can start it with
-
-```bash
-docker compose up --detach
-```
-
-The API should now be accessible through `localhost:8001`.
-
-And to stop BadgeHub
-
-```bash
-docker compose down
-```
-
-Or, to stop BadgeHub and delete all volumes (to start fresh)
-
-```bash
-docker compose down --volumes
-```
 
 ### Applying commands to only 1 container from the compose file
 
