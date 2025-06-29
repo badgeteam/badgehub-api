@@ -1,5 +1,4 @@
-# Build Stage
-FROM node:22-bookworm-slim AS build
+FROM node:22-bookworm-slim
 
 # First install dependencies without any source code affecting the docker cache
 WORKDIR /home/node/app
