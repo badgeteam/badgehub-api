@@ -2,13 +2,13 @@
   "name": "badgehub-api",
   "version": "1.0.0",
   "description": "> Node.js REST service for the BadgeHub",
-  "homepage": "https://github.com/badgeteam/badgehub-api#readme",
+  "homepage": "https://github.com/badgehubcrew/badgehub-app#readme",
   "bugs": {
-    "url": "https://github.com/badgeteam/badgehub-api/issues"
+    "url": "https://github.com/badgehubcrew/badgehub-app/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/badgeteam/badgehub-api.git"
+    "url": "git+https://github.com/badgehubcrew/badgehub-app.git"
   },
   "license": "ISC",
   "author": "",

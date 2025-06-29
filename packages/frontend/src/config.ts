@@ -1,4 +1,4 @@
-export const REPO_URL = "https://github.com/badgeteam/badgehub-api";
+export const REPO_URL = "https://github.com/badgehubcrew/badgehub-app";
 export const BADGEHUB_API_BASE_URL = "";
 
 export const BADGEHUB_FRONTEND_BASE_URL = document.location.origin;
