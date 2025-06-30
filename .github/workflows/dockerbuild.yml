@@ -67,14 +67,10 @@ jobs:
         with:
           command: |
             cd badgehub-infra/badgehub
-            git pull
             export BACKEND_IMAGE_TAG=${{ env.DOCKER_TAG }}
             echo "BACKEND_IMAGE_TAG is: $BACKEND_IMAGE_TAG"
             docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }}
             docker-compose -f docker-compose.yml up  --no-deps -d badgehub-backend
-            export FRONTEND_IMAGE_TAG=${{ env.DOCKER_TAG }}
-            echo "FRONTEND_IMAGE_TAG is: $FRONTEND_IMAGE_TAG"
-            docker-compose -f docker-compose.yml up  --no-deps -d badgehub-frontend
           host: ${{ secrets.DEV_HOST }}
           port: ${{ secrets.DEV_PORT }}
           username: ${{ secrets.DEV_USERNAME }}
