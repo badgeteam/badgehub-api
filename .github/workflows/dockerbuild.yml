@@ -80,17 +80,3 @@ jobs:
           username: ${{ secrets.DEV_USERNAME }}
           passphrase: ${{ secrets.DEV_PASSPHRASE }}
           privateKey: ${{ secrets.DEV_PRIVATE_KEY }}
-      - name: Deploy to staging server
-        uses: garygrossgarten/github-action-ssh@0.8.0
-        with:
-          command: |
-            cd badgehub-infra/badgehub
-            export BACKEND_IMAGE_TAG=${{ env.DOCKER_TAG }}
-            echo "BACKEND_IMAGE_TAG is: $BACKEND_IMAGE_TAG"
-            docker login ghcr.io -u ${{ github.repository_owner }} -p ${{ secrets.GITHUB_TOKEN }}
-            docker-compose -f docker-compose.yml up  --no-deps -d badgehub-backend
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          privateKey: ${{ secrets.PRIVATE_KEY }}
