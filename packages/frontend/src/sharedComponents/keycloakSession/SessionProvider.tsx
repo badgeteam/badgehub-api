@@ -39,7 +39,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
             name: kc.tokenParsed.name || kc.tokenParsed.preferred_username || "User",
             email: kc.tokenParsed.email || "",
             id: kc.tokenParsed.sub || "",
-            // token: kc.token || "",
           });
         } else {
           setUser(undefined);

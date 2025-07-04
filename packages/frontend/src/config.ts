@@ -13,7 +13,7 @@ const getInstanceConfig = () => {
     } as const;
   }
   return {
-    BADGEHUB_API_BASE_URL: "https://badgehub-api.p1m.nl",
+    BADGEHUB_API_BASE_URL: "",
     KEYCLOAK_URL: "https://keycloak.p1m.nl",
     KEYCLOAK_REALM: "master",
     KEYCLOAK_CLIENT_ID: "badgehub-api-frontend",
