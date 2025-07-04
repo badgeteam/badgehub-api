@@ -11,12 +11,12 @@ export const OptionSelectorWithTitle: React.FC<
     noValueSetName: string;
   } & (
     | {
-        valueMap: BadgeMap;
+        valueMap: Record<string, string>;
         value: keyof BadgeMap | undefined;
         onValueSelection: (newValue: keyof BadgeMap | undefined) => void;
       }
     | {
-        valueMap: CategoryMap;
+        valueMap: Record<string, string>;
         value: keyof CategoryMap | undefined;
         onValueSelection: (newValue: keyof CategoryMap | undefined) => void;
       }
