@@ -1,3 +1,5 @@
+import { setDeploymentId } from "@shared/config/sharedConfig.ts";
+import { getDeploymentId } from "@config.ts";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes, useParams } from "react-router-dom";
@@ -10,6 +12,8 @@ import CreateProjectPage from "@pages/AppCreationPage/AppCreationPage.tsx";
 import { SessionProvider } from "@sharedComponents/keycloakSession/SessionProvider.tsx";
 import { TodoPage } from "@pages/TodoPage.tsx";
 import MyProjectsPage from "@pages/MyProjectsPage/MyProjectsPage.tsx";
+
+setDeploymentId(getDeploymentId());
 
 const AppDetailWrapper = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -56,6 +60,7 @@ function setupTodoToggleButton() {
   let enabled = false;
 
   const rootDiv = document.getElementById("root");
+
   function updateRootClass() {
     if (!rootDiv) return;
     if (enabled) {

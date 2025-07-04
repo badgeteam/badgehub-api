@@ -19,3 +19,7 @@ data
 .git/
 .github/
 [...]
+
+**/mockup-data.sql
+**/.idea
+
