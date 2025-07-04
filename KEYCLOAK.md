@@ -14,7 +14,8 @@ In the `.env` file, it's the last part of `KEYCLOAK_ISSUER`.
 
 - Root URL: URL of the BadgeHub frontend
 - Home URL: URL of the BadgeHub frontend
-- Valid redirect URIs: URL of the BadgeHub frontend + '*'. Also add your local development URL if you're developing locally, like `http://localhost:5173/*`
+- Valid redirect URIs: URL of the BadgeHub frontend + '*'. Also add your local development URL 
+if you're developing locally, like `http://localhost:5173/*`
 - Valid post logout redirect URIs: same as Valid redirect URIs
 - Web origins: same as Valid redirect URIs, but without a `*` and without a slash at the end
 
@@ -34,4 +35,6 @@ In the `.env` file, it's the last part of `KEYCLOAK_ISSUER`.
 1. In the left menu, select "Realm settings"
 2. Select the Security Defences tab
 
-- Content-Security-Policy: After `frame-ancestors`, add the url of the BadgeHub frontend and possibly your local development URL. Separate with spaces, end with a semicolon.
+- Content-Security-Policy: After `form-action`, add the url of the BadgeHub frontend and possibly 
+your local development URL. Separate with spaces, end the list of urls with a semicolon.
+- Do the same for `frame-ancestors`.
