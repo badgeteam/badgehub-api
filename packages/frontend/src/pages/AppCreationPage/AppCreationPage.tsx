@@ -40,7 +40,7 @@ const AppCreationPage: React.FC<{
     try {
       const response = await tsRestClient.createProject({
         headers: {
-          authorization: `Bearer ${user?.token}`,
+          authorization: `Bearer ${keycloak?.token}`,
         },
         params: { slug: form.slug },
       });

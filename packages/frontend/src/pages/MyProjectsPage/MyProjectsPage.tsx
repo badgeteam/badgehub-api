@@ -26,13 +26,14 @@ const MyProjectsPage = memo(
               "Failed to update token. Please try logging in again."
             );
           }); // Ensure token is fresh
+
           const result = await tsRestClient
             ?.getUserDraftProjects({
               params: {
                 userId: user.id,
               },
               headers: {
-                authorization: `Bearer ${user.token}`,
+                authorization: `Bearer ${keycloak.token}`,
               },
             })
             .catch((e) => {

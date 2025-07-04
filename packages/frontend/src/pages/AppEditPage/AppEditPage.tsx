@@ -30,7 +30,7 @@ const AppEditPage: React.FC<{
     (async () => {
       await keycloak?.updateToken(30);
       const res = await tsRestClient.getDraftProject({
-        headers: { authorization: `Bearer ${user?.token}` },
+        headers: { authorization: `Bearer ${keycloak?.token}` },
         params: { slug },
       });
       if (mounted && res.status === 200) {
@@ -52,16 +52,16 @@ const AppEditPage: React.FC<{
     return () => {
       mounted = false;
     };
-  }, [keycloak, project, slug, tsRestClient, user?.token]);
+  }, [keycloak, project, slug, tsRestClient, keycloak?.token]);
 
   const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
     setForm((prev) => ({ ...prev, ...changes }) as ProjectEditFormData);
   };
 
   const handleDeleteFile = async (filePath: string) => {
-    if (!user?.token) return;
+    if (!keycloak?.token) return;
     await tsRestClient.deleteDraftFile({
-      headers: { authorization: `Bearer ${user.token}` },
+      headers: { authorization: `Bearer ${keycloak?.token}` },
       params: { slug, filePath },
     });
     setProject(null); // Refresh project data after deletion
@@ -71,12 +71,12 @@ const AppEditPage: React.FC<{
     e.preventDefault();
     if (!form) return;
     await tsRestClient.changeDraftAppMetadata({
-      headers: { authorization: `Bearer ${user?.token}` },
+      headers: { authorization: `Bearer ${keycloak?.token}` },
       params: { slug },
       body: form,
     });
     await tsRestClient.publishVersion({
-      headers: { authorization: `Bearer ${user?.token}` },
+      headers: { authorization: `Bearer ${keycloak?.token}` },
       params: { slug },
       body: undefined,
     });
@@ -125,7 +125,7 @@ const AppEditPage: React.FC<{
               <AppEditFileUpload
                 slug={slug}
                 tsRestClient={tsRestClient}
-                userToken={user?.token}
+                userToken={keycloak?.token}
                 onUploadSuccess={() => setProject(null)}
               />
               <AppEditFilePreview
