@@ -1,25 +1,22 @@
-// Simulate a user type
-import React, { useEffect, useState } from "react";
 import Keycloak from "keycloak-js";
-import {
-  SessionContext,
-  User,
-} from "@sharedComponents/keycloakSession/SessionContext.tsx";
+import { useEffect, useRef, useState } from "react";
 import {
   BADGEHUB_FRONTEND_BASE_URL,
   KEYCLOAK_CLIENT_ID,
   KEYCLOAK_REALM,
   KEYCLOAK_URL,
 } from "@config.ts";
+import {
+  SessionContext,
+  User,
+} from "@sharedComponents/keycloakSession/SessionContext.tsx";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+                                                                           children,
+                                                                         }) => {
   const [user, setUser] = useState<User | undefined>(undefined);
-  const [keycloak, setKeycloak] = useState<
-    Keycloak.KeycloakInstance | undefined
-  >(undefined);
-  const initialized = React.useRef(false);
+  const [keycloak, setKeycloak] = useState<Keycloak | undefined>(undefined);
+  const initialized = useRef(false);
 
   useEffect(() => {
     if (initialized.current) return;
@@ -39,13 +36,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
       .then((authenticated) => {
         if (authenticated && kc.tokenParsed) {
           setUser({
-            name:
-              kc.tokenParsed.name ||
-              kc.tokenParsed.preferred_username ||
-              "User",
+            name: kc.tokenParsed.name || kc.tokenParsed.preferred_username || "User",
             email: kc.tokenParsed.email || "",
             id: kc.tokenParsed.sub || "",
-            token: kc.token || "",
+            // token: kc.token || "",
           });
         } else {
           setUser(undefined);
@@ -59,6 +53,30 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
         setKeycloak(kc);
       });
   }, []);
+
+  // Token refresh logic
+  useEffect(() => {
+    if (!keycloak || !keycloak.authenticated) return;
+
+    // Set up token expiration handler
+    keycloak.onTokenExpired = async () => {
+      try {
+        const refreshed = await keycloak.updateToken(5);
+        if (refreshed) {
+          setUser(prevUser => prevUser ? {
+            ...prevUser,
+          } : undefined);
+        }
+      } catch (error) {
+        console.error('Session expired, redirecting to login', error);
+        keycloak.login();
+      }
+    };
+
+    return () => {
+      keycloak.onTokenExpired = undefined;
+    };
+  }, [keycloak]);
 
   return <SessionContext value={{ user, keycloak }}>{children}</SessionContext>;
 };
