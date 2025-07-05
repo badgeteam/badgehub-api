@@ -11,7 +11,6 @@ import userEvent from "@testing-library/user-event";
 import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
 import { BADGE_MAP } from "@shared/domain/readModels/Badge.ts";
 import { APP_GRID_PAGE_SIZE } from "@config.ts";
-import { isInDebugMode } from "@__test__/isInDebugMode.ts";
 
 describe("HomePage filtering", () => {
   it("shows all apps by default", async () => {
@@ -32,14 +31,14 @@ describe("HomePage filtering", () => {
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
     const mcuDropdown = screen.getByTestId("badge-dropdown");
-    // Use a badge value that exists in dummyApps, e.g., "mch2022"
-    await userEvent.selectOptions(mcuDropdown, BADGE_MAP.mch2022);
+    // Use a badge value that exists in dummyApps, e.g., "why2025"
+    await userEvent.selectOptions(mcuDropdown, BADGE_MAP.why2025);
     // Wait for spinner to disappear
     await waitFor(() =>
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
     dummyApps.forEach((app) => {
-      if (app.badges?.includes(BADGE_MAP.mch2022)) {
+      if (app.badges?.includes(BADGE_MAP.why2025)) {
         expect(screen.getByText(app.name!)).toBeInTheDocument();
       } else if (app.name) {
         expect(screen.queryByText(app.name)).not.toBeInTheDocument();
@@ -75,15 +74,15 @@ describe("HomePage filtering", () => {
     render(<HomePage tsRestClient={tsRestClientWithApps(dummyApps)} />);
     const mcuDropdown = screen.getByTestId("badge-dropdown");
     const categoryDropdown = screen.getByTestId("category-dropdown");
-    // Use values that exist together in an app, e.g., "mch2022" and CATEGORIES.silly
-    await userEvent.selectOptions(mcuDropdown, "mch2022");
+    // Use values that exist together in an app, e.g., "why2025" and CATEGORIES.silly
+    await userEvent.selectOptions(mcuDropdown, BADGE_MAP.why2025);
     await userEvent.selectOptions(categoryDropdown, CATEGORY_MAP.silly);
     await waitFor(() =>
       expect(screen.queryByTestId("loading-spinner")).not.toBeInTheDocument()
     );
     dummyApps.forEach((app) => {
       const match =
-        app.badges?.includes("mch2022") && app.category === CATEGORY_MAP.silly;
+        app.badges?.includes(BADGE_MAP.why2025) && app.category === CATEGORY_MAP.silly;
       if (match) {
         expect(screen.getByText(app.name!)).toBeInTheDocument();
       } else if (app.name) {
