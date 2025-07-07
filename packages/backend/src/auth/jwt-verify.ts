@@ -1,6 +1,6 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import { DISABLE_AUTH, KEYCLOAK_CERTS } from "@config";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 
 const JWKS = createRemoteJWKSet(new URL(KEYCLOAK_CERTS!));
 
@@ -17,7 +17,7 @@ async function jwtVerifyTokenMiddleware(
 
   const [bearer, token] = authHeader.split(" ");
 
-  if (bearer !== "Bearer" || !token || token === "undefined") {
+  if (bearer !== "Bearer" || !token || token.trim() === "" || token === "undefined") {
     return res.status(401).json({ reason: "Not authenticated" });
   }
   try {
@@ -36,6 +36,7 @@ async function jwtVerifyToken(token: string) {
   try {
     await jwtVerify(token, JWKS, {
       issuer: process.env.KEYCLOAK_ISSUER,
+      algorithms: ['RS256']
     });
   } catch (error) {
     console.error("JWT verification error:", error);
