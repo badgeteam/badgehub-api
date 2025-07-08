@@ -1,8 +1,38 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: Inter;
+    src: url("/fonts/Inter/Inter-VariableFont_opsz,wght.woff2") format("woff2-variations");
+    font-weight: 100 900; /* min and max weights */
+    font-style: normal; /* italic for the italic font */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Inter;
+    src: url("/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.woff2") format("woff2-variations");
+    font-weight: 100 900; /* min and max weights */
+    font-style: italic; /* italic for the italic font */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("/fonts/Roboto_Mono/RobotoMono-VariableFont_wght.woff2") format("woff2-variations");
+    font-weight: 100 900; /* min and max weights */
+    font-style: normal; /* italic for the italic font */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("/fonts/Roboto_Mono/RobotoMono-Italic-VariableFont_wght.woff2") format("woff2-variations");
+    font-weight: 100 900; /* min and max weights */
+    font-style: italic; /* italic for the italic font */
+    font-display: swap;
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
