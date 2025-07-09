@@ -38,3 +38,15 @@ if you're developing locally, like `http://localhost:5173/*`
 - Content-Security-Policy: After `form-action`, add the url of the BadgeHub frontend and possibly 
 your local development URL. Separate with spaces, end the list of urls with a semicolon.
 - Do the same for `frame-ancestors`.
+
+## Theming
+
+To install the BadgeHub theme in Keycloak:
+
+- Go to [keycloak-theme](https://github.com/BadgeHubCrew/badgehub-app/blob/6d2383819f68e00fd52a984dba8c81a27e0ea339/keycloak-theme/BadgeHub.zip)
+- Download BadgeHub.zip (see the download raw file icon)
+- Unzip BadgeHub.zip
+- Move the resulting BadgeHub directory to `/opt/keycloak/themes`
+- Then, in Keycloak, in Realm settings on the Themes tab, you can select the BadgeHub theme
+
+The theme is for the login page only.
