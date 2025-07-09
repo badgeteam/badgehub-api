@@ -43,10 +43,10 @@ your local development URL. Separate with spaces, end the list of urls with a se
 
 To install the BadgeHub theme in Keycloak:
 
-- Go to [keycloak-theme](https://github.com/BadgeHubCrew/badgehub-app/blob/6d2383819f68e00fd52a984dba8c81a27e0ea339/keycloak-theme/BadgeHub.zip)
+- Go to [keycloak-theme](https://github.com/BadgeHubCrew/badgehub-app/blob/6d2383819f68e00fd52a984dba8c81a27e0ea339/keycloak-theme/BadgeHub.zip) or [keycloak-theme](https://github.com/BadgeHubCrew/badgehub-app/blob/feature/keycloak-theme/keycloak-theme/BadgeHub.zip)
 - Download BadgeHub.zip (see the download raw file icon)
 - Unzip BadgeHub.zip
-- Move the resulting BadgeHub directory to `/opt/keycloak/themes`
+- Move the resulting BadgeHub directory to the Keycloak `themes` directory (`/opt/keycloak/themes`)
 - Then, in Keycloak, in Realm settings on the Themes tab, you can select the BadgeHub theme
 
 The theme is for the login page only.
