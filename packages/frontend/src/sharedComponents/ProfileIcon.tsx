@@ -82,7 +82,7 @@ const ProfileIcon: React.FC = () => {
               onClick={login}
               data-testid="login-button"
             >
-              Login
+              Login / Register
             </button>
           )}
         </div>

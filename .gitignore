@@ -136,3 +136,6 @@ dist
 # data dir
 data
 !data/.gitkeep
+
+# intellij IDE
+.idea
