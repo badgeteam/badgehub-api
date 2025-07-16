@@ -81,3 +81,11 @@ export const categorySlugSchema = z.enum([
   "sao",
   "interpreter",
 ] as const satisfies CategorySlug[]);
+
+export const categorySchema = z.object({
+    name: categoryNameSchema,
+    slug: categorySlugSchema
+})
+
+// noinspection JSUnusedLocalSymbols
+type Checks = [CheckSame<Category, z.infer<typeof categorySchema>, Category>];

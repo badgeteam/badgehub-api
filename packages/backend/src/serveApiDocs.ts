@@ -54,7 +54,7 @@ const withSecurity = (operation: OperationObject) => ({
 
 const createSwaggerDoc = () => {
   const apiDoc = { info: { title: "BadgeHub API", version: "1.0.0" } };
-  const jsonSwagger = generateOpenApi({ ...swaggerJsonContract }, apiDoc, {
+  const jsonSwagger = generateOpenApi(swaggerJsonContract, apiDoc, {
     setOperationId: true,
     operationMapper: (op) => withTag(op, "Open API"),
   });
