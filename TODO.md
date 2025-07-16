@@ -32,3 +32,4 @@
 - [ ] Metrics reporting and download counting
   - For download counts, the idea is that the badge will send a badge id in the request, so we can count the unique number of badges that downloaded an app.
   - We should also think about app usage metrics, firmware could help with this from the launcher.
+- [ ] Returns types in open api spec
