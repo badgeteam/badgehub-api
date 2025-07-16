@@ -1,5 +1,5 @@
 {
-  "name": "badgehub-api",
+  "name": "badgehub-app",
   "version": "1.0.0",
   "description": "> Node.js REST service for the BadgeHub",
   "homepage": "https://github.com/badgehubcrew/badgehub-app#readme",
