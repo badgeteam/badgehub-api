@@ -30,6 +30,10 @@ Use password `badgehub` to connect to the BadgeHub database server.
 
 Use the [OpenAPI (Swagger) documentation](/openapi) to interact with the REST API.
 
+## Authentication
+
+BadgeHub supports authentication via JWT. This is used with Keycloak. To setup Keycloak for either production or local development and related clients, please refer to [badgehub-infra GitHub repo](https://github.com/BadgeHubCrew/badgehub-infra/tree/main/docs)
+
 ## Development
 
 After setting up the development container, you can start it with
