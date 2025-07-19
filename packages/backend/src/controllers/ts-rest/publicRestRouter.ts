@@ -10,8 +10,6 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { nok, ok } from "@controllers/ts-rest/httpResponses";
 import { Readable } from "node:stream";
 import { RouterImplementation } from "@ts-rest/express/src/lib/types";
-import { z } from "zod";
-import { initContract } from "@ts-rest/core";
 
 const createFilesRouter = (badgeHubData: BadgeHubData) => {
   const filesRouter: RouterImplementation<typeof publicFilesContracts> = {
