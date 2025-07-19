@@ -26,9 +26,9 @@
     "node": ">=22.0.0"
   },
   "dependencies": {
-    "@ts-rest/core": "^3.52.1",
-    "@ts-rest/express": "^3.52.1",
-    "@ts-rest/open-api": "^3.52.1",
+    "@ts-rest/core": "^3.53.0-rc.1",
+    "@ts-rest/express": "^3.53.0-rc.1",
+    "@ts-rest/open-api": "^3.53.0-rc.1",
     "cors": "^2.8.5",
     "db-migrate": "^0.11.14",
     "db-migrate-pg": "^1.5.2",
