@@ -31,9 +31,9 @@ export interface AppMetadataJSON {
 }
 
 export const readAppMetadataJSONSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  category: categoryNameSchema.optional(),
+  name: z.string().optional().describe("name, we need this to show in the launcher and on badgehub."),
+  description: z.string().optional().describe("Some more details about the app. Allows users to decide whether they want to install the app."),
+  category: z.array(categoryNameSchema).optional().describe("Categories that the app falls into, categories are defined by the specific badgehub instance."),
   author: z.string().optional(),
   icon: z.string().optional(),
   license_file: z.string().optional(),
