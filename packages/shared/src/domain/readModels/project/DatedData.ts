@@ -1,5 +1,5 @@
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 
 export interface DatedData {
   created_at: Date; // Creation date

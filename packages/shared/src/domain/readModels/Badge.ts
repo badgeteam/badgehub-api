@@ -2,7 +2,7 @@ import {
   DatedData,
   datedDataSchema,
 } from "@shared/domain/readModels/project/DatedData";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export const BADGE_MAP = {

@@ -1,6 +1,6 @@
 import { UserRelation, userSchema } from "./User";
 import { DatedData, datedDataSchema } from "./DatedData";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export interface Warning {

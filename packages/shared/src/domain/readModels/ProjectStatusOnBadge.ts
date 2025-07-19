@@ -8,7 +8,7 @@ import {
   projectStatusNameSchema,
 } from "@shared/domain/readModels/project/Project";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 
 export interface ProjectStatusOnBadge extends BadgeRelation, DatedData {
   status: ProjectStatusName; // Status for this project for this particular badge

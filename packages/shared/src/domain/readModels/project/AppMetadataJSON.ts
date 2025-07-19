@@ -8,7 +8,7 @@ import {
 } from "@shared/domain/readModels/project/Category";
 import { Badge } from "@shared/domain/readModels/Badge";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 
 export interface AppMetadataJSON {
   name?: string;

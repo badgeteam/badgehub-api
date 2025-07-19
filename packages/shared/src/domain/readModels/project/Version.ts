@@ -2,7 +2,7 @@ import { AppMetadataJSON, readAppMetadataJSONSchema } from "./AppMetadataJSON";
 import { DatedData, datedDataSchema } from "./DatedData";
 import { FileMetadata, fileMetadataSchema } from "./FileMetadata";
 import { Project } from "@shared/domain/readModels/project/Project";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type LatestVersionAlias = "latest";

@@ -6,7 +6,7 @@ import {
   CategoryName,
   categoryNameSchema,
 } from "@shared/domain/readModels/project/Category";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type ProjectStatusName =

@@ -5,7 +5,7 @@ import Spinner from "@sharedComponents/Spinner.tsx";
 import AppsGrid from "@sharedComponents/AppsGrid/AppsGrid.tsx";
 import Pagination from "@sharedComponents/AppsGrid/Pagination.tsx";
 import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
 import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
 import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
