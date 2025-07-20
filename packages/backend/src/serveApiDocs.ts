@@ -11,6 +11,7 @@ import {
   ParameterObject,
   ReferenceObject,
 } from "openapi3-ts";
+import _ from "lodash";
 
 const c = initContract();
 const swaggerJsonContract = c.router({
@@ -69,11 +70,11 @@ const createSwaggerDoc = () => {
 
   return {
     ...jsonSwagger,
-    paths: {
-      ...jsonSwagger.paths,
-      ...withPrefix("/api/v3", publicSwagger.paths),
-      ...withPrefix("/api/v3", privateSwagger.paths),
-    },
+    paths: _.merge(
+      jsonSwagger.paths,
+      withPrefix("/api/v3", publicSwagger.paths),
+      withPrefix("/api/v3", privateSwagger.paths)
+    ),
     tags: [
       {
         name: "Open API",

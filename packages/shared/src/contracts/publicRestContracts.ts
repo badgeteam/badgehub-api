@@ -29,7 +29,7 @@ export const publicProjectContracts = c.router({
       200: projectSchema,
       404: errorResponseSchema,
     },
-    summary: "Get Project Details by Slug",
+    summary: "Get (Latest) Project Details by Slug",
   },
   getProjects: {
     method: "GET",
