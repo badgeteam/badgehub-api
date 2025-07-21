@@ -11,7 +11,10 @@ import AppEditFilePreview from "./AppEditFilePreview";
 import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
 import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
-import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON.ts";
+import {
+  AppMetadataJSON,
+  IconSize,
+} from "@shared/domain/readModels/project/AppMetadataJSON.ts";
 
 const AppEditPage: React.FC<{
   tsRestClient?: typeof defaultTsRestClient;
@@ -84,6 +87,15 @@ const AppEditPage: React.FC<{
     }
   };
 
+  const onSetIcon = (size: IconSize, filePath: string) =>
+    setAppMetadata((prev) => {
+      return prev
+        ? ({
+            ...prev,
+            icon_map: { ...prev?.icon_map, [size]: filePath },
+          } as const satisfies AppMetadataJSON)
+        : prev;
+    });
   return (
     <div
       data-testid="app-edit-page"
@@ -127,16 +139,7 @@ const AppEditPage: React.FC<{
                 tsRestClient={tsRestClient}
                 user={user}
                 project={project as ProjectDetails}
-                onSetIcon={(filePath) =>
-                  setAppMetadata((prev) =>
-                    prev
-                      ? ({
-                          ...prev,
-                          icon_map: { "64x64": filePath },
-                        } as const satisfies AppMetadataJSON)
-                      : prev
-                  )
-                }
+                onSetIcon={onSetIcon}
                 iconFilePath={appMetadata?.icon_map?.["64x64"]}
                 onDeleteFile={handleDeleteFile}
               />

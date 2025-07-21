@@ -40,6 +40,7 @@ export const iconMapSchema = z
     `Icon Map of the project that maps from accepted sizes to a file path. Icon format is quite strict because BadgeHub is the first user of these icons.
     Badge implementations can use these icons but they are not required to. For example if a badge's launcher an icon as an icon.py file, this file can still just be uploaded and the path could be indicated as custom property in the variant json.".`
   );
+export type IconSize = keyof IconMap;
 
 export type IconMap = {
   "8x8"?: string;
