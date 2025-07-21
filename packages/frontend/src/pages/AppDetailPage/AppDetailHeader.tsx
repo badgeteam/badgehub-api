@@ -1,8 +1,10 @@
 import React from "react";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 
-const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
-  const badges: string[] = project.badges;
+const AppDetailHeader: React.FC<{ project: ProjectDetails }> = ({
+  project,
+}) => {
+  const appMetadata = project.version.app_metadata;
   return (
     <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
@@ -11,7 +13,7 @@ const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
             className="text-3xl font-bold text-slate-100 mb-2"
             data-testid="app-detail-name"
           >
-            {project.name}
+            {appMetadata.name}
           </h1>
           <p className="text-slate-400 mb-1">
             By{" "}
@@ -57,7 +59,7 @@ const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
         </div>
       </div>
       <div className="mt-4 pt-4 border-t border-gray-700">
-        {badges?.map((dev: string) => (
+        {appMetadata.badges?.map((dev: string) => (
           <span
             key={dev}
             className="tag-mcu text-sm font-semibold mr-2 px-3 py-1 rounded-full"
@@ -65,7 +67,7 @@ const AppDetailHeader: React.FC<{ project: Project }> = ({ project }) => {
             {dev}
           </span>
         ))}
-        {[project.category].map((cat) => (
+        {appMetadata.categories?.map((cat) => (
           <span
             key={cat}
             className="tag text-sm font-semibold mr-2 px-3 py-1 rounded-full"

@@ -1,6 +1,6 @@
 import React from "react";
 import { tsRestClient as defaultTsRestClient } from "../../api/tsRestClient.ts";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 import { User } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata.ts";
 
@@ -11,7 +11,7 @@ const disableFileDelete = (f: FileMetadata) => {
 const AppEditFilePreview: React.FC<{
   user?: User; // Optional user prop for authentication
   tsRestClient: typeof defaultTsRestClient; // Replace with actual type if available
-  project: Project;
+  project: ProjectDetails;
   onSetIcon?: (filePath: string) => void;
   iconFilePath?: string | null;
   onDeleteFile?: (filePath: string) => void;

@@ -9,7 +9,8 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "erasableSyntaxOnly": true
+    "erasableSyntaxOnly": true,
+    "noEmit": true
   },
   "include": [
     "vite.config.ts",

@@ -8,7 +8,7 @@ import AppSidebarDetails from "./AppSidebarDetails.tsx";
 import AppSidebarAuthor from "./AppSidebarAuthor.tsx";
 import AppSidebarSimilar from "./AppSidebarSimilar.tsx";
 import AppBreadcrumb from "./AppBreadcrumb.tsx";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 import Header from "@sharedComponents/Header.tsx";
 import Footer from "@sharedComponents/Footer.tsx";
 
@@ -16,13 +16,8 @@ const AppDetailPage: React.FunctionComponent<{
   tsRestClient?: typeof defaultTsRestClient;
   slug: string;
 }> = ({ tsRestClient = defaultTsRestClient, slug }) => {
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useState<ProjectDetails | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Dummy search state for Header (not used on detail page)
-  const [searchQuery] = useState("");
-  const setSearchQuery = () => {};
-
   useEffect(() => {
     let mounted = true;
     setLoading(true);
@@ -54,6 +49,7 @@ const AppDetailPage: React.FunctionComponent<{
       </div>
     );
   }
+  const appMetadata = project.version.app_metadata;
   return (
     <div
       data-testid={"app-detail-page"}
@@ -61,7 +57,7 @@ const AppDetailPage: React.FunctionComponent<{
     >
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-        <AppBreadcrumb project={project} />
+        <AppBreadcrumb projectName={appMetadata.name ?? project.slug} />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <AppDetailHeader project={project} />

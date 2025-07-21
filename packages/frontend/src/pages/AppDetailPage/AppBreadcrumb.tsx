@@ -1,9 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const AppBreadcrumb: React.FC<{ project: { name: string } }> = ({
-  project,
-}) => (
+const AppBreadcrumb: React.FC<{ projectName: string }> = ({ projectName }) => (
   <nav className="mb-6 text-sm" aria-label="Breadcrumb">
     <ol className="list-none p-0 inline-flex space-x-2">
       <li className="flex items-center">
@@ -42,7 +40,7 @@ const AppBreadcrumb: React.FC<{ project: { name: string } }> = ({
             clipRule="evenodd"
           ></path>
         </svg>
-        <span className="text-slate-500">{project.name}</span>
+        <span className="text-slate-500">{projectName}</span>
       </li>
     </ol>
   </nav>

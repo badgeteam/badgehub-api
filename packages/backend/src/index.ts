@@ -1,6 +1,4 @@
 import { EXPRESS_PORT, IS_DEV_ENV } from "@config";
-// TODO: enable when disableWriteWhenNotDev is available
-// import { disableWriteWhenNotDev } from "@disableWriteWhenNotDev";
 import { runMigrations } from "@db/migrations";
 import { createExpressServer } from "@createExpressServer";
 

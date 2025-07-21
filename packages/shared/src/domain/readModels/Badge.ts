@@ -1,39 +1,16 @@
-import {
-  DatedData,
-  datedDataSchema,
-} from "@shared/domain/readModels/project/DatedData";
 import { z } from "zod/v4";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { getSharedConfig } from "@shared/config/sharedConfig";
 
-export const BADGE_MAP = {
-  mch2022: "mch2022",
-  troopers23: "troopers23",
-  why2025: "WHY2025",
-};
+export type BadgeSlug = string;
 
-export type BadgeMap = typeof BADGE_MAP;
+export const badgeSlugSchema = z
+  .string()
+  // .regex(/^a-z[a-z0-9_]*$/) // TODO check
+  .describe("badge slug");
 
-export const BADGE_SLUGS = Object.keys(BADGE_MAP) as Array<keyof BadgeMap>;
-export type BadgeSlug = keyof BadgeMap;
-export type BadgeName = BadgeMap[BadgeSlug];
-export interface BadgeRelation {
-  badge: Badge;
+export function getBadgeSlugs(): BadgeSlug[] {
+  return Object.keys(getSharedConfig()!.badges);
 }
 
-export interface Badge extends DatedData {
-  name: string;
-  slug: string;
-}
-
-export const badgeSchema = datedDataSchema.extend({
-  name: z.string(),
-  slug: z.string(),
-});
-
-export const badgeSlugSchema = z.enum([
-  "mch2022",
-  "troopers23",
-  "why2025",
-] as const satisfies BadgeSlug[]);
-
-type Checks = [CheckSame<Badge, Badge, z.infer<typeof badgeSchema>>];
+__tsCheckSame<BadgeSlug, BadgeSlug, z.infer<typeof badgeSlugSchema>>(true);

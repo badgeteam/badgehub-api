@@ -1,12 +1,11 @@
 // noinspection SqlResolve
 
-import { Badge } from "@shared/domain/readModels/Badge";
 import {
-  Project,
-  ProjectCore,
+  ProjectDetails,
   ProjectSlug,
-  ProjectWithoutVersion,
-} from "@shared/domain/readModels/project/Project";
+  ProjectSummary,
+  ProjectCore,
+} from "@shared/domain/readModels/project/ProjectDetails";
 import { User } from "@shared/domain/readModels/project/User";
 import {
   LatestOrDraftAlias,
@@ -14,13 +13,11 @@ import {
   RevisionNumberOrAlias,
   Version,
 } from "@shared/domain/readModels/project/Version";
-import { Category } from "@shared/domain/readModels/project/Category";
 import { Pool } from "pg";
 import { getPool } from "@db/connectionPool";
-import { DBInsertProject } from "@shared/dbModels/project/DBProject";
+import { DBInsertProject, DBProject } from "@shared/dbModels/project/DBProject";
 import sql, { join, raw, Sql } from "sql-template-tag";
 import { getEntriesWithDefinedValues } from "@shared/util/objectEntries";
-import { DBBadge } from "@shared/dbModels/DBBadge";
 import {
   getBaseSelectProjectQuery,
   ProjectQueryResponse,
@@ -28,18 +25,11 @@ import {
 } from "@db/sqlHelpers/projectQuery";
 import {
   convertDatedData,
-  extractDatedDataConverted,
-  OmitDatedData,
   stripDatedData,
   timestampTZToDate,
 } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@shared/dbModels/project/DBVersion";
-import {
-  APP_METADATA_ROWS,
-  DBAppMetadataJSON,
-  DBInsertAppMetadataJSON,
-} from "@shared/dbModels/project/DBAppMetadataJSON";
-import { DBCategory } from "@shared/dbModels/project/DBCategory";
+
 import {
   assertValidColumKey,
   getInsertKeysAndValuesSql,
@@ -56,6 +46,12 @@ import {
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { VALID_SLUG_REGEX } from "@shared/contracts/slug";
 import { ProjectAlreadyExistsError, UserError } from "@domain/UserError";
+import {
+  CategoryName,
+  getCategoryNames,
+} from "@shared/domain/readModels/project/Category";
+import { BadgeSlug, getBadgeSlugs } from "@shared/domain/readModels/Badge";
+import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
 
 const ONE_KILO = 1024;
 
@@ -77,7 +73,8 @@ function getUpdateAssignmentsSql(changes: Object) {
   }
   return join(
     changeEntries.map(
-      ([key, value]) => sql`${raw(assertValidColumKey(key))} =
+      ([key, value]) => sql`${raw(assertValidColumKey(key))}
+      =
       ${value}`
     )
   );
@@ -97,7 +94,9 @@ const getVersionQuery = (
   if (typeof versionRevision === "number") {
     return sql`(select id
                 from versions
-                where revision = ${versionRevision} and project_slug = ${projectSlug} and published_at is not null)`;
+                where revision = ${versionRevision}
+                  and project_slug = ${projectSlug}
+                  and published_at is not null)`;
   }
   switch (versionRevision) {
     case "draft":
@@ -186,14 +185,8 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     }
   }
 
-  async getCategories(): Promise<Category[]> {
-    const dbCategoryNames = await this.pool
-      .query<OmitDatedData<DBCategory>>(
-        sql`select name, slug
-            from categories`
-      )
-      .then((res) => res.rows);
-    return dbCategoryNames;
+  async getCategories(): Promise<CategoryName[]> {
+    return getCategoryNames();
   }
 
   async insertProject(
@@ -206,7 +199,9 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       );
     }
     const alreadyExistingProject = await this.pool.query(
-      sql`select 1 from projects where slug = ${project.slug}`
+      sql`select 1
+          from projects
+          where slug = ${project.slug}`
     );
     if (alreadyExistingProject.rows.length) {
       throw new ProjectAlreadyExistsError(project.slug);
@@ -218,17 +213,12 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       created_at: createdAt,
       updated_at: updatedAt,
     });
-    const insertAppMetadataSql = sql`insert into app_metadata_jsons (name, created_at, updated_at)
-                                     values (${project.slug}, ${createdAt}, ${updatedAt})`;
 
     await this.pool.query(sql`
-      with inserted_app_metadata as (${insertAppMetadataSql} returning id,created_at,updated_at),
-           inserted_version as (
-             insert
-               into versions (project_slug, app_metadata_json_id, created_at, updated_at)
-                 values (${project.slug}, (select id from inserted_app_metadata),
-                         (select created_at from inserted_app_metadata),
-                         (select updated_at from inserted_app_metadata)) returning revision)
+      with inserted_version as (
+        insert
+          into versions (project_slug, app_metadata, created_at, updated_at)
+            values (${project.slug}, ${{ name: project.slug }}, ${createdAt}, ${updatedAt}) returning revision)
       insert
       into projects (${keys}, draft_revision)
       values (${values}, (select revision from inserted_version))`);
@@ -263,65 +253,74 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       with published_version as (
         update versions v
           set published_at = (${mockDate ?? raw("now()")})
-          where v.id = (${getVersionQuery(projectSlug, "draft")})
-          returning revision, id, app_metadata_json_id),
-           copied_app_metadata as (
-             insert into app_metadata_jsons (${join(APP_METADATA_ROWS.map(raw))})
-               (select ${join(APP_METADATA_ROWS.map(raw))}
-                from app_metadata_jsons
-                where id = (select app_metadata_json_id from published_version))
-               returning id),
+          where v.id = (${getVersionQuery(projectSlug, "draft")}) returning revision, id, app_metadata),
            new_draft_version as (
-             insert into versions (project_slug, app_metadata_json_id, revision, created_at, updated_at)
-               (select project_slug,
-                       (select id from copied_app_metadata),
-                       revision + 1,
-                       (${mockDate ?? raw("now()")}),
-                       (${mockDate ?? raw("now()")})
-                from versions
-                where id = ${getVersionQuery(projectSlug, "draft")})
-               returning revision, id),
+             insert
+               into versions (project_slug, app_metadata, revision, created_at, updated_at)
+                 (select project_slug,
+                         app_metadata,
+                         revision + 1,
+                         (${mockDate ?? raw("now()")}),
+                         (${mockDate ?? raw("now()")})
+                  from versions
+                  where id = ${getVersionQuery(projectSlug, "draft")})
+                 returning revision, id),
            updated_projects as (
              update projects
-               set latest_revision = (select revision from published_version),
-                 draft_revision = (select revision from new_draft_version)
-               where slug = ${projectSlug} and deleted_at is null
+               set latest_revision = (select revision from published_version), draft_revision = (select revision from new_draft_version)
+               where slug = ${projectSlug}
+                 and deleted_at is null
                returning 1),
            copied_files as (
-             insert into files
-               (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at,
-                deleted_at)
-               select (select id from new_draft_version),
-                      dir,
-                      name,
-                      ext,
-                      mimetype,
-                      size_of_content,
-                      sha256,
-                      created_at,
-                      updated_at,
-                      deleted_at
-               from files
-               where version_id = (select id from published_version)
-               returning 1)
+             insert
+               into files
+                 (version_id, dir, name, ext, mimetype, size_of_content, sha256, created_at, updated_at,
+                  deleted_at)
+                 select (select id from new_draft_version),
+                        dir,
+                        name,
+                        ext,
+                        mimetype,
+                        size_of_content,
+                        sha256,
+                        created_at,
+                        updated_at,
+                        deleted_at
+                 from files
+                 where version_id = (select id from published_version)
+                 returning 1)
       select 1
     `);
   }
 
   async getProject(
     projectSlug: string,
-    versionRevision: LatestVersionAlias
-  ): Promise<undefined | Project> {
+    versionRevision: RevisionNumberOrAlias
+  ): Promise<undefined | ProjectDetails> {
     const version = await this.getVersion(projectSlug, versionRevision);
     if (!version) {
       return undefined;
     }
-    const projectWithoutVersion = (
-      await this.getProjects({ projectSlug }, versionRevision)
-    )[0]!;
+    const checkPublishedIfNotDraft =
+      versionRevision == "draft"
+        ? raw("")
+        : raw("and p.latest_revision is not null");
+    const dbProject = await this.pool
+      .query<DBProject>(
+        sql`select *
+            from projects p
+            where p.slug = ${projectSlug}
+              and p.deleted_at is null
+              ${checkPublishedIfNotDraft}`
+      )
+      .then((res) => res.rows[0]);
+    if (!dbProject) {
+      return undefined;
+    }
+
     return {
-      ...projectWithoutVersion,
-      version: version,
+      ...convertDatedData(dbProject),
+      version,
     };
   }
 
@@ -329,90 +328,68 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<Version | undefined> {
-    const dbVersion:
-      | undefined
-      | (DBVersion & { app_metadata: DBAppMetadataJSON }) = await this.pool
-      .query(
-        sql`select v.id,
-                   v.revision,
-                   v.semantic_version,
-                   v.zip,
-                   v.size_of_zip,
-                   v.git_commit_id,
-                   v.published_at,
-                   v.download_count,
-                   v.project_slug,
-                   v.app_metadata_json_id,
-                   v.created_at,
-                   v.updated_at,
-                   to_jsonb(m) as app_metadata
+    const dbVersion = await this.pool
+      .query<DBVersion>(
+        sql`select *
             from versions v
-                   left join app_metadata_jsons m on v.app_metadata_json_id = m.id
-            where v.id = (${getVersionQuery(projectSlug, versionRevision)})
-        `
+            where v.id = (${getVersionQuery(projectSlug, versionRevision)})`
       )
       .then((res) => res.rows[0]);
     if (!dbVersion) {
       return undefined;
     }
-    const { id, ...appMetadataWithoutId } = dbVersion.app_metadata;
     return {
       ...convertDatedData(dbVersion),
       files: await this._getFilesMetadataForVersion(dbVersion.id),
-      app_metadata: stripDatedData(appMetadataWithoutId),
       published_at: timestampTZToDate(dbVersion.published_at),
     };
   }
 
-  async getBadges(): Promise<Badge[]> {
-    const dbBadges: DBBadge[] = await this.pool
-      .query(
-        sql`select slug, name
-            from badges`
-      )
-      .then((res) => res.rows);
-    return dbBadges.map((dbBadge) => ({
-      slug: dbBadge.slug,
-      name: dbBadge.name,
-      ...extractDatedDataConverted(dbBadge),
-    }));
+  async getBadges(): Promise<BadgeSlug[]> {
+    return getBadgeSlugs();
   }
 
-  async getProjects(
+  async getProjectSummaries(
     filter?: {
-      projectSlug?: Project["slug"];
+      projectSlug?: ProjectDetails["slug"];
       pageStart?: number;
       pageLength?: number;
-      badgeSlug?: Badge["slug"];
-      categorySlug?: Category["slug"];
+      badge?: BadgeSlug;
+      category?: CategoryName;
       userId?: User["idp_user_id"];
     },
     revision?: LatestOrDraftAlias
-  ): Promise<ProjectWithoutVersion[]> {
+  ): Promise<ProjectSummary[]> {
     let query = getBaseSelectProjectQuery(revision);
-    if (filter?.badgeSlug) {
+    if (filter?.badge) {
       query = sql`${query}
-      inner join project_statuses_on_badges psb on p.slug = psb.project_slug and psb.badge_slug =
-      ${filter.badgeSlug}`;
+                    inner join project_latest_badges plb on p.slug = plb.project_slug and plb.badge_slug =
+      ${filter.badge}`;
     }
-    query = sql`${query} where p.deleted_at is null`;
+
+    if (filter?.category) {
+      query = sql`${query}
+                    inner join project_latest_categories plc on p.slug = plc.project_slug and plc.category_name =
+      ${filter.category}`;
+    }
+
+    query = sql`${query}
+    where p.deleted_at is null`;
 
     if (revision !== "draft") {
-      query = sql`${query} and v.published_at is not null`;
-    }
-
-    if (filter?.categorySlug) {
-      query = sql`${query} and c.slug =
-      ${filter.categorySlug}`;
+      query = sql`${query}
+      and v.published_at is not null`;
     }
 
     if (filter?.projectSlug) {
-      query = sql`${query} and p.slug =
+      query = sql`${query}
+      and p.slug =
       ${filter.projectSlug}`;
     }
 
     if (filter?.userId !== undefined) {
-      query = sql`${query} and p.idp_user_id =
+      query = sql`${query}
+      and p.idp_user_id =
       ${filter.userId}`;
     }
 
@@ -427,31 +404,25 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const projects: ProjectQueryResponse[] = await this.pool
       .query(query)
       .then((res) => res.rows);
-    const badgesMap = await this._getBadgesMap(projects.map((p) => p.slug));
-    return projects.map(projectQueryResponseToReadModel).map((p) => ({
-      ...p,
-      badges: badgesMap[p.slug] ?? [],
-    }));
+    return projects.map(projectQueryResponseToReadModel);
   }
 
   async updateDraftMetadata(
     projectSlug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    newAppMetadata: WriteAppMetadataJSON,
     mockDates?: DBDatedData
   ): Promise<void> {
     const setters = getUpdateAssignmentsSql({
-      ...appMetadataChanges,
+      ...newAppMetadata,
       ...mockDates,
     });
     if (!setters) {
       return;
     }
 
-    const appMetadataUpdateQuery = sql`update app_metadata_jsons
-                                       set ${setters}
-                                       where id = (select app_metadata_json_id
-                                                   from versions v
-                                                   where v.id = (${getVersionQuery(projectSlug, "draft")}))`;
+    const appMetadataUpdateQuery = sql`update versions
+                                       set app_metadata = (${newAppMetadata})
+                                       where id = ${getVersionQuery(projectSlug, "draft")}`;
     const queryResult = await this.pool.query(appMetadataUpdateQuery);
     return queryResult as any;
   }
@@ -464,24 +435,5 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
             and deleted_at is null`
     );
     return dbFiles.rows.map(dbFileToFileMetadata);
-  }
-
-  private async _getBadgesMap(projectSlugs: Project["slug"][]) {
-    if (!projectSlugs.length) {
-      return {};
-    }
-    const query = sql`select project_slug, json_agg(badge_slug) as badges
-                      from project_statuses_on_badges
-                      where project_slug in (${join(projectSlugs)})
-                      group by project_slug`;
-
-    const badges: { project_slug: Project["slug"]; badges: Badge["slug"][] }[] =
-      await this.pool.query(query).then((res) => res.rows);
-
-    const badgesMap: Record<Project["slug"], Badge["slug"][]> =
-      Object.fromEntries(
-        badges.map(({ project_slug, badges }) => [project_slug, badges])
-      );
-    return badgesMap;
   }
 }

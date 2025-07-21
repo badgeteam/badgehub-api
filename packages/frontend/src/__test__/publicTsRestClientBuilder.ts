@@ -1,13 +1,10 @@
-// publicTsRestClientBuilder.ts
-// Utility to build mock tsRestClient for tests
-
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
-import type { AppCardProps } from "@sharedComponents/types.ts";
 import { tsRestClient as defaultTsRestClient } from "@api/tsRestClient.ts";
-import { dummyApps } from "./fixtures/dummyApps.ts";
+import { DummyApp, dummyApps } from "@__test__/fixtures";
 import { matchRoute } from "@__test__/routeContractMatch.ts";
 import { tsRestApiContracts } from "@shared/contracts/restContracts.ts";
 import { ApiFetcherArgs, initClient } from "@ts-rest/core";
+import { ProjectSummary } from "@shared/domain/readModels/project/ProjectDetails.ts";
 
 function parseProjectsQuery(rawQuery: unknown) {
   if (!rawQuery) return undefined;
@@ -22,7 +19,7 @@ const notFound = () => {
   };
 };
 
-export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
+export function tsRestClientWithApps(apps: DummyApp[] = dummyApps) {
   const initClient1 = initClient(tsRestApiContracts, {
     baseUrl: "",
     api: async (args: ApiFetcherArgs) => {
@@ -30,30 +27,32 @@ export function tsRestClientWithApps(apps: AppCardProps[] = dummyApps) {
       const projectRouteMatch = matchRoute(args, tsRestApiContracts.getProject);
       if (projectRouteMatch) {
         const slug = projectRouteMatch?.get("slug");
-        const app = apps.find((a) => a.slug === slug);
+        const app = apps.find((a) => a.summary.slug === slug);
         if (!app) {
           return notFound();
         }
-        return { status: 200, body: app, headers: new Headers() };
+        return { status: 200, body: app.details, headers: new Headers() };
       } else if (matchRoute(args, tsRestApiContracts.getProjects)) {
         // Parse and validate query params using schema
         const parsedQuery = parseProjectsQuery(args.rawQuery);
-        let filtered = apps;
-        const device = parsedQuery?.device;
+        let filteredSummaries: ProjectSummary[] = apps.map(
+          (dummyApp) => dummyApp.summary
+        );
+        const badgeSlug = parsedQuery?.badge;
         const category = parsedQuery?.category;
-        if (device) {
-          filtered = filtered.filter(
+        if (badgeSlug) {
+          filteredSummaries = filteredSummaries.filter(
             (app) =>
               app.badges &&
-              app.badges.map((b) => b.toLowerCase()).includes(device)
+              app.badges.map((b) => b.toLowerCase()).includes(badgeSlug)
           );
         }
         if (category) {
-          filtered = filtered.filter(
-            (app) => app.category?.toLowerCase() === category
+          filteredSummaries = filteredSummaries.filter((app) =>
+            app.categories?.includes(category)
           );
         }
-        return { status: 200, body: filtered, headers: new Headers() };
+        return { status: 200, body: filteredSummaries, headers: new Headers() };
       } else {
         return notFound();
       }

@@ -1,22 +1,22 @@
 import {
-  Project,
+  ProjectDetails,
   ProjectSlug,
-  ProjectWithoutVersion,
-} from "@shared/domain/readModels/project/Project";
+  ProjectSummary,
+} from "@shared/domain/readModels/project/ProjectDetails";
 import {
   LatestOrDraftAlias,
   RevisionNumberOrAlias,
   Version,
 } from "@shared/domain/readModels/project/Version";
 import { User } from "@shared/domain/readModels/project/User";
-import { Badge } from "@shared/domain/readModels/Badge";
-import { Category } from "@shared/domain/readModels/project/Category";
 import { DBInsertProject, DBProject } from "@shared/dbModels/project/DBProject";
-import { DBInsertAppMetadataJSON } from "@shared/dbModels/project/DBAppMetadataJSON";
 import { UploadedFile } from "@shared/domain/UploadedFile";
 import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
 import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata";
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
+import { BadgeSlug } from "@shared/domain/readModels/Badge";
+import { CategoryName } from "@shared/domain/readModels/project/Category";
+import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
 
 export interface BadgeHubMetadata {
   insertProject(
@@ -39,31 +39,31 @@ export interface BadgeHubMetadata {
   getProject(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
-  ): Promise<undefined | Project>;
+  ): Promise<undefined | ProjectDetails>;
 
   getVersion(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | Version>;
 
-  getBadges(): Promise<Badge[]>;
+  getBadges(): Promise<BadgeSlug[]>;
 
-  getCategories(): Promise<Category[]>;
+  getCategories(): Promise<CategoryName[]>;
 
-  getProjects(
+  getProjectSummaries(
     filter?: {
       pageStart?: number;
       pageLength?: number;
-      badgeSlug?: Badge["slug"];
-      categorySlug?: Category["slug"];
+      badge?: BadgeSlug;
+      category?: CategoryName;
       user?: User["idp_user_id"];
     },
     version?: LatestOrDraftAlias
-  ): Promise<ProjectWithoutVersion[]>;
+  ): Promise<ProjectSummary[]>;
 
   updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<DBInsertAppMetadataJSON>,
+    appMetadataChanges: Partial<WriteAppMetadataJSON>,
     mockDates?: DBDatedData
   ): Promise<void>;
 

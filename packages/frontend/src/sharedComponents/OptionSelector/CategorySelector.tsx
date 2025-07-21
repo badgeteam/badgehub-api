@@ -1,20 +1,23 @@
 import React from "react";
-import {
-  CATEGORY_MAP,
-  CategorySlug,
-} from "@shared/domain/readModels/project/Category.ts";
 import { OptionSelectorWithTitle } from "@sharedComponents/OptionSelector/OptionSelectorWithTitle.tsx";
+import {
+  CategoryName,
+  getCategoryNames,
+} from "@shared/domain/readModels/project/Category.ts";
 
 export const CategorySelector: React.FC<{
   noValueSetName: string;
-  category: CategorySlug | undefined;
-  onCategoryChange: (selectedCategory: CategorySlug | undefined) => void;
+  category: CategoryName | undefined;
+  onCategoryChange: (selectedCategory: CategoryName | undefined) => void;
 }> = ({ category, onCategoryChange, noValueSetName }) => {
+  const valueMap: Record<string, string> = Object.fromEntries(
+    getCategoryNames().map((c) => [c, c])
+  );
   return (
     <OptionSelectorWithTitle
       noValueSetName={noValueSetName}
       title="Category"
-      valueMap={CATEGORY_MAP}
+      valueMap={valueMap}
       value={category}
       onValueSelection={onCategoryChange}
     />

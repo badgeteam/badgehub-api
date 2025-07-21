@@ -1,21 +1,17 @@
 import {
-  Project,
+  ProjectDetails,
   ProjectSlug,
-  ProjectWithoutVersion,
-} from "@shared/domain/readModels/project/Project";
+  ProjectSummary,
+} from "@shared/domain/readModels/project/ProjectDetails";
 import {
   LatestOrDraftAlias,
   RevisionNumberOrAlias,
 } from "@shared/domain/readModels/project/Version";
 import { User } from "@shared/domain/readModels/project/User";
 import { FileMetadata } from "@shared/domain/readModels/project/FileMetadata";
-import { Badge } from "@shared/domain/readModels/Badge";
-import { Category } from "@shared/domain/readModels/project/Category";
+import { BadgeSlug } from "@shared/domain/readModels/Badge";
+import { CategoryName } from "@shared/domain/readModels/project/Category";
 import { DBProject } from "@shared/dbModels/project/DBProject";
-import {
-  DBAppMetadataJSON,
-  DBInsertAppMetadataJSON,
-} from "@shared/dbModels/project/DBAppMetadataJSON";
 import { BadgeHubMetadata } from "@shared/domain/BadgeHubMetadata";
 import { BadgeHubFiles } from "@shared/domain/BadgeHubFiles";
 import { UploadedFile } from "@shared/domain/UploadedFile";
@@ -60,12 +56,12 @@ export class BadgeHubData {
   getProject(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
-  ): Promise<undefined | Project> {
+  ): Promise<undefined | ProjectDetails> {
     return this.badgeHubMetadata.getProject(projectSlug, versionRevision);
   }
 
   async getFileContents(
-    projectSlug: Project["slug"],
+    projectSlug: ProjectDetails["slug"],
     versionRevision: RevisionNumberOrAlias,
     filePath: FileMetadata["name"]
   ): Promise<Uint8Array | undefined> {
@@ -86,32 +82,32 @@ export class BadgeHubData {
   }
 
   getVersionZipContents(
-    projectSlug: Project["slug"],
+    projectSlug: ProjectDetails["slug"],
     versionRevision: RevisionNumberOrAlias
   ): Promise<Uint8Array> {
     // TODO here we should get the file path from the DB in order to fetch the correct file
     throw new Error("Method not implemented.");
   }
 
-  getBadges(): Promise<Badge[]> {
+  getBadges(): Promise<BadgeSlug[]> {
     return this.badgeHubMetadata.getBadges();
   }
 
-  getCategories(): Promise<Category[]> {
+  getCategories(): Promise<CategoryName[]> {
     return this.badgeHubMetadata.getCategories();
   }
 
-  getProjects(
+  getProjectSummaries(
     filter: {
       pageStart?: number;
       pageLength?: number;
-      badgeSlug?: Badge["slug"];
-      categorySlug?: Category["slug"];
+      badge?: BadgeSlug;
+      category?: CategoryName;
       userId?: User["idp_user_id"];
     },
     revision: LatestOrDraftAlias
-  ): Promise<ProjectWithoutVersion[]> {
-    return this.badgeHubMetadata.getProjects(filter, revision);
+  ): Promise<ProjectSummary[]> {
+    return this.badgeHubMetadata.getProjectSummaries(filter, revision);
   }
 
   async writeDraftFile(
@@ -127,7 +123,7 @@ export class BadgeHubData {
       mockDates
     );
     if (filePath === "metadata.json") {
-      const appMetadata: DBAppMetadataJSON = JSON.parse(
+      const appMetadata: WriteAppMetadataJSON = JSON.parse(
         new TextDecoder().decode(uploadedFile.fileContent)
       );
       await this.badgeHubMetadata.updateDraftMetadata(
@@ -146,24 +142,16 @@ export class BadgeHubData {
 
   async updateDraftMetadata(
     slug: string,
-    appMetadataChanges: Partial<WriteAppMetadataJSON>,
+    newAppMetadata: WriteAppMetadataJSON,
     mockDates?: DBDatedData
   ): Promise<void> {
     await this.badgeHubMetadata.updateDraftMetadata(
       slug,
-      appMetadataChanges,
+      newAppMetadata,
       mockDates
     );
-    const updatedDraftVersion = await this.badgeHubMetadata.getVersion(
-      slug,
-      "draft"
-    );
-    if (!updatedDraftVersion) {
-      throw new Error(`Draft version not found for slug: ${slug}`);
-    }
-    const updatedAppMetadata = updatedDraftVersion.app_metadata;
     const fileContent = new TextEncoder().encode(
-      JSON.stringify(updatedAppMetadata)
+      JSON.stringify(newAppMetadata)
     );
     await this._writeDraftFile(
       slug,

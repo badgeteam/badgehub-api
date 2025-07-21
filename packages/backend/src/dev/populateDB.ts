@@ -7,27 +7,19 @@ import {
   POSTGRES_USER,
 } from "@config";
 import sql, { raw } from "sql-template-tag";
-import { DBDatedData } from "@shared/dbModels/project/DBDatedData";
-import { DBInsertAppMetadataJSON } from "@shared/dbModels/project/DBAppMetadataJSON";
-import { getInsertKeysAndValuesSql } from "@db/sqlHelpers/objectToSQL";
-import { DBInsertProjectStatusOnBadge } from "@shared/dbModels/DBProjectStatusOnBadge";
 import { BadgeHubData } from "@domain/BadgeHubData";
 import { PostgreSQLBadgeHubMetadata } from "@db/PostgreSQLBadgeHubMetadata";
 import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
-import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category";
-import { BADGE_MAP } from "@shared/domain/readModels/Badge";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
+import { DEFAULT_CATEGORY_NAMES } from "@shared/domain/readModels/project/Category";
+import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON";
+import { getBadgeSlugs } from "@shared/domain/readModels/Badge";
 
-const CATEGORY_NAMES = Object.values(CATEGORY_MAP);
+const CATEGORY_NAMES = DEFAULT_CATEGORY_NAMES;
 
-const nameToSlug = (name: string) => name.toLowerCase().replaceAll(" ", "_");
-const BADGE_NAMES = Object.values(BADGE_MAP); // Hardcoded! Update by hand
-const BADGE_SLUGS = Object.keys(BADGE_MAP); // Hardcoded! Update by hand
-
-const CATEGORIES_COUNT = CATEGORY_NAMES.length;
 const ICON_COUNT = 16;
 const ICON_FILENAMES = Array.from(
   { length: ICON_COUNT },
@@ -51,27 +43,21 @@ export async function repopulateDB() {
     new PostgreSQLBadgeHubFiles()
   );
   try {
-    await cleanDatabases(client);
+    await cleanTables(client);
     await populateDatabases(client, badgeHubData);
   } finally {
     client.release();
   }
 }
 
-async function cleanDatabases(client: pg.PoolClient) {
-  const tablesWithoutIdSeq = ["projects", "categories", "badges"];
+async function cleanTables(client: pg.PoolClient) {
+  const tablesWithoutIdSeq = ["projects"];
   for (const table of tablesWithoutIdSeq) {
     await client.query(sql`delete
                            from ${raw(table)}`);
   }
-  const tablesWithIdSeq = [
-    "files",
-    "file_data",
-    "app_metadata_jsons",
-    "versions",
-    "versioned_dependencies",
-    "project_statuses_on_badges",
-  ];
+
+  const tablesWithIdSeq = ["files", "file_data", "versions"];
   for (const table of tablesWithIdSeq) {
     await client.query(sql`delete
                            from ${raw(table)}`);
@@ -101,26 +87,6 @@ const getSemiRandomDates = async (stringToDigest: string) => {
   return { created_at, updated_at };
 };
 
-async function insertBadges(client: pg.PoolClient) {
-  for (const badgeName of BADGE_NAMES) {
-    const { created_at, updated_at } = await getSemiRandomDates(badgeName);
-    await client.query(
-      sql`insert into badgehub.badges (name, slug, created_at, updated_at)
-          values (${badgeName}, ${nameToSlug(badgeName)}, ${created_at}, ${updated_at})`
-    );
-  }
-}
-
-async function insertCategories(client: pg.PoolClient) {
-  for (const categoryName of CATEGORY_NAMES) {
-    const { created_at, updated_at } = await getSemiRandomDates(categoryName);
-    await client.query(
-      sql`insert into badgehub.categories (name, slug, created_at, updated_at)
-          values (${categoryName}, ${nameToSlug(categoryName)}, ${created_at}, ${updated_at})`
-    );
-  }
-}
-
 const get1DayAfterSemiRandomUpdatedAt = async (projectSlug: string) => {
   return new Date(
     Date.parse((await getSemiRandomDates(projectSlug)).updated_at) +
@@ -148,14 +114,8 @@ async function populateDatabases(
   client: pg.PoolClient,
   badgeHubData: BadgeHubData
 ) {
-  await insertBadges(client);
-  await insertCategories(client);
   const projectNames = await insertProjects(badgeHubData);
   await publishSomeProjects(badgeHubData, projectNames);
-  await badgeProjectCrossTable(
-    client,
-    projectNames.map((s) => s.toLowerCase())
-  );
 }
 
 function date(millisBackFrom2025: number) {
@@ -251,6 +211,19 @@ const USERS = [
   "CodeConnoisseur",
 ];
 
+function getSemiRandomElementSelection<T>(
+  semiRandomNumber: number,
+  items: T[],
+  max_items: number
+): T[] {
+  const nbItems = Math.max(semiRandomNumber % max_items, 1);
+  const selection = new Set<T>();
+  for (let i = 0; i < nbItems; i++) {
+    selection.add(items[(i + semiRandomNumber) % items.length]!);
+  }
+  return [...selection];
+}
+
 const writeDraftAppFiles = async (
   badgeHubData: BadgeHubData,
   projectName: string,
@@ -260,7 +233,6 @@ const writeDraftAppFiles = async (
   const projectSlug = projectName.toLowerCase();
   const description = await getDescription(projectName);
   const userId = semiRandomNumber % USERS.length;
-  const categoryId = semiRandomNumber % CATEGORIES_COUNT;
 
   const { created_at, updated_at } = await getSemiRandomDates(projectName);
 
@@ -281,19 +253,28 @@ const writeDraftAppFiles = async (
     }
   }
 
-  const appMetadata: DBInsertAppMetadataJSON & DBDatedData = {
+  const categories = getSemiRandomElementSelection(
+    semiRandomNumber,
+    CATEGORY_NAMES,
+    3
+  );
+  const allBadges = getBadgeSlugs();
+  const badges = getSemiRandomElementSelection(
+    semiRandomNumber,
+    allBadges,
+    allBadges.length
+  );
+  const appMetadata: AppMetadataJSON = {
     name: projectName,
     description,
-    interpreter: "python",
     author: USERS[userId]!,
-    license_file: "MIT",
-    category: CATEGORY_NAMES[categoryId],
-    created_at,
-    updated_at,
-    icon: iconRelativePath,
+    license_type: "MIT",
+    badges,
+    categories,
+    icon_map: iconRelativePath ? { "64x64": iconRelativePath } : undefined,
   };
   if (semanticVersion !== "") {
-    appMetadata.semantic_version = semanticVersion;
+    appMetadata.version = semanticVersion;
   }
 
   const metadataJsonContent = Buffer.from(JSON.stringify(appMetadata));
@@ -443,39 +424,4 @@ async function insertProjects(badgeHubData: BadgeHubData) {
   }
 
   return projectNames;
-}
-
-async function badgeProjectCrossTable(
-  client: pg.PoolClient,
-  projectSlugs: string[]
-) {
-  for (let index = 0; index < projectSlugs.length; index++) {
-    let projectSlug = projectSlugs[index]!;
-    const semiRandomNumber = await stringToSemiRandomNumber(projectSlug);
-    const badgeSlug = BADGE_SLUGS[semiRandomNumber % 3]!;
-    let insertObject1: DBInsertProjectStatusOnBadge = {
-      badge_slug: badgeSlug,
-      project_slug: projectSlug,
-      ...(await getSemiRandomDates([projectSlug, badgeSlug].join(","))),
-    };
-    const insert1 = getInsertKeysAndValuesSql(insertObject1);
-    await client.query(
-      sql`insert into project_statuses_on_badges (${insert1.keys})
-          values (${insert1.values})`
-    );
-
-    // Some project support two badges
-    const badgeId2 = BADGE_SLUGS[semiRandomNumber % 3]!;
-    if (badgeId2 != badgeSlug && semiRandomNumber % 3 == 1) {
-      const insertObject2: DBInsertProjectStatusOnBadge = {
-        badge_slug: badgeId2,
-        project_slug: projectSlug,
-      };
-      const insert2 = getInsertKeysAndValuesSql(insertObject2);
-      await client.query(
-        sql`insert into badgehub.project_statuses_on_badges (${insert2.keys})
-            values (${insert2.values})`
-      );
-    }
-  }
 }

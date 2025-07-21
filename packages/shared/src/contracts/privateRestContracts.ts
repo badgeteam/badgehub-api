@@ -1,9 +1,9 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod/v4";
 import {
-  projectSchema,
-  projectWithoutVersionSchema,
-} from "@shared/domain/readModels/project/Project";
+  detailedProjectSchema,
+  projectSummarySchema,
+} from "@shared/domain/readModels/project/ProjectDetails";
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import {
   CreateProjectProps,
@@ -26,8 +26,7 @@ __tsCheckSame<
   z.infer<typeof createProjectBodySchema>
 >(true);
 
-const appMetadataPartialSchema = writeAppMetadataJSONSchema.partial();
-const errorResponseSchema = z.object({reason: z.string()})
+const errorResponseSchema = z.object({ reason: z.string() });
 
 const privateProjectContracts = c.router(
   {
@@ -105,13 +104,14 @@ const privateProjectContracts = c.router(
       method: "PATCH",
       path: "/projects/:slug/draft/metadata",
       pathParams: z.object({ slug: z.string() }),
-      body: appMetadataPartialSchema,
+      body: writeAppMetadataJSONSchema,
       responses: {
         204: z.void(),
         403: errorResponseSchema,
         404: errorResponseSchema,
       },
-      summary: "Change the metadata of the latest draft version of a project",
+      summary: `Overwrite the metadata of the latest draft version of a project. 
+This is actually just an alias for a post to /projects/:slug/draft/files/metadata.json`,
     },
 
     getDraftFile: {
@@ -134,7 +134,7 @@ const privateProjectContracts = c.router(
       path: "/projects/:slug/draft",
       pathParams: z.object({ slug: z.string() }),
       responses: {
-        200: projectSchema,
+        200: detailedProjectSchema,
         403: errorResponseSchema,
         404: errorResponseSchema,
       },
@@ -155,22 +155,15 @@ const privateProjectContracts = c.router(
     },
   },
   {
-    baseHeaders: z.object({
+    baseHeaders: {
       authorization: z.string(),
-    }),
+    },
   }
 );
 
 const privateRestContracts = c.router(
   {
     ...privateProjectContracts,
-    testPrivateEndpoint: {
-      method: "GET",
-      path: "/test/private",
-      responses: {
-        200: z.string().describe("A test response to verify authentication"),
-      },
-    },
     getUserDraftProjects: {
       method: "GET",
       path: "/users/:userId/drafts",
@@ -180,16 +173,16 @@ const privateRestContracts = c.router(
         pageLength: z.coerce.number().optional(),
       }),
       responses: {
-        200: z.array(projectWithoutVersionSchema),
+        200: z.array(projectSummarySchema),
         403: errorResponseSchema,
       },
       summary: "Get all draft projects for a user",
     },
   },
   {
-    baseHeaders: z.object({
+    baseHeaders: {
       authorization: z.string(),
-    }),
+    },
   }
 );
 
