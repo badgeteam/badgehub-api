@@ -18,9 +18,9 @@ import {
 import { RouterImplementation } from "@ts-rest/express/src/lib/types";
 import { getUser, RequestWithUser, UserDataInRequest } from "@auth/jwt-decode";
 import {
-  Project,
+  ProjectDetails,
   ProjectSlug,
-} from "@shared/domain/readModels/project/Project";
+} from "@shared/domain/readModels/project/ProjectDetails";
 import { Readable } from "node:stream";
 import { MAX_UPLOAD_FILE_SIZE_BYTES } from "@config";
 import { ProjectAlreadyExistsError, UserError } from "@domain/UserError";
@@ -189,12 +189,6 @@ export const createPrivateRestRouter = (
   const s = initServer();
   return s.router(privateRestContracts, {
     ...createProjectRouter(badgeHubData),
-    testPrivateEndpoint: async ({ req }) => {
-      return ok(
-        "user was successfully authenticated as " +
-          getUser(req as unknown as RequestWithUser).idp_user_id
-      );
-    },
     getUserDraftProjects: async ({
       params: { userId },
       query: { pageStart, pageLength },
@@ -204,7 +198,7 @@ export const createPrivateRestRouter = (
       if (nokResponse) {
         return nokResponse;
       }
-      const projects = await badgeHubData.getProjects(
+      const projects = await badgeHubData.getProjectSummaries(
         { pageStart, pageLength, userId },
         "draft"
       );
@@ -239,7 +233,7 @@ const checkProjectAuthorization = async (
   badgeHubData: BadgeHubData,
   slug: ProjectSlug,
   request: unknown,
-  project?: Project
+  project?: ProjectDetails
 ) => {
   project = project ?? (await badgeHubData.getProject(slug, "draft"));
   if (!project) {

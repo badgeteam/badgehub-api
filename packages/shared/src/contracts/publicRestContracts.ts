@@ -1,23 +1,20 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod/v3";
+import { z } from "zod/v4";
 import {
-  projectSchema,
-  projectWithoutVersionSchema,
-} from "@shared/domain/readModels/project/Project";
-import {
-  categorySchema,
-  categorySlugSchema,
-} from "@shared/domain/readModels/project/Category";
-import {badgeSchema, badgeSlugSchema} from "@shared/domain/readModels/Badge";
+  detailedProjectSchema,
+  projectSummarySchema,
+} from "@shared/domain/readModels/project/ProjectDetails";
+import { categoryNameSchema } from "@shared/domain/readModels/project/Category";
+import { badgeSlugSchema } from "@shared/domain/readModels/Badge";
 
 const c = initContract();
 
-const errorResponseSchema = z.object({reason: z.string()})
+const errorResponseSchema = z.object({ reason: z.string() });
 export const getProjectsQuerySchema = z.object({
   pageStart: z.coerce.number().optional(),
   pageLength: z.coerce.number().optional(),
-  device: badgeSlugSchema.optional(),
-  category: categorySlugSchema.optional(),
+  badge: badgeSlugSchema.optional(),
+  category: categoryNameSchema.optional(),
 });
 
 export const publicProjectContracts = c.router({
@@ -26,7 +23,7 @@ export const publicProjectContracts = c.router({
     path: `/projects/:slug`,
     pathParams: z.object({ slug: z.string() }),
     responses: {
-      200: projectSchema,
+      200: detailedProjectSchema,
       404: errorResponseSchema,
     },
     summary: "Get (Latest) Project Details by Slug",
@@ -36,7 +33,7 @@ export const publicProjectContracts = c.router({
     path: `/projects`,
     query: getProjectsQuerySchema,
     responses: {
-      200: z.array(projectWithoutVersionSchema),
+      200: z.array(projectSummarySchema),
     },
     summary: "Get all Projects",
   },
@@ -48,7 +45,7 @@ export const publicProjectContracts = c.router({
       revision: z.coerce.number(),
     }),
     responses: {
-      200: projectSchema,
+      200: detailedProjectSchema,
       404: errorResponseSchema,
     },
     summary:
@@ -65,7 +62,7 @@ export const publicFilesContracts = c.router({
       filePath: z.string(),
     }),
     responses: {
-      200: z.unknown().describe('ReadableStream'), // ReadableStream
+      200: z.unknown().describe("ReadableStream"), // ReadableStream
       404: errorResponseSchema,
     },
     summary: "Get the latest published revision of a file in the project",
@@ -79,7 +76,7 @@ export const publicFilesContracts = c.router({
       filePath: z.string(),
     }),
     responses: {
-      200: z.unknown().describe('ReadableStream'), // ReadableStream,
+      200: z.unknown().describe("ReadableStream"), // ReadableStream,
       404: errorResponseSchema,
     },
     summary: "Get a file for a specific revision of the project",
@@ -93,14 +90,14 @@ export const publicRestContracts = c.router({
     method: "GET",
     path: `/categories`,
     responses: {
-      200: z.array(categorySchema),
+      200: z.array(categoryNameSchema),
     },
   },
   getBadges: {
     method: "GET",
     path: `/badges`,
     responses: {
-      200: z.array(badgeSchema),
+      200: z.array(badgeSlugSchema),
     },
   },
 });

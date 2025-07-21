@@ -17,7 +17,7 @@ const HomePage = memo(({ tsRestClient = defaultTsRestClient }: AppProps) => {
     const result = await tsRestClient?.getProjects({
       query: {
         category: filters.category,
-        device: filters.device,
+        badge: filters.badge,
       },
     });
     switch (result.status) {

@@ -10,8 +10,6 @@ import { PostgreSQLBadgeHubFiles } from "@db/PostgreSQLBadgeHubFiles";
 import { nok, ok } from "@controllers/ts-rest/httpResponses";
 import { Readable } from "node:stream";
 import { RouterImplementation } from "@ts-rest/express/src/lib/types";
-import { z } from "zod";
-import { initContract } from "@ts-rest/core";
 
 const createFilesRouter = (badgeHubData: BadgeHubData) => {
   const filesRouter: RouterImplementation<typeof publicFilesContracts> = {
@@ -61,14 +59,14 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
       return ok(details);
     },
     getProjects: async ({
-      query: { pageStart, pageLength, device, category },
+      query: { pageStart, pageLength, badge, category },
     }) => {
-      const data = await badgeHubData.getProjects(
+      const data = await badgeHubData.getProjectSummaries(
         {
           pageStart,
           pageLength,
-          badgeSlug: device,
-          categorySlug: category,
+          badge,
+          category,
         },
         "latest"
       );

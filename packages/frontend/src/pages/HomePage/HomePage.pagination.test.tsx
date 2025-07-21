@@ -1,8 +1,13 @@
-import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@__test__";
+import { describe, expect, it } from "vitest";
+import {
+  dummyApps,
+  fireEvent,
+  render,
+  screen,
+  tsRestClientWithApps,
+  waitFor,
+} from "@__test__";
 import HomePage from "./HomePage.tsx";
-import { tsRestClientWithApps } from "@__test__";
-import { dummyApps } from "@__test__";
 
 describe("HomePage Pagination", () => {
   it("shows first page of apps and paginates to next page", async () => {

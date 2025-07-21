@@ -29,3 +29,5 @@ export async function runMigrations() {
     console.log("released db-migrations");
   }
 }
+
+runMigrations();

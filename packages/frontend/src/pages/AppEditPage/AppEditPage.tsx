@@ -8,19 +8,25 @@ import AppEditCategorization from "./AppEditCategorization.tsx";
 import AppEditActions from "./AppEditActions.tsx";
 import AppEditFileUpload from "./AppEditFileUpload";
 import AppEditFilePreview from "./AppEditFilePreview";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
 import { useSession } from "@sharedComponents/keycloakSession/SessionContext.tsx";
+import {
+  AppMetadataJSON,
+  IconSize,
+} from "@shared/domain/readModels/project/AppMetadataJSON.ts";
 
 const AppEditPage: React.FC<{
   tsRestClient?: typeof defaultTsRestClient;
   slug: string;
 }> = ({ tsRestClient = defaultTsRestClient, slug }) => {
-  const [project, setProject] = useState<(Project & { stale?: true }) | null>(
-    null
-  );
+  const [project, setProject] = useState<
+    (ProjectDetails & { stale?: true }) | null
+  >(null);
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState<ProjectEditFormData | undefined>(undefined);
+  const [appMetadata, setAppMetadata] = useState<
+    ProjectEditFormData | undefined
+  >(undefined);
   const { user, keycloak } = useSession();
 
   useEffect(() => {
@@ -36,16 +42,8 @@ const AppEditPage: React.FC<{
       if (mounted && res.status === 200) {
         const project = res.body;
         setProject(project);
-        setForm({
-          name: project.name ?? undefined,
-          semantic_version:
-            project.version.app_metadata.semantic_version ?? undefined,
-          description: project.description ?? undefined,
-          category: project.version.app_metadata.category ?? undefined,
-          license_file: project.version.app_metadata.license_file ?? undefined,
-          main_executable:
-            project.version.app_metadata.main_executable ?? undefined,
-        });
+        const appMetadata = project.version.app_metadata;
+        setAppMetadata(appMetadata);
       }
       setLoading(false);
     })();
@@ -55,7 +53,7 @@ const AppEditPage: React.FC<{
   }, [keycloak, project, slug, tsRestClient, keycloak?.token]);
 
   const handleFormChange = (changes: Partial<ProjectEditFormData>) => {
-    setForm((prev) => ({ ...prev, ...changes }) as ProjectEditFormData);
+    setAppMetadata((prev) => ({ ...prev, ...changes }) as ProjectEditFormData);
   };
 
   const handleDeleteFile = async (filePath: string) => {
@@ -69,11 +67,11 @@ const AppEditPage: React.FC<{
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form) return;
+    if (!appMetadata) return;
     await tsRestClient.changeDraftAppMetadata({
       headers: { authorization: `Bearer ${keycloak?.token}` },
       params: { slug },
-      body: form,
+      body: appMetadata,
     });
     await tsRestClient.publishVersion({
       headers: { authorization: `Bearer ${keycloak?.token}` },
@@ -84,11 +82,20 @@ const AppEditPage: React.FC<{
       setProject({
         ...project,
         stale: true,
-        version: { ...project.version, app_metadata: form },
+        version: { ...project.version, app_metadata: appMetadata },
       });
     }
   };
 
+  const onSetIcon = (size: IconSize, filePath: string) =>
+    setAppMetadata((prev) => {
+      return prev
+        ? ({
+            ...prev,
+            icon_map: { ...prev?.icon_map, [size]: filePath },
+          } as const satisfies AppMetadataJSON)
+        : prev;
+    });
   return (
     <div
       data-testid="app-edit-page"
@@ -96,7 +103,7 @@ const AppEditPage: React.FC<{
     >
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-        {!loading && (!project || !form) ? (
+        {!loading && (!project || !appMetadata) ? (
           <div
             data-testid="app-edit-error"
             className="flex justify-center items-center h-64 text-red-400 bg-gray-900"
@@ -109,17 +116,17 @@ const AppEditPage: React.FC<{
           </div>
         ) : (
           <>
-            <AppEditBreadcrumb project={project as Project} />
+            <AppEditBreadcrumb project={project as ProjectDetails} />
             <h1 className="text-3xl font-bold text-slate-100 mb-6">
               Editing {project!.slug}/rev{project!.version.revision}
             </h1>
             <form className="space-y-8" onSubmit={handleSubmit}>
               <AppEditBasicInfo
-                form={form as ProjectEditFormData}
+                form={appMetadata as ProjectEditFormData}
                 onChange={handleFormChange}
               />
               <AppEditCategorization
-                form={form as ProjectEditFormData}
+                form={appMetadata as ProjectEditFormData}
                 onChange={handleFormChange}
               />
               <AppEditFileUpload
@@ -131,11 +138,9 @@ const AppEditPage: React.FC<{
               <AppEditFilePreview
                 tsRestClient={tsRestClient}
                 user={user}
-                project={project as Project}
-                onSetIcon={(filePath) =>
-                  setForm((prev) => (prev ? { ...prev, icon: filePath } : prev))
-                }
-                iconFilePath={form?.icon ?? null}
+                project={project as ProjectDetails}
+                onSetIcon={onSetIcon}
+                iconFilePath={appMetadata?.icon_map?.["64x64"]}
                 onDeleteFile={handleDeleteFile}
               />
               <AppEditActions />

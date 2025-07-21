@@ -1,5 +1,5 @@
-import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectSummary } from "@shared/domain/readModels/project/ProjectDetails.ts";
 
-export type AppCardProps = ProjectWithoutVersion & {
+export type AppCardProps = ProjectSummary & {
   editable?: boolean;
 };

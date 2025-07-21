@@ -1,7 +1,7 @@
 import React from "react";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 
-const AppSidebarSimilar: React.FC<{ project: Project }> = () => (
+const AppSidebarSimilar: React.FC<{ project: ProjectDetails }> = () => (
   <section className="bg-gray-800 p-6 rounded-lg shadow-lg todoElement">
     <h2 className="text-xl font-semibold text-slate-100 mb-4 border-b border-gray-700 pb-2">
       Other Projects by this author

@@ -12,8 +12,8 @@ import {
 } from "@sharedComponents/keycloakSession/SessionContext.tsx";
 
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
-                                                                           children,
-                                                                         }) => {
+  children,
+}) => {
   const [user, setUser] = useState<User | undefined>(undefined);
   const [keycloak, setKeycloak] = useState<Keycloak | undefined>(undefined);
   const initialized = useRef(false);
@@ -36,7 +36,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
       .then((authenticated) => {
         if (authenticated && kc.tokenParsed) {
           setUser({
-            name: kc.tokenParsed.name || kc.tokenParsed.preferred_username || "User",
+            name:
+              kc.tokenParsed.name ||
+              kc.tokenParsed.preferred_username ||
+              "User",
             email: kc.tokenParsed.email || "",
             id: kc.tokenParsed.sub || "",
           });
@@ -62,12 +65,16 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const refreshed = await keycloak.updateToken(5);
         if (refreshed) {
-          setUser(prevUser => prevUser ? {
-            ...prevUser,
-          } : undefined);
+          setUser((prevUser) =>
+            prevUser
+              ? {
+                  ...prevUser,
+                }
+              : undefined
+          );
         }
       } catch (error) {
-        console.error('Session expired, redirecting to login', error);
+        console.error("Session expired, redirecting to login", error);
         keycloak.login();
       }
     };

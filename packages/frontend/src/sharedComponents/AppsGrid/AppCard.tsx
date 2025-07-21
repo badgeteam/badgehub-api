@@ -6,17 +6,18 @@ import { BADGEHUB_API_BASE_URL, BADGEHUB_FRONTEND_BASE_URL } from "@config.ts";
 const AppCard: React.FC<AppCardProps> = ({
   name,
   description,
-  category,
+  categories,
   published_at,
   revision,
   badges,
   slug,
-  icon,
+  icon_map,
   editable,
 }) => {
   const draftOrRevision = published_at
     ? `rev${revision}`
     : `rev${revision - 1}`;
+  const icon = icon_map?.["64x64"];
   const iconSrc = icon
     ? `${BADGEHUB_API_BASE_URL}/api/v3/projects/${slug}/${draftOrRevision}/files/${encodeURIComponent(icon)}`
     : `${BADGEHUB_FRONTEND_BASE_URL}/assets/no-icon-uploaded.png`;
@@ -54,19 +55,22 @@ const AppCard: React.FC<AppCardProps> = ({
 
         {/* Tags section pushed to bottom */}
         <div className="mt-auto mb-3">
-          {category && (
-            <span className="tag text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">
+          {categories?.map((category) => (
+            <span
+              key={category}
+              className="tag text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full"
+            >
               {category}
             </span>
-          )}
-          {badges.map((badge) => (
+          )) ?? false}
+          {badges?.map((badge) => (
             <span
               key={badge}
               className="tag-mcu text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full"
             >
               {badge}
             </span>
-          ))}
+          )) ?? false}
         </div>
       </div>
 

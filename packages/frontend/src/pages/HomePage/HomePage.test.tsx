@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@__test__";
+import {
+  dummyApps,
+  render,
+  screen,
+  tsRestClientWithApps,
+  tsRestClientWithError,
+  waitFor,
+} from "@__test__";
 import HomePage from "./HomePage.tsx";
-import { tsRestClientWithApps, tsRestClientWithError } from "@__test__";
-import { dummyApps } from "@__test__";
 
 describe("HomePage", () => {
   it("renders the homepage with dummy apps", async () => {

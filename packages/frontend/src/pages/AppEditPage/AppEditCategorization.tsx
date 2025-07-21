@@ -1,10 +1,6 @@
 import React from "react";
 import { ProjectEditFormData } from "@pages/AppEditPage/ProjectEditFormData.ts";
 import { CategorySelector } from "@sharedComponents/OptionSelector/CategorySelector.tsx";
-import {
-  CATEGORY_MAP,
-  REVERSE_CATEGORY_MAP,
-} from "@shared/domain/readModels/project/Category.ts";
 
 const AppEditCategorization: React.FC<{
   form: ProjectEditFormData;
@@ -22,10 +18,10 @@ const AppEditCategorization: React.FC<{
       {/*/>*/}
       <CategorySelector
         noValueSetName="Please select"
-        category={form.category && REVERSE_CATEGORY_MAP[form.category]}
+        category={form.categories?.[0]}
         onCategoryChange={(newValue) =>
           onChange({
-            category: (newValue && CATEGORY_MAP[newValue]) || undefined,
+            categories: newValue === undefined ? undefined : [newValue],
           })
         }
       />

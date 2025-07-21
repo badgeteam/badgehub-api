@@ -1,9 +1,6 @@
 import React from "react";
-import { BadgeMap } from "@shared/domain/readModels/Badge.ts";
-import { CATEGORY_MAP } from "@shared/domain/readModels/project/Category.ts";
 
 const NO_FILTER_OPTION_VALUE = "All";
-type CategoryMap = typeof CATEGORY_MAP;
 type SortByOption = string | undefined;
 export const OptionSelectorWithTitle: React.FC<
   {
@@ -12,13 +9,8 @@ export const OptionSelectorWithTitle: React.FC<
   } & (
     | {
         valueMap: Record<string, string>;
-        value: keyof BadgeMap | undefined;
-        onValueSelection: (newValue: keyof BadgeMap | undefined) => void;
-      }
-    | {
-        valueMap: Record<string, string>;
-        value: keyof CategoryMap | undefined;
-        onValueSelection: (newValue: keyof CategoryMap | undefined) => void;
+        value: string | undefined;
+        onValueSelection: (newValue: string) => void;
       }
     | {
         valueMap: undefined;

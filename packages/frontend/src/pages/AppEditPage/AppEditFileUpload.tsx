@@ -16,9 +16,7 @@ const AppEditFileUpload: React.FC<{
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
     setSuccess(null);
     const files = e.target.files;
@@ -39,7 +37,8 @@ const AppEditFileUpload: React.FC<{
       }
       setSuccess("File(s) uploaded successfully.");
       onUploadSuccess();
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error(err);
       setError("Failed to upload file(s).");
     } finally {
       setUploading(false);
@@ -69,9 +68,7 @@ const AppEditFileUpload: React.FC<{
           <p className="text-xs text-emerald-400 mt-2">Uploading...</p>
         )}
         {error && <p className="text-xs text-red-400 mt-2">{error}</p>}
-        {success && (
-          <p className="text-xs text-emerald-400 mt-2">{success}</p>
-        )}
+        {success && <p className="text-xs text-emerald-400 mt-2">{success}</p>}
       </div>
     </section>
   );

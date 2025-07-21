@@ -1,11 +1,10 @@
-import type { AppCardProps } from "@sharedComponents/types.ts";
 import { dummyApps } from "@__test__/fixtures";
 import { ApiFetcherArgs, initClient } from "@ts-rest/core";
 import { matchRoute } from "@__test__/routeContractMatch.ts";
 import { tsRestClient as defaultPrivateTsRestClient } from "@api/tsRestClient.ts";
 import { tsRestApiContracts } from "@shared/contracts/restContracts.ts";
 
-export function privateTsRestClientBuilder(apps: AppCardProps[] = dummyApps) {
+export function privateTsRestClientBuilder(apps = dummyApps) {
   return initClient(tsRestApiContracts, {
     baseUrl: "",
     api: async (args: ApiFetcherArgs) => {
@@ -18,7 +17,11 @@ export function privateTsRestClientBuilder(apps: AppCardProps[] = dummyApps) {
       }
 
       // Optionally filter by userId if needed
-      return { status: 200, body: apps, headers: new Headers() };
+      return {
+        status: 200,
+        body: apps.map((a) => a.summary),
+        headers: new Headers(),
+      };
     },
   }) as typeof defaultPrivateTsRestClient;
 }

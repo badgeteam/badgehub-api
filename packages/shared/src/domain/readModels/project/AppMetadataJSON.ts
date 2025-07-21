@@ -6,67 +6,110 @@ import {
   CategoryName,
   categoryNameSchema,
 } from "@shared/domain/readModels/project/Category";
-import { Badge } from "@shared/domain/readModels/Badge";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v3";
+
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { z } from "zod/v4";
+import { BadgeSlug, badgeSlugSchema } from "@shared/domain/readModels/Badge";
+import {
+  VariantJSON,
+  variantJSONSchema,
+} from "@shared/domain/readModels/project/VariantJSON";
 
 export interface AppMetadataJSON {
   name?: string;
+  project_type?: "app" | "library" | "firmware" | "other";
   description?: string;
-  category?: CategoryName;
-  author?: string; // The name of the user_name
-  icon?: string; // The relative icon path
-  license_file?: string; // Optional path of the license file for this project. If not set, then LICENSE.md will be used.
-  is_library?: boolean; // Whether this project can be used as a library by other apps
-  is_hidden?: boolean; // Whether this project should be shown in the launcher or not. Only useful for libraries.
-  semantic_version?: string; // Changed! [Semantic version](https://semver.org/) of the project, the semantic versioning is mostly relevant if the project is a library. Authors who don't use this semantic versioning will get a 0.x version with x just an number like we previously had the revision number.
-  interpreter?: string; // Changed! For example 'python' or the project slug of a 3rd party dependency of this project.
-  main_executable?: string; // Relative path of the executable file from this package that is the main executable file of this project.
-  main_executable_overrides?: Record<Badge["slug"], string>; // Optional field to allow overriding the main_executable for a certain badge.
-  file_mappings?: Array<{ source: string; destination: string }>; // Changed! Mapping to tell the badge where some files in this project should be placed on the filesystem. Source is a relative path. Desitination can either be relative or absolute.
-  file_mappings_overrides?: Record<
-    Badge["slug"],
-    Array<{ source: string; destination: string }>
-  >; // Changed! optional field to allow overriding or adding a file mapping for a device name slug (key).
+  version?: string;
+  categories?: CategoryName[];
+  author?: string;
+  icon_map?: IconMap;
+  license_file?: string;
+  license_type?: string;
+  badges?: BadgeSlug[];
+  application?: VariantJSON[];
 }
 
-export const readAppMetadataJSONSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  category: categoryNameSchema.optional(),
-  author: z.string().optional(),
-  icon: z.string().optional(),
-  license_file: z.string().optional(),
-  is_library: z.boolean().optional(),
-  is_hidden: z.boolean().optional(),
-  semantic_version: z.string().optional(),
-  interpreter: z.string().optional(),
-  main_executable: z.string().optional(),
-  main_executable_overrides: z.record(z.string(), z.string()).optional(),
-  file_mappings: z
-    .array(
-      z.object({
-        source: z.string(),
-        destination: z.string(),
-      })
-    )
-    .optional(),
-  file_mappings_overrides: z
-    .record(
-      z.array(
-        z.object({
-          source: z.string(),
-          destination: z.string(),
-        })
-      )
-    )
-    .optional(),
+export const iconMapSchema = z
+  .object({
+    "8x8": z.string().optional(),
+    "16x16": z.string().optional(),
+    "32x32": z.string().optional(),
+    "64x64": z.string().optional(),
+  })
+  .describe(
+    `Icon Map of the project that maps from accepted sizes to a file path. Icon format is quite strict because BadgeHub is the first user of these icons.
+    Badge implementations can use these icons but they are not required to. For example if a badge's launcher an icon as an icon.py file, this file can still just be uploaded and the path could be indicated as custom property in the variant json.".`
+  );
+export type IconSize = keyof IconMap;
+
+export type IconMap = {
+  "8x8"?: string;
+  "16x16"?: string;
+  "32x32"?: string;
+  "64x64"?: string;
+};
+__tsCheckSame<IconMap, IconMap, z.infer<typeof iconMapSchema>>(true);
+
+const variantMapSchema = z
+  .record(
+    badgeSlugSchema,
+    z.string().optional().describe("Path to the json file for this variant")
+  )
+  .describe(
+    `Map from badge slug to variant information, allows knowing if a variant is updated and where to find the json file for it.
+This is used to determine if a variant is updated and where to find the json file for it.
+The variant with the highest revision number determines the latest revision of the project.`
+  );
+
+export type VariantMap = Record<BadgeSlug, string | undefined>;
+__tsCheckSame<VariantMap, VariantMap, z.infer<typeof variantMapSchema>>(true);
+
+export const appMetadataJSONSchema = z.object({
+  project_type: z
+    .enum(["app", "library", "firmware", "other"])
+    .optional()
+    .describe("Type of the project, eg. 'app' or 'library'"),
+  name: z
+    .string()
+    .optional()
+    .describe("name, we need this to show in the launcher and on badgehub."),
+  description: z
+    .string()
+    .optional()
+    .describe(
+      "Some more details about the app. Allows users to decide whether they want to install the app."
+    ),
+  categories: z
+    .array(categoryNameSchema)
+    .optional()
+    .describe(
+      "Categories that the app falls into, eg. 'Event Related'. Categories are defined by the specific badgehub instance's config."
+    ),
+  author: z.string().optional().describe("Name of the author of the project"),
+  icon_map: iconMapSchema.optional(),
+  license_file: z
+    .string()
+    .optional()
+    .describe("Path to the License file. Default is LICENSE"),
+  license_type: z
+    .string()
+    .optional()
+    .describe("Short description of the license type, eg. 'MIT'"),
+  version: z.string().optional().describe("Semantic version of the project"),
+  badges: z
+    .array(badgeSlugSchema)
+    .optional()
+    .describe("list of badges that are compatible with this project."),
+  application: z
+    .array(variantJSONSchema)
+    .optional()
+    .describe(
+      "A list of application variants that allows specifying badge-specific properties of the project"
+    ),
 });
 
-type Checks = [
-  CheckSame<
-    AppMetadataJSON,
-    AppMetadataJSON,
-    z.infer<typeof readAppMetadataJSONSchema>
-  >,
-];
+__tsCheckSame<
+  AppMetadataJSON,
+  AppMetadataJSON,
+  z.infer<typeof appMetadataJSONSchema>
+>(true);

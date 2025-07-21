@@ -4,16 +4,16 @@ import Filters from "@sharedComponents/AppsGrid/Filters.tsx";
 import Spinner from "@sharedComponents/Spinner.tsx";
 import AppsGrid from "@sharedComponents/AppsGrid/AppsGrid.tsx";
 import Pagination from "@sharedComponents/AppsGrid/Pagination.tsx";
-import { ProjectWithoutVersion } from "@shared/domain/readModels/project/Project.ts";
-import { z } from "zod";
+import { ProjectSummary } from "@shared/domain/readModels/project/ProjectDetails.ts";
+import { z } from "zod/v4";
 import { getProjectsQuerySchema } from "@shared/contracts/publicRestContracts.ts";
-import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
 import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
+import { CategoryName } from "@shared/domain/readModels/project/Category.ts";
 
 export type ProjectQueryParams = z.infer<typeof getProjectsQuerySchema>;
 export type AppFetcher = (
   filters: ProjectQueryParams
-) => Promise<ProjectWithoutVersion[] | undefined>;
+) => Promise<ProjectSummary[] | undefined>;
 
 export const AppGridWithFilterAndPagination = ({
   appFetcher,
@@ -29,8 +29,8 @@ export const AppGridWithFilterAndPagination = ({
   const [error, setError] = useState<string | null>(null);
 
   // Filter state
-  const [device, setDeviceFilter] = useState<BadgeSlug | undefined>();
-  const [category, setCategoryFilter] = useState<CategorySlug | undefined>();
+  const [badge, setBadgeFilter] = useState<BadgeSlug | undefined>();
+  const [category, setCategoryFilter] = useState<CategoryName | undefined>();
   const [sortBy, setSortBy] = useState<string | undefined>();
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -40,7 +40,7 @@ export const AppGridWithFilterAndPagination = ({
   useEffect(() => {
     setLoading(true);
 
-    appFetcher({ device, category })
+    appFetcher({ badge, category })
       .then((res) => {
         if (typeof res === "object") {
           const body = res;
@@ -55,7 +55,7 @@ export const AppGridWithFilterAndPagination = ({
         setError(e.message || "Failed to fetch projects");
       })
       .finally(() => setLoading(false));
-  }, [device, category, appFetcher]);
+  }, [badge, category, appFetcher]);
 
   // Filter apps by search query before pagination
   const filteredApps = useMemo(() => {
@@ -73,19 +73,19 @@ export const AppGridWithFilterAndPagination = ({
 
   // Handlers for Filters component
   const handleBadgeChange = (value: BadgeSlug | undefined) =>
-    setDeviceFilter(value);
-  const handleCategoryChange = (value: CategorySlug | undefined) =>
+    setBadgeFilter(value);
+  const handleCategoryChange = (value: CategoryName | undefined) =>
     setCategoryFilter(value);
   const handleSortByChange = (value: string | undefined) => setSortBy(value);
   const handleResetFilters = () => {
-    setDeviceFilter(undefined);
+    setBadgeFilter(undefined);
     setCategoryFilter(undefined);
   };
 
   return (
     <>
       <Filters
-        badge={device}
+        badge={badge}
         category={category}
         sortBy={sortBy}
         onBadgeChange={handleBadgeChange}

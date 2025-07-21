@@ -1,7 +1,7 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
 import serveApiDocs from "@serveApiDocs";
-import { IS_DEV_ENV, FRONTEND_DIST_DIR, FRONTEND_PUBLIC_DIR } from "@config";
+import { FRONTEND_DIST_DIR, FRONTEND_PUBLIC_DIR, IS_DEV_ENV } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";
@@ -12,8 +12,11 @@ import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 import cors from "cors";
 import * as path from "path";
+import { setDeploymentId } from "@shared/config/sharedConfig";
+import { getDeploymentId } from "frontend/src/config";
 
 export const createExpressServer = () => {
+  setDeploymentId(getDeploymentId());
   const app = express();
   if (IS_DEV_ENV) {
     app.use((req, res, next) => {
@@ -22,15 +25,7 @@ export const createExpressServer = () => {
     });
   }
 
-  console.log("enable cors");
-
   app.use(cors());
-
-  const rateLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500, // Limit each IP to 100 requests per windowMs
-  });
-  app.use(rateLimiter);
 
   app.use(express.json());
   app.use(express.static(FRONTEND_DIST_DIR));
@@ -52,14 +47,25 @@ export const createExpressServer = () => {
     apiV3Router
   );
 
+  const rateLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 500, // Limit each IP to 100 requests per windowMs
+  });
   createExpressEndpoints(
     privateRestContracts,
     createPrivateRestRouter(),
     apiV3Router,
     {
-      globalMiddleware: [jwtVerifyTokenMiddleware, addUserSubMiddleware],
+      globalMiddleware: [
+        jwtVerifyTokenMiddleware,
+        addUserSubMiddleware,
+        rateLimiter,
+      ],
     }
   );
-
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.warn(err);
+    next(err);
+  });
   return app;
 };

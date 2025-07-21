@@ -1,7 +1,9 @@
 import React from "react";
-import { Project } from "@shared/domain/readModels/project/Project.ts";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails.ts";
 
-const AppSidebarDetails: React.FC<{ project: Project }> = ({ project }) => (
+const AppSidebarDetails: React.FC<{ project: ProjectDetails }> = ({
+  project,
+}) => (
   <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
     <h2 className="text-xl font-semibold text-slate-100 mb-4 border-b border-gray-700 pb-2">
       App Details
@@ -11,25 +13,20 @@ const AppSidebarDetails: React.FC<{ project: Project }> = ({ project }) => (
         <strong>Version:</strong> {project.version?.revision ?? "—"}
       </li>
       <li>
-        <strong>License:</strong> {project.license ?? "—"}
-      </li>
-      {/*<li>*/}
-      {/*  <strong>MCU:</strong>{" "}*/}
-      {/*  {(project as unknown as { devices: string[] }).devices?.join(", ") ?? "—"} // TODO*/}
-      {/*</li>*/}
-      <li>
-        <strong>Category:</strong> {project.category ?? "—"}
+        <strong>License:</strong>{" "}
+        {project.version.app_metadata.license_type ?? "—"}
       </li>
       <li>
-        <strong>Interpreter:</strong> {project.interpreter ?? "Native Binary"}
+        <strong>Badges:</strong>{" "}
+        {project.version.app_metadata.badges?.join(", ") ?? "—"}{" "}
       </li>
       <li>
-        <strong>Dependencies:</strong>{" "}
-        {
-          (project as unknown as { dependencies: string[] }).dependencies?.join(
-            ", "
-          ) ?? "No dependencies" /*TODO*/
-        }
+        <strong>Categories:</strong>{" "}
+        {project.version.app_metadata.categories?.join(",") ?? "—"}
+      </li>
+      <li>
+        <strong>Type:</strong>{" "}
+        {project.version.app_metadata.project_type ?? "app"}
       </li>
       <li>
         <strong>Downloads:</strong>{" "}
@@ -37,8 +34,9 @@ const AppSidebarDetails: React.FC<{ project: Project }> = ({ project }) => (
       </li>
       <li>
         <strong>Rating:</strong>{" "}
-        {(project as unknown as { rating: string[] }).rating ??
-          "4.8/5 (120 votes)"}
+        {
+          "4.8/5 (120 votes)" // TODO
+        }
       </li>
     </ul>
   </section>

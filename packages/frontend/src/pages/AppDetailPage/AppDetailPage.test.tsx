@@ -1,14 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@__test__";
+import {
+  dummyApps,
+  render,
+  screen,
+  tsRestClientWithApps,
+  waitFor,
+} from "@__test__";
 import AppDetailPage from "./AppDetailPage.tsx";
-import { tsRestClientWithApps } from "@__test__";
-import { dummyApps } from "@__test__";
 
 describe(
   "AppDetailPage",
   () => {
     it("renders app details when found", async () => {
-      const app = dummyApps[0]!;
+      const app = dummyApps[0]!.summary;
       render(
         <AppDetailPage
           tsRestClient={tsRestClientWithApps(dummyApps)}
@@ -22,13 +26,15 @@ describe(
         app.name!
       );
       expect(await screen.findByText(app.description!)).toBeInTheDocument();
-      expect(screen.getAllByText(app.category!).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(app.categories![0]!).length).toBeGreaterThan(
+        0
+      );
       if (app.badges && app.badges.length > 0) {
         expect(screen.queryAllByText(app.badges[0]!).length).toBeGreaterThan(0);
       }
     });
     it("renders the app revision", async () => {
-      const app = dummyApps[0]!;
+      const app = dummyApps[0]!.summary;
       render(
         <AppDetailPage
           tsRestClient={tsRestClientWithApps(dummyApps)}

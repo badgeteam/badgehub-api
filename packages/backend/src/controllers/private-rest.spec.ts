@@ -6,7 +6,7 @@ import { isInDebugMode } from "@util/debug";
 import { stripDatedData } from "@db/sqlHelpers/dbDates";
 import { decodeJwt } from "jose";
 import { Version } from "@shared/domain/readModels/project/Version";
-import { Project } from "@shared/domain/readModels/project/Project";
+import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails";
 
 const USER1_TOKEN =
   "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJnUGI4VjZ5dHZTMkpFakdjVDFlLWdTWVRPbFBTNm04Xzkta210cHFDMktVIn0.eyJleHAiOjE3NDgyOTA4NzMsImlhdCI6MTc0ODI5MDgxMywiYXV0aF90aW1lIjoxNzQ4MjkwODEzLCJqdGkiOiI1NmIzOTUwNS0yYjJmLTQ1MDgtOTY0NC03NTFmN2FjMzI0ZGQiLCJpc3MiOiJodHRwczovL2tleWNsb2FrLnAxbS5ubC9yZWFsbXMvbWFzdGVyIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImQ4MDc1MzM3LTBmMTAtNGNkYi04YjQ4LWJlMWRjMTg3NDdhMyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImJhZGdlaHViIiwic2Vzc2lvbl9zdGF0ZSI6IjIzMWFkYmRkLTE1NDctNDRjYi1hNjI3LTI2MjJmNzI2YzcxMCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cHM6Ly9iYWRnZWh1Yi5wMW0ubmwvIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiMjMxYWRiZGQtMTU0Ny00NGNiLWE2MjctMjYyMmY3MjZjNzEwIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoidGVzdCB1c2VyIDEgVGVzdGVyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidGVzdHVzZXIxIiwiZ2l2ZW5fbmFtZSI6InRlc3QgdXNlciAxIiwiZmFtaWx5X25hbWUiOiJUZXN0ZXIiLCJlbWFpbCI6ImZkdXZpdmllcit0ZXN0dXNlcjFAZ21haWwuY29tIn0.h9R3nkDZ4C1LMAHKY-iBr24vW2tZMDwNgkA-6S1GQ2KNdnCjaOnROGB0bOCD5vaJO09YqItduM2gBD-oWGX0WuX57p5r5h3lCJi12NEV1YUdc0Z_pqB5ZvmXnJcquejqnnIiia8utcsOUQOsvhDZI4E0afyNl4J0JzcTwwIeOsP_oxkaFCb1aIMOVEIVwyOQYUfIcXsyFNJm356zgMQbD3WNI3eNCi2bDs-KfKaasCdgrMYjEM7gfXetgkJVbgT0v0AXyo9pzVGFDjzNPkoNNo0P5in8AA0qh2C3F-EXFsj3Xmagb_K1un94q4wW4IEMUqbhHbuR2bdePzg6219-Kg";
@@ -148,49 +148,37 @@ describe("Authenticated API Routes", () => {
           const versionInResponse = getRes.body.version as Version;
           expect({
             ...stripDatedData(getRes.body),
-            version: { ...stripDatedData(versionInResponse), files: undefined },
-          }).toMatchObject({
-            allow_team_fixes: false,
-            category: "Uncategorised",
-            description: "Test App Description",
-            git: "https://github.com",
-            git_commit_id: null,
-            interpreter: null,
-            license: null,
-            name: "Test App Name",
-            published_at: null,
-            revision: 0,
-            slug: dynamicTestAppId,
+            slug: undefined,
             version: {
-              app_metadata: {
-                author: null,
-                category: null,
-                description: "Test App Description",
-                file_mappings: null,
-                file_mappings_overrides: null,
-                icon: null,
-                interpreter: null,
-                is_hidden: null,
-                is_library: null,
-                license_file: null,
-                main_executable: null,
-                main_executable_overrides: null,
-                name: "Test App Name",
-                semantic_version: null,
-              },
-              app_metadata_json_id: expect.any(Number),
-              download_count: "0",
+              ...stripDatedData(versionInResponse),
               files: undefined,
-              git_commit_id: null,
-              id: expect.any(Number),
-              project_slug: dynamicTestAppId,
-              published_at: null,
-              revision: 0,
-              semantic_version: null,
-              size_of_zip: null,
-              zip: null,
+              id: undefined,
+              project_slug: undefined,
             },
-          });
+          }).toMatchInlineSnapshot(`
+            {
+              "draft_revision": 0,
+              "git": "https://github.com",
+              "idp_user_id": "d8075337-0f10-4cdb-8b48-be1dc18747a3",
+              "latest_revision": null,
+              "slug": undefined,
+              "version": {
+                "app_metadata": {
+                  "description": "Test App Description",
+                  "name": "Test App Name",
+                },
+                "download_count": "0",
+                "files": undefined,
+                "git_commit_id": null,
+                "id": undefined,
+                "project_slug": undefined,
+                "published_at": null,
+                "revision": 0,
+                "size_of_zip": null,
+                "zip": null,
+              },
+            }
+          `);
 
           expect(versionInResponse.files.length).toEqual(1);
           expect(versionInResponse.files[0]).toMatchObject({
@@ -231,17 +219,19 @@ describe("Authenticated API Routes", () => {
         test("publish version and change metadata", async () => {
           // Create a new project
           const publishTestAppId = `test_app_publish_${Date.now()}`;
+          const appName = "Test App Name";
           const postRes = await request(app)
             .post(`/api/v3/projects/${publishTestAppId}`)
             .auth(USER1_TOKEN, { type: "bearer" })
             .send();
           expect(postRes.statusCode).toBe(204);
 
-          // Add metadata to the project
+          // Add metadata and name to the project
           const updateAppRes = await request(app)
             .patch(`/api/v3/projects/${publishTestAppId}/draft/metadata`)
             .auth(USER1_TOKEN, { type: "bearer" })
             .send({
+              name: appName,
               description: "Test App Description Before Publish",
             });
           expect(updateAppRes.status).toBe(204);
@@ -251,7 +241,8 @@ describe("Authenticated API Routes", () => {
             .get(`/api/v3/projects/${publishTestAppId}/draft`)
             .auth(USER1_TOKEN, { type: "bearer" });
           expect(getRes1.statusCode).toBe(200);
-          expect(getRes1.body.version.app_metadata.description).toBe(
+          const originalAppMetadata = getRes1.body.version.app_metadata;
+          expect(originalAppMetadata.description).toBe(
             "Test App Description Before Publish"
           );
 
@@ -266,6 +257,7 @@ describe("Authenticated API Routes", () => {
             .patch(`/api/v3/projects/${publishTestAppId}/draft/metadata`)
             .auth(USER1_TOKEN, { type: "bearer" })
             .send({
+              ...originalAppMetadata,
               description: "Test App Description After Publish",
             });
           expect(updateAppRes2.status).toBe(204);
@@ -275,7 +267,7 @@ describe("Authenticated API Routes", () => {
             .get(`/api/v3/projects/${publishTestAppId}/draft`)
             .auth(USER1_TOKEN, { type: "bearer" });
           expect(getDraftRes.statusCode).toBe(200);
-          expect(getDraftRes.body.name).toBe(publishTestAppId);
+          expect(getDraftRes.body.version.app_metadata.name).toBe(appName);
           expect(getDraftRes.body.version.app_metadata.description).toBe(
             "Test App Description After Publish"
           );
@@ -285,7 +277,7 @@ describe("Authenticated API Routes", () => {
             .get(`/api/v3/projects/${publishTestAppId}`)
             .auth(USER1_TOKEN, { type: "bearer" });
           expect(getLatestRes.statusCode).toBe(200);
-          expect(getLatestRes.body.name).toBe(publishTestAppId);
+          expect(getLatestRes.body.version.app_metadata.name).toBe(appName);
           expect(getLatestRes.body.version.app_metadata.description).toBe(
             "Test App Description Before Publish"
           );
@@ -299,7 +291,9 @@ describe("Authenticated API Routes", () => {
             .auth(USER1_TOKEN, { type: "bearer" });
           expect(res.statusCode).toBe(200);
           expect(
-            res.body.find((project: Project) => project.slug === user1AppId)
+            res.body.find(
+              (project: ProjectDetails) => project.slug === user1AppId
+            )
           ).toBeDefined();
         });
       });

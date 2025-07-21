@@ -1,12 +1,11 @@
 import { UserRelation } from "./DBUser";
 import { DBDatedData } from "./DBDatedData";
-import { ProjectSlug } from "@shared/domain/readModels/project/Project";
+import { ProjectSlug } from "@shared/domain/readModels/project/ProjectDetails";
 import { VersionRelation } from "@shared/dbModels/project/DBVersion";
 
-interface DBProjectBase {
+export interface DBProjectBase {
   slug: ProjectSlug; // The directory name of this project
   git?: string; // repository url
-  allow_team_fixes?: boolean;
 }
 
 type ProjectToVersionRelation = VersionRelation<

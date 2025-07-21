@@ -1,19 +1,20 @@
 import React from "react";
-import { CategorySlug } from "@shared/domain/readModels/project/Category.ts";
 import { BadgeSlug } from "@shared/domain/readModels/Badge.ts";
 import { CategorySelector } from "@sharedComponents/OptionSelector/CategorySelector.tsx";
 import { BadgeSelector } from "@sharedComponents/OptionSelector/BadgeSelector.tsx";
 import { OptionSelectorWithTitle } from "@sharedComponents/OptionSelector/OptionSelectorWithTitle.tsx";
+import { CategoryName } from "@shared/domain/readModels/project/Category.ts";
 
 interface FiltersProps {
   badge: BadgeSlug | undefined;
-  category: CategorySlug | undefined;
+  category: CategoryName | undefined;
   sortBy: string | undefined;
   onBadgeChange: (value: BadgeSlug | undefined) => void;
-  onCategoryChange: (value: CategorySlug | undefined) => void;
+  onCategoryChange: (value: CategoryName | undefined) => void;
   onSortByChange: (value: string | undefined) => void;
   onResetFilters: () => void;
 }
+
 const Filters: React.FC<FiltersProps> = ({
   badge,
   category,
