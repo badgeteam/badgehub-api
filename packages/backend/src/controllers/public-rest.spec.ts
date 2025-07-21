@@ -204,15 +204,12 @@ describe(
 
       expect(restVersion).toMatchInlineSnapshot(`
         {
-          "created_at": "2024-05-22T14:01:16.975Z",
           "download_count": "0",
           "git_commit_id": null,
-          "id": 1,
           "project_slug": "codecraft",
           "published_at": "2024-05-23T14:01:16.975Z",
           "revision": 0,
           "size_of_zip": null,
-          "updated_at": "2024-05-22T14:01:16.975Z",
           "zip": null,
         }
       `);
@@ -306,15 +303,12 @@ describe(
 
       expect(restVersion).toMatchInlineSnapshot(`
         {
-          "created_at": "2024-05-22T14:01:16.975Z",
           "download_count": "0",
           "git_commit_id": null,
-          "id": 1,
           "project_slug": "codecraft",
           "published_at": "2024-05-23T14:01:16.975Z",
           "revision": 0,
           "size_of_zip": null,
-          "updated_at": "2024-05-22T14:01:16.975Z",
           "zip": null,
         }
       `);

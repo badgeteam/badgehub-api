@@ -22,7 +22,11 @@ import {
   ProjectQueryResponse,
   projectQueryResponseToReadModel,
 } from "@db/sqlHelpers/projectQuery";
-import { convertDatedData, timestampTZToDate } from "@db/sqlHelpers/dbDates";
+import {
+  convertDatedData,
+  stripDatedData,
+  timestampTZToDate,
+} from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@shared/dbModels/project/DBVersion";
 
 import {
@@ -333,9 +337,11 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     if (!dbVersion) {
       return undefined;
     }
+
+    const { id, ...dbVersionWithoutId } = dbVersion;
     return {
-      ...convertDatedData(dbVersion),
-      files: await this._getFilesMetadataForVersion(dbVersion.id),
+      ...stripDatedData(dbVersionWithoutId),
+      files: await this._getFilesMetadataForVersion(id),
       published_at: timestampTZToDate(dbVersion.published_at),
     };
   }

@@ -15,7 +15,7 @@ export interface VersionRelation {
   version: Version;
 }
 
-export interface Version extends DatedData {
+export interface Version {
   revision: RevisionNumber;
   zip?: string;
   size_of_zip?: number;
@@ -27,7 +27,7 @@ export interface Version extends DatedData {
   project_slug: ProjectDetails["slug"];
 }
 
-export const versionSchema = datedDataSchema.extend({
+export const versionSchema = z.object({
   revision: z.number(),
   zip: z.string().optional(),
   size_of_zip: z.number().optional(),
