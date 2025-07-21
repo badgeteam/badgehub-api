@@ -2,7 +2,10 @@
 // This is only put into the database for making interesting read queries possible.
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
-import { CategoryName, categoryNameSchema } from "@shared/domain/readModels/project/Category";
+import {
+  CategoryName,
+  categoryNameSchema,
+} from "@shared/domain/readModels/project/Category";
 
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { z } from "zod/v4";
@@ -22,17 +25,6 @@ export interface AppMetadataJSON {
   variant_map?: VariantMap;
 }
 
-export type VariantMap = Record<
-  BadgeSlug,
-  { revision?: number; json_path?: string }
->;
-
-export type IconMap = {
-  "8x8"?: string;
-  "16x16"?: string;
-  "32x32"?: string;
-  "64x64"?: string;
-};
 export const iconMapSchema = z
   .object({
     "8x8": z.string().optional(),
@@ -45,27 +37,26 @@ export const iconMapSchema = z
     Badge implementations can use these icons but they are not required to. For example if a badge's launcher an icon as an icon.py file, this file can still just be uploaded and the path could be indicated as custom property in the variant json.".`
   );
 
+export type IconMap = {
+  "8x8"?: string;
+  "16x16"?: string;
+  "32x32"?: string;
+  "64x64"?: string;
+};
 __tsCheckSame<IconMap, IconMap, z.infer<typeof iconMapSchema>>(true);
 
-const variantMapSchema = z.record(
-  badgeSlugSchema,
-  z
-    .object({
-      revision: z.coerce.number().optional()
-        .describe(`Revision of the project for this variant. If it is not present, then the revision of the project should be assumed.
-Warning: if it is present, then badgehub clients on badges will not update the app unless the this revision number is increased.`),
-      json_path: z
-        .string()
-        .optional()
-        .describe("Path to the json file for this variant"),
-    })
-    .describe(
-      `Map from badge slug to variant information, allows knowing if a variant is updated and where to find the json file for it.
+const variantMapSchema = z
+  .record(
+    badgeSlugSchema,
+    z.string().optional().describe("Path to the json file for this variant")
+  )
+  .describe(
+    `Map from badge slug to variant information, allows knowing if a variant is updated and where to find the json file for it.
 This is used to determine if a variant is updated and where to find the json file for it.
 The variant with the highest revision number determines the latest revision of the project.`
-    )
-);
+  );
 
+export type VariantMap = Record<BadgeSlug, string | undefined>;
 __tsCheckSame<VariantMap, VariantMap, z.infer<typeof variantMapSchema>>(true);
 
 export const appMetadataJSONSchema = z.object({
