@@ -3,7 +3,6 @@ import moment from "moment";
 import { DBProject } from "@shared/dbModels/project/DBProject";
 import { DBVersion } from "@shared/dbModels/project/DBVersion";
 import sql, { raw } from "sql-template-tag";
-import { extractDatedDataConverted } from "@db/sqlHelpers/dbDates";
 import { LatestOrDraftAlias } from "@shared/domain/readModels/project/Version";
 
 export function getBaseSelectProjectQuery(

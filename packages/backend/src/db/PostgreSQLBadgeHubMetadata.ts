@@ -1,15 +1,14 @@
 // noinspection SqlResolve
 
 import {
+  ProjectCore,
   ProjectDetails,
   ProjectSlug,
   ProjectSummary,
-  ProjectCore,
 } from "@shared/domain/readModels/project/ProjectDetails";
 import { User } from "@shared/domain/readModels/project/User";
 import {
   LatestOrDraftAlias,
-  type LatestVersionAlias,
   RevisionNumberOrAlias,
   Version,
 } from "@shared/domain/readModels/project/Version";
@@ -23,11 +22,7 @@ import {
   ProjectQueryResponse,
   projectQueryResponseToReadModel,
 } from "@db/sqlHelpers/projectQuery";
-import {
-  convertDatedData,
-  stripDatedData,
-  timestampTZToDate,
-} from "@db/sqlHelpers/dbDates";
+import { convertDatedData, timestampTZToDate } from "@db/sqlHelpers/dbDates";
 import { DBVersion } from "@shared/dbModels/project/DBVersion";
 
 import {

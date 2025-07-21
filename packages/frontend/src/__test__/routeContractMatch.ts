@@ -1,5 +1,3 @@
-import { privateRestContracts } from "@shared/contracts/privateRestContracts.ts";
-import { publicRestContracts } from "@shared/contracts/publicRestContracts.ts";
 import { ApiFetcherArgs } from "@ts-rest/core";
 import { tsRestApiContracts } from "@shared/contracts/restContracts.ts";
 

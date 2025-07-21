@@ -1,4 +1,5 @@
 import express, { NextFunction } from "express";
+
 export interface JwtError extends Error {
   status: number;
   message: string;

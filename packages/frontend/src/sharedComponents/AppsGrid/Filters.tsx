@@ -14,6 +14,7 @@ interface FiltersProps {
   onSortByChange: (value: string | undefined) => void;
   onResetFilters: () => void;
 }
+
 const Filters: React.FC<FiltersProps> = ({
   badge,
   category,

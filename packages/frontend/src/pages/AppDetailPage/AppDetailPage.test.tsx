@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { render, screen, waitFor } from "@__test__";
+import {
+  dummyApps,
+  render,
+  screen,
+  tsRestClientWithApps,
+  waitFor,
+} from "@__test__";
 import AppDetailPage from "./AppDetailPage.tsx";
-import { tsRestClientWithApps } from "@__test__";
-import { dummyApps } from "@__test__";
 
 describe(
   "AppDetailPage",

@@ -1,7 +1,7 @@
 import express from "express";
 import { pinoHttp } from "pino-http";
 import serveApiDocs from "@serveApiDocs";
-import { IS_DEV_ENV, FRONTEND_DIST_DIR, FRONTEND_PUBLIC_DIR } from "@config";
+import { FRONTEND_DIST_DIR, FRONTEND_PUBLIC_DIR, IS_DEV_ENV } from "@config";
 import rateLimit from "express-rate-limit";
 import { createExpressEndpoints } from "@ts-rest/express";
 import { publicRestContracts } from "@shared/contracts/publicRestContracts";

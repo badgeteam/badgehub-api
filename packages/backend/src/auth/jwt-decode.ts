@@ -2,6 +2,7 @@ import { ErrorType, NotAuthenticatedError } from "@error";
 import { decodeJwt } from "jose";
 import { NextFunction, Request, Response } from "express";
 import { User } from "@shared/domain/readModels/project/User";
+
 export type UserDataInRequest = Pick<User, "idp_user_id">;
 
 export type RequestWithUser = {

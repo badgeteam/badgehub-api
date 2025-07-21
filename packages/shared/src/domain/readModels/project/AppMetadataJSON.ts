@@ -2,10 +2,7 @@
 // This is only put into the database for making interesting read queries possible.
 // These contents should never be updated directly, but instead the metadata.json file should be modified and then read out again in order to fill the fields here.
 // Metadata for a published version cannot be edited, except by republishing this version which would overwrite the old version.
-import {
-  CategoryName,
-  categoryNameSchema,
-} from "@shared/domain/readModels/project/Category";
+import { CategoryName, categoryNameSchema } from "@shared/domain/readModels/project/Category";
 
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { z } from "zod/v4";

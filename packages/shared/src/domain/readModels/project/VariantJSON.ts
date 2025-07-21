@@ -43,4 +43,6 @@ export type VariantJSON = {
   assets?: AssetEntry[];
 };
 
-__tsCheckSame<VariantJSON, VariantJSON, z.infer<typeof variantJSONSchema>>(true)
+__tsCheckSame<VariantJSON, VariantJSON, z.infer<typeof variantJSONSchema>>(
+  true
+);
