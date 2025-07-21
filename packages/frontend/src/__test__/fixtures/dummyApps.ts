@@ -172,8 +172,6 @@ const toDetails = (dummyApp: DummyData): ProjectDetails => {
       files: [],
       project_slug: slug,
       published_at,
-      created_at: published_at,
-      updated_at: published_at,
       app_metadata: {
         ...app_metadata,
         license_type: "MIT",

@@ -26,11 +26,6 @@ const AppDetailHeader: React.FC<{ project: ProjectDetails }> = ({
             {project.version?.published_at
               ? new Date(project.version?.published_at).toLocaleDateString()
               : "—"}
-            {" | "}
-            Last Updated:{" "}
-            {project.version?.updated_at
-              ? new Date(project.version?.updated_at).toLocaleDateString()
-              : "—"}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-4 flex-shrink-0 flex flex-col space-y-2 items-stretch">
