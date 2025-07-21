@@ -13,7 +13,7 @@ const AppEditFilePreview: React.FC<{
   tsRestClient: typeof defaultTsRestClient; // Replace with actual type if available
   project: ProjectDetails;
   onSetIcon?: (filePath: string) => void;
-  iconFilePath?: string | null;
+  iconFilePath?: string;
   onDeleteFile?: (filePath: string) => void;
 }> = ({ project, onSetIcon, iconFilePath, onDeleteFile }) => {
   const files = project?.version?.files ?? [];

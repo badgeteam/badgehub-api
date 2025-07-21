@@ -37,7 +37,8 @@ const AppEditFileUpload: React.FC<{
       }
       setSuccess("File(s) uploaded successfully.");
       onUploadSuccess();
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error(err);
       setError("Failed to upload file(s).");
     } finally {
       setUploading(false);
