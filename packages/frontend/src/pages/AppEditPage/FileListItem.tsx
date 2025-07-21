@@ -21,6 +21,7 @@ interface FileListItemProps {
   onSetIcon?: (size: IconSize, filePath: string) => void;
   onDeleteFile?: (filePath: string) => void;
 }
+const bigIconSize = "64x64";
 
 /**
  * Renders a single row in the file list.
@@ -71,9 +72,11 @@ export const FileListItem: React.FC<FileListItemProps> = ({
               ? "bg-emerald-600 text-white cursor-default"
               : "bg-gray-700 text-slate-300 hover:bg-emerald-700 hover:text-white"
           }`}
-          onClick={() => onSetIcon("64x64", file.full_path)}
+          onClick={() => onSetIcon(bigIconSize, file.full_path)}
           title={
-            isCurrentIcon ? "This file is the current icon" : "Set as icon"
+            isCurrentIcon
+              ? "This file is the current icon"
+              : "Set as " + bigIconSize + " icon"
           }
           disabled={isCurrentIcon}
         >
