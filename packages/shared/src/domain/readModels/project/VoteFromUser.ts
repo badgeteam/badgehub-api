@@ -1,7 +1,7 @@
 import { UserRelation, userSchema } from "./User";
 import { DatedData, datedDataSchema } from "./DatedData";
 import { z } from "zod/v4";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export interface Vote {
   type: "up" | "down" | "pig";
@@ -16,6 +16,6 @@ export const voteFromUserSchema = datedDataSchema.extend({
   user: userSchema,
 });
 
-type Checks = [
-  CheckSame<VoteFromUser, VoteFromUser, z.infer<typeof voteFromUserSchema>>,
-];
+__tsCheckSame<VoteFromUser, VoteFromUser, z.infer<typeof voteFromUserSchema>>(
+  true
+);

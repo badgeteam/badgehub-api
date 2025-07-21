@@ -4,7 +4,7 @@ import {
   projectSchema,
   projectWithoutVersionSchema,
 } from "@shared/domain/readModels/project/Project";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import {
   CreateProjectProps,
   createProjectPropsSchema,
@@ -20,14 +20,11 @@ const createProjectBodySchema = createProjectPropsSchema
   .describe("Schema request body for creating or updating a project");
 type CreateProjectBody = Omit<CreateProjectProps, "slug" | "idp_user_id">;
 
-// noinspection JSUnusedLocalSymbols
-type Checks = [
-  CheckSame<
-    CreateProjectBody,
-    CreateProjectBody,
-    z.infer<typeof createProjectBodySchema>
-  >,
-];
+__tsCheckSame<
+  CreateProjectBody,
+  CreateProjectBody,
+  z.infer<typeof createProjectBodySchema>
+>(true);
 
 const appMetadataPartialSchema = writeAppMetadataJSONSchema.partial();
 const errorResponseSchema = z.object({reason: z.string()})

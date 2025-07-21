@@ -1,4 +1,4 @@
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { z } from "zod/v4";
 
 export interface DatedData {
@@ -11,6 +11,4 @@ export const datedDataSchema = z.object({
   updated_at: z.date(),
 });
 
-type Checks = [
-  CheckSame<DatedData, DatedData, z.infer<typeof datedDataSchema>>,
-];
+__tsCheckSame<DatedData, DatedData, z.infer<typeof datedDataSchema>>(true);

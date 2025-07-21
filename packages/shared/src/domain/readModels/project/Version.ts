@@ -3,7 +3,7 @@ import { DatedData, datedDataSchema } from "./DatedData";
 import { FileMetadata, fileMetadataSchema } from "./FileMetadata";
 import { Project } from "@shared/domain/readModels/project/Project";
 import { z } from "zod/v4";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export type LatestVersionAlias = "latest";
 type DraftVersionAlias = "draft";
@@ -41,4 +41,4 @@ export const versionSchema = datedDataSchema.extend({
   project_slug: z.string(), // Project slug
 });
 
-type Checks = [CheckSame<Version, Version, z.infer<typeof versionSchema>>];
+__tsCheckSame<Version, Version, z.infer<typeof versionSchema>>(true);

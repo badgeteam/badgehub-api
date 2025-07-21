@@ -1,4 +1,4 @@
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { DatedData, datedDataSchema } from "./DatedData";
 import { z } from "zod/v4";
 
@@ -25,6 +25,6 @@ export const fileMetadataSchema = datedDataSchema.extend({
   full_path: z.string(), // full path of file with filename and extensions (dir+'/'+name+'.'+ext)
 });
 
-type Checks = [
-  CheckSame<FileMetadata, FileMetadata, z.infer<typeof fileMetadataSchema>>,
-];
+__tsCheckSame<FileMetadata, FileMetadata, z.infer<typeof fileMetadataSchema>>(
+  true
+);

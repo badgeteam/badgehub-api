@@ -1,6 +1,6 @@
 import { DBInsertProject } from "@shared/dbModels/project/DBProject";
 import { z } from "zod/v4";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export interface CreateProjectProps
   extends Pick<
@@ -15,10 +15,8 @@ export const createProjectPropsSchema = z.object({
   idp_user_id: z.string(),
 });
 
-type Checks = [
-  CheckSame<
-    CreateProjectProps,
-    CreateProjectProps,
-    z.infer<typeof createProjectPropsSchema>
-  >,
-];
+__tsCheckSame<
+  CreateProjectProps,
+  CreateProjectProps,
+  z.infer<typeof createProjectPropsSchema>
+>(true);

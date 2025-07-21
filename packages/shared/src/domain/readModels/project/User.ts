@@ -1,6 +1,6 @@
 import { DatedData, datedDataSchema } from "./DatedData";
 import { z } from "zod/v4";
-import { CheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 
 export interface UserRelation {
   user: User;
@@ -14,4 +14,4 @@ export const userSchema = datedDataSchema.extend({
   idp_user_id: z.string(),
 });
 
-type Checks = [CheckSame<User, User, z.infer<typeof userSchema>>];
+__tsCheckSame<User, User, z.infer<typeof userSchema>>(true);
