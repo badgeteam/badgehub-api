@@ -1,5 +1,6 @@
 import { z } from "zod/v4";
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
+import { BadgeSlug, badgeSlugSchema } from "@shared/domain/readModels/Badge";
 
 export const variantJSONSchema = z.object({
   revision: z.coerce.number().int().positive().optional()
@@ -33,6 +34,12 @@ If the executable property is not present, then it can be guessed by the badge f
     .optional()
     .describe(`List of assets that are part of the variant, with optionally an indication of how the files should be mapped on the badge. 
 if the assets property is not present, then all project files should be considered part of the variant.`),
+  badges: z
+    .array(badgeSlugSchema)
+    .optional()
+    .describe(
+      "list of badges that that this variant is made for. This should be subset of the badges in the top level appmetadata.json and it should not overlap with any other variants."
+    ),
 });
 
 type AssetEntry = {
@@ -45,6 +52,7 @@ export type VariantJSON = {
   type?: string;
   executable?: string;
   assets?: AssetEntry[];
+  badges?: BadgeSlug[];
 };
 
 __tsCheckSame<VariantJSON, VariantJSON, z.infer<typeof variantJSONSchema>>(

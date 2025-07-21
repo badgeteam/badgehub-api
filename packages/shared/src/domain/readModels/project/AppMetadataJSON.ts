@@ -10,6 +10,10 @@ import {
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { z } from "zod/v4";
 import { BadgeSlug, badgeSlugSchema } from "@shared/domain/readModels/Badge";
+import {
+  VariantJSON,
+  variantJSONSchema,
+} from "@shared/domain/readModels/project/VariantJSON";
 
 export interface AppMetadataJSON {
   name?: string;
@@ -22,7 +26,7 @@ export interface AppMetadataJSON {
   license_file?: string;
   license_type?: string;
   badges?: BadgeSlug[];
-  variant_map?: VariantMap;
+  application?: VariantJSON[];
 }
 
 export const iconMapSchema = z
@@ -95,7 +99,12 @@ export const appMetadataJSONSchema = z.object({
     .array(badgeSlugSchema)
     .optional()
     .describe("list of badges that are compatible with this project."),
-  variant_map: variantMapSchema.optional(),
+  application: z
+    .array(variantJSONSchema)
+    .optional()
+    .describe(
+      "A list of application variants that allows specifying badge-specific properties of the project"
+    ),
 });
 
 __tsCheckSame<
