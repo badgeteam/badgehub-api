@@ -1,5 +1,5 @@
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v4";
+import { z } from "zod/v3";
 
 export interface DatedData {
   created_at: Date; // Creation date

@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod/v3";
 
 export const DEFAULT_CATEGORY_NAMES: string[] = [
   "Uncategorised",

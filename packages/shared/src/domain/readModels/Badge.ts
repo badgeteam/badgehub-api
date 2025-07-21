@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod/v3";
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
 import { getSharedConfig } from "@shared/config/sharedConfig";
 

@@ -8,7 +8,7 @@ import {
 } from "@shared/domain/readModels/project/Category";
 
 import { __tsCheckSame } from "@shared/zodUtils/zodTypeComparison";
-import { z } from "zod/v4";
+import { z } from "zod/v3";
 import { BadgeSlug, badgeSlugSchema } from "@shared/domain/readModels/Badge";
 import {
   VariantJSON,
