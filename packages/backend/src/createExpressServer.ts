@@ -12,11 +12,10 @@ import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 import cors from "cors";
 import * as path from "path";
-import { setDeploymentId } from "@shared/config/sharedConfig";
-import { getDeploymentId } from "frontend/src/config";
+import { BADGEHUB_P1M_NL, setDeploymentId } from "@shared/config/sharedConfig";
 
 export const createExpressServer = () => {
-  setDeploymentId(getDeploymentId());
+  setDeploymentId(BADGEHUB_P1M_NL); // TODO
   const app = express();
   if (IS_DEV_ENV) {
     app.use((req, res, next) => {
