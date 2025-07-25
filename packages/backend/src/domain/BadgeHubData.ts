@@ -20,12 +20,50 @@ import { calcSha256 } from "@util/sha256";
 import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
+import { LRUCache } from "lru-cache";
+
+type FileContext =
+  | { projectSlug: string; revision: number; filePath: string }
+  | { sha256: string };
 
 export class BadgeHubData {
+  private immutableFileCache: LRUCache<
+    string,
+    Uint8Array<ArrayBufferLike>,
+    FileContext
+  >;
+
   constructor(
     private badgeHubMetadata: BadgeHubMetadata,
     private badgeHubFiles: BadgeHubFiles
-  ) {}
+  ) {
+    const fileCacheOptions: LRUCache.Options<string, Uint8Array, FileContext> =
+      {
+        max: 1000,
+        // for use with tracking overall storage size
+        maxSize: 500_000_000, // 500MB
+        sizeCalculation: (value, key) => {
+          return value.length;
+        },
+        // how long to live in ms
+        ttl: 60_000 * 60 * 12, // 12 hours
+
+        // async method to use for cache.fetch(), for
+        // stale-while-revalidate type of behavior
+        fetchMethod: async (_key, _staleValue, { context }) => {
+          if ("sha256" in context) {
+            return this.badgeHubFiles.getFileContents(context.sha256);
+          }
+          return this._getFileContents(
+            context.projectSlug,
+            context.revision,
+            context.filePath
+          );
+        },
+      };
+
+    this.immutableFileCache = new LRUCache(fileCacheOptions);
+  }
 
   insertProject(
     project: CreateProjectProps,
@@ -65,6 +103,26 @@ export class BadgeHubData {
     versionRevision: RevisionNumberOrAlias,
     filePath: FileMetadata["name"]
   ): Promise<Uint8Array | undefined> {
+    if (typeof versionRevision === "number") {
+      return this.immutableFileCache.fetch(
+        projectSlug + "_rev" + versionRevision + ":" + filePath,
+        {
+          context: {
+            projectSlug,
+            revision: versionRevision,
+            filePath,
+          },
+        }
+      );
+    }
+    return await this._getFileContents(projectSlug, versionRevision, filePath);
+  }
+
+  private async _getFileContents(
+    projectSlug: string,
+    versionRevision: RevisionNumberOrAlias,
+    filePath: string
+  ) {
     const fileMetadata = await this.getFileMetadata(
       projectSlug,
       versionRevision,
@@ -77,8 +135,10 @@ export class BadgeHubData {
     return this.getFileContentsBySha256(sha256);
   }
 
-  getFileContentsBySha256(sha265: string): Promise<Uint8Array | undefined> {
-    return this.badgeHubFiles.getFileContents(sha265);
+  getFileContentsBySha256(sha256: string): Promise<Uint8Array | undefined> {
+    return this.immutableFileCache.fetch(sha256, {
+      context: { sha256 },
+    });
   }
 
   getVersionZipContents(

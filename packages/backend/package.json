@@ -38,6 +38,7 @@
     "express-rate-limit": "^7.5.0",
     "jose": "^5.9.6",
     "lodash": "^4.17.21",
+    "lru-cache": "^11.1.0",
     "moment": "^2.30.1",
     "multer": "^2.0.2",
     "openapi3-ts": "^2.0.2",

@@ -11,6 +11,7 @@ import { createPrivateRestRouter } from "@controllers/ts-rest/privateRestRouter"
 import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 import cors from "cors";
+import * as path from "path";
 import { BADGEHUB_P1M_NL, setDeploymentId } from "@shared/config/sharedConfig";
 
 export const createExpressServer = () => {
@@ -28,6 +29,9 @@ export const createExpressServer = () => {
   app.use(express.json());
   app.use(express.static(FRONTEND_DIST_DIR));
   app.use(express.static(FRONTEND_PUBLIC_DIR));
+  app.use("/page", (req, res, next) => {
+    res.sendFile(path.join(FRONTEND_DIST_DIR, "index.html"));
+  });
 
   const pino = pinoHttp();
   app.use(pino);
