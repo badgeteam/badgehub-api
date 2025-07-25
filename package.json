@@ -13,7 +13,6 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "test": "npm run test --workspaces",
     "build": "npm run build --workspaces",
