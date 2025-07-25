@@ -72,7 +72,7 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
       );
       return ok(data);
     },
-    getProjectForRevision: async ({ params: { slug, revision } }) => {
+    getProjectForRevision: async ({ params: { slug, revision }, res }) => {
       const details = await badgeHubData.getProject(slug, revision);
       if (!details) {
         return nok(
@@ -80,6 +80,8 @@ const createProjectRouter = (badgeHubData: BadgeHubData) => {
           `No public app with slug [${slug}] and revision [${revision}] found`
         );
       }
+      // Enable public caching for immutable revisioned files (1 year)
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
       return ok(details);
     },
   };
