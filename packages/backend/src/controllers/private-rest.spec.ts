@@ -150,7 +150,6 @@ describe("Authenticated API Routes", () => {
             ...stripDatedData(getRes.body),
             slug: undefined,
             version: {
-              ...stripDatedData(versionInResponse),
               files: undefined,
               id: undefined,
               project_slug: undefined,
