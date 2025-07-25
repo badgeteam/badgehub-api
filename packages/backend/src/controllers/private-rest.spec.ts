@@ -146,32 +146,32 @@ describe("Authenticated API Routes", () => {
           expect(getRes.statusCode).toBe(200);
 
           const versionInResponse = getRes.body.version as Version;
-          expect({
-            ...stripDatedData(getRes.body),
-            slug: undefined,
+          expect(getRes.body).toMatchInlineSnapshot({
+            updated_at: expect.any(String),
+            created_at: expect.any(String),
+            slug: expect.any(String),
             version: {
-              ...stripDatedData(versionInResponse),
-              files: undefined,
-              id: undefined,
-              project_slug: undefined,
+              files: expect.any(Array),
+              project_slug: expect.any(String),
             },
-          }).toMatchInlineSnapshot(`
+          }, `
             {
+              "created_at": Any<String>,
               "draft_revision": 0,
               "git": "https://github.com",
               "idp_user_id": "d8075337-0f10-4cdb-8b48-be1dc18747a3",
               "latest_revision": null,
-              "slug": undefined,
+              "slug": Any<String>,
+              "updated_at": Any<String>,
               "version": {
                 "app_metadata": {
                   "description": "Test App Description",
                   "name": "Test App Name",
                 },
                 "download_count": "0",
-                "files": undefined,
+                "files": Any<Array>,
                 "git_commit_id": null,
-                "id": undefined,
-                "project_slug": undefined,
+                "project_slug": Any<String>,
                 "published_at": null,
                 "revision": 0,
                 "size_of_zip": null,

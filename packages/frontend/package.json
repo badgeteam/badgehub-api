@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "mkdir -p dist && cp index-indirect-dev.html dist/index.html && vite",
-    "build": "tsc -b && vite build",
+    "check:ts": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run"
