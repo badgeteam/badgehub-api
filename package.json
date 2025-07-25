@@ -17,6 +17,7 @@
   "scripts": {
     "test": "npm run test --workspaces",
     "build": "npm run build --workspaces",
+    "check:ts": "npm run check:ts --workspaces",
     "start": "npm run start --workspace=packages/backend",
     "dev": "concurrently -k -c 'auto' 'npm:dev:*'",
     "dev:frontend": "npm run dev --workspace=packages/frontend",
