@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import type { CoverageOptions } from "vitest/node";
 import * as path from "node:path";
 import { isInDebugMode } from "./src/__test__/isInDebugMode";
+import { config } from "dotenv";
 
 const coverageConfig: CoverageOptions = {
   reporter: ["text", "json-summary", "json"],
@@ -21,6 +22,9 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    env: {
+      ...config({ path: "../backend/.env.test" }).parsed,
+    },
     setupFiles: ["./src/setupTests.ts"],
     coverage: coverageConfig,
     testTimeout: isInDebugMode() ? 3600_000 : 5000,

@@ -1,7 +1,6 @@
 import { repopulateDB } from "@dev/populateDB";
 import { runMigrations } from "@db/migrations";
 import { exec } from "node:child_process";
-import { BADGEHUB_P1M_NL, setDeploymentId } from "@shared/config/sharedConfig";
 
 const overwriteMockupData = async () => {
   console.log("START overwriting mockup data...");
@@ -11,7 +10,6 @@ const overwriteMockupData = async () => {
 };
 
 async function runWithMigrationFirst() {
-  setDeploymentId(BADGEHUB_P1M_NL);
   console.log("Running migrations first...");
   await runMigrations();
   console.log("Running repopulateDB...");

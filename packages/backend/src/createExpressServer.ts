@@ -12,10 +12,23 @@ import { addUserSubMiddleware } from "@auth/jwt-decode";
 import { jwtVerifyTokenMiddleware } from "@auth/jwt-verify";
 import cors from "cors";
 import * as path from "path";
-import { BADGEHUB_P1M_NL, setDeploymentId } from "@shared/config/sharedConfig";
+import * as fs from "node:fs";
+import { getSharedConfig } from "@shared/config/sharedConfig";
+
+function getIndexHtmlContents() {
+  const original = fs.readFileSync(
+    path.join(FRONTEND_DIST_DIR, "index.html"),
+    // TODO replace indexHtmlContents
+    { encoding: "utf8" }
+  );
+  return original.replace(
+    `<!-- __SHARED_CONFIG_SCRIPT_PLACEHOLDER__ -->`,
+    `<script type="application/javascript">globalThis.__SHARED_CONFIG__ = ${JSON.stringify(getSharedConfig())};</script>
+`
+  );
+}
 
 export const createExpressServer = () => {
-  setDeploymentId(BADGEHUB_P1M_NL); // TODO
   const app = express();
   if (IS_DEV_ENV) {
     app.use((req, res, next) => {
@@ -27,11 +40,16 @@ export const createExpressServer = () => {
   app.use(cors());
 
   app.use(express.json());
+  const indexHtmlContents = getIndexHtmlContents();
+  // Handle requests for the root and /page routes by sending the main HTML file.
+  // This is crucial for Single Page Applications (SPAs) that use client-side routing.
+  app.get(["/", "/page", "/page/*"], (req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.send(indexHtmlContents);
+  });
+
   app.use(express.static(FRONTEND_DIST_DIR));
   app.use(express.static(FRONTEND_PUBLIC_DIR));
-  app.use("/page", (req, res, next) => {
-    res.sendFile(path.join(FRONTEND_DIST_DIR, "index.html"));
-  });
 
   const pino = pinoHttp();
   app.use(pino);

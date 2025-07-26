@@ -10,7 +10,7 @@ export const badgeSlugSchema = z
   .describe("badge slug");
 
 export function getBadgeSlugs(): BadgeSlug[] {
-  return Object.keys(getSharedConfig()!.badges);
+  return getSharedConfig().badges;
 }
 
 __tsCheckSame<BadgeSlug, BadgeSlug, z.infer<typeof badgeSlugSchema>>(true);

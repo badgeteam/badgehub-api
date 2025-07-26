@@ -1,19 +1,10 @@
 import { config } from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getAndAssertEnv, getSharedConfig } from "@shared/config/sharedConfig";
 
 config();
 export const EXPRESS_PORT = 8081;
-
-function getAndAssertEnv(envVarName: string) {
-  const envVar = process.env[envVarName];
-  if (envVar == null) {
-    throw new Error(
-      `Environment variable [${envVarName}] is not set and is required.`
-    );
-  }
-  return envVar;
-}
 
 export const POSTGRES_DB = getAndAssertEnv("POSTGRES_DB");
 console.log(`Using database: ${POSTGRES_DB}`);
@@ -34,3 +25,5 @@ export const FRONTEND_PUBLIC_DIR = path.resolve(
   __dirname,
   "../../frontend/public"
 );
+
+export const sharedConfig = getSharedConfig();

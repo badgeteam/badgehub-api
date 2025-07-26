@@ -24,7 +24,7 @@ export interface Version {
   app_metadata: AppMetadataJSON; // Changed! New property that has the content of the metadata.json file that is installed on the project.
   published_at?: Date;
   download_count: number;
-  project_slug: ProjectDetails["slug"];
+  project_slug?: ProjectDetails["slug"]; // TODO remove because has no value in http response, is more of an internal detail
 }
 
 export const versionSchema = z.object({
@@ -36,7 +36,7 @@ export const versionSchema = z.object({
   app_metadata: appMetadataJSONSchema,
   published_at: z.date().optional(),
   download_count: z.number(),
-  project_slug: z.string(), // Project slug
+  project_slug: z.string().optional(), // Project slug
 });
 
 __tsCheckSame<Version, Version, z.infer<typeof versionSchema>>(true);

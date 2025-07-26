@@ -9,9 +9,7 @@ export const BadgeSelector: React.FC<{
   noValueSetName: string;
 }> = ({ badge, onBadgeChange, noValueSetName }) => {
   const badges = getSharedConfig()?.badges;
-  const valueMap = Object.fromEntries(
-    Object.entries(badges || {}).map(([slug, badge]) => [slug, badge.slug])
-  );
+  const valueMap = Object.fromEntries(badges.map((slug) => [slug, slug]));
   return (
     <OptionSelectorWithTitle
       noValueSetName={noValueSetName}
