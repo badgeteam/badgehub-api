@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createSwaggerDoc } from "@createSwaggerDoc";
+
 const swaggerDoc = createSwaggerDoc();
 
 describe("createSwaggerDoc", () => {

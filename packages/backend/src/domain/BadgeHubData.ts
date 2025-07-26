@@ -21,7 +21,6 @@ import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
 import { LRUCache } from "lru-cache";
-import { number } from "zod";
 
 type FileContext =
   | { projectSlug: string; revision: number; filePath: string }

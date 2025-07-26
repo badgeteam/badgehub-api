@@ -1,5 +1,4 @@
 import { AppMetadataJSON, appMetadataJSONSchema } from "./AppMetadataJSON";
-import { DatedData, datedDataSchema } from "./DatedData";
 import { FileMetadata, fileMetadataSchema } from "./FileMetadata";
 import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails";
 import { z } from "zod/v3";

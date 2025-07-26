@@ -21,6 +21,7 @@ interface FileListItemProps {
   onSetIcon?: (size: IconSize, filePath: string) => void;
   onDeleteFile?: (filePath: string) => void;
 }
+
 const bigIconSize = "64x64";
 
 /**

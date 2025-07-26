@@ -3,7 +3,6 @@ import request from "supertest";
 import express from "express";
 import { createExpressServer } from "@createExpressServer";
 import { isInDebugMode } from "@util/debug";
-import { stripDatedData } from "@db/sqlHelpers/dbDates";
 import { decodeJwt } from "jose";
 import { Version } from "@shared/domain/readModels/project/Version";
 import { ProjectDetails } from "@shared/domain/readModels/project/ProjectDetails";
@@ -146,15 +145,17 @@ describe("Authenticated API Routes", () => {
           expect(getRes.statusCode).toBe(200);
 
           const versionInResponse = getRes.body.version as Version;
-          expect(getRes.body).toMatchInlineSnapshot({
-            updated_at: expect.any(String),
-            created_at: expect.any(String),
-            slug: expect.any(String),
-            version: {
-              files: expect.any(Array),
-              project_slug: expect.any(String),
+          expect(getRes.body).toMatchInlineSnapshot(
+            {
+              updated_at: expect.any(String),
+              created_at: expect.any(String),
+              slug: expect.any(String),
+              version: {
+                files: expect.any(Array),
+                project_slug: expect.any(String),
+              },
             },
-          }, `
+            `
             {
               "created_at": Any<String>,
               "draft_revision": 0,
@@ -178,7 +179,8 @@ describe("Authenticated API Routes", () => {
                 "zip": null,
               },
             }
-          `);
+          `
+          );
 
           expect(versionInResponse.files.length).toEqual(1);
           expect(versionInResponse.files[0]).toMatchObject({
