@@ -382,6 +382,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       pageLength?: number;
       badge?: BadgeSlug;
       category?: CategoryName;
+      search?: string;
       userId?: User["idp_user_id"];
     },
     revision?: LatestOrDraftAlias
@@ -411,6 +412,12 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       query = sql`${query}
       and p.slug =
       ${filter.projectSlug}`;
+    }
+
+    if (filter?.search) {
+      const matcher = `%${filter.search.toLowerCase()}%`;
+      query = sql`${query}
+                    and (v.app_metadata->>'name' ilike ${matcher} or v.app_metadata->>'description' ilike ${matcher} or p.slug like ${matcher})`;
     }
 
     if (filter?.userId !== undefined) {

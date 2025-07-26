@@ -15,6 +15,11 @@ export const getProjectsQuerySchema = z.object({
   pageLength: z.coerce.number().optional(),
   badge: badgeSlugSchema.optional(),
   category: categoryNameSchema.optional(),
+  projectSlug: z.string().optional(),
+  search: z
+    .string()
+    .optional()
+    .describe("allow a text search over the apps' slug, name and descriptions"),
 });
 
 export const publicProjectContracts = c.router({

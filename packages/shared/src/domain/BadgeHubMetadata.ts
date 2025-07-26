@@ -57,6 +57,7 @@ export interface BadgeHubMetadata {
       badge?: BadgeSlug;
       category?: CategoryName;
       user?: User["idp_user_id"];
+      search?: string;
     },
     version?: LatestOrDraftAlias
   ): Promise<ProjectSummary[]>;

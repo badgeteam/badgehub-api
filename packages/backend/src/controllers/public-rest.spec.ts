@@ -90,6 +90,28 @@ describe(
       ).toBeDefined();
     });
 
+    test("GET /api/v3/projects with search query filter searching for name", async () => {
+      const res = await request(app).get("/api/v3/projects?search=oDecrafTE");
+      expect(res.statusCode).toBe(200);
+      const result: ProjectSummary[] = res.body;
+      expect(result.length).toBe(1);
+      expect(result[0]!.slug).toEqual("codecrafter");
+    });
+
+    test("GET /api/v3/projects with search query filter searching for description", async () => {
+      const res = await request(app).get(
+        "/api/v3/projects?search=" + encodeURIComponent("interesting things")
+      );
+      expect(res.statusCode).toBe(200);
+      const result: ProjectSummary[] = res.body;
+      expect(result.length).toBeGreaterThanOrEqual(1);
+      expect(
+        result.every((app: ProjectSummary) =>
+          app.description?.includes("interesting things")
+        )
+      ).toBe(true);
+    });
+
     test("GET /api/v3/projects with device and category filters", async () => {
       const res = await request(app).get(
         "/api/v3/projects?badge=troopers23&category=Silly"

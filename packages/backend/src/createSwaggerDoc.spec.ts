@@ -132,6 +132,21 @@ describe("createSwaggerDoc", () => {
                     "type": "string",
                   },
                 },
+                {
+                  "in": "query",
+                  "name": "projectSlug",
+                  "schema": {
+                    "type": "string",
+                  },
+                },
+                {
+                  "description": "allow a text search over the apps' slug, name and descriptions",
+                  "in": "query",
+                  "name": "search",
+                  "schema": {
+                    "type": "string",
+                  },
+                },
               ],
               "responses": {
                 "200": {

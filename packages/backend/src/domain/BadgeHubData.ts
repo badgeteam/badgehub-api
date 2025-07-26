@@ -21,6 +21,7 @@ import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
 import { LRUCache } from "lru-cache";
+import { appMetadataJSONSchema } from "@shared/domain/readModels/project/AppMetadataJSON";
 
 type FileContext =
   | { projectSlug: string; revision: number; filePath: string }
@@ -229,6 +230,8 @@ export class BadgeHubData {
       pageLength?: number;
       badge?: BadgeSlug;
       category?: CategoryName;
+      search?: string;
+      projectSlug?: ProjectSlug;
       userId?: User["idp_user_id"];
     },
     revision: LatestOrDraftAlias
