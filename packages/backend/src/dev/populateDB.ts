@@ -14,11 +14,11 @@ import { stringToSemiRandomNumber } from "@dev/stringToSemiRandomNumber";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { DEFAULT_CATEGORY_NAMES } from "@shared/domain/readModels/project/Category";
+import { getCategoryNames } from "@shared/domain/readModels/project/Category";
 import { AppMetadataJSON } from "@shared/domain/readModels/project/AppMetadataJSON";
 import { getBadgeSlugs } from "@shared/domain/readModels/Badge";
 
-const CATEGORY_NAMES = DEFAULT_CATEGORY_NAMES;
+const CATEGORY_NAMES = getCategoryNames();
 
 const ICON_COUNT = 16;
 const ICON_FILENAMES = Array.from(

@@ -21,7 +21,6 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./src/setupTests.ts"],
     coverage: coverageConfig,
     testTimeout: isInDebugMode() ? 3600_000 : 5000,
   },

@@ -1,56 +1,35 @@
-import { assertDefinedAndNotNull } from "@shared/util/assertions";
-
 export type SharedConfig = {
-  badges: {
-    [key: string]: {
-      slug: string;
-      description: string;
-    };
+  badges: string[];
+  categories: string[];
+  badgeHubBaseUrl: string;
+  keycloakIssuer: {
+    url: string;
+    realm: string;
+    clientId: string;
   };
 };
-export const BADGE_WHY2025_ORG = "badge.why2025.org";
-export const BADGEHUB_P1M_NL = "badgehub.p1m.nl";
 
-const sharedConfig: Record<string, SharedConfig> = {
-  [BADGE_WHY2025_ORG]: {
-    badges: {
-      why2025: {
-        slug: "why2025",
-        description: "A delightfully deranged Badge for the WHY2025 event",
-      },
-    },
-  },
-  [BADGEHUB_P1M_NL]: {
-    badges: {
-      why2025: {
-        slug: "why2025",
-        description: "A delightfully deranged Badge for the WHY 2025 event",
-      },
-      troopers23: {
-        slug: "troopers23",
-        description: "A Badge for the Troopers 2023 event",
-      },
-      mch2022: {
-        slug: "mch2022",
-        description: "A Badge for the MCH 2022 event",
-      },
-    },
-  },
-};
-
-let deploymentId: string | undefined = undefined;
-export const setDeploymentId = (newDeploymentId: string) => {
-  deploymentId = newDeploymentId;
-};
+export function getAndAssertEnv(envVarName: string) {
+  const envVar = process.env[envVarName];
+  if (envVar == null) {
+    throw new Error(
+      `Environment variable [${envVarName}] is not set and is required.`
+    );
+  }
+  return envVar;
+}
 
 export const getSharedConfig = (): SharedConfig => {
-  assertDefinedAndNotNull(
-    deploymentId,
-    "Deployment ID must be set before accessing shared config"
+  return (
+    (globalThis as any).__SHARED_CONFIG__ ?? {
+      keycloakIssuer: {
+        url: URL.parse(getAndAssertEnv("KEYCLOAK_ISSUER"))?.origin,
+        realm: getAndAssertEnv("KEYCLOAK_ISSUER").split("/").at(-1),
+        clientId: process.env.KEYCLOAK_CLIENT_ID ?? "badgehub-api-frontend",
+      },
+      badgeHubBaseUrl: getAndAssertEnv("BADGEHUB_API_BASE_URL"),
+      badges: getAndAssertEnv("BADGE_SLUGS")?.split(","),
+      categories: getAndAssertEnv("CATEGORY_NAMES")?.split(","),
+    }
   );
-  assertDefinedAndNotNull(
-    sharedConfig[deploymentId],
-    `Did not find a config for deployment ID [${deploymentId}], aborting!`
-  );
-  return sharedConfig[deploymentId]!;
 };
