@@ -252,8 +252,8 @@ export class BadgeHubData {
       mockDates
     );
     if (filePath === "metadata.json") {
-      const appMetadata: WriteAppMetadataJSON = JSON.parse(
-        new TextDecoder().decode(uploadedFile.fileContent)
+      const appMetadata: WriteAppMetadataJSON = appMetadataJSONSchema.parse(
+        JSON.parse(new TextDecoder().decode(uploadedFile.fileContent))
       );
       await this.badgeHubMetadata.updateDraftMetadata(
         projectSlug,
