@@ -276,7 +276,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     await this.pool.query(sql`
       with published_version as (
         update versions v
-          set published_at = (${mockDate ?? raw("now()")})
+          set published_at = (${mockDate ?? raw("now()")}) , updated_at = (${mockDate ?? raw("now()")})
           where v.id = (${getVersionQuery(projectSlug, "draft")}) returning revision, id, app_metadata),
            new_draft_version as (
              insert
@@ -425,6 +425,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
       and p.idp_user_id =
       ${filter.userId}`;
     }
+    query = sql`${query} order by v.updated_at desc`;
 
     if (filter?.pageLength) {
       query = sql`${query}
