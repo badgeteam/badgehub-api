@@ -21,6 +21,7 @@ import { TimestampTZ } from "@shared/dbModels/DBTypes";
 import { CreateProjectProps } from "@shared/domain/writeModels/project/WriteProject";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
 import { LRUCache } from "lru-cache";
+import { number } from "zod";
 
 type FileContext =
   | { projectSlug: string; revision: number; filePath: string }
@@ -32,37 +33,71 @@ export class BadgeHubData {
     Uint8Array<ArrayBufferLike>,
     FileContext
   >;
+  private latestProjectCache: LRUCache<
+    string,
+    ProjectDetails,
+    {
+      projectSlug: string;
+      versionRevision: RevisionNumberOrAlias;
+    }
+  >;
+  private immutableProjectCache: LRUCache<
+    string,
+    ProjectDetails,
+    {
+      projectSlug: string;
+      versionRevision: RevisionNumberOrAlias;
+    }
+  >;
 
   constructor(
     private badgeHubMetadata: BadgeHubMetadata,
     private badgeHubFiles: BadgeHubFiles
   ) {
-    const fileCacheOptions: LRUCache.Options<string, Uint8Array, FileContext> =
-      {
-        max: 1000,
-        // for use with tracking overall storage size
-        maxSize: 500_000_000, // 500MB
-        sizeCalculation: (value, key) => {
-          return value.length;
-        },
-        // how long to live in ms
-        ttl: 60_000 * 60 * 12, // 12 hours
+    this.immutableFileCache = new LRUCache({
+      max: 1000,
+      // for use with tracking overall storage size
+      maxSize: 500_000_000, // 500MB
+      sizeCalculation: (value, key) => {
+        return value.length;
+      },
+      // how long to live in ms
+      ttl: 60_000 * 60 * 12, // 12 hours
 
-        // async method to use for cache.fetch(), for
-        // stale-while-revalidate type of behavior
-        fetchMethod: async (_key, _staleValue, { context }) => {
-          if ("sha256" in context) {
-            return this.badgeHubFiles.getFileContents(context.sha256);
-          }
-          return this._getFileContents(
-            context.projectSlug,
-            context.revision,
-            context.filePath
-          );
-        },
-      };
-
-    this.immutableFileCache = new LRUCache(fileCacheOptions);
+      // async method to use for cache.fetch(), for
+      // stale-while-revalidate type of behavior
+      fetchMethod: async (_key, _staleValue, { context }) => {
+        if ("sha256" in context) {
+          return this.badgeHubFiles.getFileContents(context.sha256);
+        }
+        return this._getFileContents(
+          context.projectSlug,
+          context.revision,
+          context.filePath
+        );
+      },
+    });
+    this.latestProjectCache = new LRUCache({
+      max: 1000,
+      ttl: 60_000 * 60 * 12,
+      fetchMethod: (_key, _staleValue, { context }) => {
+        return this.badgeHubMetadata.getProject(
+          context.projectSlug,
+          context.versionRevision
+        );
+      },
+    });
+    this.immutableProjectCache = new LRUCache({
+      max: 1000,
+      ttl: 10_000,
+      allowStale: true,
+      fetchMethod: (_key, _staleValue, { context }) => {
+        return this.badgeHubMetadata.getProject(
+          context.projectSlug,
+          context.versionRevision
+        );
+      },
+    });
   }
 
   insertProject(
@@ -91,10 +126,34 @@ export class BadgeHubData {
     return this.badgeHubMetadata.publishVersion(projectSlug, mockDate);
   }
 
-  getProject(
+  async getProject(
     projectSlug: ProjectSlug,
     versionRevision: RevisionNumberOrAlias
   ): Promise<undefined | ProjectDetails> {
+    const cacheKey = projectSlug + "_" + versionRevision;
+    if (typeof versionRevision === "number") {
+      const result = await this.immutableProjectCache.fetch(cacheKey, {
+        context: {
+          projectSlug,
+          versionRevision,
+        },
+      });
+      if (!result) {
+        this.immutableProjectCache.delete(cacheKey);
+      }
+      return result;
+    } else if (versionRevision === "latest") {
+      const result = await this.latestProjectCache.fetch(cacheKey, {
+        context: {
+          projectSlug,
+          versionRevision,
+        },
+      });
+      if (!result) {
+        this.latestProjectCache.delete(cacheKey);
+      }
+      return result;
+    }
     return this.badgeHubMetadata.getProject(projectSlug, versionRevision);
   }
 
@@ -104,16 +163,18 @@ export class BadgeHubData {
     filePath: FileMetadata["name"]
   ): Promise<Uint8Array | undefined> {
     if (typeof versionRevision === "number") {
-      return this.immutableFileCache.fetch(
-        projectSlug + "_rev" + versionRevision + ":" + filePath,
-        {
-          context: {
-            projectSlug,
-            revision: versionRevision,
-            filePath,
-          },
-        }
-      );
+      const cacheKey = projectSlug + "_rev" + versionRevision + ":" + filePath;
+      const fileData = await this.immutableFileCache.fetch(cacheKey, {
+        context: {
+          projectSlug,
+          revision: versionRevision,
+          filePath,
+        },
+      });
+      if (!fileData) {
+        this.immutableFileCache.delete(cacheKey);
+      }
+      return fileData;
     }
     return await this._getFileContents(projectSlug, versionRevision, filePath);
   }
@@ -135,10 +196,16 @@ export class BadgeHubData {
     return this.getFileContentsBySha256(sha256);
   }
 
-  getFileContentsBySha256(sha256: string): Promise<Uint8Array | undefined> {
-    return this.immutableFileCache.fetch(sha256, {
+  async getFileContentsBySha256(
+    sha256: string
+  ): Promise<Uint8Array | undefined> {
+    const fileData = await this.immutableFileCache.fetch(sha256, {
       context: { sha256 },
     });
+    if (!fileData) {
+      this.immutableFileCache.delete(sha256);
+    }
+    return fileData;
   }
 
   getVersionZipContents(
