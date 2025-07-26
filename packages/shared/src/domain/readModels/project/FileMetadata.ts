@@ -12,6 +12,7 @@ export interface FileMetadata extends DatedData {
   // Computed
   size_formatted: string; // Human readable size_of_content
   full_path: string; // full path of file with filename and extensions (dir+'/'+name+'.'+ext)
+  url: string;
 }
 
 export const fileMetadataSchema = datedDataSchema.extend({
@@ -23,6 +24,10 @@ export const fileMetadataSchema = datedDataSchema.extend({
   sha256: z.string().regex(/^[a-f0-9]{64}$/), // Lowercase hex sha256 digest
   size_formatted: z.string(), // Human readable size_of_content
   full_path: z.string(), // full path of file with filename and extensions (dir+'/'+name+'.'+ext)
+  url: z
+    .string()
+    .url()
+    .describe("Url that should be used to download the file"),
 });
 
 __tsCheckSame<FileMetadata, FileMetadata, z.infer<typeof fileMetadataSchema>>(

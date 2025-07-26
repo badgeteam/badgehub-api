@@ -81,8 +81,8 @@ const AppCodePreview: React.FC<{ project: ProjectDetails }> = ({ project }) => {
     setPreviewedFile(fullPath);
   };
 
-  const handleDownload = (fullPath: string) => {
-    window.location.href = `${BADGEHUB_API_BASE_URL}/api/v3/projects/${project.slug}/latest/files/${encodeURIComponent(fullPath)}`;
+  const handleDownload = (url: string) => {
+    window.location.href = url;
   };
 
   return (
@@ -100,7 +100,7 @@ const AppCodePreview: React.FC<{ project: ProjectDetails }> = ({ project }) => {
               <li key={i} className="flex items-center gap-2">
                 <button
                   className="px-1 py-1 bg-slate-700 rounded hover:bg-slate-600"
-                  onClick={() => handleDownload(f.full_path)}
+                  onClick={() => handleDownload(f.url)}
                   title="Download file"
                   style={{
                     display: "flex",

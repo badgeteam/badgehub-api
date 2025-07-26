@@ -172,6 +172,7 @@ describe(
             "size_formatted": "40.23KB",
             "size_of_content": 41199,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/icon5.png",
           },
           {
             "created_at": "2024-05-22T14:01:16.975Z",
@@ -185,6 +186,7 @@ describe(
             "size_formatted": "0.04KB",
             "size_of_content": 43,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/__init__.py",
           },
           {
             "created_at": "2024-05-22T14:01:16.975Z",
@@ -198,6 +200,7 @@ describe(
             "size_formatted": "0.24KB",
             "size_of_content": 247,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/metadata.json",
           },
         ]
       `);
@@ -271,6 +274,7 @@ describe(
             "size_formatted": "40.23KB",
             "size_of_content": 41199,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/icon5.png",
           },
           {
             "created_at": "2024-05-22T14:01:16.975Z",
@@ -284,6 +288,7 @@ describe(
             "size_formatted": "0.04KB",
             "size_of_content": 43,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/__init__.py",
           },
           {
             "created_at": "2024-05-22T14:01:16.975Z",
@@ -297,6 +302,7 @@ describe(
             "size_formatted": "0.24KB",
             "size_of_content": 247,
             "updated_at": "2024-05-22T14:01:16.975Z",
+            "url": "http://localhost:8081/api/v3/projects/codecraft/rev0/files/metadata.json",
           },
         ]
       `);
@@ -330,6 +336,27 @@ describe(
         expect(metadata.name).toEqual("CodeCraft");
       }
     );
+
+    test("GET files using url prop should work same as from path", async () => {
+      const res = await request(app).get("/api/v3/projects/codecraft/rev0");
+      expect(res.statusCode).toBe(200);
+      const project = res.body as ProjectDetails;
+
+      const files = project.version.files;
+      expect(files.length).toBeGreaterThan(0); // Sanity check
+      expect(project.version.published_at).toBeDefined(); // Sanity check
+      for (const file of files) {
+        const requestFromFilePath = await request(app).get(
+          `/api/v3/projects/codecraft/rev${project.version.revision}/files/${encodeURIComponent(file.full_path)}`
+        );
+        expect(requestFromFilePath.statusCode).toBe(200);
+        const requestFromUrl = await request(app).get(
+          new URL(file.url).pathname
+        );
+        expect(requestFromUrl.statusCode).toBe(200);
+        expect(requestFromFilePath.text).toEqual(requestFromUrl.text);
+      }
+    });
 
     test.each(["latest", "rev0"])(
       "GET /projects/{slug}/%s/files/__init__.py",

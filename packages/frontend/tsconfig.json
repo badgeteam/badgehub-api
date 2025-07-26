@@ -13,8 +13,7 @@
     "paths": {
       "@*": ["./src/*"],
       "@shared/*": ["../shared/src/*"]
-    },
-    "types": ["@testing-library/jest-dom"]
+    }
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }

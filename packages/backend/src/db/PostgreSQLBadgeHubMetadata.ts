@@ -51,16 +51,41 @@ import {
 } from "@shared/domain/readModels/project/Category";
 import { BadgeSlug, getBadgeSlugs } from "@shared/domain/readModels/Badge";
 import { WriteAppMetadataJSON } from "@shared/domain/writeModels/AppMetadataJSON";
+import { sharedConfig } from "@config";
 
 const ONE_KILO = 1024;
+type RevisionPathPart = "draft" | `rev${number}` | "latest";
 
-function dbFileToFileMetadata(dbFile: DBFileMetadata): FileMetadata {
+function getFileDownloadUrl(
+  project: string,
+  versionRevision: RevisionNumberOrAlias,
+  full_path: string
+) {
+  const revisionPathPart: RevisionPathPart =
+    typeof versionRevision === "number"
+      ? `rev${versionRevision}`
+      : versionRevision;
+  return `${sharedConfig.badgeHubBaseUrl}/api/v3/projects/${project}/${revisionPathPart}/files/${encodeURIComponent(full_path)}`;
+}
+
+function dbFileToFileMetadata(
+  dbFile: DBFileMetadata,
+  project: string,
+  versionRevision: RevisionNumberOrAlias
+): FileMetadata {
   const { version_id, ...dbFileWithoutVersionId } = dbFile;
   const size_of_content = Number.parseInt(dbFile.size_of_content);
+  const full_path = path.join(dbFile.dir, dbFile.name + dbFile.ext);
+  const fileDownloadUrl = getFileDownloadUrl(
+    project,
+    versionRevision,
+    full_path
+  );
   return {
     ...convertDatedData(dbFileWithoutVersionId),
     size_of_content,
-    full_path: path.join(dbFile.dir, dbFile.name + dbFile.ext),
+    url: fileDownloadUrl, // TODO profile files/sha endpoint and use that in the urls
+    full_path,
     size_formatted: (size_of_content / ONE_KILO).toFixed(2) + "KB",
   };
 }
@@ -95,7 +120,7 @@ const getVersionQuery = (
                 from versions
                 where revision = ${versionRevision}
                   and project_slug = ${projectSlug}
-                  and published_at is not null)`;
+                  and published_at is not null)`; // Draft versions should not be accessed via a revision number because we assume immutability when using a revision number
   }
   switch (versionRevision) {
     case "draft":
@@ -132,7 +157,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
 
   async getFileMetadata(
     projectSlug: string,
-    versionRevision: "draft" | "latest",
+    versionRevision: RevisionNumberOrAlias,
     filePath: string
   ): Promise<FileMetadata | undefined> {
     const { dir, name, ext } = parsePath(filePath.split("/"));
@@ -148,7 +173,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     if (!metadata) {
       return undefined;
     }
-    return dbFileToFileMetadata(metadata);
+    return dbFileToFileMetadata(metadata, projectSlug, versionRevision);
   }
 
   async writeDraftFileMetadata(
@@ -341,7 +366,7 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     const { id, ...dbVersionWithoutId } = dbVersion;
     return {
       ...stripDatedData(dbVersionWithoutId),
-      files: await this._getFilesMetadataForVersion(id),
+      files: await this._getFilesMetadataForVersion(dbVersion),
       published_at: timestampTZToDate(dbVersion.published_at),
     };
   }
@@ -428,13 +453,18 @@ export class PostgreSQLBadgeHubMetadata implements BadgeHubMetadata {
     return queryResult as any;
   }
 
-  async _getFilesMetadataForVersion(id: DBVersion["id"]) {
+  async _getFilesMetadataForVersion(dbVersion: DBVersion) {
     const dbFiles = await this.pool.query<DBFileMetadata>(
       sql`select *
           from files
-          where version_id = ${id}
+          where version_id = ${dbVersion.id}
             and deleted_at is null`
     );
-    return dbFiles.rows.map(dbFileToFileMetadata);
+    const versionRevision = dbVersion.published_at
+      ? dbVersion.revision
+      : "draft";
+    return dbFiles.rows.map((dbFile) =>
+      dbFileToFileMetadata(dbFile, dbVersion.project_slug, versionRevision)
+    );
   }
 }
