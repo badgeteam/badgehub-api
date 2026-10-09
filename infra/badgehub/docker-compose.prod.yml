@@ -1,0 +1,29 @@
+# Production BadgeHub app for Dokploy, WITHOUT a bundled database.
+# The database is a separate Dokploy Postgres service; point POSTGRES_HOST at its
+# internal hostname (the Dokploy app name), reachable over dokploy-network.
+# For a self-contained setup with its own Postgres container, use docker-compose.yml.
+services:
+  badgehub:
+    build: ../..
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+      KEYCLOAK_BASE_URL: ${KEYCLOAK_BASE_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      CATEGORY_NAMES: ${CATEGORY_NAMES}
+      ADMIN_CATEGORY_NAMES: ${ADMIN_CATEGORY_NAMES}
+      BADGE_SLUGS: ${BADGE_SLUGS}
+      BADGEHUB_API_BASE_URL: ${BADGEHUB_API_BASE_URL}
+      DB_BADGEHUB_API_BASE_URL: ${DB_BADGEHUB_API_BASE_URL}
+      REFRESH_REPORTS_INTERVAL_SEC: ${REFRESH_REPORTS_INTERVAL_SEC}
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true

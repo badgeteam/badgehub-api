@@ -1,7 +1,7 @@
 services:
   db:
     container_name: badgehub-db
-    image: postgres:16
+    image: postgres:16.15
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}

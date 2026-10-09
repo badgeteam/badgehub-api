@@ -20,11 +20,12 @@ Note that none of these steps were optional, they were all required to get the a
   - In the BFF, we set the git repository to the BadgeHub repository and set the branch to main and we point it to the infra/badgehub/docker-compose.yml file.
   - We set the environment variables for the BFF service in Dokploy, which will be used by the docker compose file to set up the environment for the Badgehub application.
   - This BFF deployment includes the database container with a volume for data persistence and the Badgehub application container.
+  - Alternatively, use [infra/badgehub/docker-compose.prod.yml](badgehub/docker-compose.prod.yml), which only runs the app container. The database is then a separate Dokploy Postgres service (with Dokploy-managed S3 backups) and `POSTGRES_HOST` is set to that service's internal hostname (its Dokploy app name).
   - In the server container settings, we set the domain to `badgehub.eu`
 
 ## Keycloak
 - Keycloak was set up as a separate service in Dokploy, and in the current setup, we have used Dokploy UI to set up a postgresql database for Keycloak to use and then we used the credentials and hostname of that in a separate Keycloak service.
-- This keycloak service is currently set up with a hardcoded docker compose file which was then copied to infra/keycloak/docker-compose.yml.
+- The keycloak service uses [infra/keycloak/docker-compose.yml](keycloak/docker-compose.yml), which only runs Keycloak; the variables it needs are listed in [infra/keycloak/.env.example](keycloak/.env.example).
 - We set the Postgres Hostname, port username and password in the Environment settings for that service in Dokploy.
 - After we started keycloak, we still had to do some manual config:
  - We logged in and created a new admin user and deleted the bootstrap admin user (with the same username (we temporarily enabled username edit in the realm settings) and password as the one used in the docker compose file).
