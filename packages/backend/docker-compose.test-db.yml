@@ -1,7 +1,7 @@
 services:
   db:
     container_name: badgehub-test-db
-    image: postgres:16
+    image: postgres:16.15
     env_file:
       - .env.test
     ports:

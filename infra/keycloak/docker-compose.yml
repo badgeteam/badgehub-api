@@ -1,54 +1,44 @@
+# Production Keycloak for badgehub.eu, deployed as a Dokploy compose service.
+# The database is a separate Dokploy Postgres service (reachable over dokploy-network),
+# so this file only runs Keycloak itself. All values come from the Dokploy
+# environment (see .env.example); never commit secrets here.
 services:
-  db-keycloak:
-    image: postgres:18
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - badgehub_network
-  
   keycloak:
-    image: quay.io/keycloak/keycloak:26.5.5
+    image: quay.io/keycloak/keycloak:26.8.0
+    restart: unless-stopped
     ports:
       - "8999:8080"
-    entrypoint: sh -c "/opt/keycloak/bin/kc.sh start"
-    env_file:
-      - .env
+    command:
+      - start
     environment:
-      - KC_PROXY_HEADERS=${KC_PROXY_HEADERS}
-      - PROXY_ADDRESS_FORWARDING=${PROXY_ADDRESS_FORWARDING}
-      - KC_PROXY=${KC_PROXY}
-      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - KC_DB_SCHEMA=${KC_DB_SCHEMA}
-      - KC_DB_USERNAME=${KC_DB_USERNAME}
+      # Bootstrap admin, only used when the master realm is first created.
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KC_BOOTSTRAP_ADMIN_USERNAME}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD}
+      # Database
+      - KC_DB=${KC_DB}
       - KC_DB_URL_HOST=${KC_DB_URL_HOST}
       - KC_DB_URL_PORT=${KC_DB_URL_PORT}
       - KC_DB_URL_DATABASE=${KC_DB_URL_DATABASE}
-      - KC_DB=${KC_DB}
-      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+      - KC_DB_SCHEMA=${KC_DB_SCHEMA}
       - KC_DB_USERNAME=${KC_DB_USERNAME}
+      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+      # Hostname / reverse proxy (Traefik terminates TLS and sets X-Forwarded-*)
       - KC_HOSTNAME=${KC_HOSTNAME}
+      - KC_PROXY_HEADERS=${KC_PROXY_HEADERS}
+      - KC_HTTP_ENABLED=${KC_HTTP_ENABLED}
+      # Observability
       - KC_METRICS_ENABLED=${KC_METRICS_ENABLED}
       - KC_HEALTH_ENABLED=${KC_HEALTH_ENABLED}
       - KC_LOG_LEVEL=${KC_LOG_LEVEL}
-      - KC_HTTP_ENABLED=${KC_HTTP_ENABLED}
-      - KC_HOSTNAME_STRICT_HTTPS=${KC_HOSTNAME_STRICT_HTTPS}
+      # Single instance: no sticky-session route suffix needed (option is deprecated)
+      - KC_SPI_STICKY_SESSION_ENCODER__INFINISPAN__SHOULD_ATTACH_ROUTE=false
       - QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY=${QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY}
-    command:
-      - start
     volumes:
       - ./auth/import:/opt/keycloak/data/import
-    depends_on:
-      - db-keycloak
     networks:
-      - badgehub_network
+      - dokploy-network
+      - default
 
 networks:
-  badgehub_network:
-    name: badgehub_network
-
-volumes:
-  postgres_data:
+  dokploy-network:
+    external: true
